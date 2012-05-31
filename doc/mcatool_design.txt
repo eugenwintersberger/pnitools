@@ -1,0 +1,73 @@
+MCA tool design overview
+========================
+
+Purpose of the program
+----------------------
+
+Managing MCA data from various sources (primarliy FIO files from ONLINE used at DESY). The programm uses a command controlled syntax:
+
+$> mcatool <command> <global options> <command specific options> <input files>
+
+The program shall be capabel to work with pipes on a UNIX shell. 
+
+$> mcatool rebin -b4 mca.dat | mcatool scale -d1.34 -omca_scaled.dat 
+
+this should make the program applicable to more general situations. 
+
+Reading input data
+------------------
+I.g. input data can be obtained from a single input file or from standard in. If several files should be processed xargs can be used on a UNIX terminal. On Windows systems a similar functionality or a batch file must be used (provided a script in the examples how to do this on Linux/UNIX and Windows).
+
+If data is read from standard in single or two column input is allowed. In the latter case the first column is considered to hold bin-center positions. Single column input contains only the MCA data. A stream on standad in or standard out is terminated by a EOF sign. 
+
+If no input file name is provided as an argument the program assumes that input is read from standard input.
+
+Ouput data:
+-----------
+Processed data is written to a file or to standard out. The output can be either single or two column. Like for the input data the two column output has the channel data in the first column and the MCA data in the second. 
+
+Global options valid for all commands
+-------------------------------------
+
+-o (--output=)FLENAME name of the output file
+-t (--towcolumn)      if used two column output will be created
+-v (--verbose)        produce verbose output to standard out and error
+-q (--quiet)          the opposite of verbose
+-r (--roi)            set region of interest (-r<start>:<stop>:<stride>) the stride is optional and 
+                      one by default
+
+Operations (commands) and their options
+--------------------------------------- 
+
+Can distinguish between commands that accumulate data (reduce the entire histogram to a single number) and 
+those who do not. Clearly the former ones are not really applicable to be used in pipes. 
+
+accumulating commands:
+max:   return the maximum value of the MCA spectrum
+
+maxloc: returns the bin with the maximum location (if the input data is two column the value of the bin
+         will be printed to standard out. For single column input the  number of the bin is used)
+
+sum:   summ over all values in the historgram
+       -s(--start)
+
+average: compute the average of the histogram
+cmass:   compute the center of mass
+
+
+non-accumulating commands:
+
+rebin: rebins the data (collates several bins to one) 
+       -b(--bins=)N number of bins to collate
+
+scale: rescales the bin centers from interger numbers to axis values
+       -c(--center=)NC number of the center channel
+       -d(--delte=)DELTA bin width
+       -x(--cvalue=)CVALUE center value (axis value at center bin position)
+
+General program flow:
+--------------------
+
+-> Parse global options
+-> read data from file or standard input
+-> 
