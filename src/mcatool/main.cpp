@@ -6,8 +6,12 @@
 
 
 #include<pni/utils/Types.hpp>
+#include<pni/utils/ArrayFactory.hpp>
+#include<pni/utils/Array.hpp>
+#include<pni/utils/io/FIOReader.hpp>
 
 using namespace pni::utils;
+using namespace pni::io;
 namespace po = boost::program_options;
 
 class ProgramConfig{
@@ -16,17 +20,31 @@ class ProgramConfig{
         bool quiet;
 };
 
-String read_command(char **argv)
+class Operator
 {
-    String command(argv[1]);
-    return command;
+    public:
+        Operator(const po::variables_map &config){}
+        virtual ~Operator() {}
+
+        virtual void operator()(const Float64Array bins,
+                        const Float64Array data) = 0;
+};
+
+Float64Array create_channel_data(size_t n)
+{
+    auto channels = ArrayFactory<Float64>::create(Shape({n}));
+
+    for(size_t i=0;i<n;i++) channels[i] = Float64(i);
+    return channels;
 }
 
+//=============================================================================
 static const char usage_string[] = 
                       "Program usage:\n\n mcatool <command> <global options>"
                       " <command specific options> [input file]";
 
 
+//=============================================================================
 int main(int argc,char **argv)
 {
     //check the total number of arguments and options and show a message if
@@ -55,6 +73,10 @@ int main(int argc,char **argv)
         ("output,o",po::value<String>(),"output file")
         ("towcolumn,t",po::value<bool>()->zero_tokens(),
          "produce two column output")
+        ("xcolumn",po::value<String>(),
+         "name of the column with bin center values")
+        ("ycolumn",po::value<String>(),
+         "name of the column with actual MCA data")
         ;
     
     po::options_description rebin_options("Rebinning options");
@@ -85,7 +107,8 @@ int main(int argc,char **argv)
 
     //-------------------parse and store program options-----------------------
     po::variables_map options;
-    po::store(po::command_line_parser(argc,argv).options(all).positional(posopts).run(),options);
+    po::store(po::command_line_parser(argc,argv).options(all)
+              .positional(posopts).run(),options);
     po::notify(options);
 
     if(options.count("help"))
@@ -96,8 +119,28 @@ int main(int argc,char **argv)
         return 1;
     }
 
+    //-------------------------------------------------------------------------
+    //here we will read data either from the standard in or from a file 
+    FIOReader reader(options["input"].as<String>());
+    
+    auto data = reader.column<Float64Array>(options["ycolumn"].as<String>());
+    Float64Array channels;
 
+    //if no column for channel data is provided we will simply use the 
+    //bin number as a center value for each bin
+    if(options.count("xcolumn"))
+        channels = reader.column<Float64Array>(options["xcolumn"].as<String>());
+    else
+        channels = create_channel_data(data.size());
+
+    for(size_t i=0;i<channels.size();i++)
+        std::cout<<channels[i]<<"\t"<<data[i]<<std::endl;
+
+    
+    //need to choose an operation
+     
 
     
     return 0;
 }
+
