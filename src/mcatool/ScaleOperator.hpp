@@ -20,6 +20,7 @@ class ScaleOperator:public Operator
         Float64Array _channels;
         Float64Array _data;
     public:
+        //---------------------------------------------------------------------
         ScaleOperator(const po::variables_map &config):
             Operator(config),
             _center(config["center"].as<size_t>()),
@@ -27,8 +28,10 @@ class ScaleOperator:public Operator
             _cvalue(config["cvalue"].as<Float64>())
         {}
 
+        //---------------------------------------------------------------------
         ~ScaleOperator(){}
 
+        //---------------------------------------------------------------------
         virtual void operator()(const Float64Array &channels,
                                 const Float64Array &data)
         {
@@ -42,7 +45,7 @@ class ScaleOperator:public Operator
             
         }
 
-
+        //---------------------------------------------------------------------
         virtual std::ostream &stream_result(std::ostream &o) const
         {
             for(size_t i=0;i<_channels.size();i++)
