@@ -27,6 +27,22 @@ class ProgramConfig{
         bool quiet;
 };
 
+void read_from_stdin(Float64Array &channels,Float64Array &data)
+{
+    std::vector<Float64> chvec;
+    std::vector<Float64> dvec;
+    Float64 ch,d;
+
+    while(std::cin>>ch>>d)
+    {
+        chvec.push_back(ch);
+        dvec.push_back(d);
+    }
+
+    channels = ArrayFactory<Float64>::create(Shape({chvec.size()}),chvec);
+    data = ArrayFactory<Float64>::create(Shape({dvec.size()}),dvec);
+}
+
 
 
 //-----------------------------------------------------------------------------
@@ -146,17 +162,24 @@ int main(int argc,char **argv)
 
     //-------------------------------------------------------------------------
     //here we will read data either from the standard in or from a file 
-    FIOReader reader(options["input"].as<String>());
-    
-    auto data = reader.column<Float64Array>(options["ycolumn"].as<String>());
-    Float64Array channels;
+    Float64Array data,channels;
 
-    //if no column for channel data is provided we will simply use the 
-    //bin number as a center value for each bin
-    if(options.count("xcolumn"))
-        channels = reader.column<Float64Array>(options["xcolumn"].as<String>());
+    if(options.count("input"))
+    {
+        FIOReader reader(options["input"].as<String>()); 
+        data = reader.column<Float64Array>(options["ycolumn"].as<String>());
+        //if no column for channel data is provided we will simply use the 
+        //bin number as a center value for each bin
+        if(options.count("xcolumn"))
+            channels = reader.column<Float64Array>(options["xcolumn"].as<String>());
+        else
+            channels = create_channel_data(data.size());
+    }
     else
-        channels = create_channel_data(data.size());
+    {
+        read_from_stdin(channels,data);
+    }
+
 
     //need to choose an operation
     if(!options.count("command"))

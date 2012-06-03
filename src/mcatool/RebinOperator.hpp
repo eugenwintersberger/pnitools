@@ -58,8 +58,6 @@ class RebinOperator:public Operator
                     else
                         _channels[new_index] /= _bsize;
 
-                    std::cout<<i<<"/"<<channels.size()<<"\t"<<new_index<<"\t"<<size<<std::endl;
-
                     //increment index of the new histogram
                     new_index++;
                 }
@@ -71,7 +69,6 @@ class RebinOperator:public Operator
             }
 
             //when we are done we have to manage the last been 
-            std::cout<<new_index<<"\t"<<size<<std::endl;
             if(channels.size()%_bsize != 0)
             {
                 _data[new_index] /= channels.size()%_bsize;
