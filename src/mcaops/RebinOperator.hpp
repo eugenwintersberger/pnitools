@@ -97,6 +97,13 @@ class RebinOperator:public Operator
                 else
                     _channels[new_index] /= channels.size()%_bsize;
             }
+            else
+            {
+                if(_noxrebin) 
+                    _channels[new_index] = new_index;
+                else
+                    _channels[new_index] /= _bsize;
+            }
 
             
         }
