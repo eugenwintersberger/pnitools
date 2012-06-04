@@ -37,4 +37,4 @@ Export("program_env")
 
 
 #start the SConscript files for the individual tools
-SConscript("src/mcatool/SConscript")
+SConscript("src/mcaops/SConscript")

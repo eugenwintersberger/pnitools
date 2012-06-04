@@ -1,0 +1,4 @@
+Import("program_env")
+
+mcaops_src = ["main.cpp"]
+mcaops = program_env.Program("mcaops",mcaops_src)

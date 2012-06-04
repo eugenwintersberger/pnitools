@@ -1,4 +1,0 @@
-Import("program_env")
-
-mcatool_src = ["main.cpp"]
-mcatool = program_env.Program("mcatool",mcatool_src)
