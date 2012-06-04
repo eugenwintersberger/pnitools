@@ -274,7 +274,6 @@ int main(int argc,char **argv)
     }
     else
     {
-        std::cerr<<"read data from standard in"<<std::endl;
         read_from_stdin(channels,data);
     }
 

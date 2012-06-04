@@ -8,6 +8,7 @@ var.Add("CXX","set the compiler to use","g++")
 var.Add(PathVariable("BOOSTLIBDIR","BOOST library installation directory","/usr/lib"))
 var.Add(PathVariable("BOOSTINCDIR","BOOST header installation directory","/usr/include"))
 
+
 #---------------create the build environment-----------------------------------
 env = Environment(variables=var)
 #for the moment we relie on pkg-config for libpniutils
@@ -17,6 +18,7 @@ env.Replace(CXX = env["CXX"])
 
 #set some default compiler options
 env.Append(CXXFLAGS=["-std=c++0x"])
+env.Append(CXXFLAGS=["-Wall","-g","-O2"])
 
 env.AppendUnique(CPPPATH=[env["BOOSTINCDIR"]])
 env.AppendUnique(LIBPATH=[env["BOOSTLIBDIR"]])
