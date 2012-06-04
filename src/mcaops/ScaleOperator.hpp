@@ -34,6 +34,7 @@ using namespace pni::utils;
 class ScaleOperator:public Operator
 {
     private:
+        bool _search_max;
         size_t _center;  //center bin
         Float64 _delta;  //delta value
         Float64 _cvalue; //center value
@@ -43,10 +44,24 @@ class ScaleOperator:public Operator
         //---------------------------------------------------------------------
         ScaleOperator(const po::variables_map &config):
             Operator(config),
-            _center(config["center"].as<size_t>()),
-            _delta(config["delta"].as<Float64>()),
-            _cvalue(config["cvalue"].as<Float64>())
-        {}
+            _search_max(true),
+            _center(0),
+            _delta(1),
+            _cvalue(0)
+        {
+            if(config.count("center"))
+            {
+                _center = config["center"].as<size_t>();
+                _search_max = false;
+            }
+
+            if(config.count("delta"))
+                _delta = config["delta"].as<Float64>();
+
+            if(config.count("cvalue"))
+                _cvalue = config["cvalue"].as<Float64>();
+             
+        }
 
         //---------------------------------------------------------------------
         ~ScaleOperator(){}
@@ -57,6 +72,9 @@ class ScaleOperator:public Operator
         {
             _channels = Float64Array(channels);
             _data = Float64Array(data);
+
+            if(_search_max)
+                _center = pni::utils::max_offset(data);
 
             for(Float64 &v: _channels)
             {
