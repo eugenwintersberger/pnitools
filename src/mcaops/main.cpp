@@ -42,12 +42,8 @@ using namespace pni::utils;
 using namespace pni::io;
 namespace po = boost::program_options;
 
-class ProgramConfig{
-    public:
-        bool verbose;
-        bool quiet;
-};
 
+//-----------------------------------------------------------------------------
 void read_from_stdin(Float64Array &channels,Float64Array &data)
 {
     std::vector<Float64> chvec;
@@ -116,7 +112,6 @@ int main(int argc,char **argv)
         return 1;
     }
 
-    ProgramConfig config;
     //----------------setting up the program options---------------------------
     //these options do not show up in the help text
     po::options_description hidden("Hidden options");
@@ -125,6 +120,8 @@ int main(int argc,char **argv)
         ("input",po::value<String>(),"input file")
         ;
 
+    //-------------------------------------------------------------------------
+    //global options valid for all commands
     po::options_description global("Global options");
     global.add_options()
         ("help,h","show help text")
@@ -138,7 +135,9 @@ int main(int argc,char **argv)
         ("ycolumn",po::value<String>(),
          "name of the column with actual MCA data")
         ;
-    
+   
+    //-------------------------------------------------------------------------
+    //options for the rebin command
     po::options_description rebin_options("Rebinning options");
     rebin_options.add_options()
         ("binsize,b",po::value<size_t>()->default_value(1),
@@ -147,6 +146,8 @@ int main(int argc,char **argv)
          "do not rebin the x-axis, use simple index instead")
         ;
 
+    //-------------------------------------------------------------------------
+    //options for the scale command
     po::options_description scale_options("Scaling options");
     scale_options.add_options()
         ("center,c",po::value<size_t>()->default_value(0),
@@ -156,14 +157,18 @@ int main(int argc,char **argv)
         ("cvalue,x",po::value<Float64>()->default_value(0.),
          "position of the center bin")
         ;
-    
+   
+    //set positional arguments
     po::positional_options_description posopts;
     posopts.add("command",1);
     posopts.add("input",2);
 
+    //assemble all the options that should be visible in the 
+    //command line help
     po::options_description visible("Allowed command line options");
     visible.add(global).add(rebin_options).add(scale_options);
 
+    //assemble all options
     po::options_description all("All options");
     all.add(hidden).add(global).add(rebin_options).add(scale_options);
 
@@ -175,9 +180,9 @@ int main(int argc,char **argv)
 
     if(options.count("help"))
     {
-        std::cout<<usage_string<<std::endl<<std::endl;
-        std::cout<<visible<<std::endl<<std::endl;
-        std::cout<<"See man mcatool for more information!"<<std::endl;
+        std::cerr<<usage_string<<std::endl<<std::endl;
+        std::cerr<<visible<<std::endl<<std::endl;
+        std::cerr<<"See 'man mcaops' for more information!"<<std::endl;
         return 1;
     }
 
@@ -187,17 +192,89 @@ int main(int argc,char **argv)
 
     if(options.count("input"))
     {
-        FIOReader reader(options["input"].as<String>()); 
-        data = reader.column<Float64Array>(options["ycolumn"].as<String>());
+        //----------------open the file holding the data-----------------------
+        String filename = options["input"].as<String>();
+
+        FIOReader reader;
+        //read data from a file
+        try{
+            reader = FIOReader(filename); 
+        }
+        catch(...)
+        {
+            std::cerr<<"Error reading file "<<filename<<"!"<<std::endl;
+            return 1;
+        }
+
+        //----------------read MCA data form the appropriate column-------------
+        String ycolumn;
+        if(options.count("ycolumn"))
+        {
+            ycolumn = options["ycolumn"].as<String>();
+        }
+        else
+        {
+            //if the file holds more than one column we have to abort the
+            //program as we cannot know from which column to read data
+            if(reader.ncolumns() != 1)
+            {
+                std::cerr<<"File "<<filename<<" contains more than one ";
+                std::cerr<<"columns - specify from which to read MCA data!";
+                std::cerr<<std::endl;
+                return 1;
+            }
+            
+            //if the file contains only one column we can assume that this
+            //column holds the MCA data
+            for(auto c: reader) ycolumn = c.name();
+        }
+
+        //finally read column data from the file
+        try
+        {
+            data = reader.column<Float64Array>(ycolumn);
+        }
+        catch(KeyError &error)
+        {
+            std::cerr<<"Error reading MCA data from column "<<ycolumn;
+            std::cerr<<" - column does not exist!"<<std::endl;
+            std::cerr<<"The following columns are available in this file:";
+            std::cerr<<std::endl;
+            for(auto c: reader) std::cerr<<c<<std::endl;
+            return 1;
+        }
+        catch(...)
+        {   
+            std::cerr<<"Error reading MCA data from column ";
+            std::cerr<<options["ycolumn"].as<String>()<<"!";
+            return 1;
+        }
+
         //if no column for channel data is provided we will simply use the 
         //bin number as a center value for each bin
         if(options.count("xcolumn"))
-            channels = reader.column<Float64Array>(options["xcolumn"].as<String>());
+            try{
+                channels = reader.column<Float64Array>(options["xcolumn"].as<String>());
+            }
+            catch(KeyError &error)
+            {
+                std::cerr<<"Error reading bin data from column ";
+                std::cerr<<options["xcolumn"].as<String>();
+                std::cerr<<" - column does not exist!"<<std::endl;
+                return 1;
+            }
+            catch(...)
+            {
+                std::cerr<<"Error reading bin data from column ";
+                std::cerr<<options["xcolumn"].as<String>()<<"!"<<std::endl;
+                return 1;
+            }
         else
             channels = create_channel_data(data.size());
     }
     else
     {
+        std::cerr<<"read data from standard in"<<std::endl;
         read_from_stdin(channels,data);
     }
 
