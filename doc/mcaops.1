@@ -1,0 +1,99 @@
+.\" mcaops
+.\" Contact Eugen Wintersberger <eugen.wintersberger@desy.de> for typos and corrections
+.TH man 1 "2.06.2012" "1.0" "mcaops man page"
+.SH NAME
+ mcaops - apply several operations to MCA spectra 
+.SH SYNOPSIS
+.B mcaops [OPTIONS] [FILE]
+
+.SH DESCRIPTION
+\fBmcaops\fR is a utility program applying certain operations on MCA data. 
+The MCA data can be either read from a file or from standard input. MCA data is
+passed in two columns, the first containing the bin number or the bin center
+value and the second the bin data. Actually only FIO format is supported.
+.sp
+Results are written to standard output. 
+
+.SH MCA OPERATIONS
+The following operations can be carried out on MCA data
+
+max     find the value and its position in the spectrum
+sum     add all value in the spectrum
+rebin   rebin the spectrum to new bin sizes
+scale   scale the bin centers of the spectrum
+
+.SH OPTIONS
+The  options provided and their meaning depend on the operation that should be
+performed on the data. Some of of the options are global and valid for all
+operations. 
+.sp
+There are the following global options available
+.TP 
+\fB\-h\fR, \fB\-\-help\fR
+Print a usage message and exit.
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+Produce verbose output, printing information regarding the specified options and objects. 
+All output is printed to standard error allowing you to redirect payload data to
+an other program while still watching debugging output.
+.TP 
+\fB\-q\fR, \fB\-\-quiet\fR
+Suppress all unnecessary output (the counterpart of -v)
+
+Options for the \fBrebin\fR operation.
+.TP
+\fB\-p\fR, \fB\-\-parents
+Create parent or intermediate groups as required. (There is no error if they already exist.)
+.TP 
+\fB\-f \fRFLAG_TYPE\, \fB\-\-flag=\fRFLAG_TYPE
+Specify one or more of several copy options; FLAG_TYPE may be one of the 
+following strings or a logical AND of two or more:
+shallow 	Copy only immediate members of a group. 
+            (Default: Recursively copy all objects below the group.)
+soft 	    Expand soft links to copy target objects. 
+            (Default: Keep soft links as they are.)
+ext 	    Expand external links to copy external objects. 
+            (Default: Keep external links as they are.)
+ref 	    Copy references and any referenced objects, i.e., objects that the 
+            references point to. Referenced objects are copied in addition to 
+            the objects specified on the command line and reference datasets 
+            are populated with correct reference values. Copies of referenced 
+            datasets outside the copy range specified on the command line will 
+            normally have a different name from the original.
+
+            (Default:Without this option, reference value(s) in any reference 
+            datasets are set to NULL and referenced objects are not copied 
+            unless they are otherwise within the copy range specified on the 
+            command line.)
+
+attr 	Copy objects without copying attributes. 
+        (Default: Copy objects and all attributes.)
+allflags  	Switch each setting above from the default to the setting described in this table. 
+            Equivalent to logical AND of all flags above.
+
+.SH OBJECTS (all required)
+.IP "-i input_file, --input=input_file"
+Input HDF5 file name
+.IP "-o output_file, --output=output_file"
+Output HDF5 file name (existing or non-existing)
+.IP "-s source_object, --source=source_object"
+Input HDF5 object name within the input file
+.IP "-d destination_object, --destination=destination_object"
+Output HDF5 object name within the output file
+ 
+.SH EXIT STATUS:
+0	Succeeded.
+>0    	An error occurred.
+
+.SH EXAMPLE
+In verbose mode, create a new file, test1.out.h5, containing the object array in the root group, copied from the existing file test1.h5 and object array.
+    h5copy -v -i "test1.h5" -o "test1.out.h5" -s "/array" -d "/array
+        
+In verbose mode and using the flag shallow to prevent recursion in the file hierarchy, create a new file, test1.out.h5, containing the object array in the root group, copied from the existing file test1.h5 and object array.
+
+    h5copy -v -f shallow -i "test1.h5" -s "/array" -o test1.out.h5" -d "/array"
+
+.SH HISTORY
+Release    	Command Line Tool
+1.8.0	 Tool introduced in this release.
+1.8.7	 Tool updated to accept same file as input file and as output file.
