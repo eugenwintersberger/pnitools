@@ -96,9 +96,16 @@ std::unique_ptr<Operator> select_operator(const po::variables_map &options)
 
 //=============================================================================
 static const char usage_string[] = 
-                      "Program usage:\n\n mcatool <command> <global options>"
+                      "Program usage:\n\n mcaops <command> <global options>"
                       " <command specific options> [input file]";
 
+static const char command_string[] = 
+            "Commands supported by mcaops:\n"
+            "  sum\tum over all channels in a spectrum\n"
+            "  max\tosition of maximum and its value\n"
+            "  rebin\tre-bin the spectrum\n"
+            "  scale\tscale the channel numbers to units\n"
+            ;
 
 //=============================================================================
 int main(int argc,char **argv)
@@ -127,9 +134,7 @@ int main(int argc,char **argv)
         ("help,h","show help text")
         ("verbose,v",po::value<bool>()->zero_tokens(),"show verbose output")
         ("quiet,q",po::value<bool>()->zero_tokens(),"show no output")
-        ("output,o",po::value<String>(),"output file")
-        ("towcolumn,t",po::value<bool>()->zero_tokens(),
-         "produce two column output")
+        ("header",po::value<bool>()->zero_tokens(),"Write header before output")
         ("xcolumn",po::value<String>(),
          "name of the column with bin center values")
         ("ycolumn",po::value<String>(),
@@ -138,7 +143,7 @@ int main(int argc,char **argv)
    
     //-------------------------------------------------------------------------
     //options for the rebin command
-    po::options_description rebin_options("Rebinning options");
+    po::options_description rebin_options("Options for command 'rebin'");
     rebin_options.add_options()
         ("binsize,b",po::value<size_t>()->default_value(1),
          "Number of bins to collate")
@@ -148,14 +153,11 @@ int main(int argc,char **argv)
 
     //-------------------------------------------------------------------------
     //options for the scale command
-    po::options_description scale_options("Scaling options");
+    po::options_description scale_options("options for command 'scale'");
     scale_options.add_options()
-        ("center,c",po::value<size_t>()->default_value(0),
-         "Index of center bin")
-        ("delta,d",po::value<Float64>()->default_value(1),
-         "Size of a bin")
-        ("cvalue,x",po::value<Float64>()->default_value(0.),
-         "position of the center bin")
+        ("center,c",po::value<size_t>(), "Index of center bin")
+        ("delta,d",po::value<Float64>(), "Size of a bin")
+        ("cvalue,x",po::value<Float64>(), "position of the center bin")
         ;
    
     //set positional arguments
@@ -165,7 +167,7 @@ int main(int argc,char **argv)
 
     //assemble all the options that should be visible in the 
     //command line help
-    po::options_description visible("Allowed command line options");
+    po::options_description visible("Supported command line options");
     visible.add(global).add(rebin_options).add(scale_options);
 
     //assemble all options
@@ -181,6 +183,7 @@ int main(int argc,char **argv)
     if(options.count("help"))
     {
         std::cerr<<usage_string<<std::endl<<std::endl;
+        std::cerr<<command_string<<std::endl;
         std::cerr<<visible<<std::endl<<std::endl;
         std::cerr<<"See 'man mcaops' for more information!"<<std::endl;
         return 1;
@@ -291,6 +294,9 @@ int main(int argc,char **argv)
 
     //run the operation
     (*optr)(channels,data);
+
+    if(options.count("header"))
+        std::cout<<"#chan data"<<std::endl;
 
     //output result data
     std::cout<<*optr<<std::endl;
