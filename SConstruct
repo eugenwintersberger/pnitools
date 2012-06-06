@@ -2,6 +2,10 @@ import os
 import os.path as path
 import platform
 
+#------------------------set additional build options--------------------------
+AddOption("--static",dest="static",action="store",type="int",
+          nargs=1,default=0,help="create statically linked code")
+
 #----------------add additional build variables--------------------------------
 var = Variables()
 var.Add("CXX","set the compiler to use","g++")
@@ -31,6 +35,9 @@ if not conf.CheckLib("boost_program_options"):
     Exit(1)
 
 env = conf.Finish()
+
+if GetOption("static"):
+    env.Append(LINKFLAGS="--static")
 
 
 
