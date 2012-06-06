@@ -3,8 +3,8 @@ import os.path as path
 import platform
 
 #------------------------set additional build options--------------------------
-AddOption("--static",dest="static",action="store",type="int",
-          nargs=1,default=0,help="create statically linked code")
+AddOption("--static",dest="static",action="store_true",
+          default=False,help="create statically linked code")
 
 #----------------add additional build variables--------------------------------
 var = Variables()
@@ -37,7 +37,7 @@ if not conf.CheckLib("boost_program_options"):
 env = conf.Finish()
 
 if GetOption("static"):
-    env.Append(LINKFLAGS="--static")
+    env.Append(LIBS = ["pthread"])
 
 
 
