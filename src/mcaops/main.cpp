@@ -229,7 +229,17 @@ int main(int argc,char **argv)
             
             //if the file contains only one column we can assume that this
             //column holds the MCA data
-            for(auto c: reader) ycolumn = c.name();
+#ifdef NOFOREACH
+            for(auto iter=reader.begin();iter!=reader.end();iter++)
+            {
+                auto c = *iter;
+#else
+            for(auto c: reader) 
+            {
+#endif
+                ycolumn = c.name();
+            }
+
         }
 
         //finally read column data from the file
@@ -243,7 +253,16 @@ int main(int argc,char **argv)
             std::cerr<<" - column does not exist!"<<std::endl;
             std::cerr<<"The following columns are available in this file:";
             std::cerr<<std::endl;
-            for(auto c: reader) std::cerr<<c<<std::endl;
+#ifdef NOFOREACH
+            for(auto iter=reader.begin();iter!=reader.end();iter++)
+            {
+                auto c = *iter;
+#else
+            for(auto c: reader)
+            {
+#endif
+                std::cerr<<c<<std::endl;
+            }
             return 1;
         }
         catch(...)

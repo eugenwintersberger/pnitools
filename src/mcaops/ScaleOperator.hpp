@@ -76,8 +76,14 @@ class ScaleOperator:public Operator
             if(_search_max)
                 _center = pni::utils::max_offset(data);
 
+#ifdef NOFOREACH
+            for(auto iter=_channels.begin();iter!=_channels.end();iter++)
+            {
+                Float64 &v = *iter;
+#else
             for(Float64 &v: _channels)
             {
+#endif
                 v = _cvalue + _delta*(v - _center); 
             }
             
