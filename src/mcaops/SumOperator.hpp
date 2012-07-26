@@ -23,13 +23,13 @@
 #define __SUMOPERATOR_HPP__
 
 #include <pni/utils/Types.hpp>
-#include <pni/utils/Array.hpp>
-#include <pni/utils/ArrayFactory.hpp>
+#include <pni/utils/DArray.hpp>
 #include <pni/utils/ArrayOperations.hpp>
 
 #include "Operator.hpp"
 
 using namespace pni::utils;
+
 
 class SumOperator:public Operator
 {
@@ -43,8 +43,8 @@ class SumOperator:public Operator
 
         ~SumOperator(){}
 
-        virtual void operator()(const Float64Array &channels,
-                                const Float64Array &data)
+        virtual void operator()(const array_type &channels,
+                                const array_type &data)
         {
             _sum = pni::utils::sum(data);
         }

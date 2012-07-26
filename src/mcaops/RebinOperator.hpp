@@ -23,8 +23,7 @@
 #define __REBINOPERATOR_HPP__
 
 #include <pni/utils/Types.hpp>
-#include <pni/utils/Array.hpp>
-#include <pni/utils/ArrayFactory.hpp>
+#include <pni/utils/DArray.hpp>
 #include <pni/utils/ArrayOperations.hpp>
 
 #include "Operator.hpp"
@@ -36,8 +35,8 @@ class RebinOperator:public Operator
     private:
         size_t _bsize;
         bool   _noxrebin;
-        Float64Array _channels;
-        Float64Array _data;
+        array_type _channels;
+        array_type _data;
     public:
         //---------------------------------------------------------------------
         RebinOperator(const po::variables_map &config):
@@ -52,18 +51,19 @@ class RebinOperator:public Operator
         ~RebinOperator(){}
 
         //---------------------------------------------------------------------
-        virtual void operator()(const Float64Array &channels,
-                                const Float64Array &data)
+        virtual void operator()(const array_type &channels,
+                                const array_type &data)
         {
             //compute new size of the histogram
             size_t size = (channels.size()-channels.size()%_bsize)/_bsize;
             if(channels.size()%_bsize != 0) size++;
             
-            _channels = ArrayFactory<Float64>::create(Shape({size}));
-            _data = ArrayFactory<Float64>::create(Shape({size}));
+            _channels = array_type(shape_type{size});
+            _data = array_type(shape_type{size});
+            
+            std::fill(_data.begin(),_data.end(),0);
+            std::fill(_channels.begin(),_channels.end(),0);
 
-            _data = 0;
-            _channels = 0;
             size_t new_index = 0;
             for(size_t i=0;i<channels.size();i++)
             {

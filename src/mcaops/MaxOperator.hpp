@@ -23,13 +23,14 @@
 #define __MAXOPERATOR_HPP__
 
 #include <pni/utils/Types.hpp>
-#include <pni/utils/Array.hpp>
-#include <pni/utils/ArrayFactory.hpp>
+#include <pni/utils/DArray.hpp>
+#include <pni/utils/NumArray.hpp>
 #include <pni/utils/ArrayOperations.hpp>
 
 #include "Operator.hpp"
 
 using namespace pni::utils;
+
 
 class MaxOperator:public Operator
 {
@@ -48,8 +49,8 @@ class MaxOperator:public Operator
         ~MaxOperator(){}
 
         //---------------------------------------------------------------------
-        virtual void operator()(const Float64Array &channels,
-                                const Float64Array &data)
+        virtual void operator()(const array_type &channels, 
+                                const array_type &data)
         {
             _max_pos = pni::utils::max_offset(data);
             _max_value = data[_max_pos];

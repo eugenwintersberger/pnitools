@@ -23,8 +23,6 @@
 #define __SCALEOPERATOR_HPP__
 
 #include <pni/utils/Types.hpp>
-#include <pni/utils/Array.hpp>
-#include <pni/utils/ArrayFactory.hpp>
 #include <pni/utils/ArrayOperations.hpp>
 
 #include "Operator.hpp"
@@ -38,8 +36,8 @@ class ScaleOperator:public Operator
         size_t _center;  //center bin
         Float64 _delta;  //delta value
         Float64 _cvalue; //center value
-        Float64Array _channels;
-        Float64Array _data;
+        array_type _channels;
+        array_type _data;
     public:
         //---------------------------------------------------------------------
         ScaleOperator(const po::variables_map &config):
@@ -67,11 +65,11 @@ class ScaleOperator:public Operator
         ~ScaleOperator(){}
 
         //---------------------------------------------------------------------
-        virtual void operator()(const Float64Array &channels,
-                                const Float64Array &data)
+        virtual void operator()(const array_type &channels,
+                                const array_type &data)
         {
-            _channels = Float64Array(channels);
-            _data = Float64Array(data);
+            _channels = array_type(channels);
+            _data = array_type(data);
 
             if(_search_max)
                 _center = pni::utils::max_offset(data);

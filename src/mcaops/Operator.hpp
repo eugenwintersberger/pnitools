@@ -25,8 +25,8 @@
 #include <iostream>
 #include<boost/program_options/variables_map.hpp>
 #include <pni/utils/Types.hpp>
-#include <pni/utils/Array.hpp>
-#include <pni/utils/ArrayFactory.hpp>
+#include <pni/utils/DArray.hpp>
+#include <pni/utils/NumArray.hpp>
 
 using namespace pni::utils;
 namespace po = boost::program_options;
@@ -34,6 +34,10 @@ namespace po = boost::program_options;
 class Operator
 {
     public:
+        //=================public types========================================
+        typedef DArray<Float64> array_type;
+        typedef NumArray<array_type> narray_type;
+        typedef std::vector<size_t> shape_type;
         //---------------------------------------------------------------------
         Operator(const po::variables_map &config){}
 
@@ -41,8 +45,8 @@ class Operator
         virtual ~Operator() {}
 
         //---------------------------------------------------------------------
-        virtual void operator()(const Float64Array &channels,
-                        const Float64Array &data) = 0;
+        virtual void operator()(const array_type &channels,
+                                const array_type &data) = 0;
 
         //---------------------------------------------------------------------
         virtual std::ostream &stream_result(std::ostream &o) const = 0;

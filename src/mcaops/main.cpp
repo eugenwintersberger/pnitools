@@ -28,8 +28,8 @@
 
 
 #include<pni/utils/Types.hpp>
-#include<pni/utils/ArrayFactory.hpp>
-#include<pni/utils/Array.hpp>
+#include<pni/utils/DArray.hpp>
+#include<pni/utils/NumArray.hpp>
 #include<pni/utils/io/FIOReader.hpp>
 
 #include "Operator.hpp"
@@ -43,8 +43,16 @@ using namespace pni::io;
 namespace po = boost::program_options;
 
 
+
 //-----------------------------------------------------------------------------
-void read_from_stdin(Float64Array &channels,Float64Array &data)
+/*!
+\brief reads two column input
+
+Reads two column input from standard in and stores the result in a vector.
+\param channels array with channel data
+\param data array with channel data
+*/
+void read_from_stdin(Operator::array_type &channels,Operator::array_type &data)
 {
     std::vector<Float64> chvec;
     std::vector<Float64> dvec;
@@ -56,16 +64,18 @@ void read_from_stdin(Float64Array &channels,Float64Array &data)
         dvec.push_back(d);
     }
 
-    channels = ArrayFactory<Float64>::create(Shape({chvec.size()}),chvec);
-    data = ArrayFactory<Float64>::create(Shape({dvec.size()}),dvec);
+    channels = Operator::array_type(Operator::shape_type{chvec.size()});
+    data = Operator::array_type(Operator::shape_type{chvec.size()});
+    std::copy(chvec.begin(),chvec.end(),channels.begin());
+    std::copy(dvec.begin(),dvec.end(),data.begin());
 }
 
 
 
 //-----------------------------------------------------------------------------
-Float64Array create_channel_data(size_t n)
+Operator::array_type create_channel_data(size_t n)
 {
-    auto channels = ArrayFactory<Float64>::create(Shape({n}));
+    Operator::array_type channels(Operator::shape_type{n});
 
     for(size_t i=0;i<n;i++) channels[i] = Float64(i);
     return channels;
@@ -191,7 +201,7 @@ int main(int argc,char **argv)
 
     //-------------------------------------------------------------------------
     //here we will read data either from the standard in or from a file 
-    Float64Array data,channels;
+    Operator::array_type data,channels;
 
     if(options.count("input"))
     {
@@ -245,7 +255,9 @@ int main(int argc,char **argv)
         //finally read column data from the file
         try
         {
-            data = reader.column<Float64Array>(ycolumn);
+            
+            data = Operator::array_type(Operator::shape_type{reader.nrecords()},
+                            reader.column<Operator::array_type::storage_type>(ycolumn));
         }
         catch(KeyError &error)
         {
@@ -276,7 +288,8 @@ int main(int argc,char **argv)
         //bin number as a center value for each bin
         if(options.count("xcolumn"))
             try{
-                channels = reader.column<Float64Array>(options["xcolumn"].as<String>());
+                channels = Operator::array_type(Operator::shape_type{reader.ncolumns()},
+                           reader.column<Operator::array_type::storage_type>(options["xcolumn"].as<String>()));
             }
             catch(KeyError &error)
             {
