@@ -46,6 +46,7 @@ namespace po = boost::program_options;
 
 //-----------------------------------------------------------------------------
 /*!
+\ingroup mcaops_devel
 \brief reads two column input
 
 Reads two column input from standard in and stores the result in a vector.
@@ -73,6 +74,12 @@ void read_from_stdin(Operator::array_type &channels,Operator::array_type &data)
 
 
 //-----------------------------------------------------------------------------
+/*! 
+\ingroup mcaops_devel
+\brief create channel data
+
+\param n number of channels
+*/
 Operator::array_type create_channel_data(size_t n)
 {
     Operator::array_type channels(Operator::shape_type{n});
@@ -82,6 +89,13 @@ Operator::array_type create_channel_data(size_t n)
 }
 
 //-----------------------------------------------------------------------------
+/*! 
+\ingroup mcaops_devel
+\brief select the proper operator
+
+\param options program options
+\return unique pointer to the operator
+*/
 std::unique_ptr<Operator> select_operator(const po::variables_map &options) 
 {
     String command = options["command"].as<String>();

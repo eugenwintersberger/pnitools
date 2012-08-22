@@ -451,7 +451,7 @@ WARN_LOGFILE           =
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 
-INPUT                  = mainpage mcaops
+INPUT                  = mainpage mcaops det2nx detinfo detops
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          =
 RECURSIVE              = YES
