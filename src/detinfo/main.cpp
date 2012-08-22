@@ -18,14 +18,17 @@
 using namespace pni::utils;
 namespace fs = boost::filesystem;
 
-int main(int argc,char **argv){
+int main(int argc,char **argv)
+{
 	DetInfoConfig conf;
 	DetInfoConfig::InputFileList *iflist = NULL;
 	DetInfoConfig::InputFileIterator ifiter;
 	ArrayObject::sptr a;
 	Reader *reader = NULL;
 
-	if(argc<2){
+    //print help message and abort 
+	if(argc<2)
+    {
 		std::cerr<<"Usage: detinfo [program options] FILE ..."<<std::endl;
 		return 1;
 	}
@@ -38,9 +41,12 @@ int main(int argc,char **argv){
 	if(conf.help()) return 0;
 
 	//get list of input files
-	try{
+	try
+    {
 		iflist = conf.getInputFileList();
-	}catch(...){
+	}
+    catch(...)
+    {
 		return 1;
 	}
 
@@ -48,7 +54,8 @@ int main(int argc,char **argv){
 	UInt64 n_proc_files = 0; //number of processed files
 	UInt64 n_nopr_files = 0; //number of objects in the file system not processed
 
-	for(ifiter = iflist->begin(); ifiter != iflist->end(); ++ifiter){
+	for(ifiter = iflist->begin(); ifiter != iflist->end(); ++ifiter)
+    {
 		//do some checks on the filename passed to the program
 		fs::path &file = *ifiter;
 
@@ -88,7 +95,8 @@ int main(int argc,char **argv){
 		//increment counter for processed files
 		n_proc_files++;
 		a.reset();
-		if(reader != NULL){
+		if(reader != NULL)
+        {
 			delete reader;
 			reader = NULL;
 		}

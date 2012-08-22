@@ -6,4 +6,8 @@ if GetOption("static"):
     mcaops = program_env.Program("mcaops",mcaops_src,LINKFLAGS="--static")
 else:
     mcaops = program_env.Program("mcaops",mcaops_src)
+
+program_env.Alias("all",mcaops)
+mcaops_inst = program_env.Install("$PREFIX/bin",mcaops)
+program_env.Alias("install",mcaops_inst)
     
