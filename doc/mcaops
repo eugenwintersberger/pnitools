@@ -1,0 +1,28 @@
+/*!
+\htmlonly
+\defgroup mcaops_doc mcaops documentation
+
+
+
+\endhtmlonly
+*/
+
+/*!
+\htmlonly
+\ingroup mcaops_doc
+\defgroup mcaops_devel mcaops developer documentation
+
+
+\endhtmlonly
+*/
+
+
+/*! 
+\ingroup mcaops_doc
+\defgroup mcaops
+
+\section SYNOPSIS
+
+This is the manpage of mcaops
+
+*/

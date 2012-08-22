@@ -1,0 +1,12 @@
+/*!
+\mainpage
+
+The PNI tools are a collection of tools dedicated to handle data generated
+during PNI experiments.
+
+The following programs are available
+\li \ref mcaops_doc mcaops - a program to manipulate MCA data
+
+
+
+*/
