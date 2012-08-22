@@ -1,0 +1,9 @@
+/*!
+\mainpage
+
+Welcome to the developer documentation for PNI tools. This documentation is
+intended for developers only. It is thus entirely separate from the
+documentation of the different programs. However, as a developers, you should
+first read the documentation and become familiar with the different programs and
+the philosophies they have in common.
+*/
