@@ -2,3 +2,5 @@
 .sconf_temp
 *.dblite
 *.log
+*.o
+*.os

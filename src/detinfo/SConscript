@@ -1,0 +1,8 @@
+Import("build_env")
+
+sources = ["main.cpp","DetInfoConfig.cpp"]
+sources.extend(SConscript("../common/SConscript"))
+
+detinfo = build_env.Program(target="detinfo",source=sources)
+
+build_env.Alias("all",[detinfo])

@@ -1,0 +1,14 @@
+Import("build_env")
+
+build_env.Append(CPPPATH=["/usr/include/qt4","/usr/include/qt4/Qt","/usr/include/vtk-5.4"])
+build_env.Append(LIBS=["QtCore","QtGui"])
+build_env.Append(LIBS=["vtkWidgets","vtkVolumeRendering","vtkViews","vtksys","vtkRendering"])
+build_env.Append(LIBS=["vtkQtChart","vtkproj4","vtkImaging","vtkGraphics","vtkalglib"])
+build_env.Append(LIBS=["vtkCommon","vtkIO","vtkHybrid"])
+build_env.Append(LIBS=["QVTK"])
+
+sources = ["main.cpp"]
+objects = build_env.Object(sources)
+detview = build_env.Program("detview",objects)
+
+build_env.Alias("all",[detview])

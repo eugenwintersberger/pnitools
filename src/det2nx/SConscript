@@ -1,0 +1,16 @@
+from os import path
+
+Import("build_env")
+prg_env = build_env.Clone()
+
+src_list = ["main.cpp","Det2NxConfig.cpp"]
+src_list.extend(SConscript(["../common/SConscript"]))
+det2nx = prg_env.Program("det2nx",src_list)
+
+
+
+
+det2nx_inst = build_env.Install("$PREFIX/bin",[det2nx])
+
+prg_env.Alias("all",[det2nx])
+prg_env.Alias("install",[det2nx_inst])
