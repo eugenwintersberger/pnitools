@@ -103,8 +103,28 @@ Nexus files can be considered as a file-system in a file. Nexus as used here is
 assumed to use HDF5 as a storage backend. 
 If we would like to access an object in a file we can use the following syntax
 \code
-prog file:///
+prog file:/path/to/object
 \endcode
+attributes attached to an object can be described with
+\code
+prog file:/path/to/object@attribute
+\endcode
+This syntax works when you know the exact path to a particular object. Aside
+from object names Nexus introduces the concept of base classes. Each object in
+a Nexus file belongs to one of these base classes. One can thus refine the path
+to an object to
+\code
+prog file:/path:class_1/to:class_2/object:class_3
+\endcode
+In this case no only the names of the different objects must match but also
+they must belong to a particular base class. 
+Finally, if we do not know the exact path but only the classes we can write the
+path only in terms of base classes
+\code
+prog file:/:class_1/:class_2/:class_3
+\endcode
+In this case the different types must be unique. In case of ambiguities the
+program will abort with an error message.
 
 \section programs Available Programs
 The following programs are available
