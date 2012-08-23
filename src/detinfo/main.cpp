@@ -92,7 +92,6 @@ int main(int argc,char **argv)
         {
             pni::io::TIFFReader reader(file.path());
             info = reader.info(0);
-
         }
         else
         {
