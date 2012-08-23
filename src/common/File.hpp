@@ -42,13 +42,16 @@ namespace fs = boost::filesystem;
             String name() const;
 
             //! return the path to the file
-            String path() const;
+            String base() const;
 
             //! return the extension of the file
             String extension() const;
 
             //! true if this is a regular file
             bool is_file() const;
+
+            //! return the full path of the file
+            String path() const;
     };
 
 

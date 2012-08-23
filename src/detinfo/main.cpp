@@ -10,15 +10,20 @@
 
 #include "../common/Exceptions.hpp"
 #include "../common/ProgramConfig.hpp"
+#include "../common/File.hpp"
+#include "../common/FileList.hpp"
 
 typedef std::vector<String> strlist;
 
 int main(int argc,char **argv)
 {
     ProgramConfig config;
+    Bool verbose = false;
 
     //---------------------setup program configuration-------------------------
-    config.add_option(ConfigOption<Bool>("verbose","v","be verbose"));
+    config.add_option(ConfigOption<Bool>("verbose","v","be verbose",&verbose));
+    config.add_option(ConfigOption<Bool>("full-path","",
+                "show the full path on output"));
     config.add_argument(ConfigArgument<strlist>("input-files",-1));
 
     //------------------managing command line parsing--------------------------
@@ -41,8 +46,28 @@ int main(int argc,char **argv)
     }
 
     //-------------------obtain input files------------------------------------
-    auto file_list = config.value<strlist>("input-files");
-    for(auto f: file_list) std::cout<<f<<std::endl;
+    FileList infiles;
+    
+    if(verbose)
+        std::cout<<"Checking input files ..."<<std::endl;
+    try
+    {
+        auto path_list = config.value<strlist>("input-files");
+        infiles = FileList(path_list);
+    }
+    catch(FileError &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
+
+    //-------------------processing input files--------------------------------
+    for(auto file: infiles)
+    {
+        std::cout<<file.path()<<std::endl;    
+
+    }
+
 
 
     return 0;

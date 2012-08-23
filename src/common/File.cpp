@@ -20,13 +20,19 @@
     }
 
 //-----------------------------------------------------------------------------
-    String File::path() const
+    String File::base() const
     {
-        return _path.relative_path().string(); 
+        return _path.parent_path().string(); 
     }
 
 //-----------------------------------------------------------------------------
     String File::extension() const
     {
         return _path.extension().string();
+    }
+
+//-----------------------------------------------------------------------------
+    String File::path() const
+    {
+        return _path.string();
     }
