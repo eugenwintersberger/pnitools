@@ -16,7 +16,7 @@ int main(int argc,char **argv)
     ProgramConfig config;
 
     //---------------------setup program configuration-------------------------
-    config.add_option("");
+    config.add_option(ConfigOption<String>("test","t","a stupid option"),true);
 
     //------------------managing command line parsing--------------------------
     try

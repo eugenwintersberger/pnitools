@@ -14,6 +14,7 @@
 #include <boost/tokenizer.hpp>
 #include <pni/utils/Types.hpp>
 #include "Exceptions.hpp"
+#include "ConfigOption.hpp"
 
 //set an abriviation for the namespace
 namespace popts = boost::program_options;
@@ -107,9 +108,40 @@ class ProgramConfig
 
         //---------------------------------------------------------------------
         /*!
+        \brief add a program option
+
 
         */
-        void add_option(const option_description &opt,bool visible=true);
+        template<typename T>
+        void add_option(const ConfigOption<T> &opt,bool visible=true)
+        {
+            typedef boost::shared_ptr<popts::option_description> option_sptr;
+            //assemble the name of the option
+            String oname = opt.long_name();
+
+            if(!opt.short_name().empty())
+                oname += ","+opt.short_name();
+
+            //assemble the sematnic value
+            auto value =
+                popts::value<T>(const_cast<T*>(opt.external_reference()));
+            if(opt.has_default())
+                value->default_value(opt.default_value());
+
+            option_sptr option_ptr (new popts::option_description(oname.c_str(),
+                                    value,opt.description().c_str()));
+
+            //finally we cann add the option
+            if(visible)
+                _visible_opts.add(option_ptr);
+            else
+                _hidden_opts.add(option_ptr);
+            
+        }
+
+        //---------------------------------------------------------------------
+        void add_option(const ConfigOption<Bool> &opt,bool visible=true){}
+
         
         /*
         void add_options(const options_description &opt,bool visible=true);

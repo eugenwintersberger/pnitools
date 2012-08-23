@@ -60,7 +60,6 @@ bool ProgramConfig::has_option(const String &name) const
     return false;
 }
 
-//-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 std::ostream &operator<<(std::ostream &o,const ProgramConfig &c)
