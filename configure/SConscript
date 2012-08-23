@@ -158,9 +158,14 @@ if not conf.CheckCXXHeader("boost/program_options/options_description.hpp")\
     print "BOOST program options headers not installed!"
     Exit(1)
 
+
 #================checking for libraries========================================
 if not conf.CheckLib("boost_program_options"):
     print "BOOST program options library not installed!"
+    Exit(1)
+
+if not conf.CheckLib("boost_system"):
+    print "BOOSt system library not installed!"
     Exit(1)
 
 #check for boost regular expressions library

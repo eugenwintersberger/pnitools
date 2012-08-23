@@ -12,36 +12,110 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/tokenizer.hpp>
-#include <pni/utils/PNITypes.hpp>
+#include <pni/utils/Types.hpp>
+#include "Exceptions.hpp"
 
 //set an abriviation for the namespace
 namespace popts = boost::program_options;
 namespace fs = boost::filesystem;
 using namespace pni::utils;
 
-class ProgramConfig {
-protected:
-	popts::variables_map *_vmap;
-	popts::options_description *_odesc;
-	popts::positional_options_description *_oargs;
+/*!
+\brief a general facility for program configuration
 
-	typedef std::vector<String> StringList; //internal data type for arguments
+Class provides the base for all program configuration. It provides all the
+options common to all programs. It bundles all the components requird by a
+command line parser.
+*/
+class ProgramConfig 
+{
+    private:
+        //! stores the program options
+        popts::variables_map _vmap;
 
-	//Programm configuration cannot be copied
-	ProgramConfig(const ProgramConfig &c){}
-public:
-	typedef std::vector<fs::path> InputFileList;
-	typedef InputFileList::iterator InputFileIterator;
-	ProgramConfig();
-	virtual ~ProgramConfig();
+        //! options visible in the help
+        popts::options_description _visible_opts;
+
+        //! options hidden in the help output
+        popts::options_description _hidden_opts;
+
+        //! positional arguments description
+        popts::positional_options_description _oargs;
+    protected:
+        /*!
+        \brief print options
+
+        Append options string representation to an output stream. Only the
+        visible options are appended to the output stream.
+        \param o reference to the output stream
+        \return reference to output stream
+        */
+        std::ostream &print(std::ostream &o) const;
+    public:
+        //===================constructors and destructor=======================
+        //! default constructor
+        ProgramConfig();
+
+        //! copy constructor - deleted
+        ProgramConfig(const ProgramConfig &c) = delete;
+
+        //---------------------------------------------------------------------
+        //! destructor
+        ~ProgramConfig() {}
 
 
-	virtual String getInputFormat() const;
-	virtual void parse(int argc,char **argv);
-	virtual int help() const;
-	virtual InputFileList *getInputFileList() const;
-	virtual bool isVerbose() const;
+        //=====================public member functions========================= 
+        /*!
+        \brief run the parser
 
+        Run the command line parser.
+        */
+        void parse(int argc,char **argv);
+
+        //---------------------------------------------------------------------
+        /*!
+        \brief check if option is there
+
+        Return true if a particular option has been passed by the user.
+        If the option is present true is returned otherwise false.
+        \param name long name of the option
+        \return true if option exists
+        */
+        bool has_option(const String &name) const;
+
+        //---------------------------------------------------------------------
+        /*! 
+        \brief return the value of an option
+
+        Template method returning the value of an option as instance of type T.
+        If the option was created with a default value this value will be
+        returned. If the option was created without default value an exception
+        will be thrown.
+        \tparam T return type of the method
+        \throws MissingCommandLineOption if option is not present and has no
+        default value
+        \param name long name of the option
+        \return value of the option as instance of type T
+        */
+        template<typename T> T value(const String &name) const
+        {
+            if(has_option(name)) return _vmap[name].as<T>();
+            throw CLIOptionError(EXCEPTION_RECORD,
+                    "Program option ["+name+"] not passed or "
+                    "inappropriate value!");
+        }
+
+        //---------------------------------------------------------------------
+        /*!
+
+        */
+        void add_option(const option_description &opt,bool visible=true);
+        
+        /*
+        void add_options(const options_description &opt,bool visible=true);
+        */
+
+        friend std::ostream &operator<<(std::ostream &o,const ProgramConfig &c);
 
 };
 

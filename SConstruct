@@ -41,4 +41,5 @@ Export("program_env")
 
 #start the SConscript files for the individual tools
 SConscript("src/common/SConscript")
+SConscript("src/detinfo/SConscript")
 SConscript("src/mcaops/SConscript")

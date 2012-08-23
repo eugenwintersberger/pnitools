@@ -1,8 +1,9 @@
-Import("build_env")
+Import("program_env")
 
-sources = ["main.cpp","DetInfoConfig.cpp"]
-sources.extend(SConscript("../common/SConscript"))
+detinfo_objects =[program_env.Object("main.cpp")]
+detinfo_objects.extend(SConscript("../common/SConscript"))
+detinfo = program_env.Program(target="detinfo",source=detinfo_objects)
+detinfo_install = program_env.Install("$PREFIX/bin",detinfo)
 
-detinfo = build_env.Program(target="detinfo",source=sources)
-
-build_env.Alias("all",[detinfo])
+program_env.Alias("all",[detinfo])
+program_env.Alias("install",[detinfo_install])

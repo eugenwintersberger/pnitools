@@ -1,4 +1,6 @@
 Import("program_env")
 
-sources = ["Exceptions.cpp"]
-objects = program_env.Object(sources)
+common_sources = ["Exceptions.cpp","ProgramConfig.cpp"]
+common_objects = program_env.Object(common_sources)
+
+Return("common_objects")
