@@ -4,4 +4,4 @@
 *.log
 *.o
 *.os
-detinfo
+src/detinfo/detinfo
