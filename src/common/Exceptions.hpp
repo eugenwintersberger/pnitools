@@ -142,6 +142,7 @@ using namespace pni::utils;
             friend std::ostream &operator<<(std::ostream &o,const FileTypeError &e);
     };
 
+
     //------------------------------------------------------------------------
     /*!
     \brief help request

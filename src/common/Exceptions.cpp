@@ -26,6 +26,7 @@
         return e.print(o);
     }
 
+
 //-----------------------------------------------------------------------------
     std::ostream &operator<<(std::ostream &o,const CLIHelpRequest &e)
     {

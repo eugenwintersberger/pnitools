@@ -150,6 +150,10 @@ if not conf.CheckCXXHeader("boost/numeric/conversion/cast.hpp"):
 if not conf.CheckCXXHeader("boost/current_function.hpp"):
     print "BOOST current_function.hpp not found!"
     Exit(1)
+
+if not conf.CheckCXXHeader("boost/filesystem.hpp"):
+    print "BOOST filesystem not found!"
+    Exit(1)
     
 if not conf.CheckCXXHeader("boost/program_options/options_description.hpp")\
     or not conf.CheckCXXHeader("boost/program_options/variables_map.hpp")\
@@ -171,6 +175,10 @@ if not conf.CheckLib("boost_system"):
 #check for boost regular expressions library
 if not conf.CheckLib("boost_regex",language="C++"):
     print "BOOST regular expression library not found"
+    Exit(1)
+
+if not conf.CheckLib("boost_filesystem",language="C++"):
+    print "BOOST filesystem library not found!"
     Exit(1)
 
 env = conf.Finish()
