@@ -1,6 +1,41 @@
 /*!
-\defgroup detinfo detinfo
+\defgroup detinfo detinfo 
+\brief provides basic information about detector data
 
+\section SYNOPSIS
+\code 
+    detinfo [OPTIONS]... [FILES]...
+\endcode
+
+\section DESCRIPTION
+
+\b detinfo provides basic information about detector data stored in a file.
+Obviously this is only possible for detector file formats that provide this
+information. Currently the following file formats are supported
+\n
+\li CBF     the format used by DECTRIS for its PILATUS detectors
+\li TIFF    general image format used by several detector vendors
+\n
+
+Files can be passed as a list of single files or using a C format string as a
+name template and a numeric range. For details see the online documentation for
+pnitools. \n\n
+
+\section OPTIONS
+
+\b -h, \b --help  \n
+\t\t\t\t show help about  the program 
+
+\b -v, \b --verbose \t activate verbose output mode
+
+\b --full-path use the full path of a file instead of the filename only
+
+\section EXAMPLES
+
+The simplest application of the program would be this
+\code
+detinfo detecto.cbf
+\endcode
 
 \section AUTHOR
 Eugen Wintersberger <eugen.wintersberger@desy.de>
