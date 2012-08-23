@@ -15,10 +15,10 @@
 #include <pni/utils/Types.hpp>
 #include "Exceptions.hpp"
 #include "ConfigOption.hpp"
+#include "ConfigArgument.hpp"
 
 //set an abriviation for the namespace
 namespace popts = boost::program_options;
-namespace fs = boost::filesystem;
 using namespace pni::utils;
 
 /*!
@@ -140,12 +140,27 @@ class ProgramConfig
         }
 
         //---------------------------------------------------------------------
-        void add_option(const ConfigOption<Bool> &opt,bool visible=true){}
+        void add_option(const ConfigOption<Bool> &opt,bool visible=true);
 
-        
-        /*
-        void add_options(const options_description &opt,bool visible=true);
-        */
+        template<typename T> void add_argument(const ConfigArgument<T> &arg)
+        {
+            typedef boost::shared_ptr<popts::option_description> option_sptr;
+            //assemble the name of the option
+            String oname = arg.long_name();
+
+            //assemble the sematnic value
+            auto value =
+                popts::value<T>(const_cast<T*>(arg.external_reference()));
+
+            option_sptr option_ptr (new popts::option_description(oname.c_str(),
+                                    value,arg.description().c_str()));
+
+            //finally we cann add the option
+            _hidden_opts.add(option_ptr);
+
+            _oargs.add(arg.long_name().c_str(),arg.position());
+        }
+
 
         friend std::ostream &operator<<(std::ostream &o,const ProgramConfig &c);
 
