@@ -4,6 +4,7 @@
 #include <pni/utils/Types.hpp>
 #include <list>
 #include "File.hpp"
+#include <boost/tokenizer.hpp>
 
 using namespace pni::utils;
 
@@ -19,7 +20,23 @@ using namespace pni::utils;
     class FileList
     {
         private:
+            //! list with files
             std::list<File> _file_list; 
+
+            //some private type definitions
+            //! separator type for numeric ranges
+            typedef boost::char_separator<char> nrseparator;
+            //! tokenizer type for numeric ranges
+            typedef boost::tokenizer<nrseparator> nrtokenizer;
+
+            /*!
+            \brief file file list from numeric range
+
+            Fill the file list from a numeric range stored in po. 
+            
+            \param po path string
+            */
+            bool _fill_from_num_range(const String &po);
         
         public:
             //==================public types====================================
@@ -45,9 +62,8 @@ using namespace pni::utils;
             {
                 for(auto po: pl)
                 {
-                    //now we have to handle this thing - for now we assume that
-                    //this a simple file
-                    _file_list.push_back(po);
+                    if(!_fill_from_num_range(po))
+                        _file_list.push_back(po);
                 }
             }
 
