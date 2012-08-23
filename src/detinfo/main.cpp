@@ -8,6 +8,9 @@
 #include<iostream>
 #include<vector>
 
+#include <pni/utils/io/CBFReader.hpp>
+#include <pni/utils/io/TIFFReader.hpp>
+
 #include "../common/Exceptions.hpp"
 #include "../common/ProgramConfig.hpp"
 #include "../common/File.hpp"
@@ -64,7 +67,29 @@ int main(int argc,char **argv)
     //-------------------processing input files--------------------------------
     for(auto file: infiles)
     {
-        std::cout<<file.path()<<std::endl;    
+        pni::io::ImageInfo info;
+        if(file.extension()==".cbf")
+        {
+            pni::io::CBFReader reader(file.path());
+            info = reader.info(0);
+        }
+        else if(file.extension()==".tiff")
+        {
+
+        }
+        else
+        {
+            throw FileTypeError(EXCEPTION_RECORD,"File ["+file.path()+"] is of"
+                    "unknown type!");
+        }
+
+        if(config.value<bool>("full-path"))
+            std::cout<<file.path();
+        else
+            std::cout<<file.name();
+
+        std::cout<<" ("<<info.nx()<<" x "<<info.ny()<<") ntot = "<<info.npixels();
+        std::cout<<" type = "<<info.get_channel(0).type_id()<<std::endl;
 
     }
 
