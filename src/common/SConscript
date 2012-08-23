@@ -1,0 +1,4 @@
+Import("program_env")
+
+sources = ["Exceptions.cpp"]
+objects = program_env.Object(sources)

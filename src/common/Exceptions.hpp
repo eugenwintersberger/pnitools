@@ -5,49 +5,174 @@
  *      Author: eugen
  */
 
-#include<pni/utils/PNITypes.hpp>
+#include<pni/utils/Types.hpp>
 #include<pni/utils/Exceptions.hpp>
 
 using namespace pni::utils;
 
-#ifndef EXCEPTIONS_HPP_
-#define EXCEPTIONS_HPP_
+#ifndef __CLI_EXCEPTIONS_HPP__
+#define __CLI_EXCEPTIONS_HPP__
 
-class CLIArgumentError:public Exception{
-public:
-	CLIArgumentError():Exception("CLIArgumentError"){}
-	CLIArgumentError(const String &i,const String &d):Exception("CLIArgumentError",i,d){}
-	virtual ~CLIArgumentError(){}
+    /*!
+    \brief command line argument error
 
-	friend std::ostream &operator<<(std::ostream &o,const CLIArgumentError &e);
-};
+    Thrown in cases where a command line argument (do not confuse this with an
+    option has an inapropriate value or is missing).
+    */
+    class CLIArgumentError:public Exception
+    {
+        public:
+            //-----------------------------------------------------------------
+            //! default constructor
+            CLIArgumentError():Exception("CLIArgumentError"){}
 
-class CLIOptionError:public Exception{
-public:
-	CLIOptionError():Exception("CLIOptionError"){}
-	CLIOptionError(const String &i,const String &d):Exception("CLIOptionError",i,d){}
-	virtual ~CLIOptionError(){}
+            //-----------------------------------------------------------------
+            /*! 
+            \brief constructor
 
-	friend std::ostream &operator<<(std::ostream &o,const CLIOptionError &e);
-};
+            \param r exception record
+            \param d description
+            */
+            CLIArgumentError(const ExceptionRecord &r,const String &d):
+                Exception("CLIArgumentError",r,d)
+            {}
+            
+            //-----------------------------------------------------------------
+            //! destructor
+            ~CLIArgumentError() throw() {}
 
-class CLIError:public Exception{
-public:
-	CLIError():Exception("CLIError"){}
-	CLIError(const String &i,const String &d):Exception("CLIError",i,d){}
-	virtual ~CLIError(){}
+            //! output operator
+            friend std::ostream &operator<<(std::ostream &o,const CLIArgumentError &e);
+    };
 
-	friend std::ostream &operator<<(std::ostream &o,const CLIError &e);
-};
+    //-------------------------------------------------------------------------
+    /*! 
+    \brief command line option error
 
-class FileTypeError:public Exception{
-public:
-	FileTypeError():Exception("FileTypeError"){}
-	FileTypeError(const String &i,const String &d):Exception("FileTypeError",i,d){}
-	virtual ~FileTypeError(){}
+    Exception thrown in cases where a command line option is missing or has an
+    inapropriate value.
+    */
+    class CLIOptionError:public Exception
+    {
+        public:
+            //-----------------------------------------------------------------
+            //! default constructor
+            CLIOptionError():Exception("CLIOptionError"){}
 
-	friend std::ostream &operator<<(std::ostream &o,const FileTypeError &e);
-};
+            //-----------------------------------------------------------------
+            /*!
+            \brief constructor
 
+            \param r exception record
+            \param d description
+            */
+            CLIOptionError(const ExceptionRecord &r,const String &d):
+                Exception("CLIOptionError",r,d)
+            {}
+
+            //-----------------------------------------------------------------
+            ~CLIOptionError() throw() {}
+
+            //! output operator
+            friend std::ostream &operator<<(std::ostream &o,const CLIOptionError &e);
+    };
+
+    //-------------------------------------------------------------------------
+    /*!
+    \brief general CLI error
+
+    Thrown in case of a general CLI error not related to arguments or options.
+    */
+    class CLIError:public Exception
+    {
+        public:
+            //-----------------------------------------------------------------
+            //! default constructor
+            CLIError():Exception("CLIError"){}
+            
+            //-----------------------------------------------------------------
+            /*!
+            \brief constructor
+
+            \param r exception record
+            \param d description
+            */
+            CLIError(const ExceptionRecord &r,const String &d):
+                Exception("CLIError",r,d)
+            {}
+
+            //-----------------------------------------------------------------
+            //! destructor
+            ~CLIError() throw() {}
+
+            //! output operator
+            friend std::ostream &operator<<(std::ostream &o,const CLIError &e);
+    };
+
+    //------------------------------------------------------------------------
+    /*!
+    \brief file type error
+
+    This exception is thrown if the input or output file format cannot be
+    handled.
+    */
+    class FileTypeError:public Exception
+    {
+        public:
+            //-----------------------------------------------------------------
+            //! default constructor
+            FileTypeError():Exception("FileTypeError"){}
+            
+            //-----------------------------------------------------------------
+            /*!
+            \brief constructor
+
+            \param r exception record
+            \param d description
+            */
+            FileTypeError(const ExceptionRecord &r,const String &d):
+                Exception("FileTypeError",r,d)
+            {}
+
+            //-----------------------------------------------------------------
+            //! destructor
+            ~FileTypeError() throw() {}
+
+            //! output operator
+            friend std::ostream &operator<<(std::ostream &o,const FileTypeError &e);
+    };
+
+    //------------------------------------------------------------------------
+    /*!
+    \brief help request
+
+    This is exception is not intended to manage an error at all. It is thrown in
+    the case that a user makes a help request from the CLI.
+    */
+    class CLIHelpRequest:public Exception
+    {
+        public:
+            //-----------------------------------------------------------------
+            //! default constructor
+            CLIHelpRequest():Exception("CLIHelpRequest"){}
+            
+            //-----------------------------------------------------------------
+            /*!
+            \brief constructor
+
+            \param r exception record
+            \param d description
+            */
+            CLIHelpRequest(const ExceptionRecord &r,const String &d):
+                Exception("CLIHelpRequest",r,d)
+            {}
+
+            //-----------------------------------------------------------------
+            //! destructor
+            ~CLIHelpRequest() throw() {}
+
+            //! output operator
+            friend std::ostream &operator<<(std::ostream &o,const CLIHelpRequest &e);
+    };
 
 #endif /* EXCEPTIONS_HPP_ */
