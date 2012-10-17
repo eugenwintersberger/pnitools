@@ -38,6 +38,14 @@ int main(int argc,char **argv)
     ProgramConfig config;
     Bool verbose = false;
 
+    if(argc <= 1)
+    {
+        std::cerr<<"Program usage: "<<std::endl<<std::endl;
+        std::cerr<<"detinfo [OPTIONS] FILE [ FILE] .."<<std::endl<<std::endl;
+        std::cerr<<"for more details use: detinfo -h"<<std::endl;
+        return 1;
+    }
+
     //---------------------setup program configuration-------------------------
     config.add_option(ConfigOption<Bool>("verbose","v","be verbose",&verbose));
     config.add_option(ConfigOption<Bool>("full-path","",
