@@ -1,6 +1,7 @@
 #ifndef __XMLUTILS_HPP__
 #define __XMLUTILS_HPP__
 
+#include<sstream>
 #include<pni/utils/Types.hpp>
 #include<pni/nx/NX.hpp>
 
@@ -73,7 +74,11 @@ NXField create_field(const PTYPE &parent,const String &name,
     if(tc == "string")
         return parent.template create_field<String>(name,s);
 
-    return NXField();
+    std::stringstream ss;
+    ss<<"Error creating field - type code "<<tc<<" is not supported!";
+    throw pni::nx::NXFieldError(EXCEPTION_RECORD,ss.str());
+
+    return NXField(); //just to make the compiler happy
 }
 
 //-----------------------------------------------------------------------------
@@ -95,6 +100,7 @@ void create_objects(const PTYPE &parent,tree::ptree &t)
             //create the group and call the function recursively
             auto name = child.second.template get<String>("<xmlattr>.name");
             auto type = child.second.template get<String>("<xmlattr>.type");
+
             NXGroup g = parent.create_group(name,type);
             create_objects(g,child.second);
 

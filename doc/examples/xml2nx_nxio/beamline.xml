@@ -1,0 +1,28 @@
+<group name="scan_1" type="NXentry">
+    
+    <group name="instrument" type="NXinstrument">
+        <group name ="detector" type="NXdetector">
+            <field name="data" type="uint32" units="cps" 
+                long_name = "detector raw data">
+
+            <dimensions rank="3">
+                <dim index="1" value="0"/>
+                <dim index="2" value="1024"/>
+                <dim index="3" value="2048"/>
+            </dimensions>
+
+            </field>
+        </group>
+        <group name = "source" type="NXsource">
+            
+        </group>
+
+        <group name = "monchromator" type = "NXmonochromator">
+
+        </group>
+    </group>
+
+    <group name="sample" type="NXsample">
+
+    </group>
+</group>
