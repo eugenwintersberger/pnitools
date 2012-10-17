@@ -24,7 +24,8 @@ using namespace pni::utils;
 namespace fs = boost::filesystem;
 
 
-int main(int argc,char **argv){
+int main(int argc,char **argv)
+{
 	Det2NxConfig conf;
 	Det2NxConfig::InputFileList *iflist;
 

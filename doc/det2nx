@@ -1,5 +1,46 @@
 /*!
 \defgroup det2nx det2nx
+\brief moves detector data to a Nexus file
+
+\section SYNOPSIS
+\code
+    det2nx [OPTIONS]... [FILES]...
+\endcode
+
+\section DESCRIPTION
+
+\b det2nx stores single image data from detectors into a Nexus file. The data is
+usually stored in a 2D or 3D data block where the first dimension runs along the
+measurement points and the remaining two along the detector dimensions. 
+
+In Nexus detector data is usually stored below a group of class NXdetector
+which holds additional metadata along with the detector data. \b det2nx can
+either create this detector group by itself using an XML file from which it
+obtains the additional information or assumes that the detector group already
+exists. If \b det2nx should not create the detector group by itself it checks if
+the target group requested by the user if of class NXdetector and throws an
+exception if this is not the case.
+
+By default the detector data is stored in a field named data below the detector
+group. 
+
+\section OPTIONS
+
+\b -c, \b --create create a not existing detector group
+\b -g, \b --group=[xmlfile]  use this input data for detector group creation
+\b -t, \b --target=[filepath] path to the detector group
+\b -a, \b --append append data to an already existing detector data block
+\b -o, \b --overwrite overwrite an existing data block 
+
+Do not forget to run HDF5 repack on your Nexus file if you use the \b -o  option
+as HDF5 cannot really delete objects. It just makes them inaccessible. To free
+the disk-space occupied by such inaccessible object you need to run \b h5repack.
+
+
+\section EXAMPLES
+
+
+
 
 \section AUTHOR
 Eugen Wintersberger <eugen.wintersberger@desy.de>
