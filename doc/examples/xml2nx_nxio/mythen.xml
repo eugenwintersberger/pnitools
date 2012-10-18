@@ -10,15 +10,6 @@
 
     </field>
     
-    <field name="matrix" unit="" type="float32">
-        <dimensions rank="2">
-            <dim index="1" value="3"/>
-            <dim index="2" value="3"/>
-        </dimensions>
-
-
-
-    </field>
 
     <field name="x_pixel_size" unit="um" type="float32">
         12.45
@@ -28,5 +19,13 @@
     </field>
     <field name="layout" type="string" unit="">
         linear
+    </field>
+
+    <field name="description" type="string" unit="">
+        DECTRIS Mythen PSD
+    </field>
+
+    <field name="distance" type="float32" unit="m">
+        0.8
     </field>
 </group>
