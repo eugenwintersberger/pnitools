@@ -1,4 +1,5 @@
 #include "xml_utils.hpp"
+#include "../common/string_utils.hpp"
 
 //-----------------------------------------------------------------------------
 shape_t dimensions2shape(const tree::ptree &dims)
@@ -41,6 +42,5 @@ void write_field(const tree::ptree &tag,const NXField &field)
     else if(tid == TypeID::COMPLEX64) field.write(tag.get_value<Complex64>());
     else if(tid == TypeID::COMPLEX128) field.write(tag.get_value<Complex128>());
     else if(tid == TypeID::BOOL) field.write(tag.get_value<Bool>());
-    else if(tid == TypeID::STRING) field.write(tag.get_value<String>());
-
+    else if(tid == TypeID::STRING) field.write(trim(tag.get_value<String>()));
 }

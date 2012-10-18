@@ -75,7 +75,6 @@ int main(int argc,char **argv)
             std::cerr<<error<<std::endl;
             return 1;
         }
-
     }
     else
     {
