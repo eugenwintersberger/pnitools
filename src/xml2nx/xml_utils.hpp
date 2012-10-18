@@ -83,6 +83,16 @@ NXField create_field(const PTYPE &parent,const String &name,
 
 //-----------------------------------------------------------------------------
 /*!
+\brief write static data from XML
+
+Write data from XML file to the Nexus file.
+\param tag the actual tag whose data shall be written
+\param field the field where to write the data
+*/
+void write_field(const tree::ptree &tag,const NXField &field);
+
+//-----------------------------------------------------------------------------
+/*!
 \brief create objects from XML
 
 Recursively creates the objects as described in the XML file below parent.
@@ -121,13 +131,43 @@ void create_objects(const PTYPE &parent,tree::ptree &t)
             catch(...)
             {}
 
+            //create the field
             NXField f = create_field(parent,name,type,shape);
 
-            auto units = child.second.template get<String>("<xmlattr>.units");
-            auto lname = child.second.template get<String>("<xmlattr>.long_name");
-            f.attr<String>("units").write(units);
-            f.attr<String>("long_name").write(lname);
+            //------------------try to write units attribute--------------------
+            try
+            {
+                auto units = child.second.template get<String>("<xmlattr>.units");
+                f.attr<String>("units").write(units);
+            }
+            catch(...)
+            {}
 
+            //-------------------try to write long_name attribute--------------
+            try
+            {
+                auto lname = child.second.template get<String>("<xmlattr>.long_name");
+                f.attr<String>("long_name").write(lname);
+            }
+            catch(...)
+            {}
+
+            //--------------------now we can try to write default data---------
+            try
+            {
+                write_field(child.second,f);
+            }
+            catch(...)
+            {}
+
+          
+
+        }
+        else if(child.first == "link")
+        {
+            auto name = child.second.template get<String>("<xmlattr>.name");
+            auto target = child.second.template get<String>("<xmlattr>.target");
+            parent.link(name,target);
         }
     }
 }
