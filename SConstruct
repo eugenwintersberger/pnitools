@@ -35,8 +35,11 @@ program_env = build_env.Clone()
 if GetOption("static"):
     program_env.Append(LIBS = ["pthread"])
 
-
+gui_program_env = program_env.Clone()
+gui_program_env.ParseConfig('pkg-config --libs --cflags QtGui')
+gui_program_env.ParseConfig('pkg-config --libs --cflags QtCore')
 Export("program_env")
+Export("gui_program_env")
 
 
 #start the SConscript files for the individual tools
@@ -44,3 +47,5 @@ SConscript("src/common/SConscript")
 SConscript("src/detinfo/SConscript")
 SConscript("src/mcaops/SConscript")
 SConscript("src/xml2nx/SConscript")
+SConscript("src/nxio/SConscript")
+SConscript("src/nxbrowse/SConscript")
