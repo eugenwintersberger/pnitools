@@ -15,7 +15,7 @@ var.Add(PathVariable("BOOSTINCDIR","BOOST header installation directory","/usr/i
 
 
 #---------------create the build environment-----------------------------------
-env = Environment(variables=var,ENV={"PATH":os.environ["PATH"]})
+env = Environment(variables=var,ENV={"PATH":os.environ["PATH"]},tools=['default'])
 #for the moment we relie on pkg-config for libpniutils
 env["ENV"]["PKG_CONFIG_PATH"] = os.environ["PKG_CONFIG_PATH"]
 env.ParseConfig('pkg-config --libs --cflags pninx')
@@ -38,6 +38,7 @@ if GetOption("static"):
 gui_program_env = program_env.Clone()
 gui_program_env.ParseConfig('pkg-config --libs --cflags QtGui')
 gui_program_env.ParseConfig('pkg-config --libs --cflags QtCore')
+gui_program_env.Tool('qt4')
 Export("program_env")
 Export("gui_program_env")
 
