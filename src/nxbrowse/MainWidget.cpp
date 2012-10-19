@@ -15,8 +15,20 @@ MainWidget::MainWidget()
     fileMenu->addAction(closeAction);
     fileMenu->addAction(exitAction);
 
-    editor = new QTextEdit;
-    setCentralWidget(editor);
+    //create the main widget layoutq
+    splitter = new QSplitter();
+    treeview = new QTreeView(splitter);
+    mdiarea = new QMdiArea(splitter);
+
+
+    //fill the vertical layout
+    toolbar = new QToolBar();
+    addToolBar(toolbar);
+
+    statusbar = new QStatusBar();
+    setStatusBar(statusbar);
+
+    setCentralWidget(splitter);
 
     setWindowTitle("Nexus file browser");
 }
