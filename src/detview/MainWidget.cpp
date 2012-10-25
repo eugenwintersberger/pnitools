@@ -2,6 +2,7 @@
 #include<pni/utils/Types.hpp>
 #include<pni/utils/Array.hpp>
 #include<pni/utils/io/CBFReader.hpp>
+#include<pni/utils/io/TIFFReader.hpp>
 
 #include<QFileInfo>
 #include "MainWidget.hpp"
@@ -58,6 +59,12 @@ void MainWidget::open()
         CBFReader reader(fileinfo.absoluteFilePath().toStdString());
         info=reader.info(0); //get file information
         buffer = reader.image<buffer_t>(0); 
+    }
+    else if(fileinfo.suffix() == QString("tif"))
+    {
+        TIFFReader reader(fileinfo.absoluteFilePath().toStdString());
+        info = reader.info(0);
+        buffer = reader.image<buffer_t>(0);
     }
     
     shape_t shape{info.nx(),info.ny()};

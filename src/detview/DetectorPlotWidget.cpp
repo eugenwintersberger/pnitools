@@ -3,7 +3,7 @@
 DetectorPlotWidget::DetectorPlotWidget()
 {
     //create colormap
-    color_map = new QwtLinearColorMap(Qt::black,Qt::white);
+    color_map = new QwtLinearColorMap(QwtColorMap::Format::Indexed);
     color_map->setMode(QwtLinearColorMap::Mode::ScaledColors);
 
     //create a new spectrogram plotter

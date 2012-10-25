@@ -15,6 +15,7 @@ class DetectorData : public QwtRasterData
         DArray<Float64> _data; //!< data array
         Float64 _min; //!< minimum value of the data
         Float64 _max; //!< maximum value of the data
+
     public:
         //! copy constructor
         DetectorData(const DetectorData &o);
