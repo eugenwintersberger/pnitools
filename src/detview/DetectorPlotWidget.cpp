@@ -2,9 +2,16 @@
 
 DetectorPlotWidget::DetectorPlotWidget()
 {
+    //create colormap
+    color_map = new QwtLinearColorMap(Qt::black,Qt::white);
+    color_map->setMode(QwtLinearColorMap::Mode::ScaledColors);
+
     //create a new spectrogram plotter
     spec_plot = new QwtPlotSpectrogram();
+    spec_plot->setColorMap(*color_map);
     spec_plot->attach(this);
+
+
 
 }
 

@@ -17,8 +17,11 @@ DetectorData::DetectorData(DArray<Float64> &&data):
               QwtRasterData(),
               _data(std::move(data))
 {
-    _min = *(std::min_element(_data.begin(),_data.end()));
-    _max = *(std::max_element(_data.begin(),_data.end()));
+    _min = log(*(std::min_element(_data.begin(),_data.end())));
+    _max = log(*(std::max_element(_data.begin(),_data.end())));
+    _min = 0.;
+    std::cout<<_min<<"\t"<<_max<<std::endl;
+
 
     auto s = _data.shape<shape_t>();
     setBoundingRect(QwtDoubleRect(0.,0.,double(s[0])-1.0,double(s[1])-1.0));
