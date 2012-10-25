@@ -64,8 +64,6 @@ void MainWidget::open()
     array_t data(shape,std::move(buffer));
 
     plot_widget->setData(std::move(data));
-    plot_widget->setAxisScale(0,0.,double(info.nx()),1.);
-    plot_widget->setAxisScale(1,0.,double(info.ny()),1.);
 }
 
 void MainWidget::close()

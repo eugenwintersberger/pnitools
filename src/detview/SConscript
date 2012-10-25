@@ -1,7 +1,7 @@
 Import("gui_program_env")
 
 gui_program_env.AppendUnique(LIBS=["qwt-qt4"])
-sources = ["main.cpp","MainWidget.cpp","DetectorPlotWidget.cpp"]
+sources = ["main.cpp","MainWidget.cpp","DetectorPlotWidget.cpp","DetectorData.cpp"]
 objects = gui_program_env.Object(sources)
 detview = gui_program_env.Program("detview",objects)
 

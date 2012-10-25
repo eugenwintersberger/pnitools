@@ -1,7 +1,5 @@
 #include "DetectorPlotWidget.hpp"
 
-#include<qwt-qt4/qwt_plot_layout.h>
-
 DetectorPlotWidget::DetectorPlotWidget()
 {
     //create a new spectrogram plotter
