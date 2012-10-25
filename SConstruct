@@ -5,6 +5,8 @@ import platform
 #------------------------set additional build options--------------------------
 AddOption("--static",dest="static",action="store_true",
           default=False,help="create statically linked code")
+AddOption("--debug-build",dest="debug",action="store_true",
+          default=False,help="build debuging release")
 
 #----------------add additional build variables--------------------------------
 var = Variables()
@@ -23,7 +25,13 @@ env.Replace(CXX = env["CXX"])
 
 #set some default compiler options
 env.Append(CXXFLAGS=["-std=c++0x"])
-env.Append(CXXFLAGS=["-Wall","-g","-O2","-fno-deduce-init-list"])
+env.Append(CXXFLAGS=["-Wall","-fno-deduce-init-list"])
+
+if GetOption("debug"):
+    env.Append(CXXFLAGS=["-g","-O0"])
+else:
+    env.Append(CXXFLAGS=["-O2"])
+
 
 env.AppendUnique(CPPPATH=[env["BOOSTINCDIR"]])
 env.AppendUnique(LIBPATH=[env["BOOSTLIBDIR"]])
@@ -49,4 +57,5 @@ SConscript("src/detinfo/SConscript")
 SConscript("src/mcaops/SConscript")
 SConscript("src/xml2nx/SConscript")
 SConscript("src/nxio/SConscript")
-SConscript("src/nxbrowse/SConscript")
+#SConscript("src/nxbrowse/SConscript")
+SConscript("src/detview/SConscript")

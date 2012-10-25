@@ -1,14 +1,8 @@
-Import("build_env")
+Import("gui_program_env")
 
-build_env.Append(CPPPATH=["/usr/include/qt4","/usr/include/qt4/Qt","/usr/include/vtk-5.4"])
-build_env.Append(LIBS=["QtCore","QtGui"])
-build_env.Append(LIBS=["vtkWidgets","vtkVolumeRendering","vtkViews","vtksys","vtkRendering"])
-build_env.Append(LIBS=["vtkQtChart","vtkproj4","vtkImaging","vtkGraphics","vtkalglib"])
-build_env.Append(LIBS=["vtkCommon","vtkIO","vtkHybrid"])
-build_env.Append(LIBS=["QVTK"])
+gui_program_env.AppendUnique(LIBS=["qwt-qt4"])
+sources = ["main.cpp","MainWidget.cpp","DetectorPlotWidget.cpp"]
+objects = gui_program_env.Object(sources)
+detview = gui_program_env.Program("detview",objects)
 
-sources = ["main.cpp"]
-objects = build_env.Object(sources)
-detview = build_env.Program("detview",objects)
-
-build_env.Alias("all",[detview])
+gui_program_env.Alias("all",[detview])
