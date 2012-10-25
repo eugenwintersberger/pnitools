@@ -1,7 +1,13 @@
 Import("gui_program_env")
 
-gui_program_env.AppendUnique(LIBS=["qwt-qt4"])
-sources = ["main.cpp","MainWidget.cpp","DetectorPlotWidget.cpp","DetectorData.cpp"]
+gui_program_env.Append(CPPPATH=["/usr/include/vtk-5.8"])
+gui_program_env.Append(LIBS=["QtCore","QtGui"])
+gui_program_env.Append(LIBS=["vtkWidgets","vtkVolumeRendering","vtkViews","vtksys","vtkRendering"])
+gui_program_env.Append(LIBS=["vtkQtChart","vtkproj4","vtkImaging","vtkGraphics","vtkalglib"])
+gui_program_env.Append(LIBS=["vtkCommon","vtkIO","vtkHybrid","vtkFiltering"])
+gui_program_env.Append(LIBS=["QVTK"])
+gui_program_env.AppendUnique(LIBS=[""])
+sources = ["main.cpp","MainWidget.cpp"]
 objects = gui_program_env.Object(sources)
 detview = gui_program_env.Program("detview",objects)
 

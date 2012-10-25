@@ -1,15 +1,8 @@
 
-#include<pni/utils/Types.hpp>
-#include<pni/utils/Array.hpp>
-#include<pni/utils/io/CBFReader.hpp>
-#include<pni/utils/io/TIFFReader.hpp>
-
 #include<QFileInfo>
 #include "MainWidget.hpp"
 
 
-using namespace pni::utils;
-using namespace pni::io;
 
 MainWidget::MainWidget()
 {
@@ -34,18 +27,19 @@ MainWidget::MainWidget()
     statusbar = new QStatusBar();
     setStatusBar(statusbar);
 
-    //create the plot widget
-    plot_widget = new DetectorPlotWidget();
+    //create the vtk widget
+    vtkwidget = new QVTKWidget();
 
-    setCentralWidget(plot_widget);
+    //create the rendering pipeline
+    pipeline = new RenderingPipeline(vtkwidget);
 
-    setWindowTitle("Nexus file browser");
+    setCentralWidget(vtkwidget);
+
+    setWindowTitle("Detector viewer");
 }
 
 void MainWidget::open()
 {
-    typedef DArray<Float64> array_t;
-    typedef array_t::storage_type buffer_t;
 
     QFileInfo fileinfo(QFileDialog::getOpenFileName(this,tr("open file"),"",
             tr("CBF files (*.cbf);;TIFF files (*.tif *.tiff)")));
@@ -68,9 +62,11 @@ void MainWidget::open()
     }
     
     shape_t shape{info.nx(),info.ny()};
-    array_t data(shape,std::move(buffer));
 
-    plot_widget->setData(std::move(data));
+    //set the new array data
+    detector_data = array_t(shape,std::move(buffer));
+    pipeline->setData(detector_data);
+
 }
 
 void MainWidget::close()
