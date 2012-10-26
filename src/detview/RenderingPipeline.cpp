@@ -46,6 +46,20 @@ void RenderingPipeline::setLogScale()
     widget->update();
 }
 
+void RenderingPipeline::rotateLeft()
+{
+    image_viewer->GetImageActor()->RotateZ(90);
+    image_viewer->Render();
+    widget->update();
+}
+
+void RenderingPipeline::rotateRight()
+{
+    image_viewer->GetImageActor()->RotateZ(-90);
+    image_viewer->Render();
+    widget->update();
+}
+
 //-----------------------------------------------------------------------------
 void RenderingPipeline::setLinScale()
 {
@@ -66,6 +80,8 @@ void RenderingPipeline::setData(const array_t &a)
     Float64 min = *(std::min_element(a.begin(),a.end()));
     Float64 max = *(std::max_element(a.begin(),a.end()));
     lookup_table->SetTableRange(min,max);
+
+    image_viewer->GetImageActor()->SetOrigin(Float64(s[1])/2.,Float64(s[0])/2.,0.);
 
     //set the lookup table for the viewer
     vtkImageMapToWindowLevelColors *imap = image_viewer->GetWindowLevel();

@@ -37,6 +37,8 @@ class MainWidget : public QMainWindow
         QAction *exitAction;  //!< exit program action
         QAction *logscaleAction; //!< change to logarithmic scale
         QAction *linscaleAction; //!< change to linear scale
+        QAction *rotateLeft;
+        QAction *rotateRight;
 
         //menus and toolbar
         QMenu *fileMenu;      //!< file menu

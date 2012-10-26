@@ -12,6 +12,8 @@ MainWidget::MainWidget()
     exitAction = new QAction(tr("&exit"),this);
     logscaleAction = new QAction(tr("&log10 view"),this);
     linscaleAction = new QAction(tr("l&inear view"),this);
+    rotateLeft = new QAction(tr("rotate &left"),this);
+    rotateRight = new QAction(tr("rotate &right"),this);
     
     connect(openAction,SIGNAL(triggered()),this,SLOT(open()));
     connect(closeAction,SIGNAL(triggered()),this,SLOT(close()));
@@ -27,6 +29,8 @@ MainWidget::MainWidget()
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(logscaleAction);
     viewMenu->addAction(linscaleAction);
+    viewMenu->addAction(rotateLeft);
+    viewMenu->addAction(rotateRight);
 
 
     //fill the vertical layout
@@ -83,6 +87,8 @@ void MainWidget::open()
         pipeline = new RenderingPipeline(vtkwidget,detector_data);
         connect(logscaleAction,SIGNAL(triggered()),pipeline,SLOT(setLogScale()));
         connect(linscaleAction,SIGNAL(triggered()),pipeline,SLOT(setLinScale()));
+        connect(rotateLeft,SIGNAL(triggered()),pipeline,SLOT(rotateLeft()));
+        connect(rotateRight,SIGNAL(triggered()),pipeline,SLOT(rotateRight()));
     }
 
 }

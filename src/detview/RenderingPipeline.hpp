@@ -35,6 +35,8 @@ class RenderingPipeline:public QObject
     public slots:
         void setLogScale();
         void setLinScale();
+        void rotateRight();
+        void rotateLeft();
     public:
         RenderingPipeline(QVTKWidget *w,const array_t &a);
 
