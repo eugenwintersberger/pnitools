@@ -1,6 +1,7 @@
 #ifndef __RENDERINGPIPELINE_HPP__
 #define __RENDERINGPIPELINE_HPP__
 
+#include <vtkSmartPointer.h>
 #include <QVTKWidget.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
@@ -27,10 +28,10 @@ class RenderingPipeline:public QObject
 {
     Q_OBJECT
     private:
-        vtkDoubleArray *image_array;
-        vtkImageViewer2 *image_viewer;
-        vtkImageData *image_data;
-        vtkLookupTable *lookup_table;
+        vtkSmartPointer<vtkDoubleArray> image_array;
+        vtkSmartPointer<vtkImageViewer2> image_viewer;
+        vtkSmartPointer<vtkImageData> image_data;
+        vtkSmartPointer<vtkLookupTable> lookup_table;
         QVTKWidget *widget;
     public slots:
         void setLogScale();

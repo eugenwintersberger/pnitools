@@ -7,10 +7,10 @@
 
 //------------------------------------------------------------------------------
 RenderingPipeline::RenderingPipeline(QVTKWidget *w,const array_t &a):
-                   image_array(vtkDoubleArray::New()),
-                   image_viewer(vtkImageViewer2::New()),
-                   image_data(vtkImageData::New()),
-                   lookup_table(vtkLookupTable::New()),
+                   image_array(vtkSmartPointer<vtkDoubleArray>::New()),
+                   image_viewer(vtkSmartPointer<vtkImageViewer2>::New()),
+                   image_data(vtkSmartPointer<vtkImageData>::New()),
+                   lookup_table(vtkSmartPointer<vtkLookupTable>::New()),
                    widget(w)
 {
     setData(a);
@@ -46,6 +46,7 @@ void RenderingPipeline::setLogScale()
     widget->update();
 }
 
+//-----------------------------------------------------------------------------
 void RenderingPipeline::rotateLeft()
 {
     image_viewer->GetImageActor()->RotateZ(90);
@@ -53,6 +54,7 @@ void RenderingPipeline::rotateLeft()
     widget->update();
 }
 
+//-----------------------------------------------------------------------------
 void RenderingPipeline::rotateRight()
 {
     image_viewer->GetImageActor()->RotateZ(-90);
@@ -71,10 +73,10 @@ void RenderingPipeline::setLinScale()
 //-----------------------------------------------------------------------------
 void RenderingPipeline::setData(const array_t &a)
 {
-    image_array->SetArray(const_cast<Float64*>(a.storage().ptr()),
-                 a.size(),1);
     auto s = a.shape<shape_t>(); 
     image_data->SetDimensions(s[1],s[0],1);
+    image_array->SetArray(const_cast<Float64*>(a.storage().ptr()),
+                 a.size(),1);
 
     //have to setup the color lookup table
     Float64 min = *(std::min_element(a.begin(),a.end()));
