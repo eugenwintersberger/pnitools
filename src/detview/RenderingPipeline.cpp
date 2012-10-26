@@ -3,7 +3,9 @@
 #include<vtkImageMapToWindowLevelColors.h>
 #include<vtkLogLookupTable.h>
 #include<vtkScalarsToColors.h>
+#include<vtkImageActor.h>
 
+//------------------------------------------------------------------------------
 RenderingPipeline::RenderingPipeline(QVTKWidget *w,const array_t &a):
                    image_array(vtkDoubleArray::New()),
                    image_viewer(vtkImageViewer2::New()),
@@ -20,12 +22,14 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w,const array_t &a):
 
     image_viewer->SetInput(image_data);
     image_viewer->SetZSlice(0);
+    image_viewer->GetImageActor()->InterpolateOff();
 
     image_viewer->SetupInteractor(widget->GetRenderWindow()->GetInteractor());
     widget->SetRenderWindow(image_viewer->GetRenderWindow());
     widget->show();
 }
 
+//-----------------------------------------------------------------------------
 RenderingPipeline::~RenderingPipeline()
 {
     image_array->Delete();
@@ -34,6 +38,7 @@ RenderingPipeline::~RenderingPipeline()
     lookup_table->Delete();
 }
 
+//-----------------------------------------------------------------------------
 void RenderingPipeline::setLogScale()
 {
     lookup_table->SetScaleToLog10();
@@ -41,6 +46,7 @@ void RenderingPipeline::setLogScale()
     widget->update();
 }
 
+//-----------------------------------------------------------------------------
 void RenderingPipeline::setLinScale()
 {
     lookup_table->SetScaleToLinear();
@@ -48,6 +54,7 @@ void RenderingPipeline::setLinScale()
     widget->update();
 }
 
+//-----------------------------------------------------------------------------
 void RenderingPipeline::setData(const array_t &a)
 {
     image_array->SetArray(const_cast<Float64*>(a.storage().ptr()),
