@@ -4,20 +4,29 @@
 
 
 
+//-----------------------------------------------------------------------------
 MainWidget::MainWidget()
 {
     openAction = new QAction(tr("&open"),this);
     closeAction = new QAction(tr("&close"),this);
     exitAction = new QAction(tr("&exit"),this);
+    logscaleAction = new QAction(tr("&log10 view"),this);
+    linscaleAction = new QAction(tr("l&inear view"),this);
     
     connect(openAction,SIGNAL(triggered()),this,SLOT(open()));
     connect(closeAction,SIGNAL(triggered()),this,SLOT(close()));
     connect(exitAction,SIGNAL(triggered()),qApp,SLOT(quit()));
 
+    //add the file menu
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openAction);
     fileMenu->addAction(closeAction);
     fileMenu->addAction(exitAction);
+
+    //add the view menu
+    viewMenu = menuBar()->addMenu(tr("&View"));
+    viewMenu->addAction(logscaleAction);
+    viewMenu->addAction(linscaleAction);
 
 
     //fill the vertical layout
@@ -30,14 +39,16 @@ MainWidget::MainWidget()
     //create the vtk widget
     vtkwidget = new QVTKWidget();
 
-    //create the rendering pipeline
-    pipeline = new RenderingPipeline(vtkwidget);
-
+    //create the rendering pipeline - during program startup no image is loaded
+    //and we just set the pointer to nullptr
+    pipeline = nullptr; 
+    
     setCentralWidget(vtkwidget);
 
     setWindowTitle("Detector viewer");
 }
 
+//-----------------------------------------------------------------------------
 void MainWidget::open()
 {
 
@@ -65,16 +76,25 @@ void MainWidget::open()
 
     //set the new array data
     detector_data = array_t(shape,std::move(buffer));
-    pipeline->setData(detector_data);
+    if(pipeline)
+        pipeline->setData(detector_data);
+    else
+    {
+        pipeline = new RenderingPipeline(vtkwidget,detector_data);
+        connect(logscaleAction,SIGNAL(triggered()),pipeline,SLOT(setLogScale()));
+        connect(linscaleAction,SIGNAL(triggered()),pipeline,SLOT(setLinScale()));
+    }
 
 }
 
+//-----------------------------------------------------------------------------
 void MainWidget::close()
 {
     //get the selected file in the model view and close the file
     
 }
 
+//-----------------------------------------------------------------------------
 void MainWidget::quit()
 {
     qApp->quit();
