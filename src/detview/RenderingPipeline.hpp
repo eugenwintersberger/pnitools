@@ -11,6 +11,7 @@
 #include <vtkImageViewer2.h>
 #include <vtkLookupTable.h>
 #include <vtkImageLogarithmicScale.h>
+#include <vtkScalarBarActor.h>
 
 
 #include<pni/utils/Types.hpp>
@@ -32,6 +33,7 @@ class RenderingPipeline:public QObject
         vtkSmartPointer<vtkImageViewer2> image_viewer;
         vtkSmartPointer<vtkImageData> image_data;
         vtkSmartPointer<vtkLookupTable> lookup_table;
+        vtkSmartPointer<vtkScalarBarActor> color_bar;
         QVTKWidget *widget;
     public slots:
         void setLogScale();

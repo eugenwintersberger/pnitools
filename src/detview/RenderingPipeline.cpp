@@ -12,6 +12,7 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w,const array_t &a):
                    image_viewer(vtkSmartPointer<vtkImageViewer2>::New()),
                    image_data(vtkSmartPointer<vtkImageData>::New()),
                    lookup_table(vtkSmartPointer<vtkLookupTable>::New()),
+                   color_bar(vtkSmartPointer<vtkScalarBarActor>::New()),
                    widget(w)
 {
     setData(a);
@@ -25,7 +26,9 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w,const array_t &a):
     image_viewer->SetZSlice(0);
     image_viewer->GetImageActor()->InterpolateOff();
 
-
+    color_bar->SetLookupTable(lookup_table);
+    image_viewer->GetRenderer()->AddActor(color_bar);
+    
     image_viewer->SetupInteractor(widget->GetRenderWindow()->GetInteractor());
     widget->SetRenderWindow(image_viewer->GetRenderWindow());
     widget->show();
@@ -44,6 +47,7 @@ RenderingPipeline::~RenderingPipeline()
 void RenderingPipeline::setLogScale()
 {
     lookup_table->SetScaleToLog10();
+
     image_viewer->Render();
     widget->update();
 }
@@ -96,6 +100,7 @@ void RenderingPipeline::setData(const array_t &a)
     //set the lookup table for the viewer
     vtkImageMapToWindowLevelColors *imap = image_viewer->GetWindowLevel();
     imap->SetLookupTable(lookup_table);
+    color_bar->SetLookupTable(lookup_table);
     image_data->Update();
 
     image_viewer->SetColorWindow(max-min);
