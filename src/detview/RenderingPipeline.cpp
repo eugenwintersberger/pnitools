@@ -4,6 +4,7 @@
 #include<vtkLogLookupTable.h>
 #include<vtkScalarsToColors.h>
 #include<vtkImageActor.h>
+#include "ColorMaps.hpp"
 
 //------------------------------------------------------------------------------
 RenderingPipeline::RenderingPipeline(QVTKWidget *w,const array_t &a):
@@ -11,7 +12,6 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w,const array_t &a):
                    image_viewer(vtkSmartPointer<vtkImageViewer2>::New()),
                    image_data(vtkSmartPointer<vtkImageData>::New()),
                    lookup_table(vtkSmartPointer<vtkLookupTable>::New()),
-                   transfer_func(vtkSmartPointer<vtkColorTransferFunction>::New()),
                    widget(w)
 {
     setData(a);
@@ -25,7 +25,6 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w,const array_t &a):
     image_viewer->SetZSlice(0);
     image_viewer->GetImageActor()->InterpolateOff();
 
-    transfer_func->SetColorSpaceToRGB();
 
     image_viewer->SetupInteractor(widget->GetRenderWindow()->GetInteractor());
     widget->SetRenderWindow(image_viewer->GetRenderWindow());
@@ -44,7 +43,7 @@ RenderingPipeline::~RenderingPipeline()
 //-----------------------------------------------------------------------------
 void RenderingPipeline::setLogScale()
 {
-    transfer_func->SetScaleToLog10();
+    lookup_table->SetScaleToLog10();
     image_viewer->Render();
     widget->update();
 }
@@ -68,7 +67,7 @@ void RenderingPipeline::rotateRight()
 //-----------------------------------------------------------------------------
 void RenderingPipeline::setLinScale()
 {
-    transfer_func->SetScaleToLinear();
+    lookup_table->SetScaleToLinear();
     image_viewer->Render();
     widget->update();
 }
@@ -83,19 +82,20 @@ void RenderingPipeline::setData(const array_t &a)
     image_data->SetOrigin(s[1]/2,s[0]/2,1);
 
     //have to setup the color lookup table
-    Float64 mmax[2];
     Float64 min = *(std::min_element(a.begin(),a.end()));
     Float64 max = *(std::max_element(a.begin(),a.end()));
-    mmax[0] = min; mmax[1] = max;
-    transfer_func->AddRGBPoint(min,0,0,0);
-    transfer_func->AddRGBPoint(max,1,1,1);
-    transfer_func->Build();
+
+    for(vtkIdType tid=0;tid<lookup_table->GetNumberOfTableValues();tid++)
+    {   
+        lookup_table->SetTableValue(tid,rgba[tid]);
+    }
+    
     lookup_table->SetTableRange(min,max);
     lookup_table->Build();
 
     //set the lookup table for the viewer
     vtkImageMapToWindowLevelColors *imap = image_viewer->GetWindowLevel();
-    imap->SetLookupTable(transfer_func);
+    imap->SetLookupTable(lookup_table);
     image_data->Update();
 
     image_viewer->SetColorWindow(max-min);
