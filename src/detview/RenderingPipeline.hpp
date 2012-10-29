@@ -19,6 +19,8 @@
 
 #include<algorithm>
 
+#include "DetectorData.hpp"
+
 using namespace pni::utils;
 
 typedef DArray<Float64> array_t;
@@ -40,13 +42,12 @@ class RenderingPipeline:public QObject
         void setLinScale();
         void rotateRight();
         void rotateLeft();
+        void rangeChanged(Float64 min,Float64 max);
+        void dataChanged(const DetectorData &d);
     public:
-        RenderingPipeline(QVTKWidget *w,const array_t &a);
+        RenderingPipeline(QVTKWidget *w);
 
         ~RenderingPipeline();
-
-
-        void setData(const array_t &a);
 };
 
 #endif

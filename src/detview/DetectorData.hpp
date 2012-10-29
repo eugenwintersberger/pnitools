@@ -5,28 +5,40 @@
 #include<pni/utils/Types.hpp>
 #include<pni/utils/Array.hpp>
 
-#include<qwt-qt4/qwt_raster_data.h>
+#include<QtCore>
+#include<QFileInfo>
 
 using namespace pni::utils;
 
-class DetectorData : public QwtRasterData
+class DetectorData : public QObject
 {
+    Q_OBJECT
     private:
         DArray<Float64> _data; //!< data array
-        Float64 _min; //!< minimum value of the data
-        Float64 _max; //!< maximum value of the data
 
+    signals:
+        void dataChanged(const DetectorData &d);
     public:
+        //================public types=========================================
+        typedef DArray<Float64> storage_type;
+        //======================constructors===================================
+        //! default constructor
+        DetectorData();
         //! copy constructor
         DetectorData(const DetectorData &o);
 
         //! move constructor from array
         DetectorData(DArray<Float64> &&data);
-    
-        virtual QwtDoubleInterval range() const;
+        
+        
+        //======================public member functions========================
+        const storage_type getData() const
+        {
+            return _data;
+        }
 
-        virtual QwtRasterData *copy() const;
+        void loadData(const QFileInfo &path);
 
-        virtual double value(double x,double y) const;
+
 };
 #endif

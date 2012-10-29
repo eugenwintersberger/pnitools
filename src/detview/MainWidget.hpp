@@ -10,21 +10,10 @@
 
 #include<QVTKWidget.h>
 
-#include<pni/utils/Types.hpp>
-#include<pni/utils/Array.hpp>
-#include<pni/utils/io/CBFReader.hpp>
-#include<pni/utils/io/TIFFReader.hpp>
 
 #include "RenderingPipeline.hpp"
-
-
-using namespace pni::utils;
-using namespace pni::io;
-
-
-typedef DArray<Float64> array_t;
-typedef array_t::storage_type buffer_t;
-
+#include "IntensityRange.hpp"
+#include "DetectorData.hpp"
 
 
 class MainWidget : public QMainWindow
@@ -48,14 +37,9 @@ class MainWidget : public QMainWindow
 
         QVTKWidget *vtkwidget;  //!< the VTK rendering widget
         RenderingPipeline *pipeline; //!< the VTK rendering pipeline
+        IntensityRange *irange; //!< intensity range for plotting
+        DetectorData *data; //!object holding the detector data
 
-        /*! 
-        \brief the global data array
-        
-        This array holds the data of the actually loaded image frame. 
-        All detector data is actually converted to Float64.
-        */
-        array_t detector_data;
     private slots:
         void open();
         void close();
@@ -63,5 +47,6 @@ class MainWidget : public QMainWindow
     public:
         MainWidget();
 };
+    
 
 #endif

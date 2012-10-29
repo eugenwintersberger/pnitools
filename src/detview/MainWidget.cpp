@@ -42,12 +42,17 @@ MainWidget::MainWidget()
 
     //create the vtk widget
     vtkwidget = new QVTKWidget();
+    setCentralWidget(vtkwidget);
 
     //create the rendering pipeline - during program startup no image is loaded
     //and we just set the pointer to nullptr
-    pipeline = nullptr; 
-    
-    setCentralWidget(vtkwidget);
+    pipeline = new RenderingPipeline(vtkwidget);
+    connect(logscaleAction,SIGNAL(triggered()),pipeline,SLOT(setLogScale()));
+    connect(linscaleAction,SIGNAL(triggered()),pipeline,SLOT(setLinScale()));
+    connect(rotateLeft,SIGNAL(triggered()),pipeline,SLOT(rotateLeft()));
+    connect(rotateRight,SIGNAL(triggered()),pipeline,SLOT(rotateRight()));
+    connect(data,SIGNAL(dataChanged(const DetectorData &)),
+            pipeline,SLOT(dataChanged(const DetectorData *)));
 
     setWindowTitle("Detector viewer");
 }
@@ -58,38 +63,9 @@ void MainWidget::open()
 
     QFileInfo fileinfo(QFileDialog::getOpenFileName(this,tr("open file"),"",
             tr("CBF files (*.cbf);;TIFF files (*.tif *.tiff)")));
-
-    ImageInfo info;
-    buffer_t buffer;
-    //choose the proper reader
-    if(fileinfo.suffix()==QString("cbf"))
-    {
-        //open the file
-        CBFReader reader(fileinfo.absoluteFilePath().toStdString());
-        info=reader.info(0); //get file information
-        buffer = reader.image<buffer_t>(0); 
-    }
-    else if(fileinfo.suffix() == QString("tif"))
-    {
-        TIFFReader reader(fileinfo.absoluteFilePath().toStdString());
-        info = reader.info(0);
-        buffer = reader.image<buffer_t>(0);
-    }
     
-    shape_t shape{info.nx(),info.ny()};
-
-    //set the new array data
-    detector_data = array_t(shape,std::move(buffer));
-    if(pipeline)
-        pipeline->setData(detector_data);
-    else
-    {
-        pipeline = new RenderingPipeline(vtkwidget,detector_data);
-        connect(logscaleAction,SIGNAL(triggered()),pipeline,SLOT(setLogScale()));
-        connect(linscaleAction,SIGNAL(triggered()),pipeline,SLOT(setLinScale()));
-        connect(rotateLeft,SIGNAL(triggered()),pipeline,SLOT(rotateLeft()));
-        connect(rotateRight,SIGNAL(triggered()),pipeline,SLOT(rotateRight()));
-    }
+    data->loadData(fileinfo); //emit dataChanged
+    irange->set(*data); //emit rangeChanged
 
 }
 

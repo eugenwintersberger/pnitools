@@ -7,7 +7,7 @@
 #include "ColorMaps.hpp"
 
 //------------------------------------------------------------------------------
-RenderingPipeline::RenderingPipeline(QVTKWidget *w,const array_t &a):
+RenderingPipeline::RenderingPipeline(QVTKWidget *w):
                    image_array(vtkSmartPointer<vtkDoubleArray>::New()),
                    image_viewer(vtkSmartPointer<vtkImageViewer2>::New()),
                    image_data(vtkSmartPointer<vtkImageData>::New()),
@@ -15,8 +15,6 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w,const array_t &a):
                    color_bar(vtkSmartPointer<vtkScalarBarActor>::New()),
                    widget(w)
 {
-    setData(a);
-
     image_data->GetPointData()->SetScalars(image_array);
     image_data->SetScalarType(VTK_DOUBLE);
     image_data->SetSpacing(1.0,1.0,1.0);
@@ -25,6 +23,14 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w,const array_t &a):
     image_viewer->SetInput(image_data);
     image_viewer->SetZSlice(0);
     image_viewer->GetImageActor()->InterpolateOff();
+   
+    //setup the lookup table
+    for(vtkIdType tid=0;tid<lookup_table->GetNumberOfTableValues();tid++)
+    {   
+        lookup_table->SetTableValue(tid,rgba[tid]);
+    }
+    lookup_table->Build();
+    image_viewer->GetWindowLevel()->SetLookupTable(lookup_table);
 
     color_bar->SetLookupTable(lookup_table);
     image_viewer->GetRenderer()->AddActor(color_bar);
@@ -77,33 +83,24 @@ void RenderingPipeline::setLinScale()
 }
 
 //-----------------------------------------------------------------------------
-void RenderingPipeline::setData(const array_t &a)
+void RenderingPipeline::rangeChanged(Float64 min,Float64 max)
 {
-    auto s = a.shape<shape_t>(); 
-    image_data->SetDimensions(s[1],s[0],1);
-    image_array->SetArray(const_cast<Float64*>(a.storage().ptr()),
-                 a.size(),1);
-    image_data->SetOrigin(s[1]/2,s[0]/2,1);
-
-    //have to setup the color lookup table
-    Float64 min = *(std::min_element(a.begin(),a.end()));
-    Float64 max = *(std::max_element(a.begin(),a.end()));
-
-    for(vtkIdType tid=0;tid<lookup_table->GetNumberOfTableValues();tid++)
-    {   
-        lookup_table->SetTableValue(tid,rgba[tid]);
-    }
-    
-    lookup_table->SetTableRange(min,max);
-    lookup_table->Build();
-
-    //set the lookup table for the viewer
-    vtkImageMapToWindowLevelColors *imap = image_viewer->GetWindowLevel();
-    imap->SetLookupTable(lookup_table);
-    color_bar->SetLookupTable(lookup_table);
-    image_data->Update();
-
-    image_viewer->SetColorWindow(max-min);
     image_viewer->SetColorLevel(min);
+    image_viewer->SetColorWindow(max-min);
+}
 
+//-----------------------------------------------------------------------------
+void RenderingPipeline::dataChanged(const DetectorData &d)
+{
+    typedef DetectorData::storage_type array_t;
+    const array_t &data = d.getData();
+
+    auto s = data.shape<shape_t>(); 
+    //setup the image data
+    image_array->SetArray(const_cast<Float64*>(data.storage().ptr()),
+                          data.size(),1);
+
+    image_data->SetDimensions(s[1],s[0],1);
+    image_data->SetOrigin(0,0,0);
+    image_data->Update();
 }
