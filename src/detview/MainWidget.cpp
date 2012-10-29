@@ -44,6 +44,12 @@ MainWidget::MainWidget()
     vtkwidget = new QVTKWidget();
     setCentralWidget(vtkwidget);
 
+    //create data object
+    data = new DetectorData();
+
+    //intensity range
+    irange = new IntensityRange();
+
     //create the rendering pipeline - during program startup no image is loaded
     //and we just set the pointer to nullptr
     pipeline = new RenderingPipeline(vtkwidget);
@@ -52,7 +58,9 @@ MainWidget::MainWidget()
     connect(rotateLeft,SIGNAL(triggered()),pipeline,SLOT(rotateLeft()));
     connect(rotateRight,SIGNAL(triggered()),pipeline,SLOT(rotateRight()));
     connect(data,SIGNAL(dataChanged(const DetectorData &)),
-            pipeline,SLOT(dataChanged(const DetectorData *)));
+            pipeline,SLOT(dataChanged(const DetectorData &)));
+
+    vtkwidget->show();
 
     setWindowTitle("Detector viewer");
 }

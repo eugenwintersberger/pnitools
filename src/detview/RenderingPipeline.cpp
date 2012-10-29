@@ -15,10 +15,12 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w):
                    color_bar(vtkSmartPointer<vtkScalarBarActor>::New()),
                    widget(w)
 {
+    image_array->Allocate(1);
     image_data->GetPointData()->SetScalars(image_array);
     image_data->SetScalarType(VTK_DOUBLE);
     image_data->SetSpacing(1.0,1.0,1.0);
     image_data->SetOrigin(0,0,0);
+    image_data->SetDimensions(1,1,1);
 
     image_viewer->SetInput(image_data);
     image_viewer->SetZSlice(0);
@@ -47,6 +49,7 @@ RenderingPipeline::~RenderingPipeline()
     image_viewer->Delete();
     image_data->Delete();
     lookup_table->Delete();
+    color_bar->Delete();
 }
 
 //-----------------------------------------------------------------------------
@@ -97,9 +100,9 @@ void RenderingPipeline::dataChanged(const DetectorData &d)
 
     auto s = data.shape<shape_t>(); 
     //setup the image data
+    image_array->Initialize();
     image_array->SetArray(const_cast<Float64*>(data.storage().ptr()),
                           data.size(),1);
-
     image_data->SetDimensions(s[1],s[0],1);
     image_data->SetOrigin(0,0,0);
     image_data->Update();
