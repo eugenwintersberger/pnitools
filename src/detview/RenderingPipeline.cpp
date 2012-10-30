@@ -8,22 +8,19 @@
 
 //------------------------------------------------------------------------------
 RenderingPipeline::RenderingPipeline(QVTKWidget *w):
-                   image_array(vtkSmartPointer<vtkDoubleArray>::New()),
+                   tiff_reader(vtkSmartPointer<vtkTIFFReader>::New()),
                    image_viewer(vtkSmartPointer<vtkImageViewer2>::New()),
-                   image_data(vtkSmartPointer<vtkImageData>::New()),
                    lookup_table(vtkSmartPointer<vtkLookupTable>::New()),
                    color_bar(vtkSmartPointer<vtkScalarBarActor>::New()),
+                   image_info(vtkSmartPointer<vtkImageChangeInformation>::New()),
                    widget(w)
 {
-    image_array->Allocate(1);
-    image_data->GetPointData()->SetScalars(image_array);
-    image_data->SetScalarType(VTK_DOUBLE);
-    image_data->SetSpacing(1.0,1.0,1.0);
-    image_data->SetOrigin(0,0,0);
-    image_data->SetDimensions(1,1,1);
+   
+    tiff_reader->SetFileName("../../../libpniutils/test/water_00259.tif");
+    image_info->SetInputConnection(tiff_reader->GetOutputPort());
 
-    image_viewer->SetInput(image_data);
-    image_viewer->SetZSlice(0);
+    image_viewer->SetInputConnection(image_info->GetOutputPort());
+    image_viewer->SetSlice(0);
     image_viewer->GetImageActor()->InterpolateOff();
    
     //setup the lookup table
@@ -33,9 +30,13 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w):
     }
     lookup_table->Build();
     image_viewer->GetWindowLevel()->SetLookupTable(lookup_table);
+    double min = image_viewer->GetInput()->GetScalarTypeMin();
+    double max = image_viewer->GetInput()->GetScalarTypeMax();
+    image_viewer->SetColorLevel(min);
+    image_viewer->SetColorWindow(max-min);
 
     color_bar->SetLookupTable(lookup_table);
-    image_viewer->GetRenderer()->AddActor(color_bar);
+    //image_viewer->GetRenderer()->AddActor(color_bar);
     
     image_viewer->SetupInteractor(widget->GetRenderWindow()->GetInteractor());
     widget->SetRenderWindow(image_viewer->GetRenderWindow());
@@ -45,9 +46,8 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w):
 //-----------------------------------------------------------------------------
 RenderingPipeline::~RenderingPipeline()
 {
-    image_array->Delete();
+    tiff_reader->Delete();
     image_viewer->Delete();
-    image_data->Delete();
     lookup_table->Delete();
     color_bar->Delete();
 }
@@ -56,7 +56,6 @@ RenderingPipeline::~RenderingPipeline()
 void RenderingPipeline::setLogScale()
 {
     lookup_table->SetScaleToLog10();
-
     image_viewer->Render();
     widget->update();
 }
@@ -92,18 +91,3 @@ void RenderingPipeline::rangeChanged(Float64 min,Float64 max)
     image_viewer->SetColorWindow(max-min);
 }
 
-//-----------------------------------------------------------------------------
-void RenderingPipeline::dataChanged(const DetectorData &d)
-{
-    typedef DetectorData::storage_type array_t;
-    const array_t &data = d.getData();
-
-    auto s = data.shape<shape_t>(); 
-    //setup the image data
-    image_array->Initialize();
-    image_array->SetArray(const_cast<Float64*>(data.storage().ptr()),
-                          data.size(),1);
-    image_data->SetDimensions(s[1],s[0],1);
-    image_data->SetOrigin(0,0,0);
-    image_data->Update();
-}

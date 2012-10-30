@@ -13,7 +13,6 @@
 
 #include "RenderingPipeline.hpp"
 #include "IntensityRange.hpp"
-#include "DetectorData.hpp"
 
 
 class MainWidget : public QMainWindow
@@ -38,7 +37,6 @@ class MainWidget : public QMainWindow
         QVTKWidget *vtkwidget;  //!< the VTK rendering widget
         RenderingPipeline *pipeline; //!< the VTK rendering pipeline
         IntensityRange *irange; //!< intensity range for plotting
-        DetectorData *data; //!object holding the detector data
 
     private slots:
         void open();

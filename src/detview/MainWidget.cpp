@@ -44,8 +44,6 @@ MainWidget::MainWidget()
     vtkwidget = new QVTKWidget();
     setCentralWidget(vtkwidget);
 
-    //create data object
-    data = new DetectorData();
 
     //intensity range
     irange = new IntensityRange();
@@ -57,8 +55,6 @@ MainWidget::MainWidget()
     connect(linscaleAction,SIGNAL(triggered()),pipeline,SLOT(setLinScale()));
     connect(rotateLeft,SIGNAL(triggered()),pipeline,SLOT(rotateLeft()));
     connect(rotateRight,SIGNAL(triggered()),pipeline,SLOT(rotateRight()));
-    connect(data,SIGNAL(dataChanged(const DetectorData &)),
-            pipeline,SLOT(dataChanged(const DetectorData &)));
 
     vtkwidget->show();
 
@@ -71,10 +67,9 @@ void MainWidget::open()
 
     QFileInfo fileinfo(QFileDialog::getOpenFileName(this,tr("open file"),"",
             tr("CBF files (*.cbf);;TIFF files (*.tif *.tiff)")));
-    
-    data->loadData(fileinfo); //emit dataChanged
-    irange->set(*data); //emit rangeChanged
 
+
+    pipeline->loadData(fileinfo.absoluteFilePath().toStdString());
 }
 
 //-----------------------------------------------------------------------------
