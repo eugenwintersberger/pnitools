@@ -16,7 +16,10 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w):
                    widget(w)
 {
    
-    tiff_reader->SetFileName("../../../libpniutils/test/water_00259.tif");
+    tiff_reader->SetFileName("water.tif");
+    tiff_reader->Update();
+
+    //set input connection for the viewer
     image_info->SetInputConnection(tiff_reader->GetOutputPort());
 
     image_viewer->SetInputConnection(image_info->GetOutputPort());
@@ -28,15 +31,12 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w):
     {   
         lookup_table->SetTableValue(tid,rgba[tid]);
     }
+    resetLookupTable();
     lookup_table->Build();
     image_viewer->GetWindowLevel()->SetLookupTable(lookup_table);
-    double min = image_viewer->GetInput()->GetScalarTypeMin();
-    double max = image_viewer->GetInput()->GetScalarTypeMax();
-    image_viewer->SetColorLevel(min);
-    image_viewer->SetColorWindow(max-min);
 
     color_bar->SetLookupTable(lookup_table);
-    //image_viewer->GetRenderer()->AddActor(color_bar);
+    image_viewer->GetRenderer()->AddActor(color_bar);
     
     image_viewer->SetupInteractor(widget->GetRenderWindow()->GetInteractor());
     widget->SetRenderWindow(image_viewer->GetRenderWindow());
@@ -91,3 +91,20 @@ void RenderingPipeline::rangeChanged(Float64 min,Float64 max)
     image_viewer->SetColorWindow(max-min);
 }
 
+//------------------------------------------------------------------------------
+double RenderingPipeline::getMax() const
+{
+    return tiff_reader->GetOutput()->GetScalarRange()[1];
+}
+
+//-----------------------------------------------------------------------------
+double RenderingPipeline::getMin() const 
+{
+    return tiff_reader->GetOutput()->GetScalarRange()[0];
+}
+
+//-----------------------------------------------------------------------------
+void RenderingPipeline::resetLookupTable()
+{
+    lookup_table->SetTableRange(getMin(),getMax());
+}

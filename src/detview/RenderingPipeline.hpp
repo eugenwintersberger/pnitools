@@ -50,6 +50,19 @@ class RenderingPipeline:public QObject
     public:
         RenderingPipeline(QVTKWidget *w);
 
+        //! return maximum of image data
+        double getMax() const;
+
+        //! return minimum of image data
+        double getMin() const;
+
+        /*!
+        \brief reset lookup table
+
+        Reset the lookup table to the original data range of the image.
+        */
+        void resetLookupTable();
+
 
 
         //---------------------------------------------------------------------
@@ -57,6 +70,7 @@ class RenderingPipeline:public QObject
         {
             tiff_reader->SetFileName(path.c_str());
             tiff_reader->Update();
+
 
             image_info->Update();
             image_viewer->Render();
