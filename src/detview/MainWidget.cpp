@@ -45,9 +45,6 @@ MainWidget::MainWidget()
     setCentralWidget(vtkwidget);
 
 
-    //intensity range
-    irange = new IntensityRange();
-
     //create the rendering pipeline - during program startup no image is loaded
     //and we just set the pointer to nullptr
     pipeline = new RenderingPipeline(vtkwidget);

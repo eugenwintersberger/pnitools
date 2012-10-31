@@ -12,7 +12,6 @@
 
 
 #include "RenderingPipeline.hpp"
-#include "IntensityRange.hpp"
 
 
 class MainWidget : public QMainWindow
@@ -36,7 +35,6 @@ class MainWidget : public QMainWindow
 
         QVTKWidget *vtkwidget;  //!< the VTK rendering widget
         RenderingPipeline *pipeline; //!< the VTK rendering pipeline
-        IntensityRange *irange; //!< intensity range for plotting
 
     private slots:
         void open();

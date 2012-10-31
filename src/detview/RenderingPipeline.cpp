@@ -36,6 +36,8 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w):
     image_viewer->GetWindowLevel()->SetLookupTable(lookup_table);
 
     color_bar->SetLookupTable(lookup_table);
+    color_bar->SetMaximumWidthInPixels(200);
+    
     image_viewer->GetRenderer()->AddActor(color_bar);
     
     image_viewer->SetupInteractor(widget->GetRenderWindow()->GetInteractor());
