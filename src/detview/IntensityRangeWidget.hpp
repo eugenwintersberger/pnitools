@@ -18,21 +18,49 @@ class IntensityRangeWidget : public QWidget
         //! default constructor
         IntensityRangeWidget();
 
-
         //==============public member functions================================
-        //! set the intensity range
+        /*! 
+        \bief set the intensity range
+
+        \param min minimum value
+        \param max maximum value
+        */
         void setRange(double min,double max);
 
         //---------------------------------------------------------------------
+        /*!
+        \brief set minimum value
+
+        Set the minimum value of the widget.
+        \param min minimum value
+        */
         void setMin(double min);
 
+        //---------------------------------------------------------------------
+        /*!
+        \brief set maximum value
+        
+        Set the maximum value of the widget.
+        \param max new maximum value
+        */
         void setMax(double max);
 
-        void getMin() const;
-        void getMax() const;
+        //---------------------------------------------------------------------
+        /*!
+        \brief get minimum value
 
+        \return return the actual minimum value  of the widget
+        */
+        double getMin() const;
 
+        //---------------------------------------------------------------------
+        /*!
+        \brief get maximum value
 
+        \return return the actual maximum value of the widget.
+        */
+        double getMax() const;
 
 };
+
 #endif

@@ -72,10 +72,11 @@ class RenderingPipeline:public QObject
             tiff_reader->Update();
 
 
+            resetLookupTable();
+            rangeChanged(getMin(),getMax());
+            std::cout<<getMin()<<"\t"<<getMax()<<std::endl;
             image_info->Update();
             image_viewer->Render();
-            
-
         }
 
 
