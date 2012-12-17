@@ -1,5 +1,4 @@
-#ifndef __MAINWIDGET_HPP__
-#define __MAINWIDGET_HPP__
+#pragma once
 
 #include<QTextEdit>
 #include<QtGui>
@@ -24,8 +23,8 @@ class MainWidget : public QMainWindow
         QAction *exitAction;  //!< exit program action
         QAction *logscaleAction; //!< change to logarithmic scale
         QAction *linscaleAction; //!< change to linear scale
-        QAction *rotateLeft;
-        QAction *rotateRight;
+        QAction *rotateLeft;     //!< rotate image to the left
+        QAction *rotateRight;    //!< rotate image to the right
 
         //menus and toolbar
         QMenu *fileMenu;      //!< file menu
@@ -43,6 +42,3 @@ class MainWidget : public QMainWindow
     public:
         MainWidget();
 };
-    
-
-#endif

@@ -16,35 +16,42 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w):
                    widget(w)
 {
    
-    tiff_reader->SetFileName("water.tif");
+    tiff_reader->SetFileName("desy_logo.tiff");
     tiff_reader->Update();
 
     //set input connection for the viewer
     image_info->SetInputConnection(tiff_reader->GetOutputPort());
+    image_info->Update();
 
     image_viewer->SetInputConnection(image_info->GetOutputPort());
     image_viewer->SetSlice(0);
     image_viewer->GetImageActor()->InterpolateOff();
    
-    //setup the lookup table
-    for(vtkIdType tid=0;tid<lookup_table->GetNumberOfTableValues();tid++)
-    {   
-        lookup_table->SetTableValue(tid,rgba[tid]);
-    }
-    resetLookupTable();
-    lookup_table->Build();
-    image_viewer->GetWindowLevel()->SetLookupTable(lookup_table);
-
-    color_bar->SetLookupTable(lookup_table);
-    color_bar->SetMaximumWidthInPixels(200);
     
-    image_viewer->GetRenderer()->AddActor(color_bar);
     
     image_viewer->SetupInteractor(widget->GetRenderWindow()->GetInteractor());
     widget->SetRenderWindow(image_viewer->GetRenderWindow());
     widget->show();
 }
 
+//------------------------------------------------------------------------------
+void RenderingPipeline::loadData(const String &path)
+{
+    tiff_reader->SetFileName(path.c_str());
+    tiff_reader->Update();
+
+    resetLookupTable();
+    image_viewer->GetWindowLevel()->SetLookupTable(lookup_table);
+
+    color_bar->SetLookupTable(lookup_table);
+    color_bar->SetMaximumWidthInPixels(200);
+    image_viewer->GetRenderer()->AddActor(color_bar);
+
+    rangeChanged(getMin(),getMax());
+    std::cout<<getMin()<<"\t"<<getMax()<<std::endl;
+    image_info->Update();
+    image_viewer->Render();
+}
 //-----------------------------------------------------------------------------
 RenderingPipeline::~RenderingPipeline()
 {
@@ -58,31 +65,33 @@ RenderingPipeline::~RenderingPipeline()
 void RenderingPipeline::setLogScale()
 {
     lookup_table->SetScaleToLog10();
-    image_viewer->Render();
-    widget->update();
+    update();
 }
 
 //-----------------------------------------------------------------------------
 void RenderingPipeline::rotateLeft()
 {
     image_viewer->GetImageActor()->RotateZ(90);
-    image_viewer->Render();
-    widget->update();
+    update();
 }
 
 //-----------------------------------------------------------------------------
 void RenderingPipeline::rotateRight()
 {
     image_viewer->GetImageActor()->RotateZ(-90);
-    image_viewer->Render();
-    widget->update();
+    update();
 }
 
 //-----------------------------------------------------------------------------
 void RenderingPipeline::setLinScale()
 {
     lookup_table->SetScaleToLinear();
-    image_viewer->Render();
+    update();
+}
+
+//-----------------------------------------------------------------------------
+void RenderingPipeline::update()
+{
     widget->update();
 }
 
@@ -108,5 +117,11 @@ double RenderingPipeline::getMin() const
 //-----------------------------------------------------------------------------
 void RenderingPipeline::resetLookupTable()
 {
+    //setup the lookup table
     lookup_table->SetTableRange(getMin(),getMax());
+    for(vtkIdType tid=0;tid<lookup_table->GetNumberOfTableValues();tid++)
+    {   
+        lookup_table->SetTableValue(tid,rgba[tid]);
+    }
+    lookup_table->Build();
 }

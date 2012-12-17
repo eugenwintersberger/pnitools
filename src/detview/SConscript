@@ -8,7 +8,7 @@ gui_program_env.Append(LIBS=["vtkCommon","vtkIO","vtkHybrid","vtkFiltering"])
 gui_program_env.Append(LIBS=["QVTK"])
 gui_program_env.AppendUnique(LIBS=[""])
 sources = ["main.cpp","MainWidget.cpp","RenderingPipeline.cpp"]
-sources.extend(["IntensityRangeWidget.cpp"])
+#sources.extend(["IntensityRangeWidget.cpp"])
 objects = gui_program_env.Object(sources)
 detview = gui_program_env.Program("detview",objects)
 

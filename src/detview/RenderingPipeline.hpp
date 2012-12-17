@@ -1,6 +1,4 @@
-#ifndef __RENDERINGPIPELINE_HPP__
-#define __RENDERINGPIPELINE_HPP__
-
+#pragma once
 #include <vtkSmartPointer.h>
 #include <QVTKWidget.h>
 #include <vtkRenderWindow.h>
@@ -48,14 +46,20 @@ class RenderingPipeline:public QObject
         void rotateLeft();
         void rangeChanged(Float64 min,Float64 max);
     public:
+        //----------------------------------------------------------------------
         RenderingPipeline(QVTKWidget *w);
 
+        //----------------------------------------------------------------------
+        ~RenderingPipeline();
+        //----------------------------------------------------------------------
         //! return maximum of image data
         double getMax() const;
 
+        //----------------------------------------------------------------------
         //! return minimum of image data
         double getMin() const;
 
+        //----------------------------------------------------------------------
         /*!
         \brief reset lookup table
 
@@ -63,24 +67,9 @@ class RenderingPipeline:public QObject
         */
         void resetLookupTable();
 
+        //----------------------------------------------------------------------
+        void update();
 
-
-        //---------------------------------------------------------------------
-        void loadData(const String &path)
-        {
-            tiff_reader->SetFileName(path.c_str());
-            tiff_reader->Update();
-
-
-            resetLookupTable();
-            rangeChanged(getMin(),getMax());
-            std::cout<<getMin()<<"\t"<<getMax()<<std::endl;
-            image_info->Update();
-            image_viewer->Render();
-        }
-
-
-        ~RenderingPipeline();
+        //----------------------------------------------------------------------
+        void loadData(const String &path);
 };
-
-#endif
