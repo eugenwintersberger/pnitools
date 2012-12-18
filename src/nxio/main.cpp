@@ -5,8 +5,8 @@
 #include<pni/utils/Types.hpp>
 #include<pni/nx/NX.hpp>
 
-#include"../common/ProgramConfig.hpp"
-#include"../common/NXObjectPath.hpp"
+#include"../common/program_config.hpp"
+#include"../common/nx_object_path.hpp"
 
 using namespace pni::utils;
 using namespace pni::nx::h5;
@@ -16,18 +16,18 @@ typedef std::vector<String> input_t;
 int main(int argc,char **argv)
 {
     //--------------------setup program configuration--------------------------
-    ProgramConfig conf;
+    program_config conf;
 
-    conf.add_option(ConfigOption<NXObjectPath>("target","t",
+    conf.add_option(config_option<nx_object_path>("target","t",
                 "Nexus object to read from or write to"));
-    conf.add_argument(ConfigArgument<String>("command",1));
-    conf.add_argument(ConfigArgument<input_t>("input",-1,input_t{"--"}));
+    conf.add_argument(config_argument<String>("command",1));
+    conf.add_argument(config_argument<input_t>("input",-1,input_t{"--"}));
 
     conf.parse(argc,argv);
 
     //--------------------evaluate the command string--------------------------
     String command = conf.value<String>("command");
-    NXObjectPath target = conf.value<NXObjectPath>("target");
+    nx_object_path target = conf.value<nx_object_path>("target");
     if(command == "read")
     {
         //open the file in read only mode
