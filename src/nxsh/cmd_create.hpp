@@ -32,6 +32,20 @@ class file_creator : public object_creator
 };
 
 //-----------------------------------------------------------------------------
+class field_creator : public object_creator
+{
+    private:
+        String _field_name;
+        String _field_type;
+        shape_t _shape;
+        shape_t _cshape;
+
+    public:
+        virtual void setup(const std::vector<String> &cargs);
+        virtual void execute(std::unique_ptr<environment> &env);
+};
+
+//-----------------------------------------------------------------------------
 //! create something
 class cmd_create : public command
 {

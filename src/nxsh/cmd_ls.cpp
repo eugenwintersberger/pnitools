@@ -54,4 +54,6 @@ void cmd_ls::execute(std::unique_ptr<environment> &env)
         print_content(g);
     }
 
+    _target.clear();
+
 };

@@ -5,6 +5,7 @@ using namespace pni::utils;
 using namespace pni::nx::h5;
 
 #include "cmd_create.hpp"
+#include "../common/shape_reader.hpp"
 
 //-----------------------------------------------------------------------------
 void cmd_create::setup(const std::vector<String> &cargs)
@@ -21,6 +22,8 @@ void cmd_create::setup(const std::vector<String> &cargs)
         _what = std::unique_ptr<object_creator>(new group_creator());
     else if(what == "file")
         _what = std::unique_ptr<object_creator>(new file_creator());
+    else if(what == "field")
+        _what = std::unique_ptr<object_creator>(new field_creator());
     else
     {
         std::cerr<<"I do not know how to create this!"<<std::endl;
@@ -70,4 +73,31 @@ void group_creator::execute(std::unique_ptr<environment> &env)
         cg.create_group(_group_name);
     else
         cg.create_group(_group_name,_group_class);
+}
+
+//-----------------------------------------------------------------------------
+void field_creator::setup(const std::vector<String> &cargs)
+{
+    _field_name = cargs[0];
+    _field_type = cargs[1];
+
+    //need to parse the shape
+    shape_reader sreader;
+    if(cargs.size() > 2)
+        _shape = sreader.read(cargs[2]);
+
+    //need to parse the chunk shape
+    if(cargs.size() > 3)
+        _cshape = sreader.read(cargs[3]);
+
+}
+
+//-----------------------------------------------------------------------------
+void field_creator::execute( std::unique_ptr<environment> &env)
+{
+    const NXGroup &cg = env->current_group();
+
+    cg.create_field<UInt32>(_field_name,_shape);
+     
+
 }
