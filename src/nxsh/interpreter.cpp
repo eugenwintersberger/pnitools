@@ -2,14 +2,14 @@
 
 #include "environment.hpp"
 #include "interpreter.hpp"
-#include "cmd_cf.hpp"
+#include "cmd_create.hpp"
 
 //-----------------------------------------------------------------------------
  interpreter::interpreter():
     _current_env(new environment()),
     _cmd_stack()
 {
-    _cmd_stack["cf"] = std::unique_ptr<command>(new cmd_cf());
+    _cmd_stack["create"] = std::unique_ptr<command>(new cmd_create());
 }
 
 //-----------------------------------------------------------------------------
