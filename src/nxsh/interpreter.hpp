@@ -22,6 +22,6 @@ class interpreter
     public:
         interpreter(); 
         void run();
-        void prompt() ;
+        String prompt() ;
 
 };
