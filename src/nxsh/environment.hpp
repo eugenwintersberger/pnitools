@@ -49,6 +49,8 @@ class environment
         //! get group reference
         const NXGroup &current_group() const { return _current_group; }
 
+        void current_group(const String &path);
+
         //---------------------------------------------------------------------
         String get_current_path() const;
 

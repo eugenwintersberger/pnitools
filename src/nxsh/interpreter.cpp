@@ -3,6 +3,9 @@
 #include "environment.hpp"
 #include "interpreter.hpp"
 #include "cmd_create.hpp"
+#include "cmd_ls.hpp"
+#include "cmd_open.hpp"
+#include "cmd_cd.hpp"
 
 //-----------------------------------------------------------------------------
  interpreter::interpreter():
@@ -10,6 +13,9 @@
     _cmd_stack()
 {
     _cmd_stack["create"] = std::unique_ptr<command>(new cmd_create());
+    _cmd_stack["ls"] = std::unique_ptr<command>(new cmd_ls());
+    _cmd_stack["open"] = std::unique_ptr<command>(new cmd_open());
+    _cmd_stack["cd"] = std::unique_ptr<command>(new cmd_cd());
 }
 
 //-----------------------------------------------------------------------------
