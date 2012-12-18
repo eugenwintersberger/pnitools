@@ -94,5 +94,5 @@ void interpreter::run()
 //-----------------------------------------------------------------------------
 String interpreter::prompt() 
 {
-    return _current_env->get_current_path()+">>";
+    return _current_env->get_current_path()+">> ";
 }
