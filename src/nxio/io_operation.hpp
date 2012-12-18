@@ -1,9 +1,18 @@
-#ifndef __IOOPERATION_HPP__
-#define __IOOPERATION_HPP__
+#pragma once
 
-class IOOperation
+class io_operation
 {
     private:
-        
+    public:
+        virtual void operator()();
+};
 
-#endif
+template<typename TTYPE> class read_operation:public io_operation
+{
+    private:
+    public:
+        virtual void operator()()
+        {
+
+        }
+};

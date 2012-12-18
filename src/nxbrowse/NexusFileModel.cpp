@@ -1,34 +1,28 @@
 #include "NexusFileModel.hpp"
 
 //===============implementation of static methods=============================
-String NexusFileMode::_get_parent_path(const QModelIndex &parent)
+String NexusFileModel::_get_parent_path(const QModelIndex &parent)
 {
-    String *temp_ptr = std::static_cast<String*>(parent.InternalPointer());
+    String *temp_ptr = static_cast<String*>(parent.internalPointer());
 
     String path(*temp_ptr);
-    delete temp_ptr;
+    //delete temp_ptr;
     return path;
 }
 
 //-----------------------------------------------------------------------------
-NexusFileModel::NexusFileModel(const NXFile *file,QObject *parent):
-    QAbstractFileModel(parent),
-    _file(file)
-    _root_group(file.open['/'])
-{}
+NexusFileModel::NexusFileModel(QList<NXFile> flist,QObject *parent):
+    QAbstractItemModel(parent),
+    _file_list(flist),
+{ }
 
 //-----------------------------------------------------------------------------
-NexusFileModel::~NexusFileModel()
-{
-    _root_group.close();
-    _file->close();
-}
-
+NexusFileModel::~NexusFileModel() { } 
 
 //-----------------------------------------------------------------------------
 int NexusFileModel::columnCount(const QModelIndex &parent) const
 {
-    return 1;
+    return 2;
 }
 
 
@@ -46,14 +40,15 @@ QModelIndex NexusFileModel::index(int row,int column,const QModelIndex &parent) 
     if(parent.isValid())
     {
         //get the object described by the path
-        o = _root_group[_get_parent_path];
+        o = _root_group[_get_parent_path(parent)];
 
         //if the parent is a field object we just return in invalid index - 
         //fields do not have children
-        if(o.object_type() == pni::nx::NXFIELD) return QModelIndex();
+        if(o.object_type() == pni::nx::NXObjectType::NXFIELD) return QModelIndex();
 
         //if the parent is a group object we can use
-        o = o[row];
+        NXGroup g(o);
+        o = g[size_t(row)];
     }
     else
     {
@@ -73,19 +68,73 @@ int NexusFileModel::rowCount(const QModelIndex &parent) const
     if(parent.isValid())
     {
         //get the parent object
-        o = _root_group[_get_parent_path];
+        o = _root_group[_get_parent_path(parent)];
 
         //if field return 0
-        if(o.object_type() == pni::nx::NXFIELD) return 0;
+        if(o.object_type() == pni::nx::NXObjectType::NXFIELD) return 0;
         
         NXGroup g(o);
-        return size_t(g.nchil
+        return size_t(g.nchilds());
+    }
+    else
+    {
+        return size_t(_file->nchilds());
     }
 }
 
+//-----------------------------------------------------------------------------
+QVariant NexusFileModel::data(const QModelIndex &index, int role) const
+{
+    //obtain the object described by the index object
+    NXObject o = _root_group[_get_parent_path(index)];
 
+    if(role == Qt::DisplayRole)
+        return QVariant(QString(o.name().c_str()));
+    if(role == Qt::ToolTipRole)
+    {
+        if(o.object_type() == pni::nx::NXObjectType::NXFIELD)
+        {
+            return QVariant(QString("NXField object"));
+        }
+        else
+        {
+            return QVariant(QString("NXGroup object"));
+        }
+    }
+    else
+        return QVariant();
 
+}
 
+//-----------------------------------------------------------------------------
+QModelIndex NexusFileModel::parent( const QModelIndex & index ) const
+{
+    NXObject o;
+    if(index.isValid())
+    {
+        o = _root_group[_get_parent_path(index)];
+
+        if(o.object_type() == pni::nx::NXObjectType::NXFIELD)
+        {
+            NXField f(o);
+            o = f.parent();
+        }
+        else
+        {
+            NXGroup g(o);
+            o = g.parent();
+        }
+
+        String *path = new String(o.path());
+
+        return createIndex(0,0,path);
+    }
+    else
+    {
+        //in this case we are already at the top level
+        return QModelIndex();
+    }
+}
 
 
 

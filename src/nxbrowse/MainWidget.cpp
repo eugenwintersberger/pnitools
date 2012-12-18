@@ -34,10 +34,32 @@ MainWidget::MainWidget()
 }
 
 void MainWidget::open()
-{}
+{
+    QString filename = QFileDialog::getOpenFileName(this,tr("open file"),
+            tr("HDF5 files (*.h5)"));
+
+    if(filename != "")
+    {
+        try
+        {
+            file_list.append(NXFile(NXFile::open_file(filename.toStdString(),true)));
+        }
+        catch(pni::nx::NXFileError &error)
+        {
+            std::cerr<<"Error opening file"<<std::endl;
+        }
+
+        //we have to add the newly opened file to the Model list.
+        NexusFileModel *model = new NexusFileModel(f);
+        treeview->setModel(model);
+    }
+}
 
 void MainWidget::close()
-{}
+{
+    //get the selected file in the model view and close the file
+    
+}
 
 void MainWidget::quit()
 {

@@ -27,6 +27,7 @@ int main(int argc,char **argv)
 
     //--------------------evaluate the command string--------------------------
     String command = conf.value<String>("command");
+
     nx_object_path target = conf.value<nx_object_path>("target");
     if(command == "read")
     {

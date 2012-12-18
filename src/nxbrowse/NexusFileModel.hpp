@@ -1,6 +1,8 @@
 #ifndef __NEXUSFILEMODEL_HPP__
 #define __NEXUSFILEMODEL_HPP__
 
+#include<QtGui>
+
 #include <iostream>
 #include <pni/utils/Types.hpp>
 #include <pni/nx/NX.hpp>
@@ -13,16 +15,15 @@ class NexusFileModel : public QAbstractItemModel
 {
     Q_OBJECT
     private:
-        const NXFile *_file;
-        NXGroup _root_group;
+        QList<NXFile> &_file_list;
 
         static String _get_parent_path(const QModelIndex &parent);
     public:
-        //---------------------------------------------------------------------
-        NexusFileModel(const NXFile *f,QObject *parent = 0);
+        //--------------------------------------------------------------------
+        NexusFileModel(NXFile &flist,QObject *parent = 0);
 
         //---------------------------------------------------------------------
-        virtual ~NexusObjectModel();
+        virtual ~NexusFileModel();
 
         //---------------------------------------------------------------------
         virtual int columnCount (const QModelIndex &parent=QModelIndex() ) const;
@@ -39,14 +40,7 @@ class NexusFileModel : public QAbstractItemModel
         
         //---------------------------------------------------------------------
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-
-};
-
-template<typename NXTYPE> class NexusModel : public NexusObjectModel
-{
-    private:
-
-    public:
+        
         //---------------------------------------------------------------------
         virtual QVariant data(const QModelIndex &index,
                               int role = Qt::DisplayRole ) const;
@@ -57,22 +51,6 @@ template<typename NXTYPE> class NexusModel : public NexusObjectModel
 
 };
 
-//-----------------------------------------------------------------------------
-template<typename NXTYPE>
-QVariant NexusModel<NXTYPE>::data(const QModelIndex &index,int role) const
-{
 
-}
-
-//-----------------------------------------------------------------------------
-template<typename NXTYPE>
-int NexusModel<NXTYPE>::rowCount(const QModelIndex &parent) const
-{
-}
-
-//-----------------------------------------------------------------------------
-QModelIndex NexusFileModel::parent( const QModelIndex & index ) const
-{
-}
 
 #endif

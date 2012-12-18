@@ -6,6 +6,10 @@
 #include<QVBoxLayout>
 #include<QHBoxLayout>
 #include<QToolBar>
+#include<QList>
+
+#include "NexusFileModel.hpp"
+
 
 class MainWidget : public QMainWindow
 {
@@ -27,6 +31,10 @@ class MainWidget : public QMainWindow
         QMenu *fileMenu;
         QToolBar *toolbar;
         QStatusBar *statusbar;
+
+        //containers for files
+        NexusFileModel *file_model;
+        QList<NXFile> file_list;
     private slots:
         void open();
         void close();
