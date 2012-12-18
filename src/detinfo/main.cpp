@@ -26,16 +26,16 @@
 #include <pni/utils/io/CBFReader.hpp>
 #include <pni/utils/io/TIFFReader.hpp>
 
-#include "../common/Exceptions.hpp"
-#include "../common/ProgramConfig.hpp"
-#include "../common/File.hpp"
-#include "../common/FileList.hpp"
+#include "../common/exceptions.hpp"
+#include "../common/program_config.hpp"
+#include "../common/file.hpp"
+#include "../common/file_list.hpp"
 
 typedef std::vector<String> strlist;
 
 int main(int argc,char **argv)
 {
-    ProgramConfig config;
+    program_config config;
     Bool verbose = false;
 
     if(argc <= 1)
@@ -47,17 +47,17 @@ int main(int argc,char **argv)
     }
 
     //---------------------setup program configuration-------------------------
-    config.add_option(ConfigOption<Bool>("verbose","v","be verbose",&verbose));
-    config.add_option(ConfigOption<Bool>("full-path","",
+    config.add_option(config_option<Bool>("verbose","v","be verbose",&verbose));
+    config.add_option(config_option<Bool>("full-path","",
                 "show the full path on output"));
-    config.add_argument(ConfigArgument<strlist>("input-files",-1));
+    config.add_argument(config_argument<strlist>("input-files",-1));
 
     //------------------managing command line parsing--------------------------
     try
     {
         config.parse(argc,argv);
     }
-    catch(CLIHelpRequest &error)
+    catch(cli_help_request &error)
     {
         std::cerr<<config<<std::endl;
         return 1;
@@ -72,14 +72,14 @@ int main(int argc,char **argv)
     }
 
     //-------------------obtain input files------------------------------------
-    FileList infiles;
+    file_list infiles;
     
     if(verbose)
         std::cout<<"Checking input files ..."<<std::endl;
     try
     {
         auto path_list = config.value<strlist>("input-files");
-        infiles = FileList(path_list);
+        infiles = file_list(path_list);
     }
     catch(FileError &error)
     {
@@ -103,7 +103,7 @@ int main(int argc,char **argv)
         }
         else
         {
-            throw FileTypeError(EXCEPTION_RECORD,"File ["+file.path()+"] is of"
+            throw file_type_error(EXCEPTION_RECORD,"File ["+file.path()+"] is of"
                     "unknown type!");
         }
 

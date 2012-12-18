@@ -25,3 +25,9 @@ std::ostream &operator<<(std::ostream &o,const cli_help_request &e)
 {
     return e.print(o);
 }
+
+//-----------------------------------------------------------------------------
+std::ostream &operator<<(std::ostream &o,const file_type_error &e)
+{
+    return e.print(o);
+}

@@ -1,9 +1,8 @@
-#ifndef __FILELIST_HPP__
-#define __FILELIST_HPP__
+#pragma once
 
 #include <pni/utils/Types.hpp>
 #include <list>
-#include "File.hpp"
+#include "file.hpp"
 #include <boost/tokenizer.hpp>
 
 using namespace pni::utils;
@@ -17,11 +16,11 @@ using namespace pni::utils;
     program stops after a maybe long time of operation due to a simple file
     error.
     */
-    class FileList
+    class file_list
     {
         private:
             //! list with files
-            std::list<File> _file_list; 
+            std::list<file> _file_list; 
 
             //some private type definitions
             //! separator type for numeric ranges
@@ -40,13 +39,13 @@ using namespace pni::utils;
         
         public:
             //==================public types====================================
-            typedef File value_type;
-            typedef std::list<File>::iterator iterator;
-            typedef std::list<File>::const_iterator const_iterator;
+            typedef file value_type;
+            typedef std::list<file>::iterator iterator;
+            typedef std::list<file>::const_iterator const_iterator;
 
             //==================constructors and destructor=====================
             //! default constructor
-            FileList():_file_list() {}
+            file_list():_file_list() {}
 
             //------------------------------------------------------------------
             /*! 
@@ -57,7 +56,7 @@ using namespace pni::utils;
             \tparam CTYPE container type
             \param pl path list
             */
-            template<typename CTYPE> FileList(const CTYPE &pl):
+            template<typename CTYPE> file_list(const CTYPE &pl):
                 _file_list()
             {
                 for(auto po: pl)
@@ -89,5 +88,3 @@ using namespace pni::utils;
             
 
     };
-
-#endif

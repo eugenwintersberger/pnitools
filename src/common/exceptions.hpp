@@ -141,3 +141,36 @@ class cli_help_request:public Exception
         //! output operator
         friend std::ostream &operator<<(std::ostream &o,const cli_help_request &e);
 };
+    
+//------------------------------------------------------------------------
+/*!
+\brief file type error
+
+This exception is thrown if the input or output file format cannot be
+handled.
+*/
+class file_type_error:public Exception
+{
+    public:
+        //-----------------------------------------------------------------
+        //! default constructor
+        file_type_error():Exception("FileTypeError"){}
+        
+        //-----------------------------------------------------------------
+        /*!
+        \brief constructor
+
+        \param r exception record
+        \param d description
+        */
+        file_type_error(const ExceptionRecord &r,const String &d):
+            Exception("FileTypeError",r,d)
+        {}
+
+        //-----------------------------------------------------------------
+        //! destructor
+        ~file_type_error() throw() {}
+
+        //! output operator
+        friend std::ostream &operator<<(std::ostream &o,const file_type_error &e);
+};

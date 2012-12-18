@@ -1,5 +1,4 @@
-#ifndef __FILE_HPP__
-#define __FILE_HPP__
+#pragma once
 
 #include <pni/utils/Types.hpp>
 #include <boost/filesystem.hpp>
@@ -14,7 +13,7 @@ namespace fs = boost::filesystem;
     This class represents a single file stored somewhere on the file system. Its
     only purpose is to give easy access to all the parameters of the file.
     */
-    class File
+    class file
     {
         private:
             //! boost path object representing the file
@@ -22,7 +21,7 @@ namespace fs = boost::filesystem;
         public:
             //========================constructors and destructor==============
             //! default constructor
-            File():_path() {}
+            file():_path() {}
 
             //-----------------------------------------------------------------
             /*!
@@ -31,11 +30,11 @@ namespace fs = boost::filesystem;
             Constructor taking a string representing the full path to the file.
             \param f path to the file
             */
-            File(const String &path);
+            file(const String &path);
 
             //-----------------------------------------------------------------
             //! destructor
-            ~File() {}
+            ~file() {}
 
             //=================general purpose methods=========================
             //! return the name of the file
@@ -53,6 +52,3 @@ namespace fs = boost::filesystem;
             //! return the full path of the file
             String path() const;
     };
-
-
-#endif
