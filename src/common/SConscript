@@ -2,6 +2,7 @@ Import("program_env")
 
 common_sources = ["Exceptions.cpp","ProgramConfig.cpp","File.cpp","FileList.cpp"]
 common_sources.extend(["NXObjectPath.cpp","string_utils.cpp"])
+common_sources.extend(["exceptions.cpp","program_config.cpp","nx_object_path.cpp"])
 common_objects = program_env.Object(common_sources)
 
 Return("common_objects")

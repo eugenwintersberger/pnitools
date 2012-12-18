@@ -62,6 +62,6 @@ std::istream &operator>>(std::istream &i,nx_object_path &path)
 {
     String pstring;
     i>>pstring;
-    path = NXObjectPath(pstring);
+    path = nx_object_path(pstring);
     return i;
 }

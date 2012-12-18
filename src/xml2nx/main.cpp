@@ -7,8 +7,8 @@
 #include<boost/property_tree/xml_parser.hpp>
 
 #include "xml_utils.hpp"
-#include "../common/ProgramConfig.hpp"
-#include "../common/NXObjectPath.hpp"
+#include "../common/program_config.hpp"
+#include "../common/nx_object_path.hpp"
 
 using namespace pni::utils;
 using namespace pni::nx::h5;
@@ -18,12 +18,12 @@ namespace tree = boost::property_tree;
 
 int main(int argc,char **argv)
 {
-    ProgramConfig conf;
-    conf.add_option(ConfigOption<NXObjectPath>("parent","p",
+    program_config conf;
+    conf.add_option(config_option<nx_object_path>("parent","p",
                 "path to the parent object"));
-    conf.add_option(ConfigOption<Bool>("append","a",
+    conf.add_option(config_option<Bool>("append","a",
                 "append structure to existing file"));
-    conf.add_argument(ConfigArgument<String>("input_file",-1));
+    conf.add_argument(config_argument<String>("input_file",-1));
    
     //show usage message
     if(argc <= 1)
@@ -39,7 +39,7 @@ int main(int argc,char **argv)
     {
         conf.parse(argc,argv);
     }
-    catch(CLIHelpRequest &error)
+    catch(cli_help_request &error)
     {
         std::cerr<<conf<<std::endl;
         return 1;
@@ -60,7 +60,7 @@ int main(int argc,char **argv)
 
 
     //get the target file
-    auto opath = conf.value<NXObjectPath>("parent");
+    auto opath = conf.value<nx_object_path>("parent");
     NXFile nxfile;
     if(conf.value<Bool>("append"))
     {
