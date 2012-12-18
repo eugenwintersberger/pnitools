@@ -1,0 +1,10 @@
+Import("program_env")
+
+nxsh_objects =[program_env.Object(["main.cpp","interpreter.cpp","environment.cpp"])]
+nxsh_objects.extend(['cmd_cf.cpp'])
+nxsh_objects.extend(SConscript("../common/SConscript"))
+nxsh = program_env.Program(target="nxsh",source=nxsh_objects)
+nxsh_install = program_env.Install("$PREFIX/bin",nxsh)
+
+program_env.Alias("all",[nxsh])
+program_env.Alias("install",[nxsh_install])
