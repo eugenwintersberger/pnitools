@@ -158,6 +158,10 @@ if not conf.CheckCXXHeader("boost/filesystem.hpp"):
 if not conf.CheckCXXHeader("boost/tokenizer.hpp"):
     print "BOOST tokenizer not found!"
     Exit(1)
+
+if not conf.CheckHeader("readline/readline.h"):
+    print "Readline development files not installed!"
+    Exit(1)
     
 if not conf.CheckCXXHeader("boost/program_options/options_description.hpp")\
     or not conf.CheckCXXHeader("boost/program_options/variables_map.hpp")\
@@ -183,6 +187,10 @@ if not conf.CheckLib("boost_regex",language="C++"):
 
 if not conf.CheckLib("boost_filesystem",language="C++"):
     print "BOOST filesystem library not found!"
+    Exit(1)
+
+if not conf.CheckLib("readline"):
+    print "Readline runtime library not installed"
     Exit(1)
 
 env = conf.Finish()

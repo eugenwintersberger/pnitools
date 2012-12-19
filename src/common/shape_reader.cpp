@@ -2,18 +2,19 @@
 
 shape_reader::shape_reader()
 {
-    e = boost::regex("(\\d+)");
+    e = boost::regex("\\d+");
 }
 
 shape_reader::shape_reader(char st,char et,String s)
 {
-    e = boost::regex("(\\d+)");
+    e = boost::regex("\\d+");
 }
 
 shape_t shape_reader::read(const String &s) 
 {
+    std::cout<<s<<std::endl;
     boost::match_results<String::const_iterator> what;
-    boost::regex_search(s.begin(),s.end(),what,e);
+    boost::regex_match(s,what,e);
 
     std::cout<<what.size()<<std::endl;
     for(auto match: what)

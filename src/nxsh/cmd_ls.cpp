@@ -1,11 +1,7 @@
 #include "cmd_ls.hpp"
 
-#include <pni/utils/Types.hpp>
-#include <pni/nx/NX.hpp>
 #include <boost/tokenizer.hpp>
 
-using namespace pni::utils;
-using namespace pni::nx::h5;
 
 //-----------------------------------------------------------------------------
 void cmd_ls::setup(const std::vector<String> &cargs)
@@ -14,16 +10,55 @@ void cmd_ls::setup(const std::vector<String> &cargs)
         _target = cargs[0];
 }
 
+//------------------------------------------------------------------------------
+void cmd_ls::print_field(const NXField &f) const
+{
+    auto s = f.shape<shape_t>();
+
+    std::cout<<"field\t";
+    std::cout<<f.name()<<"\t";
+    std::cout<<f.type_id()<<"\t";
+
+    std::cout<<"( ";
+    for(auto v: s)
+        std::cout<<v<<" ";
+
+    std::cout<<" )"<<std::endl;
+}
+
+//------------------------------------------------------------------------------
+void cmd_ls::print_group(const NXGroup &g) const
+{
+    std::cout<<"group\t";
+    std::cout<<g.name();
+
+    if(g.has_attr("NX_class"))
+    {
+        String attr_str;
+        g.attr("NX_class").read(attr_str);
+        std::cout<<"\t class = "<<attr_str;
+    }
+
+    std::cout<<std::endl;
+
+}
+
+//------------------------------------------------------------------------------
+void cmd_ls::print_attribute(const NXAttribute &g) const
+{
+
+}
+
+//------------------------------------------------------------------------------
 void cmd_ls::print_content(const NXGroup &g) const
 {
     for(auto o: g)
     {
         if(o.object_type() == pni::nx::NXObjectType::NXFIELD)
-            std::cout<<"field";
+            print_field(NXField(o));
         else if(o.object_type() == pni::nx::NXObjectType::NXGROUP)
-            std::cout<<"group";
+            print_group(NXGroup(o));
 
-        std::cout<<"\t"<<o.name()<<std::endl;
     }
 }
 

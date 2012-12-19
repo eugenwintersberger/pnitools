@@ -1,5 +1,10 @@
 #include <boost/tokenizer.hpp>
 
+extern "C" {
+#include<readline/readline.h>
+#include<readline/history.h>
+}
+
 #include "environment.hpp"
 #include "interpreter.hpp"
 #include "cmd_create.hpp"
@@ -36,16 +41,28 @@ void interpreter::strip_command(const String &s,String
 //-----------------------------------------------------------------------------
 void interpreter::run()
 {
-    char input_buffer[1024];
     //interpreter main loop
     while(true)
     {
         //print prompt
-        prompt();
+        //prompt();
 
         //read user input
+        /*
         std::cin.getline(input_buffer,1024,'\n');
-        String input_str(input_buffer);
+        */
+        char *line_buffer = nullptr;
+        line_buffer = readline(prompt().c_str());
+        String input_str(line_buffer);
+
+        if(line_buffer && *line_buffer)
+        {
+            add_history(line_buffer);
+        }
+
+        //need to free the memory
+        free(line_buffer); 
+        line_buffer = nullptr;
 
         //split command name and arguments
         String cname;
@@ -75,7 +92,7 @@ void interpreter::run()
 }
 
 //-----------------------------------------------------------------------------
-void interpreter::prompt() 
+String interpreter::prompt() 
 {
-    std::cout<<_current_env->get_current_path()<<">>";
+    return _current_env->get_current_path()+">> ";
 }
