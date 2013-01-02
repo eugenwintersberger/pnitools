@@ -92,9 +92,18 @@ void cmd_ls::print_group(const NXGroup &g) const
 }
 
 //------------------------------------------------------------------------------
-void cmd_ls::print_attribute(const NXAttribute &g) const
+void cmd_ls::print_attribute(const NXAttribute &a) const
 {
-
+    std::cout<<"\tattribute\t"<<a.name();
+    if(_config->value<bool>("long"))
+    {
+        std::cout<<"\t"<<a.type_id()<<"\t";
+        std::cout<<"( ";
+        auto s = a.shape<shape_t>();
+        for(auto v: s) std::cout<<v<<" ";
+        std::cout<<")";
+    }
+    std::cout<<std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -106,6 +115,12 @@ void cmd_ls::print_content(const NXGroup &g) const
             print_field(NXField(o));
         else if(o.object_type() == pni::nx::NXObjectType::NXGROUP)
             print_group(NXGroup(o));
+
+        if(_config->value<bool>("attributes"))
+        {
+            for(auto attr = o.attr_begin();attr!=o.attr_end();++attr)
+                print_attribute(*attr);
+        }
 
     }
 }
