@@ -1,8 +1,8 @@
 Import("program_env")
 
 common_sources = ["file.cpp","file_list.cpp"]
-common_sources.extend(["string_utils.cpp",'shape_reader.cpp','cli_args.cpp'])
-common_sources.extend(["exceptions.cpp","program_config.cpp","nx_object_path.cpp"])
+common_sources.extend(["string_utils.cpp",'shape_reader.cpp'])
+common_sources.extend(["nx_object_path.cpp"])
 common_objects = program_env.Object(common_sources)
 
 Return("common_objects")
