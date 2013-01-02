@@ -1,13 +1,14 @@
 #include<iostream>
 
 #include<pni/utils/Types.hpp>
+#include <pni/utils/config/configuration.hpp>
+#include <pni/utils/config/config_parser.hpp>
 #include<pni/nx/NX.hpp>
 
 #include<boost/property_tree/ptree.hpp>
 #include<boost/property_tree/xml_parser.hpp>
 
 #include "xml_utils.hpp"
-#include "../common/program_config.hpp"
 #include "../common/nx_object_path.hpp"
 
 using namespace pni::utils;
@@ -18,7 +19,7 @@ namespace tree = boost::property_tree;
 
 int main(int argc,char **argv)
 {
-    program_config conf;
+    configuration conf;
     conf.add_option(config_option<nx_object_path>("parent","p",
                 "path to the parent object"));
     conf.add_option(config_option<Bool>("append","a",
@@ -37,7 +38,7 @@ int main(int argc,char **argv)
     //parse command line options and arguments
     try
     {
-        conf.parse(argc,argv);
+        parse(conf,argc,(const char**)argv);
     }
     catch(cli_help_request &error)
     {
