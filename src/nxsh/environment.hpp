@@ -1,3 +1,24 @@
+/*
+ * (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+ *
+ * This file is part of pnitools.
+ *
+ * pnitools is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * pnitools is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
+ *************************************************************************
+ * Created on: Dec 18, 2012
+ *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+ */
 #pragma once
 
 #include <iostream>
@@ -8,11 +29,17 @@ using namespace pni::utils;
 using namespace pni::nx::h5;
 
 
+/*!
+\brief basic shell environment
+
+This class holds the environment for the Nexus shell. Currently this includes
+only the file and the current group. 
+*/
 class environment
 {
     private:
-        NXFile _file;
-        NXGroup _current_group;
+        NXFile _file; //!< currently opened file
+        NXGroup _current_group; //!< current group
     public:
         //=====================constructor and destructor=======================
         //! default constructor
@@ -49,9 +76,12 @@ class environment
         //! get group reference
         const NXGroup &current_group() const { return _current_group; }
 
+        //!--------------------------------------------------------------------
+        //! set the current group
         void current_group(const String &path);
 
         //---------------------------------------------------------------------
+        //! get curent path 
         String get_current_path() const;
 
 };
