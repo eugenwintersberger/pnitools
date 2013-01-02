@@ -1,40 +1,28 @@
 #include "cmd_ls.hpp"
-#include "../common/cli_args.hpp"
+#include <pni/utils/config/cli_args.hpp>
+#include <pni/utils/config/config_parser.hpp>
+#include <pni/utils/config/configuration.hpp>
 
 #include <boost/tokenizer.hpp>
 
 //-----------------------------------------------------------------------------
-cmd_ls::cmd_ls()
-{
-}
+cmd_ls::cmd_ls() { }
 
 //-----------------------------------------------------------------------------
 void cmd_ls::setup(const std::vector<String> &cargs)
 {
-    program_config config;
+    //create configuration setup
+    configuration config;
     config.add_option(config_option<bool>("attributes","a",
-                                          "show attributes",false));
+                                          "show attributes",false,
+                                          &_show_attributes));
     config.add_option(config_option<bool>("long","l",
-                                          "show detailed information",false));
-    config.add_option(config_option<String>("name","n","test"));
+                                          "show detailed information",false,
+                                          &_show_long));
+    config.add_argument(config_argument<String>("target",-1,"",&_target));
 
     cli_args args(cargs);
-    config.parse(args.argc(),const_cast<char**>(args.argv()));
-    std::cout<<args.argc()<<std::endl;
-    std::cout<<config.value<bool>("long")<<std::endl;
-    std::cout<<config.value<String>("name")<<std::endl;
-
-
-    if(config.value<bool>("long"))
-        std::cout<<"long info"<<std::endl;
-
-    if(config.value<bool>("attribute"))
-        std::cout<<"show attributes"<<std::endl;
-
-    /*
-    if(cargs.size() != 0)
-        _target = cargs[0];
-        */
+    parse(config,args.argc(),args.argv());
 }
 
 //------------------------------------------------------------------------------

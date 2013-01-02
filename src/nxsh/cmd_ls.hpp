@@ -6,7 +6,7 @@
 
 #include "command.hpp"
 
-#include "../common/program_config.hpp"
+#include <pni/utils/config/configuration.hpp>
 
 using namespace pni::utils;
 using namespace pni::nx::h5;
@@ -14,9 +14,9 @@ using namespace pni::nx::h5;
 class cmd_ls : public command
 {
     private:
-        //program_config config;
         String _target;
         bool _show_attributes;
+        bool _show_long;
 
         void print_content(const NXGroup &g) const;
         void print_field(const NXField &o) const;
