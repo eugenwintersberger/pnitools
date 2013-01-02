@@ -1,13 +1,40 @@
 #include "cmd_ls.hpp"
+#include "../common/cli_args.hpp"
 
 #include <boost/tokenizer.hpp>
 
+//-----------------------------------------------------------------------------
+cmd_ls::cmd_ls()
+{
+}
 
 //-----------------------------------------------------------------------------
 void cmd_ls::setup(const std::vector<String> &cargs)
 {
+    program_config config;
+    config.add_option(config_option<bool>("attributes","a",
+                                          "show attributes",false));
+    config.add_option(config_option<bool>("long","l",
+                                          "show detailed information",false));
+    config.add_option(config_option<String>("name","n","test"));
+
+    cli_args args(cargs);
+    config.parse(args.argc(),const_cast<char**>(args.argv()));
+    std::cout<<args.argc()<<std::endl;
+    std::cout<<config.value<bool>("long")<<std::endl;
+    std::cout<<config.value<String>("name")<<std::endl;
+
+
+    if(config.value<bool>("long"))
+        std::cout<<"long info"<<std::endl;
+
+    if(config.value<bool>("attribute"))
+        std::cout<<"show attributes"<<std::endl;
+
+    /*
     if(cargs.size() != 0)
         _target = cargs[0];
+        */
 }
 
 //------------------------------------------------------------------------------
@@ -16,14 +43,16 @@ void cmd_ls::print_field(const NXField &f) const
     auto s = f.shape<shape_t>();
 
     std::cout<<"field\t";
-    std::cout<<f.name()<<"\t";
-    std::cout<<f.type_id()<<"\t";
+    std::cout<<f.name();
 
-    std::cout<<"( ";
-    for(auto v: s)
-        std::cout<<v<<" ";
+        std::cout<<"\t"<<f.type_id()<<"\t";
 
-    std::cout<<" )"<<std::endl;
+        std::cout<<"( ";
+        for(auto v: s)
+            std::cout<<v<<" ";
+
+        std::cout<<" )";
+    std::cout<<std::endl;
 }
 
 //------------------------------------------------------------------------------

@@ -6,12 +6,15 @@
 
 #include "command.hpp"
 
+#include "../common/program_config.hpp"
+
 using namespace pni::utils;
 using namespace pni::nx::h5;
 
 class cmd_ls : public command
 {
     private:
+        //program_config config;
         String _target;
         bool _show_attributes;
 
@@ -20,6 +23,7 @@ class cmd_ls : public command
         void print_group(const NXGroup &o) const;
         void print_attribute(const NXAttribute &g) const;
     public:
+        cmd_ls();
         virtual void setup(const std::vector<String> &cargs);
         virtual void execute(std::unique_ptr<environment> &env);
 };
