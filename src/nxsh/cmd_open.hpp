@@ -14,4 +14,5 @@ class cmd_open : public command
     public:
         virtual void setup(const std::vector<String> &cargs);
         virtual void execute(std::unique_ptr<environment> &env);
+        virtual void help() const {}
 };

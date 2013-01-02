@@ -16,35 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
  *************************************************************************
- * Created on: Dec 18, 2012
+ * Created on: Jan 02, 2013
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include "shape_reader.hpp"
+#pragma once
+
+#include <pni/utils/config/configuration.hpp>
+#include "command.hpp"
+
+using namespace pni::utils;
 
 //-----------------------------------------------------------------------------
-shape_reader::shape_reader()
+//! create something
+class cmd_mkattr : public command
 {
-    e = boost::regex("(\\d+)");
-}
+    private:
+        std::unique_ptr<configuration> _config;
+    public:
+        virtual void setup(const std::vector<String> &cargs);
+        virtual void execute(std::unique_ptr<environment> &env);
+        virtual void help() const;
+};
 
-//-----------------------------------------------------------------------------
-shape_reader::shape_reader(char st,char et,String s)
-{
-    e = boost::regex("(\\d+)");
-}
 
-//-----------------------------------------------------------------------------
-shape_t shape_reader::read(const String &s) 
-{
-    std::cout<<s<<std::endl;
-    boost::match_results<String::const_iterator> what;
-    boost::regex_match(s,what,e);
-
-    std::cout<<what.size()<<std::endl;
-    for(auto match: what)
-        std::cout<<match<<std::endl;
-
-    return shape_t();
-
-}
