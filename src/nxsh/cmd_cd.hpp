@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <pni/utils/config/configuration.hpp>
 #include "command.hpp"
 
 /*!
@@ -35,8 +36,11 @@ which the user wants to change.
 class cmd_cd : public command
 {
     private:
+        //! pointer to configuration
+        std::unique_ptr<configuration> _config;
         String _target; //!< target path
     public:
         virtual void setup(const std::vector<String> &cargs);
         virtual void execute(std::unique_ptr<environment> &env);
+        virtual void help() const;
 };
