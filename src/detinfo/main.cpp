@@ -26,16 +26,17 @@
 #include <pni/utils/io/CBFReader.hpp>
 #include <pni/utils/io/TIFFReader.hpp>
 
-#include "../common/exceptions.hpp"
-#include "../common/program_config.hpp"
+#include <pni/utils/config/configuration.hpp>
+#include <pni/utils/config/config_parser.hpp>
 #include "../common/file.hpp"
 #include "../common/file_list.hpp"
+#include "../common/exceptions.hpp"
 
 typedef std::vector<String> strlist;
 
 int main(int argc,char **argv)
 {
-    program_config config;
+    configuration config;
     Bool verbose = false;
 
     if(argc <= 1)
@@ -55,7 +56,7 @@ int main(int argc,char **argv)
     //------------------managing command line parsing--------------------------
     try
     {
-        config.parse(argc,argv);
+        parse(config,argc,(const char**)argv);
     }
     catch(cli_help_request &error)
     {

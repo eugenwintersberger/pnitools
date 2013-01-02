@@ -5,7 +5,8 @@
 #include<pni/utils/Types.hpp>
 #include<pni/nx/NX.hpp>
 
-#include"../common/program_config.hpp"
+#include <pni/utils/config/configuration.hpp>
+#include <pni/utils/config/config_parser.hpp>
 #include"../common/nx_object_path.hpp"
 
 using namespace pni::utils;
@@ -16,14 +17,14 @@ typedef std::vector<String> input_t;
 int main(int argc,char **argv)
 {
     //--------------------setup program configuration--------------------------
-    program_config conf;
+    configuration conf;
 
     conf.add_option(config_option<nx_object_path>("target","t",
                 "Nexus object to read from or write to"));
     conf.add_argument(config_argument<String>("command",1));
     conf.add_argument(config_argument<input_t>("input",-1,input_t{"--"}));
 
-    conf.parse(argc,argv);
+    parse(conf,argc,(const char**)argv);
 
     //--------------------evaluate the command string--------------------------
     String command = conf.value<String>("command");
