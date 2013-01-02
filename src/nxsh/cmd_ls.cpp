@@ -33,6 +33,8 @@ void cmd_ls::print_field(const NXField &f) const
     std::cout<<"field\t";
     std::cout<<f.name();
 
+    if(_show_long)
+    {
         std::cout<<"\t"<<f.type_id()<<"\t";
 
         std::cout<<"( ";
@@ -40,6 +42,8 @@ void cmd_ls::print_field(const NXField &f) const
             std::cout<<v<<" ";
 
         std::cout<<" )";
+    }
+
     std::cout<<std::endl;
 }
 
@@ -48,12 +52,15 @@ void cmd_ls::print_group(const NXGroup &g) const
 {
     std::cout<<"group\t";
     std::cout<<g.name();
-
-    if(g.has_attr("NX_class"))
+   
+    if(_show_long)
     {
-        String attr_str;
-        g.attr("NX_class").read(attr_str);
-        std::cout<<"\t class = "<<attr_str;
+        if(g.has_attr("NX_class"))
+        {
+            String attr_str;
+            g.attr("NX_class").read(attr_str);
+            std::cout<<":"<<attr_str;
+        }
     }
 
     std::cout<<std::endl;
