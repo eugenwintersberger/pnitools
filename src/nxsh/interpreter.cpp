@@ -104,8 +104,14 @@ void interpreter::run()
                 _cmd_stack[cname]->setup(cargs);
                 _cmd_stack[cname]->execute(_current_env);
             }
+            catch(cli_help_request &error)
+            {
+                std::cout<<"help:"<<std::endl;
+                _cmd_stack[cname]->help();
+            }
             catch(...)
             {
+                std::cout<<"hm - something went wrong!"<<std::endl;
             }
         }
         else

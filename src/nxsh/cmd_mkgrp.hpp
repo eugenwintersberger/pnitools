@@ -21,6 +21,7 @@
  */
 #pragma once
 
+#include <pni/utils/config/configuration.hpp>
 #include "command.hpp"
 
 /*!
@@ -33,11 +34,11 @@ group.
 class cmd_mkgrp : public command
 {
     private:
-        String _class; //!< class name
-        String _name;  //!< group name 
+        std::unique_ptr<configuration> _config;
     public:
         virtual void setup(const std::vector<String> &cargs);
         virtual void execute(std::unique_ptr<environment> &env);
+        virtual void help() const;
 };
 
 

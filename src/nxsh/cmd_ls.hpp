@@ -24,6 +24,7 @@
 
 #include <pni/utils/Types.hpp>
 #include <pni/utils/Array.hpp>
+#include <pni/utils/config/configuration.hpp>
 #include <pni/nx/NX.hpp>
 
 #include "command.hpp"
@@ -44,12 +45,7 @@ with the objects.
 class cmd_ls : public command
 {
     private:
-        //! path to the group whose contet should be shown
-        String _target; 
-        //! show attributes if true
-        bool _show_attributes;
-        //! show additional information if true
-        bool _show_long;
+        std::unique_ptr<configuration> _config;
 
         /*!
         \brief print group content
@@ -90,4 +86,5 @@ class cmd_ls : public command
         cmd_ls();
         virtual void setup(const std::vector<String> &cargs);
         virtual void execute(std::unique_ptr<environment> &env);
+        virtual void help() const;
 };

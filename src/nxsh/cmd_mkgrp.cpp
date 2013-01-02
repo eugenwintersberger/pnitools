@@ -34,13 +34,15 @@ using namespace pni::nx::h5;
 //-----------------------------------------------------------------------------
 void cmd_mkgrp::setup(const std::vector<String> &cargs)
 {
-    configuration config;
-    config.add_option(config_option<String>("class","c","group class","",
-                                            &_class));
-    config.add_argument(config_argument<String>("name",-1,"", &_name));
+    _config = std::unique_ptr<configuration>(new configuration);
+    _config->add_option(config_option<String>("class","c","group class",""));
+    _config->add_argument(config_argument<String>("name",-1,""));
 
     cli_args args(cargs);
-    parse(config,args.argc(),args.argv());
+    parse(*_config,args.argc(),args.argv());
+
+    if(_config->has_option("help"))
+        throw cli_help_request(EXCEPTION_RECORD,"show help");
 }
 
 //-----------------------------------------------------------------------------
@@ -49,12 +51,18 @@ void cmd_mkgrp::execute(std::unique_ptr<environment> &env)
     const NXGroup &cg = env->current_group();
   
     //if no group name was passed - do nothing
-    if(_name.empty()) return;
+    if(!_config->has_option("name")) return;
 
     //create the group
-    if(_class.empty())
-        cg.create_group(_name);
+    if(_config->value<String>("class").empty())
+        cg.create_group(_config->value<String>("name"));
     else
-        cg.create_group(_name,_class);
+        cg.create_group(_config->value<String>("name"),
+                        _config->value<String>("class"));
 }
 
+//-----------------------------------------------------------------------------
+void cmd_mkgrp::help() const
+{
+    std::cout<<*_config<<std::endl;
+}

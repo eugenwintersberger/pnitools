@@ -34,17 +34,20 @@ cmd_ls::cmd_ls() { }
 void cmd_ls::setup(const std::vector<String> &cargs)
 {
     //create configuration setup
-    configuration config;
-    config.add_option(config_option<bool>("attributes","a",
-                                          "show attributes",false,
-                                          &_show_attributes));
-    config.add_option(config_option<bool>("long","l",
-                                          "show detailed information",false,
-                                          &_show_long));
-    config.add_argument(config_argument<String>("target",-1,"",&_target));
+    _config = std::unique_ptr<configuration>(new configuration);
+    _config->add_option(config_option<bool>("attributes","a",
+                                          "show attributes",false));
+    _config->add_option(config_option<bool>("long","l",
+                                          "show detailed information",false));
+    _config->add_argument(config_argument<String>("target",-1,""));
 
+    //parse configuration 
     cli_args args(cargs);
-    parse(config,args.argc(),args.argv());
+    parse(*_config,args.argc(),args.argv());
+
+    //check if help should be shown
+    if(_config->has_option("help"))
+        throw cli_help_request(EXCEPTION_RECORD,"show help");
 }
 
 //------------------------------------------------------------------------------
@@ -55,13 +58,12 @@ void cmd_ls::print_field(const NXField &f) const
     std::cout<<"field\t";
     std::cout<<f.name();
 
-    if(_show_long)
+    if(_config->value<bool>("long"))
     {
         std::cout<<"\t"<<f.type_id()<<"\t";
 
         std::cout<<"( ";
-        for(auto v: s)
-            std::cout<<v<<" ";
+        for(auto v: s) std::cout<<v<<" ";
 
         std::cout<<" )";
     }
@@ -75,7 +77,7 @@ void cmd_ls::print_group(const NXGroup &g) const
     std::cout<<"group\t";
     std::cout<<g.name();
    
-    if(_show_long)
+    if(_config->value<bool>("long"))
     {
         if(g.has_attr("NX_class"))
         {
@@ -113,15 +115,17 @@ void cmd_ls::execute(std::unique_ptr<environment> &env)
 {
     const NXGroup &cg = env->current_group();
 
-    if(_target.empty())
+    if(!_config->has_option("target"))
     {
         //just print the content of the current group
         print_content(cg);
     }
     else
     {
+        auto target = _config->value<String>("target");
         boost::char_separator<char> separator("/");
-        boost::tokenizer<boost::char_separator<char> > t(_target,separator);
+        boost::tokenizer<boost::char_separator<char> > t(target,separator);
+
         NXGroup g(cg);
         for(auto iter = t.begin();iter!=t.end();++iter)
         {
@@ -135,6 +139,12 @@ void cmd_ls::execute(std::unique_ptr<environment> &env)
         print_content(g);
     }
 
-    _target.clear();
+}
 
-};
+//-----------------------------------------------------------------------------
+void cmd_ls::help() const
+{
+    std::cout<<*_config<<std::endl;
+}
+
+
