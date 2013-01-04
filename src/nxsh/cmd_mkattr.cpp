@@ -29,7 +29,7 @@ using namespace pni::utils;
 using namespace pni::nx::h5;
 
 #include "cmd_mkattr.hpp"
-#include "../common/shape_reader.hpp"
+#include "../common/string_utils.hpp"
 
 //-----------------------------------------------------------------------------
 void cmd_mkattr::setup(const std::vector<String> &cargs)
@@ -37,6 +37,12 @@ void cmd_mkattr::setup(const std::vector<String> &cargs)
     _config = std::unique_ptr<configuration>(new configuration);
     _config->add_option(config_option<String>("type","t","attribute type"));
     _config->add_option(config_option<String>("shape","s","attribute shape"));
+    _config->add_option(config_option<bool>("overwrite","o",
+                "overwrite an attribute if it already exists",false));
+    _config->add_option(config_option<String>("name","n",
+                "name of the attribute"));
+    _config->add_argument(config_argument<String>("parent",-1,
+                "attribute parent"));
     
     //parse configuration
     cli_args args(cargs);
@@ -47,6 +53,21 @@ void cmd_mkattr::setup(const std::vector<String> &cargs)
 //-----------------------------------------------------------------------------
 void cmd_mkattr::execute(std::unique_ptr<environment> &env)
 {
+    //get the parent object
+    const NXGroup &cg = env->current_group();
+    NXObject o = cg[_config->value<String>("parent")];
+
+    auto type = _config->value<String>("type");
+    
+    if(_config->has_option("shape"))
+        mkattr(o,_config->value<String>("name"),
+                 _config->value<String>("type"),
+                 read_shape<shape_t>(_config->value<String>("shape")),
+                 _config->value<bool>("overwrite"));
+    else
+        mkattr(o,_config->value<String>("name"),
+                 _config->value<String>("type"),
+                 _config->value<bool>("overwrite"));
 
 }
 

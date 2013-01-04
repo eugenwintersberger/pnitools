@@ -29,26 +29,26 @@ extern "C" {
 
 #include "environment.hpp"
 #include "interpreter.hpp"
-#include "cmd_create.hpp"
 #include "cmd_ls.hpp"
 #include "cmd_open.hpp"
 #include "cmd_cd.hpp"
 #include "cmd_mkgrp.hpp"
 #include "cmd_mkfield.hpp"
 #include "cmd_mkattr.hpp"
+#include "cmd_mkfile.hpp"
 
 //-----------------------------------------------------------------------------
  interpreter::interpreter():
     _current_env(new environment()),
     _cmd_stack()
 {
-    _cmd_stack["create"] = std::unique_ptr<command>(new cmd_create());
-    _cmd_stack["mkgrp"] = std::unique_ptr<command>(new cmd_mkgrp());
     _cmd_stack["ls"] = std::unique_ptr<command>(new cmd_ls());
     _cmd_stack["open"] = std::unique_ptr<command>(new cmd_open());
     _cmd_stack["cd"] = std::unique_ptr<command>(new cmd_cd());
     _cmd_stack["mkfield"] = std::unique_ptr<command>(new cmd_mkfield());
     _cmd_stack["mkattr"] = std::unique_ptr<command>(new cmd_mkattr());
+    _cmd_stack["mkfile"] = std::unique_ptr<command>(new cmd_mkfile());
+    _cmd_stack["mkgrp"] = std::unique_ptr<command>(new cmd_mkgrp());
 }
 
 //-----------------------------------------------------------------------------
