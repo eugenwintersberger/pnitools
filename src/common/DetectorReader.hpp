@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include <pni/utils/PNITypes.hpp>
-#include <pni/utils/ArrayObject.hpp>
+#include <pni/core/PNITypes.hpp>
+#include <pni/core/ArrayObject.hpp>
 
 #include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;
-using namespace pni::utils;
+using namespace pni::core;
 
 class DetectorReader 
 {

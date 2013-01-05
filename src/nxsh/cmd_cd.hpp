@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <pni/utils/config/configuration.hpp>
+#include <pni/core/config/configuration.hpp>
 #include "command.hpp"
 
 /*!

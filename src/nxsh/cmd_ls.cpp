@@ -21,9 +21,9 @@
  */
 
 #include "cmd_ls.hpp"
-#include <pni/utils/config/cli_args.hpp>
-#include <pni/utils/config/config_parser.hpp>
-#include <pni/utils/config/configuration.hpp>
+#include <pni/core/config/cli_args.hpp>
+#include <pni/core/config/config_parser.hpp>
+#include <pni/core/config/configuration.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -111,9 +111,9 @@ void cmd_ls::print_content(const NXGroup &g) const
 {
     for(auto o: g)
     {
-        if(o.object_type() == pni::nx::NXObjectType::NXFIELD)
+        if(o.object_type() == pni::io::nx::NXObjectType::NXFIELD)
             print_field(NXField(o));
-        else if(o.object_type() == pni::nx::NXObjectType::NXGROUP)
+        else if(o.object_type() == pni::io::nx::NXObjectType::NXGROUP)
             print_group(NXGroup(o));
 
         if(_config->value<bool>("attributes"))

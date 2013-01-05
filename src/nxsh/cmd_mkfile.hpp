@@ -21,10 +21,10 @@
  */
 #pragma once
 
-#include <pni/utils/config/configuration.hpp>
+#include <pni/core/config/configuration.hpp>
 #include "command.hpp"
 
-using namespace pni::utils;
+using namespace pni::core;
 
 //! create something
 class cmd_mkfile : public command

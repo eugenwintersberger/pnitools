@@ -60,7 +60,7 @@ void environment::current_group(const String &path)
 
     //need to check if the target is a group
     NXObject o = _current_group[path];
-    if(o.object_type() == pni::nx::NXObjectType::NXFIELD)
+    if(o.object_type() == pni::io::nx::NXObjectType::NXFIELD)
     {
         std::cout<<"You cannot cd to a field!"<<std::endl;
     }

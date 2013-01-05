@@ -2,15 +2,15 @@
 #include<list>
 #include<vector>
 
-#include<pni/utils/Types.hpp>
-#include<pni/nx/NX.hpp>
+#include<pni/core/Types.hpp>
+#include<pni/io/nx/NX.hpp>
 
-#include <pni/utils/config/configuration.hpp>
-#include <pni/utils/config/config_parser.hpp>
+#include <pni/core/config/configuration.hpp>
+#include <pni/core/config/config_parser.hpp>
 #include"../common/nx_object_path.hpp"
 
-using namespace pni::utils;
-using namespace pni::nx::h5;
+using namespace pni::core;
+using namespace pni::io::nx::h5;
 
 typedef std::vector<String> input_t;
 

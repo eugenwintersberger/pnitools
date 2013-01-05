@@ -1,5 +1,4 @@
-#ifndef __MAINWIDGET_HPP__
-#define __MAINWIDGET_HPP__
+#pragma once
 
 #include<QTextEdit>
 #include<QtGui>
@@ -42,5 +41,3 @@ class MainWidget : public QMainWindow
     public:
         MainWidget();
 };
-
-#endif

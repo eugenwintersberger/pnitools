@@ -19,15 +19,14 @@
  * Created on: 03.06.2012
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
-#ifndef __SCALEOPERATOR_HPP__
-#define __SCALEOPERATOR_HPP__
+#pragma once
 
-#include <pni/utils/Types.hpp>
-#include <pni/utils/ArrayOperations.hpp>
+#include <pni/core/Types.hpp>
+#include <pni/core/ArrayOperations.hpp>
 
 #include "Operator.hpp"
 
-using namespace pni::utils;
+using namespace pni::core;
 
 class ScaleOperator:public Operator
 {
@@ -72,7 +71,7 @@ class ScaleOperator:public Operator
             _data = array_type(data);
 
             if(_search_max)
-                _center = pni::utils::max_offset(data);
+                _center = pni::core::max_offset(data);
 
 #ifdef NOFOREACH
             for(auto iter=_channels.begin();iter!=_channels.end();iter++)
@@ -98,4 +97,3 @@ class ScaleOperator:public Operator
         }
 };
 
-#endif

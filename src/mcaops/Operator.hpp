@@ -19,16 +19,15 @@
  * Created on: 03.06.2012
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
-#ifndef __OPERATOR_HPP__
-#define __OPERATOR_HPP__
+#pragma once
 
 #include <iostream>
 #include<boost/program_options/variables_map.hpp>
-#include <pni/utils/Types.hpp>
-#include <pni/utils/DArray.hpp>
-#include <pni/utils/NumArray.hpp>
+#include <pni/core/Types.hpp>
+#include <pni/core/DArray.hpp>
+#include <pni/core/NumArray.hpp>
 
-using namespace pni::utils;
+using namespace pni::core;
 namespace po = boost::program_options;
 
 class Operator
@@ -58,4 +57,3 @@ std::ostream &operator<<(std::ostream &o,const Operator &op)
     return op.stream_result(o);
 }
 
-#endif

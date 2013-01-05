@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include<pni/utils/Types.hpp>
+#include<pni/core/Types.hpp>
 
-using namespace pni::utils;
+using namespace pni::core;
 
 /*!
 \brief representing path to an Nexus object

@@ -22,19 +22,19 @@
 
 #include<iostream>
 
-#include<pni/utils/Types.hpp>
-#include <pni/utils/config/configuration.hpp>
-#include <pni/utils/config/config_parser.hpp>
-#include<pni/nx/NX.hpp>
+#include <pni/core/Types.hpp>
+#include <pni/core/config/configuration.hpp>
+#include <pni/core/config/config_parser.hpp>
+#include <pni/io/nx/NX.hpp>
 
-#include<boost/property_tree/ptree.hpp>
-#include<boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
 #include "xml_utils.hpp"
 #include "../common/nx_object_path.hpp"
 
-using namespace pni::utils;
-using namespace pni::nx::h5;
+using namespace pni::core;
+using namespace pni::io::nx::h5;
 namespace tree = boost::property_tree;
 
 
@@ -91,7 +91,7 @@ int main(int argc,char **argv)
         {
             nxfile = NXFile::open_file(opath.filename(),false);
         }
-        catch(pni::nx::NXFileError &error)
+        catch(pni::io::nx::NXFileError &error)
         {
             std::cerr<<"Error opening file "<<opath.filename();
             std::cerr<<"for writing data"<<std::endl<<std::endl;
@@ -105,7 +105,7 @@ int main(int argc,char **argv)
         {
             nxfile = NXFile::create_file(opath.filename(),false,0);
         }
-        catch(pni::nx::NXFileError &error)
+        catch(pni::io::nx::NXFileError &error)
         {
             std::cerr<<"Error creating file "<<opath.filename();
             std::cerr<<"for writing data!"<<std::endl<<std::endl;
@@ -122,7 +122,7 @@ int main(int argc,char **argv)
         {
             target_group = nxfile[opath.object_path()];
         }
-        catch(pni::nx::NXGroupError &error)
+        catch(pni::io::nx::NXGroupError &error)
         {
             std::cerr<<"Error opening target group ";
             std::cerr<<opath.object_path()<<" to append object!";

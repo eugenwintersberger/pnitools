@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include <pni/utils/Types.hpp>
+#include <pni/core/Types.hpp>
 #include <boost/filesystem.hpp>
 
-using namespace pni::utils;
+using namespace pni::core;
 namespace fs = boost::filesystem;
 
 /*!

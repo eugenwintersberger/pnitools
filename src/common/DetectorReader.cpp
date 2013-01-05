@@ -23,9 +23,9 @@
 #include <cstdlib>
 #include <cstdio>
 
-#include <pni/utils/io/Reader.hpp>
-#include <pni/utils/io/CBFReader.hpp>
-#include <pni/utils/io/TIFFReader.hpp>
+#include <pni/core/io/Reader.hpp>
+#include <pni/core/io/CBFReader.hpp>
+#include <pni/core/io/TIFFReader.hpp>
 
 #include "DetectorReader.hpp"
 #include "Exceptions.hpp"

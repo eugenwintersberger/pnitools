@@ -22,10 +22,8 @@
 
 #include "cmd_cat.hpp"
 
-#include <pni/utils/config/cli_args.hpp>
-#include <pni/utils/config/config_parser.hpp>
-
-
+#include <pni/core/config/cli_args.hpp>
+#include <pni/core/config/config_parser.hpp>
 
 //-----------------------------------------------------------------------------
 void cmd_cat::setup(const std::vector<String> &cargs)
@@ -43,7 +41,7 @@ void cmd_cat::execute(std::unique_ptr<environment> &env)
     const NXGroup &cg = env->current_group();
     NXObject o = cg[_config->value<String>("sources")];
 
-    if(o.object_type() == pni::nx::NXObjectType::NXFIELD)
+    if(o.object_type() == pni::io::nx::NXObjectType::NXFIELD)
     {
         NXField f(o);
         

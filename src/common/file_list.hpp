@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <pni/utils/Types.hpp>
+#include <pni/core/Types.hpp>
 #include <list>
 #include "file.hpp"
 #include <boost/tokenizer.hpp>
 
-using namespace pni::utils;
+using namespace pni::core;
 
 
 /*!

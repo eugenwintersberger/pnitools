@@ -23,9 +23,9 @@
 #pragma once
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
-#include <pni/utils/Types.hpp>
+#include <pni/core/Types.hpp>
 
-using namespace pni::utils;
+using namespace pni::core;
 
 /*!
 \brief trim a string

@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <pni/utils/config/configuration.hpp>
+#include <pni/core/config/configuration.hpp>
 #include "command.hpp"
-#include <pni/nx/NX.hpp>
+#include <pni/io/nx/NX.hpp>
 
-using namespace pni::nx::h5;
-using namespace pni::utils;
+using namespace pni::io::nx::h5;
+using namespace pni::core;
 
 //! create something
 class cmd_cat : public command

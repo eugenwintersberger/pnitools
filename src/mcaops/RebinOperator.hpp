@@ -19,16 +19,15 @@
  * Created on: 03.06.2012
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
-#ifndef __REBINOPERATOR_HPP__
-#define __REBINOPERATOR_HPP__
+#pragma once
 
-#include <pni/utils/Types.hpp>
-#include <pni/utils/DArray.hpp>
-#include <pni/utils/ArrayOperations.hpp>
+#include <pni/core/Types.hpp>
+#include <pni/core/DArray.hpp>
+#include <pni/core/ArrayOperations.hpp>
 
 #include "Operator.hpp"
 
-using namespace pni::utils;
+using namespace pni::core;
 
 class RebinOperator:public Operator
 {
@@ -120,4 +119,3 @@ class RebinOperator:public Operator
         }
 };
 
-#endif
