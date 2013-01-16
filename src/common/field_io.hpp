@@ -67,35 +67,37 @@ template<typename IOT> array create_array(const IOT &ioobj)
     shape_t shape = ioobj.template shape<shape_t>();
 
     if(ioobj.type_id() == TypeID::UINT8) 
-        return array_create<UInt8>(shape);
+        return create_array<UInt8>(shape);
     else if(ioobj.type_id() == TypeID::INT8) 
-        return array_create<Int8>(shape);
+        return create_array<Int8>(shape);
     else if(ioobj.type_id() == TypeID::UINT16)
-        return array_create<UInt16>(shape);
+        return create_array<UInt16>(shape);
     else if(ioobj.type_id() == TypeID::INT16)
-        return array_create<Int16>(shape);
+        return create_array<Int16>(shape);
     else if(ioobj.type_id() == TypeID::UINT32)
-        return array_create<UInt32>(shape);
+        return create_array<UInt32>(shape);
     else if(ioobj.type_id() == TypeID::INT32)
-        return array_create<Int32>(shape);
+        return create_array<Int32>(shape);
     else if(ioobj.type_id() == TypeID::UINT64)
-        return array_create<UInt64>(shape);
+        return create_array<UInt64>(shape);
     else if(ioobj.type_id() == TypeID::INT64)
-        return array_create<Int64>(shape);
+        return create_array<Int64>(shape);
     else if(ioobj.type_id() == TypeID::FLOAT32)
-        return array_create<Float32>(shape);
+        return create_array<Float32>(shape);
     else if(ioobj.type_id() == TypeID::FLOAT64)
-        return array_create<Float64>(shape);
+        return create_array<Float64>(shape);
     else if(ioobj.type_id() == TypeID::FLOAT128)
-        return array_create<Float128>(shape);
+        return create_array<Float128>(shape);
+    /*
     else if(ioobj.type_id() == TypeID::COMPLEX32)
-        return array_create<Complex32>(shape);
+        return create_array<Complex32>(shape);
     else if(ioobj.type_id() == TypeID::COMPLEX64)
-        return array_create<Complex64>(shape);
+        return create_array<Complex64>(shape);
     else if(ioobj.type_id() == TypeID::COMPLEX128)
-        return array_create<Complex128>(shape);
+        return create_array<Complex128>(shape);
     else if(ioobj.type_id() == TypeID::STRING)
-        return array_create<String>(shape);
+        return create_array<String>(shape);
+    */
     else
         throw TypeError(EXCEPTION_RECORD,"Unsupported data type!");
 
@@ -112,7 +114,7 @@ template<typename IOT> array create_array(const IOT &ioobj)
 \param readable reference to the readable instance
 \return instance of array
 */
-template<typename T,typename READT> array read_data(const READT &readable)
+template<typename READT> array read_data(const READT &readable)
 {
     //create the array object to hold the data
     array data = create_array(readable);
@@ -126,14 +128,16 @@ template<typename T,typename READT> array read_data(const READT &readable)
 
 
 //-----------------------------------------------------------------------------
-template<typename READT
+template<typename READT,
          typename = typename std::enable_if<
             std::is_same<NXField,typename std::remove_reference<READT>::type>::value
             ||
-            std::is_same<NXSelection,typename std::remove<reference<READT>::type>::value
+            std::is_same<NXSelection,typename std::remove_reference<READT>::type>::value
+            ||
+            std::is_same<NXAttribute,typename std::remove_reference<READT>::type>::value
          >::type
         > 
-std::ostream &write_data(std::ostream &stream,const READT &readable)
+std::ostream &operator<<(std::ostream &stream,const READT &readable)
 {
     array data = read_data(readable);
     stream<<data;
@@ -141,14 +145,16 @@ std::ostream &write_data(std::ostream &stream,const READT &readable)
 }
 
 //-----------------------------------------------------------------------------
-template<typename WRITET
+template<typename WRITET,
          typename = typename std::enable_if<
             std::is_same<NXField,typename std::remove_reference<WRITET>::type>::value
             ||
-            std::is_same<NXSelection,typename std::remove<reference<WRITET>::type>::value
+            std::is_same<NXSelection,typename std::remove_reference<WRITET>::type>::value
+            ||
+            std::is_same<NXAttribute,typename std::remove_reference<WRITET>::type>::value
          >::type
         > 
-std::istream &read_data(std::istream &stream, const WRITET &writeable)
+std::istream &operator>>(std::istream &stream,WRITET &writeable)
 {
     array data = create_array(writeable);
     stream>>data;
