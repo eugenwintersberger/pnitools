@@ -35,16 +35,72 @@ using namespace pni::core;
 using namespace pni::io::nx::h5;
 
 /*!
-\brief utility function
+\brief create array
 
-Creates and instance of DArray for holding data for a particular readable type. 
-
+Creates an instance of array using a DArray template with type T as its content. 
+The shape of the array is passed by the user.
+\tparam T data type of the array
+\param s shape of the array
+\return instance of array
 */
-template<typename T,typename IOT>  DArray<T> create_array(const IOT &ioobj)
+template<typename T> array create_array(shape_t s)
+{
+    return array(DArray<T>(s));
+}
+
+//-----------------------------------------------------------------------------
+/*!
+\brief create array 
+
+Creates an array type erasure which holds the appropriate array for a particular
+IO-object (which is typically either a field or a selection). Indeed, this
+template function just dispatches the work to by evaluating the data type of
+the IO-object and call the appropriate template version of another template
+function.
+\throws TypeError if data type of ioobj is not supported
+\tparam IOT io-type
+\param ioobj instance of IOT for which array should be created
+\return instance of array
+*/
+template<typename IOT> array create_array(const IOT &ioobj)
 {
     shape_t shape = ioobj.template shape<shape_t>();
 
-    return DArray<T>(shape_t);
+    if(ioobj.type_id() == TypeID::UINT8) 
+        return array_create<UInt8>(shape);
+    else if(ioobj.type_id() == TypeID::INT8) 
+        return array_create<Int8>(shape);
+    else if(ioobj.type_id() == TypeID::UINT16)
+        return array_create<UInt16>(shape);
+    else if(ioobj.type_id() == TypeID::INT16)
+        return array_create<Int16>(shape);
+    else if(ioobj.type_id() == TypeID::UINT32)
+        return array_create<UInt32>(shape);
+    else if(ioobj.type_id() == TypeID::INT32)
+        return array_create<Int32>(shape);
+    else if(ioobj.type_id() == TypeID::UINT64)
+        return array_create<UInt64>(shape);
+    else if(ioobj.type_id() == TypeID::INT64)
+        return array_create<Int64>(shape);
+    else if(ioobj.type_id() == TypeID::FLOAT32)
+        return array_create<Float32>(shape);
+    else if(ioobj.type_id() == TypeID::FLOAT64)
+        return array_create<Float64>(shape);
+    else if(ioobj.type_id() == TypeID::FLOAT128)
+        return array_create<Float128>(shape);
+    else if(ioobj.type_id() == TypeID::COMPLEX32)
+        return array_create<Complex32>(shape);
+    else if(ioobj.type_id() == TypeID::COMPLEX64)
+        return array_create<Complex64>(shape);
+    else if(ioobj.type_id() == TypeID::COMPLEX128)
+        return array_create<Complex128>(shape);
+    else if(ioobj.type_id() == TypeID::STRING)
+        return array_create<String>(shape);
+    else
+        throw TypeError(EXCEPTION_RECORD,"Unsupported data type!");
+
+    return array(); //just to make the compiler happy
+
 }
 
 //-----------------------------------------------------------------------------
@@ -56,82 +112,48 @@ template<typename T,typename IOT>  DArray<T> create_array(const IOT &ioobj)
 \param readable reference to the readable instance
 \return instance of array
 */
-template<typename T,typename READT> array get_data(const READT &readable)
+template<typename T,typename READT> array read_data(const READT &readable)
 {
     //create the array object to hold the data
-    DArray<T> data = create_array<T>(readable);
+    array data = create_array(readable);
 
     //read data from the readable
     readable.read(data);
 
     //return the array type erasure
-    return array(std::move(data));
+    return data;
+}
+
+
+//-----------------------------------------------------------------------------
+template<typename READT
+         typename = typename std::enable_if<
+            std::is_same<NXField,typename std::remove_reference<READT>::type>::value
+            ||
+            std::is_same<NXSelection,typename std::remove<reference<READT>::type>::value
+         >::type
+        > 
+std::ostream &write_data(std::ostream &stream,const READT &readable)
+{
+    array data = read_data(readable);
+    stream<<data;
+    return stream;
 }
 
 //-----------------------------------------------------------------------------
-/*!
-\brief read data
-
-Reads data from an instance of a readable type and stores the result in an array
-type erasure. If the type of the readable is not know an exception will be
-thrown. This template function only decides which data type to use to read the
-data. The reading of the data is defered to the get_data template function.
-
-\throws TypeError if data type cannot be handled
-\tparam READT readable type
-\param readable instance of READT from which to read data
-\return instance of array
-*/
-template<typename READT> array read_data(const READT &readable)
+template<typename WRITET
+         typename = typename std::enable_if<
+            std::is_same<NXField,typename std::remove_reference<WRITET>::type>::value
+            ||
+            std::is_same<NXSelection,typename std::remove<reference<WRITET>::type>::value
+         >::type
+        > 
+std::istream &read_data(std::istream &stream, const WRITET &writeable)
 {
-    typedef index_iterator<shape_t> iterator_t; 
-
-    if(readable.type_id() == TypeID::UINT8)
-        return get_data<UInt8>(readable);
-    else if(readable.type_id() == TypeID::INT8)
-        return get_data<Int8>(readable);
-    else if(readable.type_id() == TypeID::UINT16)
-        return get_data<UInt16>(readable);
-    else if(readable.type_id() == TypeID::INT16)
-        return get_data<Int16>(readable);
-    else if(readable.type_id() == TypeID::UINT32)
-        return get_data<UInt32>(readable);
-    else if(readable.type_id() == TypeID::INT32)
-        return get_data<Int32>(readable);
-    else if(readable.type_id() == TypeID::UINT64)
-        return get_data<UInt64>(readable);
-    else if(readable.type_id() == TypeID::INT64)
-        return get_data<Int64>(readable);
-
-    else if(readable.type_id() == TypeID::FLOAT32)
-        return get_data<Float32>(readable);
-    else if(readable.type_id() == TypeID::FLOAT64)
-        return get_data<Float64>(readable);
-    else if(readable.type_id() == TypeID::FLOAT128)
-        return get_data<Float128>(readable);
-
-    else if(readable.type_id() == TypeID::COMPLEX32)
-        return get_data<Complex32>(readable);
-    else if(readable.type_id() == TypeID::COMPLEX64)
-        return get_data<Complex64>(readable);
-    else if(readable.type_id() == TypeID::COMPLEX128)
-        return get_data<Complex128>(readable);
-
-    else if(readable.type_id() == TypeID::STRING)
-        return get_data<String>(readable);
-    else
-        throw TypeError(EXCEPTION_RECORD,"Unknown data type in field");
-
-    return array(); //just to make the compiler happy - code will never be reached
-}
-
-template<typename READT> std::ostream &write_data(std::ostream &stream,
-                                                  const READT &readable);
-
-template<typename WRITET> std::istream &read_data(std::istream &stream,
-                                                  const WRITET &writeable)
-{
-
+    array data = create_array(writeable);
+    stream>>data;
+    writeable.write(data);
+    return stream;
 }
 
 //-----------------------------------------------------------------------------
