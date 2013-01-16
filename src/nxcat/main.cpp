@@ -1,4 +1,5 @@
 #include<iostream>
+#include<fstream>
 #include<list>
 #include<vector>
 
@@ -12,8 +13,6 @@
 using namespace pni::core;
 using namespace pni::io::nx::h5;
 
-typedef std::vector<String> input_t;
-
 int main(int argc,char **argv)
 {
     //--------------------setup program configuration--------------------------
@@ -22,29 +21,45 @@ int main(int argc,char **argv)
     conf.add_option(config_option<nx_object_path>("target","t",
                 "Nexus object to read from or write to"));
     conf.add_argument(config_argument<String>("command",1));
-    conf.add_argument(config_argument<input_t>("input",-1,input_t{"--"}));
+    conf.add_argument(config_
+    conf.add_argument(config_argument<String>("source",-1,"--"));
 
     parse(conf,argc,(const char**)argv);
 
     //--------------------evaluate the command string--------------------------
     String command = conf.value<String>("command");
 
+    //obtain the path to the target
     nx_object_path target = conf.value<nx_object_path>("target");
-    if(command == "read")
+
+    //open the file - if data should be written to the file it will be opened in
+    //append mode, otherwise in read only mode
+    NXfile file = NXFile::open_file(target.filename(),(command == "write"));
+    
+    if(target.attribute_name() != "")
     {
-        //open the file in read only mode
-        NXFile file = NXFile::open_file(target.filename(),true);
-
-        if(target.attribute_name() != "")
+        //perform an IO operation on an attribute
+        NXAttribute attr = file[target.object_path()].attr(target.attribute_name());
+        
+        
+    }
+    else
+    {
+        //perform the IO operation on a field
+        NXObject obj = file[target.object_path()];
+        if(obj.object_type() != NXObjectType::NXFIELD)
         {
-            //we want to read an attribute
-            NXAttribute attr =
-                file[target.object_path()].attr(target.attribute_name());
-
-
+            //have to throw some exception here
         }
 
+        NXField field(obj); //create the field for the IO operation
+        
+         
+
+
     }
+
+
     else if(command == "write")
     {
         input_t ilist = conf.value<input_t>("input");
