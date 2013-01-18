@@ -29,7 +29,6 @@ extern "C" {
 
 #include "environment.hpp"
 #include "interpreter.hpp"
-#include "cmd_create.hpp"
 #include "cmd_ls.hpp"
 #include "cmd_open.hpp"
 #include "cmd_cd.hpp"
@@ -42,7 +41,6 @@ extern "C" {
     _current_env(new environment()),
     _cmd_stack()
 {
-    _cmd_stack["create"] = std::unique_ptr<command>(new cmd_create());
     _cmd_stack["mkgrp"] = std::unique_ptr<command>(new cmd_mkgrp());
     _cmd_stack["ls"] = std::unique_ptr<command>(new cmd_ls());
     _cmd_stack["open"] = std::unique_ptr<command>(new cmd_open());
