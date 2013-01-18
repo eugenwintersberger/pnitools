@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include <pni/utils/Types.hpp>
-#include <pni/utils/Array.hpp>
+#include <pni/core/Types.hpp>
+#include <pni/core/Array.hpp>
 
 #include <boost/regex.hpp>
-using namespace pni::utils;
+using namespace pni::core;
 
 class shape_reader
 {

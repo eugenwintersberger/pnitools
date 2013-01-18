@@ -27,10 +27,10 @@
 #include<boost/program_options/positional_options.hpp>
 
 
-#include<pni/utils/Types.hpp>
-#include<pni/utils/DArray.hpp>
-#include<pni/utils/NumArray.hpp>
-#include<pni/utils/io/FIOReader.hpp>
+#include<pni/core/Types.hpp>
+#include<pni/core/DArray.hpp>
+#include<pni/core/NumArray.hpp>
+#include<pni/core/io/FIOReader.hpp>
 
 #include "Operator.hpp"
 #include "MaxOperator.hpp"
@@ -38,7 +38,7 @@
 #include "RebinOperator.hpp"
 #include "ScaleOperator.hpp"
 
-using namespace pni::utils;
+using namespace pni::core;
 using namespace pni::io;
 namespace po = boost::program_options;
 

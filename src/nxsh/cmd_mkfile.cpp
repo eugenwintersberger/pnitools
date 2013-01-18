@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+ * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
  *
  * This file is part of pnitools.
  *
@@ -16,49 +16,47 @@
  * You should have received a copy of the GNU General Public License
  * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
  *************************************************************************
- * Created on: Dec 18, 2012
+ * Created on: Jan 04, 2013
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include "cmd_cd.hpp"
-#include <boost/tokenizer.hpp>
-
-#include <pni/core/Types.hpp>
-#include <pni/io/nx/NX.hpp>
 #include <pni/core/config/cli_args.hpp>
 #include <pni/core/config/config_parser.hpp>
+#include <pni/core/Types.hpp>
+#include <pni/io/nx/NX.hpp>
 
 using namespace pni::core;
 using namespace pni::io::nx::h5;
 
+#include "cmd_mkfile.hpp"
+
 //-----------------------------------------------------------------------------
-void cmd_cd::setup(const std::vector<String> &cargs)
+void cmd_mkfile::setup(const std::vector<String> &cargs)
 {
     _config = std::unique_ptr<configuration>(new configuration);
-    _config->add_argument(config_argument<String>("target",-1,"",&_target));
+    _config->add_option(config_option<bool>("open","o",
+                "open file after creation",false));
+    _config->add_option(config_option<bool>("overwrite","",
+                "overwrite a file if it exists",false));
+    _config->add_argument(config_argument<String>("name",-1,"file name"));
+    
     cli_args args(cargs);
     parse(*_config,args.argc(),args.argv());
-
-    if(_config->has_option("help"))
-    {
-        throw cli_help_request(EXCEPTION_RECORD,"show help");
-    }
 }
 
 //-----------------------------------------------------------------------------
-void cmd_cd::execute(std::unique_ptr<environment> &env)
+void cmd_mkfile::execute(std::unique_ptr<environment> &env)
 {
-    boost::char_separator<char> separator("/");
-    boost::tokenizer<boost::char_separator<char> > t(_target,separator);
+    NXFile file = NXFile::create_file(_config->value<String>("name"),
+                                      _config->value<bool>("overwrite"),0);
 
-    for(auto iter = t.begin();iter!=t.end();++iter)
-        env->current_group(*iter);
+    if(_config->value<bool>("open"))
+        env = std::unique_ptr<environment>(new environment(file));
 }
 
 //-----------------------------------------------------------------------------
-void cmd_cd::help() const
+void cmd_mkfile::help() const
 {
-    std::cout<<"cd <target>  - change to new group"<<std::endl;
     std::cout<<*_config<<std::endl;
-    
 }
+

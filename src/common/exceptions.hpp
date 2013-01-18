@@ -21,10 +21,10 @@
  */
 
 #pragma once
-#include<pni/utils/Types.hpp>
-#include<pni/utils/Exceptions.hpp>
+#include<pni/core/Types.hpp>
+#include<pni/core/Exceptions.hpp>
 
-using namespace pni::utils;
+using namespace pni::core;
 
 /*!
 \brief file type error

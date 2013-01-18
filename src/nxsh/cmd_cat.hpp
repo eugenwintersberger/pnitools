@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+ * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
  *
  * This file is part of pnitools.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
  *************************************************************************
- * Created on: Dec 18, 2012
+ * Created on: Jan 04, 2013
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
@@ -24,23 +24,35 @@
 
 #include <pni/core/config/configuration.hpp>
 #include "command.hpp"
+#include <pni/io/nx/NX.hpp>
 
-/*!
-\brief change directory command
+using namespace pni::io::nx::h5;
+using namespace pni::core;
 
-Builtin command for the Nexus shell to change groups. It behaves like the cd
-command on a normal Unix/Linux or even Windows shell. The command takes no 
-command line options. The only argument is the path to the target directory to
-which the user wants to change.
-*/
-class cmd_cd : public command
+//! create something
+class cmd_cat : public command
 {
     private:
-        //! pointer to configuration
         std::unique_ptr<configuration> _config;
-        String _target; //!< target path
+
+        template<typename T>
+        void print_field(const NXField &f) const;
     public:
         virtual void setup(const std::vector<String> &cargs);
         virtual void execute(std::unique_ptr<environment> &env);
         virtual void help() const;
 };
+
+//-----------------------------------------------------------------------------
+template<typename T> void cmd_cat::print_field(const NXField &f) const
+{
+    //get the field shape
+    auto s = f.shape<shape_t>();
+    DArray<T> data(s);
+
+    f.read(data);
+
+    for(auto v: data) std::cout<<v<<" ";
+    std::cout<<std::endl;
+
+}

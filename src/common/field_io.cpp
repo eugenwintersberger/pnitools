@@ -16,36 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
  *************************************************************************
- * Created on: Sep 27, 2011
+ * Created on: Jan 8, 2013
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#pragma once
-
-#include <pni/core/PNITypes.hpp>
-#include <pni/core/ArrayObject.hpp>
-
-#include <boost/filesystem.hpp>
-
-namespace fs = boost::filesystem;
-using namespace pni::core;
-
-class DetectorReader 
-{
-    private:
-        ArrayObject::sptr _data;
-        fs::path _input_file;
-
-        void _ext_to_lower(String &e);
-    public:
-        DetectorReader();
-        DetectorReader(const DetectorReader &r);
-        virtual ~DetectorReader();
-
-        virtual void setInputFile(const fs::path &ifile);
-        void operator()();
-        ArrayObject::sptr getData(){
-            return _data;
-        }
-};
+#include "field_io.hpp"
 

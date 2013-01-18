@@ -25,14 +25,14 @@
 #include <iostream>
 #include <map>
 #include <vector>
-#include <pni/utils/Types.hpp>
-#include <pni/nx/NX.hpp>
+#include <pni/core/Types.hpp>
+#include <pni/io/nx/NX.hpp>
 
 #include "environment.hpp"
 #include "command.hpp"
 
-using namespace pni::utils;
-using namespace pni::nx::h5;
+using namespace pni::core;
+using namespace pni::io::nx::h5;
 
 /*!
 \brief interpreter for nexus shell

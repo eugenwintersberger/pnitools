@@ -1,14 +1,13 @@
-#ifndef __NEXUSFILEMODEL_HPP__
-#define __NEXUSFILEMODEL_HPP__
+#pragma once
 
 #include<QtGui>
 
 #include <iostream>
-#include <pni/utils/Types.hpp>
-#include <pni/nx/NX.hpp>
+#include <pni/core/Types.hpp>
+#include <pni/io/nx/NX.hpp>
 
-using namespace pni::utils;
-using namespace pni::nx::h5;
+using namespace pni::core;
+using namespace pni::io::nx::h5;
 
 
 class NexusFileModel : public QAbstractItemModel
@@ -51,6 +50,3 @@ class NexusFileModel : public QAbstractItemModel
 
 };
 
-
-
-#endif

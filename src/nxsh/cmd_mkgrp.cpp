@@ -20,14 +20,14 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include <pni/utils/Types.hpp>
-#include <pni/nx/NX.hpp>
-#include <pni/utils/config/cli_args.hpp>
-#include <pni/utils/config/configuration.hpp>
-#include <pni/utils/config/config_parser.hpp>
+#include <pni/core/Types.hpp>
+#include <pni/io/nx/NX.hpp>
+#include <pni/core/config/cli_args.hpp>
+#include <pni/core/config/configuration.hpp>
+#include <pni/core/config/config_parser.hpp>
 
-using namespace pni::utils;
-using namespace pni::nx::h5;
+using namespace pni::core;
+using namespace pni::io::nx::h5;
 
 #include "cmd_mkgrp.hpp"
 

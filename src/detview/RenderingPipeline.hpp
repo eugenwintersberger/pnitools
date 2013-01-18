@@ -13,16 +13,16 @@
 #include <vtkImageChangeInformation.h>
 
 
-#include<pni/utils/Types.hpp>
-#include<pni/utils/Array.hpp>
-#include<pni/utils/RBuffer.hpp>
-#include<pni/utils/io/ImageInfo.hpp>
-#include<pni/utils/io/CBFReader.hpp>
-#include<pni/utils/io/TIFFReader.hpp>
+#include<pni/core/Types.hpp>
+#include<pni/core/Array.hpp>
+#include<pni/core/RBuffer.hpp>
+#include<pni/core/io/ImageInfo.hpp>
+#include<pni/core/io/CBFReader.hpp>
+#include<pni/core/io/TIFFReader.hpp>
 
 #include<algorithm>
 
-using namespace pni::utils;
+using namespace pni::core;
 using namespace pni::io;
 
 typedef DArray<Float64> array_t;

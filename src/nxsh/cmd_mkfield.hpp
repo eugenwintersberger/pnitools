@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include <pni/utils/config/configuration.hpp>
+#include <pni/core/config/configuration.hpp>
 #include "command.hpp"
 
-using namespace pni::utils;
+using namespace pni::core;
 
 //! create something
 class cmd_mkfield : public command
@@ -33,7 +33,6 @@ class cmd_mkfield : public command
     private:
         std::unique_ptr<configuration> _config;
 
-        shape_t read_shape(const String &s) const;
         template<typename ...ARGST>
         void mkfield(const NXGroup &g,const String &name,
                      const String &type,ARGST ...args) const;
@@ -43,6 +42,7 @@ class cmd_mkfield : public command
         virtual void help() const;
 };
 
+//-----------------------------------------------------------------------------
 template<typename ...ARGST>
 void cmd_mkfield::mkfield(const NXGroup &g,const String &name,
                           const String &type,ARGST ...args) const

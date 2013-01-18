@@ -3,6 +3,8 @@ Import("program_env")
 nxsh_objects =[program_env.Object(["main.cpp","interpreter.cpp","environment.cpp"])]
 nxsh_objects.extend(['cmd_ls.cpp','cmd_open.cpp','cmd_cd.cpp'])
 nxsh_objects.extend(["cmd_mkgrp.cpp","cmd_mkfield.cpp","cmd_mkattr.cpp"])
+nxsh_objects.extend(['cmd_mkfile.cpp','cmd_ls.cpp','cmd_open.cpp','cmd_cd.cpp'])
+nxsh_objects.extend(["cmd_mkgrp.cpp","cmd_mkfield.cpp","cmd_mkattr.cpp","cmd_cat.cpp"])
 nxsh_objects.extend(SConscript("../common/SConscript"))
 nxsh = program_env.Program(target="nxsh",source=nxsh_objects)
 nxsh_install = program_env.Install("$PREFIX/bin",nxsh)

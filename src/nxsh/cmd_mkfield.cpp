@@ -20,18 +20,18 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include <pni/utils/Types.hpp>
-#include <pni/nx/NX.hpp>
-#include <pni/utils/config/cli_args.hpp>
-#include <pni/utils/config/config_parser.hpp>
+#include <pni/core/Types.hpp>
+#include <pni/io/nx/NX.hpp>
+#include <pni/core/config/cli_args.hpp>
+#include <pni/core/config/config_parser.hpp>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 
-using namespace pni::utils;
-using namespace pni::nx::h5;
+using namespace pni::core;
+using namespace pni::io::nx::h5;
 
 #include "cmd_mkfield.hpp"
-#include "../common/shape_reader.hpp"
+#include "../common/string_utils.hpp"
 
 //-----------------------------------------------------------------------------
 void cmd_mkfield::setup(const std::vector<String> &cargs)
@@ -53,29 +53,10 @@ void cmd_mkfield::setup(const std::vector<String> &cargs)
 
 }
 
-shape_t cmd_mkfield::read_shape(const String &s) const
-{
-    boost::regex sr("\\d+");
-    String::const_iterator start = s.begin();
-    String::const_iterator end = s.end();
-    boost::smatch match;
-    shape_t shape;
-
-    while(boost::regex_search(start,end,match,sr))
-    {
-        for(auto value: match)
-            shape.push_back(boost::lexical_cast<size_t>(value));
-
-        start = match[0].second;
-    }
-    return shape;
-}
-
 //-----------------------------------------------------------------------------
 void cmd_mkfield::execute(std::unique_ptr<environment> &env)
 {
     //need to parse the shape
-    shape_reader sreader;
     shape_t shape,cshape;
 
     auto type = _config->value<String>("type");
@@ -88,11 +69,11 @@ void cmd_mkfield::execute(std::unique_ptr<environment> &env)
     //-> shape and chunk shape
     if(_config->has_option("shape"))
     {
-        shape = read_shape(_config->value<String>("shape"));
+        auto shape = read_shape<shape_t>(_config->value<String>("shape"));
     
         if(_config->has_option("chunk"))
         {
-            cshape = read_shape(_config->value<String>("chunk"));
+            auto cshape = read_shape<shape_t>(_config->value<String>("chunk"));
             mkfield(cg,name,type,shape,cshape);
         }
         else

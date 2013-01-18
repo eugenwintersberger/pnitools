@@ -1,9 +1,0 @@
-Import("program_env")
-
-nxio_objects =[program_env.Object(["main.cpp"])]
-nxio_objects.extend(SConscript("../common/SConscript"))
-nxio = program_env.Program(target="nxio",source=nxio_objects)
-nxio_install = program_env.Install("$PREFIX/bin",nxio)
-
-program_env.Alias("all",[nxio])
-program_env.Alias("install",[nxio_install])

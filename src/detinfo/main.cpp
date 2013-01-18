@@ -23,11 +23,11 @@
 #include<iostream>
 #include<vector>
 
-#include <pni/utils/io/CBFReader.hpp>
-#include <pni/utils/io/TIFFReader.hpp>
+#include <pni/core/io/CBFReader.hpp>
+#include <pni/core/io/TIFFReader.hpp>
 
-#include <pni/utils/config/configuration.hpp>
-#include <pni/utils/config/config_parser.hpp>
+#include <pni/core/config/configuration.hpp>
+#include <pni/core/config/config_parser.hpp>
 #include "../common/file.hpp"
 #include "../common/file_list.hpp"
 #include "../common/exceptions.hpp"

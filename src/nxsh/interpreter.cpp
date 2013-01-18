@@ -35,6 +35,8 @@ extern "C" {
 #include "cmd_mkgrp.hpp"
 #include "cmd_mkfield.hpp"
 #include "cmd_mkattr.hpp"
+#include "cmd_mkfile.hpp"
+#include "cmd_cat.hpp"
 
 //-----------------------------------------------------------------------------
  interpreter::interpreter():
@@ -47,6 +49,9 @@ extern "C" {
     _cmd_stack["cd"] = std::unique_ptr<command>(new cmd_cd());
     _cmd_stack["mkfield"] = std::unique_ptr<command>(new cmd_mkfield());
     _cmd_stack["mkattr"] = std::unique_ptr<command>(new cmd_mkattr());
+    _cmd_stack["mkfile"] = std::unique_ptr<command>(new cmd_mkfile());
+    _cmd_stack["mkgrp"] = std::unique_ptr<command>(new cmd_mkgrp());
+    _cmd_stack["cat"] = std::unique_ptr<command>(new cmd_cat());
 }
 
 //-----------------------------------------------------------------------------

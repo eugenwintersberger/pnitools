@@ -22,14 +22,14 @@
 
 #pragma once
 #include<sstream>
-#include<pni/utils/Types.hpp>
-#include<pni/nx/NX.hpp>
+#include<pni/core/Types.hpp>
+#include<pni/io/nx/NX.hpp>
 
 #include<boost/property_tree/ptree.hpp>
 #include<boost/property_tree/xml_parser.hpp>
 
-using namespace pni::utils;
-using namespace pni::nx::h5;
+using namespace pni::core;
+using namespace pni::io::nx::h5;
 namespace tree = boost::property_tree;
 
 //-----------------------------------------------------------------------------
@@ -96,7 +96,7 @@ NXField create_field(const PTYPE &parent,const String &name,
 
     std::stringstream ss;
     ss<<"Error creating field - type code "<<tc<<" is not supported!";
-    throw pni::nx::NXFieldError(EXCEPTION_RECORD,ss.str());
+    throw pni::io::nx::NXFieldError(EXCEPTION_RECORD,ss.str());
 
     return NXField(); //just to make the compiler happy
 }
