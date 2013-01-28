@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include<pni/core/Types.hpp>
+#include<pni/core/types.hpp>
 
 using namespace pni::core;
 
@@ -50,11 +50,11 @@ class nx_object_path
 {
     private:
         //! name of the file where the object is stored
-        String _fname;
+        string _fname;
         //! path to the object
-        String _opath;
+        string _opath;
         //! name of the attribute
-        String _attrname;
+        string _attrname;
     public:
         //====================constructor and destructor=======================
         //! default constructor
@@ -62,11 +62,11 @@ class nx_object_path
 
         //---------------------------------------------------------------------
         //! constructor
-        explicit nx_object_path(const String &p);
+        explicit nx_object_path(const string &p);
 
         //---------------------------------------------------------------------
         //! constructor
-        explicit nx_object_path(const String &f,const String &p,const String &a);
+        explicit nx_object_path(const string &f,const string &p,const string &a);
 
         //---------------------------------------------------------------------
         //! destructor
@@ -74,15 +74,15 @@ class nx_object_path
 
         //---------------------------------------------------------------------
         //! get file name
-        String filename() const { return _fname; }
+        string filename() const { return _fname; }
 
         //---------------------------------------------------------------------
         //! get object path
-        String object_path() const { return _opath; }
+        string object_path() const { return _opath; }
 
         //---------------------------------------------------------------------
         //! get attribute name
-        String attribute_name() const { return _attrname; }
+        string attribute_name() const { return _attrname; }
 };
 
 //! output operator for NXObjectPath

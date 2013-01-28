@@ -22,8 +22,8 @@
 
 #include <pni/core/config/cli_args.hpp>
 #include <pni/core/config/config_parser.hpp>
-#include <pni/core/Types.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/core/types.hpp>
+#include <pni/io/nx/nx.hpp>
 
 using namespace pni::core;
 using namespace pni::io::nx::h5;
@@ -31,14 +31,14 @@ using namespace pni::io::nx::h5;
 #include "cmd_mkfile.hpp"
 
 //-----------------------------------------------------------------------------
-void cmd_mkfile::setup(const std::vector<String> &cargs)
+void cmd_mkfile::setup(const std::vector<string> &cargs)
 {
     _config = std::unique_ptr<configuration>(new configuration);
     _config->add_option(config_option<bool>("open","o",
                 "open file after creation",false));
     _config->add_option(config_option<bool>("overwrite","",
                 "overwrite a file if it exists",false));
-    _config->add_argument(config_argument<String>("name",-1,"file name"));
+    _config->add_argument(config_argument<string>("name",-1,"file name"));
     
     cli_args args(cargs);
     parse(*_config,args.argc(),args.argv());
@@ -47,7 +47,7 @@ void cmd_mkfile::setup(const std::vector<String> &cargs)
 //-----------------------------------------------------------------------------
 void cmd_mkfile::execute(std::unique_ptr<environment> &env)
 {
-    NXFile file = NXFile::create_file(_config->value<String>("name"),
+    nxfile file = nxfile::create_file(_config->value<string>("name"),
                                       _config->value<bool>("overwrite"),0);
 
     if(_config->value<bool>("open"))

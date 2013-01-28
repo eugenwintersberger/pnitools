@@ -34,50 +34,50 @@ class cmd_mkfield : public command
         std::unique_ptr<configuration> _config;
 
         template<typename ...ARGST>
-        void mkfield(const NXGroup &g,const String &name,
-                     const String &type,ARGST ...args) const;
+        void mkfield(const nxgroup &g,const string &name,
+                     const string &type,ARGST ...args) const;
     public:
-        virtual void setup(const std::vector<String> &cargs);
+        virtual void setup(const std::vector<string> &cargs);
         virtual void execute(std::unique_ptr<environment> &env);
         virtual void help() const;
 };
 
 //-----------------------------------------------------------------------------
 template<typename ...ARGST>
-void cmd_mkfield::mkfield(const NXGroup &g,const String &name,
-                          const String &type,ARGST ...args) const
+void cmd_mkfield::mkfield(const nxgroup &g,const string &name,
+                          const string &type,ARGST ...args) const
 {
 
     if(type == "string")
-        g.create_field<String>(name,args...);
+        g.create_field<string>(name,args...);
     else if(type == "uint8")
-        g.create_field<UInt8>(name,args...);
+        g.create_field<uint8>(name,args...);
     else if(type == "int8")
-        g.create_field<Int8>(name,args...);
+        g.create_field<int8>(name,args...);
     else if(type == "uint16")
-        g.create_field<UInt16>(name,args...);
+        g.create_field<uint16>(name,args...);
     else if(type == "int16")
-        g.create_field<Int16>(name,args...);
+        g.create_field<int16>(name,args...);
     else if(type == "uint32")
-        g.create_field<UInt32>(name,args...);
+        g.create_field<uint32>(name,args...);
     else if(type == "int32")
-        g.create_field<Int32>(name,args...);
+        g.create_field<int32>(name,args...);
     else if(type == "uint64")
-        g.create_field<UInt64>(name,args...);
+        g.create_field<uint64>(name,args...);
     else if(type == "int64")
-        g.create_field<Int64>(name,args...);
+        g.create_field<int64>(name,args...);
     else if(type == "float32")
-        g.create_field<Float32>(name,args...);
+        g.create_field<float32>(name,args...);
     else if(type == "float64")
-        g.create_field<Float64>(name,args...);
+        g.create_field<float64>(name,args...);
     else if(type == "float128")
-        g.create_field<Float128>(name,args...);
+        g.create_field<float128>(name,args...);
     else if(type == "complex32")
-        g.create_field<Complex32>(name,args...);
+        g.create_field<complex32>(name,args...);
     else if(type == "complex64")
-        g.create_field<Complex64>(name,args...);
+        g.create_field<complex64>(name,args...);
     else if(type == "complex128")
-        g.create_field<Complex128>(name,args...);
+        g.create_field<complex128>(name,args...);
     else
         std::cerr<<"Unknown type string!"<<std::endl;
 }

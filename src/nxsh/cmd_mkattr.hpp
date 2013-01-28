@@ -35,48 +35,48 @@ class cmd_mkattr : public command
         std::unique_ptr<configuration> _config;
 
         template<typename ...ATYPES>
-            void mkattr(const NXObject &p,const String &name,
-                        const String &type,ATYPES ...args) const;
+            void mkattr(const nxobject &p,const string &name,
+                        const string &type,ATYPES ...args) const;
     public:
-        virtual void setup(const std::vector<String> &cargs);
+        virtual void setup(const std::vector<string> &cargs);
         virtual void execute(std::unique_ptr<environment> &env);
         virtual void help() const;
 };
 
 template<typename ...ATYPES>
-void cmd_mkattr::mkattr(const NXObject &o,const String &name,const String &type,
+void cmd_mkattr::mkattr(const nxobject &o,const string &name,const string &type,
                         ATYPES ...args) const
 {
     if(type == "string")
-        o.attr<String>(name,args...);
+        o.attr<string>(name,args...);
     else if(type == "uint8")
-        o.attr<UInt8>(name,args...);
+        o.attr<uint8>(name,args...);
     else if(type == "int8")
-        o.attr<Int8>(name,args...);
+        o.attr<int8>(name,args...);
     else if(type == "uint16")
-        o.attr<UInt16>(name,args...);
+        o.attr<uint16>(name,args...);
     else if(type == "int16")
-        o.attr<Int16>(name,args...);
+        o.attr<int16>(name,args...);
     else if(type == "uint32")
-        o.attr<UInt32>(name,args...);
+        o.attr<uint32>(name,args...);
     else if(type == "int32")
-        o.attr<Int32>(name,args...);
+        o.attr<int32>(name,args...);
     else if(type == "uint64")
-        o.attr<UInt64>(name,args...);
+        o.attr<uint64>(name,args...);
     else if(type == "int64")
-        o.attr<Int64>(name,args...);
+        o.attr<int64>(name,args...);
     else if(type == "float32")
-        o.attr<Float32>(name,args...);
+        o.attr<float32>(name,args...);
     else if(type == "float64")
-        o.attr<Float64>(name,args...);
+        o.attr<float64>(name,args...);
     else if(type == "float128")
-        o.attr<Float128>(name,args...);
+        o.attr<float128>(name,args...);
     else if(type == "complex32")
-        o.attr<Complex32>(name,args...);
+        o.attr<complex32>(name,args...);
     else if(type == "complex64")
-        o.attr<Complex64>(name,args...);
+        o.attr<complex64>(name,args...);
     else if(type == "complex128")
-        o.attr<Complex128>(name,args...);
+        o.attr<complex128>(name,args...);
     else
         std::cout<<"Unkonwn type string!"<<std::endl;
 

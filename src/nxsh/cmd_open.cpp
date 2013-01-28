@@ -1,12 +1,12 @@
 
 #include "cmd_open.hpp"
-#include <pni/core/Types.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/core/types.hpp>
+#include <pni/io/nx/nx.hpp>
 
 using namespace pni::core;
 using namespace pni::io::nx::h5;
 
-void cmd_open::setup(const std::vector<String> &cargs)
+void cmd_open::setup(const std::vector<string> &cargs)
 {
     _file_name = cargs[0];
 
@@ -18,7 +18,7 @@ void cmd_open::setup(const std::vector<String> &cargs)
 
 void cmd_open::execute(std::unique_ptr<environment> &env)
 {
-    NXFile f = NXFile::open_file(_file_name,false);
+    nxfile f = nxfile::open_file(_file_name,false);
     if(_current_group == "")
         env = std::unique_ptr<environment>(new environment(f));
     else

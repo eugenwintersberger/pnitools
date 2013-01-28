@@ -25,8 +25,8 @@
 #include <iostream>
 #include <map>
 #include <vector>
-#include <pni/core/Types.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/core/types.hpp>
+#include <pni/io/nx/nx.hpp>
 
 #include "environment.hpp"
 #include "command.hpp"
@@ -46,7 +46,7 @@ class interpreter
         //! pointer to the current working environment
         std::unique_ptr<environment> _current_env;
         //! command stack
-        std::map<String,std::unique_ptr<command> > _cmd_stack;
+        std::map<string,std::unique_ptr<command> > _cmd_stack;
 
         /*!
         \brief strip command
@@ -58,8 +58,8 @@ class interpreter
         \param cname command name
         \param cargs command options and arguments
         */
-        void strip_command(const String &s,String &cname,
-                           std::vector<String> &cargs);
+        void strip_command(const string &s,string &cname,
+                           std::vector<string> &cargs);
     public:
         //---------------------------------------------------------------------
         //!default constructor
@@ -71,6 +71,6 @@ class interpreter
         
         //---------------------------------------------------------------------
         //! return prompt string
-        String prompt() ;
+        string prompt() ;
 
 };

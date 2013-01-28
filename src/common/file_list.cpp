@@ -26,7 +26,7 @@
 
 
 //-----------------------------------------------------------------------------
-bool file_list::_fill_from_num_range(const String &p)
+bool file_list::_fill_from_num_range(const string &p)
 {
 
     nrseparator sep(":");
@@ -34,7 +34,7 @@ bool file_list::_fill_from_num_range(const String &p)
     size_t start = 0;
     size_t stop = 0;
     size_t stride = 1;
-    String p_template;
+    string p_template;
 
     size_t index = 0;
     for(auto iter = token.begin(); iter!= token.end();++iter)

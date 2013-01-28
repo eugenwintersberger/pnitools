@@ -24,7 +24,7 @@
 
 #include <pni/core/config/configuration.hpp>
 #include "command.hpp"
-#include <pni/io/nx/NX.hpp>
+#include <pni/io/nx/nx.hpp>
 
 using namespace pni::io::nx::h5;
 using namespace pni::core;
@@ -36,19 +36,19 @@ class cmd_cat : public command
         std::unique_ptr<configuration> _config;
 
         template<typename T>
-        void print_field(const NXField &f) const;
+        void print_field(const nxfield &f) const;
     public:
-        virtual void setup(const std::vector<String> &cargs);
+        virtual void setup(const std::vector<string> &cargs);
         virtual void execute(std::unique_ptr<environment> &env);
         virtual void help() const;
 };
 
 //-----------------------------------------------------------------------------
-template<typename T> void cmd_cat::print_field(const NXField &f) const
+template<typename T> void cmd_cat::print_field(const nxfield &f) const
 {
     //get the field shape
     auto s = f.shape<shape_t>();
-    DArray<T> data(s);
+    darray<T> data(s);
 
     f.read(data);
 

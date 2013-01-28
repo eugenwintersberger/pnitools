@@ -24,13 +24,13 @@
 #include "environment.hpp"
 
 //-----------------------------------------------------------------------------
-environment::environment(NXFile file):_file(file)
+environment::environment(nxfile file):_file(file)
 {
     _current_group = file["/"];
 }
 
 //-----------------------------------------------------------------------------
-environment::environment(NXFile file,const String &path):_file(file)
+environment::environment(nxfile file,const string &path):_file(file)
 {
     _current_group = file[path];
 }
@@ -43,13 +43,13 @@ environment::~environment()
 }
 
 //-----------------------------------------------------------------------------
-String environment::get_current_path() const
+string environment::get_current_path() const
 {
     return _file.name()+":"+_current_group.path();
 }
 
 //-----------------------------------------------------------------------------
-void environment::current_group(const String &path)
+void environment::current_group(const string &path)
 {
     //go one level up
     if(path == "..")
@@ -59,14 +59,14 @@ void environment::current_group(const String &path)
     }
 
     //need to check if the target is a group
-    NXObject o = _current_group[path];
-    if(o.object_type() == pni::io::nx::NXObjectType::NXFIELD)
+    nxobject o = _current_group[path];
+    if(o.object_type() == pni::io::nx::nxobject_type::NXFIELD)
     {
         std::cout<<"You cannot cd to a field!"<<std::endl;
     }
     else
     {
-        _current_group = NXGroup(o);
+        _current_group = nxgroup(o);
     }
 }
 

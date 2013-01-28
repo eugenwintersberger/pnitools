@@ -45,24 +45,24 @@ shape_t dimensions2shape(const tree::ptree &dims)
 }
 
 //-----------------------------------------------------------------------------
-void write_field(const tree::ptree &tag,const NXField &field)
+void write_field(const tree::ptree &tag,const nxfield &field)
 {
-    TypeID tid = field.type_id();
+    type_id_t tid = field.type_id();
 
-    if(tid == TypeID::UINT8) field.write(tag.get_value<UInt8>());
-    else if(tid == TypeID::INT8) field.write(tag.get_value<Int8>());
-    else if(tid == TypeID::UINT16) field.write(tag.get_value<UInt16>());
-    else if(tid == TypeID::INT16) field.write(tag.get_value<Int16>());
-    else if(tid == TypeID::UINT32) field.write(tag.get_value<UInt32>());
-    else if(tid == TypeID::INT32) field.write(tag.get_value<Int32>());
-    else if(tid == TypeID::UINT64) field.write(tag.get_value<UInt32>());
-    else if(tid == TypeID::INT64) field.write(tag.get_value<Int64>());
-    else if(tid == TypeID::FLOAT32) field.write(tag.get_value<Float32>());
-    else if(tid == TypeID::FLOAT64) field.write(tag.get_value<Float64>());
-    else if(tid == TypeID::FLOAT128) field.write(tag.get_value<Float128>());
-    else if(tid == TypeID::COMPLEX32) field.write(tag.get_value<Complex32>());
-    else if(tid == TypeID::COMPLEX64) field.write(tag.get_value<Complex64>());
-    else if(tid == TypeID::COMPLEX128) field.write(tag.get_value<Complex128>());
-    else if(tid == TypeID::BOOL) field.write(tag.get_value<Bool>());
-    else if(tid == TypeID::STRING) field.write(trim(tag.get_value<String>()));
+    if(tid == type_id_t::UINT8) field.write(tag.get_value<uint8>());
+    else if(tid == type_id_t::INT8) field.write(tag.get_value<int8>());
+    else if(tid == type_id_t::UINT16) field.write(tag.get_value<uint16>());
+    else if(tid == type_id_t::INT16) field.write(tag.get_value<int16>());
+    else if(tid == type_id_t::UINT32) field.write(tag.get_value<uint32>());
+    else if(tid == type_id_t::INT32) field.write(tag.get_value<int32>());
+    else if(tid == type_id_t::UINT64) field.write(tag.get_value<uint32>());
+    else if(tid == type_id_t::INT64) field.write(tag.get_value<int64>());
+    else if(tid == type_id_t::FLOAT32) field.write(tag.get_value<float32>());
+    else if(tid == type_id_t::FLOAT64) field.write(tag.get_value<float64>());
+    else if(tid == type_id_t::FLOAT128) field.write(tag.get_value<float128>());
+    else if(tid == type_id_t::COMPLEX32) field.write(tag.get_value<complex32>());
+    else if(tid == type_id_t::COMPLEX64) field.write(tag.get_value<complex64>());
+    else if(tid == type_id_t::COMPLEX128) field.write(tag.get_value<complex128>());
+    else if(tid == type_id_t::BOOL) field.write(tag.get_value<bool>());
+    else if(tid == type_id_t::STRING) field.write(trim(tag.get_value<string>()));
 }

@@ -20,8 +20,8 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include <pni/core/Types.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/core/types.hpp>
+#include <pni/io/nx/nx.hpp>
 #include <pni/core/config/cli_args.hpp>
 #include <pni/core/config/config_parser.hpp>
 #include <boost/regex.hpp>
@@ -34,14 +34,14 @@ using namespace pni::io::nx::h5;
 #include "../common/string_utils.hpp"
 
 //-----------------------------------------------------------------------------
-void cmd_mkfield::setup(const std::vector<String> &cargs)
+void cmd_mkfield::setup(const std::vector<string> &cargs)
 {
     //setup configuration
     _config = std::unique_ptr<configuration>(new configuration);
-    _config->add_option(config_option<String>("type","t","field type","string"));
-    _config->add_option(config_option<String>("shape","s","field shape"));
-    _config->add_option(config_option<String>("chunk","c","chunk shape"));
-    _config->add_argument(config_argument<String>("name",-1));
+    _config->add_option(config_option<string>("type","t","field type","string"));
+    _config->add_option(config_option<string>("shape","s","field shape"));
+    _config->add_option(config_option<string>("chunk","c","chunk shape"));
+    _config->add_argument(config_argument<string>("name",-1));
 
     //parse use arguments
     cli_args args(cargs);
@@ -59,9 +59,9 @@ void cmd_mkfield::execute(std::unique_ptr<environment> &env)
     //need to parse the shape
     shape_t shape,cshape;
 
-    auto type = _config->value<String>("type");
-    auto name = _config->value<String>("name");
-    const NXGroup &cg = env->current_group();
+    auto type = _config->value<string>("type");
+    auto name = _config->value<string>("name");
+    const nxgroup &cg = env->current_group();
 
     //we have three situations: 
     //-> no shape
@@ -69,11 +69,11 @@ void cmd_mkfield::execute(std::unique_ptr<environment> &env)
     //-> shape and chunk shape
     if(_config->has_option("shape"))
     {
-        auto shape = read_shape<shape_t>(_config->value<String>("shape"));
+        auto shape = read_shape<shape_t>(_config->value<string>("shape"));
     
         if(_config->has_option("chunk"))
         {
-            auto cshape = read_shape<shape_t>(_config->value<String>("chunk"));
+            auto cshape = read_shape<shape_t>(_config->value<string>("chunk"));
             mkfield(cg,name,type,shape,cshape);
         }
         else

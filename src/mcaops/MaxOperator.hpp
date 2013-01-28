@@ -21,10 +21,10 @@
  */
 #pragma once
 
-#include <pni/core/Types.hpp>
-#include <pni/core/DArray.hpp>
-#include <pni/core/NumArray.hpp>
-#include <pni/core/ArrayOperations.hpp>
+#include <pni/core/types.hpp>
+#include <pni/core/darray.hpp>
+#include <pni/core/numarray.hpp>
+#include <pni/core/array_operations.hpp>
 
 #include "Operator.hpp"
 
@@ -35,7 +35,7 @@ class MaxOperator:public Operator
 {
     private:
         size_t _max_pos;
-        Float64 _max_value;
+        float64 _max_value;
     public:
         //---------------------------------------------------------------------
         MaxOperator(const po::variables_map &config):

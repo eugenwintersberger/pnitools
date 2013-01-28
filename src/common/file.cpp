@@ -24,36 +24,36 @@
 #include "file.hpp"
 
 //-----------------------------------------------------------------------------
-file::file(const String &path):
+file::file(const string &path):
     _path(path)
 {
     if(!fs::is_regular_file(_path))
     {
-        throw FileError(EXCEPTION_RECORD,"File ["+path+"] is not a regular"
+        throw file_error(EXCEPTION_RECORD,"File ["+path+"] is not a regular"
                         "file!");
     }
 }
 
 //-----------------------------------------------------------------------------
-String file::name() const
+string file::name() const
 {
     return _path.filename().string();
 }
 
 //-----------------------------------------------------------------------------
-String file::base() const
+string file::base() const
 {
     return _path.parent_path().string(); 
 }
 
 //-----------------------------------------------------------------------------
-String file::extension() const
+string file::extension() const
 {
     return _path.extension().string();
 }
 
 //-----------------------------------------------------------------------------
-String file::path() const
+string file::path() const
 {
     return _path.string();
 }

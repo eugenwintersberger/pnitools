@@ -35,7 +35,7 @@ RenderingPipeline::RenderingPipeline(QVTKWidget *w):
 }
 
 //------------------------------------------------------------------------------
-void RenderingPipeline::loadData(const String &path)
+void RenderingPipeline::loadData(const string &path)
 {
     tiff_reader->SetFileName(path.c_str());
     tiff_reader->Update();
@@ -96,7 +96,7 @@ void RenderingPipeline::update()
 }
 
 //-----------------------------------------------------------------------------
-void RenderingPipeline::rangeChanged(Float64 min,Float64 max)
+void RenderingPipeline::rangeChanged(float64 min,float64 max)
 {
     image_viewer->SetColorLevel(min);
     image_viewer->SetColorWindow(max-min);

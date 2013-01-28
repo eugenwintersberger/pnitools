@@ -31,7 +31,7 @@
 cmd_ls::cmd_ls() { }
 
 //-----------------------------------------------------------------------------
-void cmd_ls::setup(const std::vector<String> &cargs)
+void cmd_ls::setup(const std::vector<string> &cargs)
 {
     //create configuration setup
     _config = std::unique_ptr<configuration>(new configuration);
@@ -39,7 +39,7 @@ void cmd_ls::setup(const std::vector<String> &cargs)
                                           "show attributes",false));
     _config->add_option(config_option<bool>("long","l",
                                           "show detailed information",false));
-    _config->add_argument(config_argument<String>("target",-1,""));
+    _config->add_argument(config_argument<string>("target",-1,""));
 
     //parse configuration 
     cli_args args(cargs);
@@ -51,7 +51,7 @@ void cmd_ls::setup(const std::vector<String> &cargs)
 }
 
 //------------------------------------------------------------------------------
-void cmd_ls::print_field(const NXField &f) const
+void cmd_ls::print_field(const nxfield &f) const
 {
     auto s = f.shape<shape_t>();
 
@@ -72,7 +72,7 @@ void cmd_ls::print_field(const NXField &f) const
 }
 
 //------------------------------------------------------------------------------
-void cmd_ls::print_group(const NXGroup &g) const
+void cmd_ls::print_group(const nxgroup &g) const
 {
     std::cout<<"group\t";
     std::cout<<g.name();
@@ -81,7 +81,7 @@ void cmd_ls::print_group(const NXGroup &g) const
     {
         if(g.has_attr("NX_class"))
         {
-            String attr_str;
+            string attr_str;
             g.attr("NX_class").read(attr_str);
             std::cout<<":"<<attr_str;
         }
@@ -92,7 +92,7 @@ void cmd_ls::print_group(const NXGroup &g) const
 }
 
 //------------------------------------------------------------------------------
-void cmd_ls::print_attribute(const NXAttribute &a) const
+void cmd_ls::print_attribute(const nxattribute &a) const
 {
     std::cout<<"\tattribute\t"<<a.name();
     if(_config->value<bool>("long"))
@@ -107,14 +107,14 @@ void cmd_ls::print_attribute(const NXAttribute &a) const
 }
 
 //------------------------------------------------------------------------------
-void cmd_ls::print_content(const NXGroup &g) const
+void cmd_ls::print_content(const nxgroup &g) const
 {
     for(auto o: g)
     {
-        if(o.object_type() == pni::io::nx::NXObjectType::NXFIELD)
-            print_field(NXField(o));
-        else if(o.object_type() == pni::io::nx::NXObjectType::NXGROUP)
-            print_group(NXGroup(o));
+        if(o.object_type() == pni::io::nx::nxobject_type::NXFIELD)
+            print_field(nxfield(o));
+        else if(o.object_type() == pni::io::nx::nxobject_type::NXGROUP)
+            print_group(nxgroup(o));
 
         if(_config->value<bool>("attributes"))
         {
@@ -128,7 +128,7 @@ void cmd_ls::print_content(const NXGroup &g) const
 //-----------------------------------------------------------------------------
 void cmd_ls::execute(std::unique_ptr<environment> &env)
 {
-    const NXGroup &cg = env->current_group();
+    const nxgroup &cg = env->current_group();
 
     if(!_config->has_option("target"))
     {
@@ -137,11 +137,11 @@ void cmd_ls::execute(std::unique_ptr<environment> &env)
     }
     else
     {
-        auto target = _config->value<String>("target");
+        auto target = _config->value<string>("target");
         boost::char_separator<char> separator("/");
         boost::tokenizer<boost::char_separator<char> > t(target,separator);
 
-        NXGroup g(cg);
+        nxgroup g(cg);
         for(auto iter = t.begin();iter!=t.end();++iter)
         {
             if(*iter == "..")

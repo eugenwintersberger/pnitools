@@ -21,9 +21,9 @@
  */
 #pragma once
 
-#include <pni/core/Types.hpp>
-#include <pni/core/DArray.hpp>
-#include <pni/core/ArrayOperations.hpp>
+#include <pni/core/types.hpp>
+#include <pni/core/darray.hpp>
+#include <pni/core/array_operations.hpp>
 
 #include "Operator.hpp"
 

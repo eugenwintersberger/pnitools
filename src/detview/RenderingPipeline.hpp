@@ -13,19 +13,19 @@
 #include <vtkImageChangeInformation.h>
 
 
-#include<pni/core/Types.hpp>
-#include<pni/core/Array.hpp>
-#include<pni/core/RBuffer.hpp>
-#include<pni/core/io/ImageInfo.hpp>
-#include<pni/core/io/CBFReader.hpp>
-#include<pni/core/io/TIFFReader.hpp>
+#include<pni/core/types.hpp>
+#include<pni/core/arrays.hpp>
+#include<pni/core/rbuffer.hpp>
+#include<pni/core/io/image_info.hpp>
+#include<pni/core/io/cbf_reader.hpp>
+#include<pni/core/io/tiff_reader.hpp>
 
 #include<algorithm>
 
 using namespace pni::core;
 using namespace pni::io;
 
-typedef DArray<Float64> array_t;
+typedef darray<float64> array_t;
 typedef array_t::storage_type buffer_t;
 
 
@@ -44,7 +44,7 @@ class RenderingPipeline:public QObject
         void setLinScale();
         void rotateRight();
         void rotateLeft();
-        void rangeChanged(Float64 min,Float64 max);
+        void rangeChanged(float64 min,float64 max);
     public:
         //----------------------------------------------------------------------
         RenderingPipeline(QVTKWidget *w);
@@ -71,5 +71,5 @@ class RenderingPipeline:public QObject
         void update();
 
         //----------------------------------------------------------------------
-        void loadData(const String &path);
+        void loadData(const string &path);
 };

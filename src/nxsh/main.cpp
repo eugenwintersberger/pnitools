@@ -22,8 +22,8 @@
 
 #include <iostream>
 
-#include <pni/core/Types.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/core/types.hpp>
+#include <pni/io/nx/nx.hpp>
 
 #include "interpreter.hpp"
 

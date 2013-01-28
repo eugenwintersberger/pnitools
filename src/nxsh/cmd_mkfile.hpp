@@ -32,7 +32,7 @@ class cmd_mkfile : public command
     private:
         std::unique_ptr<configuration> _config;
     public:
-        virtual void setup(const std::vector<String> &cargs);
+        virtual void setup(const std::vector<string> &cargs);
         virtual void execute(std::unique_ptr<environment> &env);
         virtual void help() const;
 };

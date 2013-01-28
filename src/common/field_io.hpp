@@ -25,10 +25,10 @@
 #include <iostream>
 #include <vector>
 #include <pni/core/index_iterator.hpp>
-#include <pni/core/Slice.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/core/slice.hpp>
+#include <pni/io/nx/nx.hpp>
 #include <boost/lexical_cast.hpp>
-#include <pni/core/array.hpp>
+#include <pni/core/arrays.hpp>
 
 
 using namespace pni::core;
@@ -45,7 +45,7 @@ The shape of the array is passed by the user.
 */
 template<typename T> array create_array(shape_t s)
 {
-    return array(DArray<T>(s));
+    return array(darray<T>(s));
 }
 
 //-----------------------------------------------------------------------------
@@ -57,7 +57,7 @@ IO-object (which is typically either a field or a selection). Indeed, this
 template function just dispatches the work to by evaluating the data type of
 the IO-object and call the appropriate template version of another template
 function.
-\throws TypeError if data type of ioobj is not supported
+\throws type_error if data type of ioobj is not supported
 \tparam IOT io-type
 \param ioobj instance of IOT for which array should be created
 \return instance of array
@@ -66,28 +66,28 @@ template<typename IOT> array create_array(const IOT &ioobj)
 {
     shape_t shape = ioobj.template shape<shape_t>();
 
-    if(ioobj.type_id() == TypeID::UINT8) 
-        return create_array<UInt8>(shape);
-    else if(ioobj.type_id() == TypeID::INT8) 
-        return create_array<Int8>(shape);
-    else if(ioobj.type_id() == TypeID::UINT16)
-        return create_array<UInt16>(shape);
-    else if(ioobj.type_id() == TypeID::INT16)
-        return create_array<Int16>(shape);
-    else if(ioobj.type_id() == TypeID::UINT32)
-        return create_array<UInt32>(shape);
-    else if(ioobj.type_id() == TypeID::INT32)
-        return create_array<Int32>(shape);
-    else if(ioobj.type_id() == TypeID::UINT64)
-        return create_array<UInt64>(shape);
-    else if(ioobj.type_id() == TypeID::INT64)
-        return create_array<Int64>(shape);
-    else if(ioobj.type_id() == TypeID::FLOAT32)
-        return create_array<Float32>(shape);
-    else if(ioobj.type_id() == TypeID::FLOAT64)
-        return create_array<Float64>(shape);
-    else if(ioobj.type_id() == TypeID::FLOAT128)
-        return create_array<Float128>(shape);
+    if(ioobj.type_id() == type_id_t::UINT8) 
+        return create_array<uint8>(shape);
+    else if(ioobj.type_id() == type_id_t::INT8) 
+        return create_array<int8>(shape);
+    else if(ioobj.type_id() == type_id_t::UINT16)
+        return create_array<uint16>(shape);
+    else if(ioobj.type_id() == type_id_t::INT16)
+        return create_array<int16>(shape);
+    else if(ioobj.type_id() == type_id_t::UINT32)
+        return create_array<uint32>(shape);
+    else if(ioobj.type_id() == type_id_t::INT32)
+        return create_array<int32>(shape);
+    else if(ioobj.type_id() == type_id_t::UINT64)
+        return create_array<uint64>(shape);
+    else if(ioobj.type_id() == type_id_t::INT64)
+        return create_array<int64>(shape);
+    else if(ioobj.type_id() == type_id_t::FLOAT32)
+        return create_array<float32>(shape);
+    else if(ioobj.type_id() == type_id_t::FLOAT64)
+        return create_array<float64>(shape);
+    else if(ioobj.type_id() == type_id_t::FLOAT128)
+        return create_array<float128>(shape);
     /*
     else if(ioobj.type_id() == TypeID::COMPLEX32)
         return create_array<Complex32>(shape);
@@ -99,7 +99,7 @@ template<typename IOT> array create_array(const IOT &ioobj)
         return create_array<String>(shape);
     */
     else
-        throw TypeError(EXCEPTION_RECORD,"Unsupported data type!");
+        throw type_error(EXCEPTION_RECORD,"Unsupported data type!");
 
     return array(); //just to make the compiler happy
 
@@ -130,11 +130,11 @@ template<typename READT> array read_data(const READT &readable)
 //-----------------------------------------------------------------------------
 template<typename READT,
          typename = typename std::enable_if<
-            std::is_same<NXField,typename std::remove_reference<READT>::type>::value
+            std::is_same<nxfield,typename std::remove_reference<READT>::type>::value
             ||
-            std::is_same<NXSelection,typename std::remove_reference<READT>::type>::value
+            std::is_same<nxselection,typename std::remove_reference<READT>::type>::value
             ||
-            std::is_same<NXAttribute,typename std::remove_reference<READT>::type>::value
+            std::is_same<nxattribute,typename std::remove_reference<READT>::type>::value
          >::type
         > 
 std::ostream &operator<<(std::ostream &stream,const READT &readable)
@@ -147,11 +147,11 @@ std::ostream &operator<<(std::ostream &stream,const READT &readable)
 //-----------------------------------------------------------------------------
 template<typename WRITET,
          typename = typename std::enable_if<
-            std::is_same<NXField,typename std::remove_reference<WRITET>::type>::value
+            std::is_same<nxfield,typename std::remove_reference<WRITET>::type>::value
             ||
-            std::is_same<NXSelection,typename std::remove_reference<WRITET>::type>::value
+            std::is_same<nxselection,typename std::remove_reference<WRITET>::type>::value
             ||
-            std::is_same<NXAttribute,typename std::remove_reference<WRITET>::type>::value
+            std::is_same<nxattribute,typename std::remove_reference<WRITET>::type>::value
          >::type
         > 
 std::istream &operator>>(std::istream &stream,WRITET &writeable)
@@ -161,37 +161,4 @@ std::istream &operator>>(std::istream &stream,WRITET &writeable)
     writeable.write(data);
     return stream;
 }
-
-//-----------------------------------------------------------------------------
-/*!
-\brief dump typed data
-
-This template function finally finishes the job that was started by dump_field
-template<typename T,typename READT> 
-std::ostream &dump_data(std::ostream &os,const READT &field)
-{
-    typedef index_iterator<shape_t> iterator_t;
-    T buffer;
-    std::vector<Slice> slices;
-
-    for(auto iter = iterator_t::begin(field.shape<shape_t>());
-             iter!= iterator_t::end(field.shape<shape_t>());
-             ++iter)
-    {
-        shape_t::const_iterator siter = iter->begin();
-        for(Slice &slice: slices)
-            slice = Slice(*siter++);
-
-        const_cast<NXField&>(field)(slices).read(buffer);
-        os<<buffer<<" ";
-    }
-    os<<std::endl;
-
-    return os;
-}
-
-
-std::ostream &operator<<(std::ostream &o,const NXField &f);
-std::istream &operator<<(std::istream &i,NXField &f);
-*/
 

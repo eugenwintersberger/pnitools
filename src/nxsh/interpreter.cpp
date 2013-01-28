@@ -54,8 +54,8 @@ extern "C" {
 }
 
 //-----------------------------------------------------------------------------
-void interpreter::strip_command(const String &s,String
-        &cname,std::vector<String> &cargs)
+void interpreter::strip_command(const string &s,string
+        &cname,std::vector<string> &cargs)
 {   
     boost::char_separator<char> separator(" \t\n");
     boost::tokenizer<boost::char_separator<char> > t(s,separator);
@@ -63,7 +63,7 @@ void interpreter::strip_command(const String &s,String
     cname = *(t.begin());
 
     //copy arguments to a vector
-    cargs = std::vector<String>();
+    cargs = std::vector<string>();
     for(auto iter = ++t.begin();iter!=t.end();++iter)
         cargs.push_back(*iter);
 }
@@ -83,7 +83,7 @@ void interpreter::run()
         */
         char *line_buffer = nullptr;
         line_buffer = readline(prompt().c_str());
-        String input_str(line_buffer);
+        string input_str(line_buffer);
 
         if(line_buffer && *line_buffer)
         {
@@ -95,8 +95,8 @@ void interpreter::run()
         line_buffer = nullptr;
 
         //split command name and arguments
-        String cname;
-        std::vector<String> cargs;
+        string cname;
+        std::vector<string> cargs;
         strip_command(input_str,cname,cargs);
 
         if(cname == "exit") break;
@@ -128,7 +128,7 @@ void interpreter::run()
 }
 
 //-----------------------------------------------------------------------------
-String interpreter::prompt() 
+string interpreter::prompt() 
 {
     return _current_env->get_current_path()+">> ";
 }

@@ -27,10 +27,10 @@
 #include<boost/program_options/positional_options.hpp>
 
 
-#include<pni/core/Types.hpp>
-#include<pni/core/DArray.hpp>
-#include<pni/core/NumArray.hpp>
-#include<pni/core/io/FIOReader.hpp>
+#include<pni/core/types.hpp>
+#include<pni/core/darray.hpp>
+#include<pni/core/numarray.hpp>
+#include<pni/core/io/fio_reader.hpp>
 
 #include "Operator.hpp"
 #include "MaxOperator.hpp"
@@ -55,9 +55,9 @@ Reads two column input from standard in and stores the result in a vector.
 */
 void read_from_stdin(Operator::array_type &channels,Operator::array_type &data)
 {
-    std::vector<Float64> chvec;
-    std::vector<Float64> dvec;
-    Float64 ch,d;
+    std::vector<float64> chvec;
+    std::vector<float64> dvec;
+    float64 ch,d;
 
     while(std::cin>>ch>>d)
     {
@@ -84,7 +84,7 @@ Operator::array_type create_channel_data(size_t n)
 {
     Operator::array_type channels(Operator::shape_type{n});
 
-    for(size_t i=0;i<n;i++) channels[i] = Float64(i);
+    for(size_t i=0;i<n;i++) channels[i] = float64(i);
     return channels;
 }
 
@@ -98,7 +98,7 @@ Operator::array_type create_channel_data(size_t n)
 */
 std::unique_ptr<Operator> select_operator(const po::variables_map &options) 
 {
-    String command = options["command"].as<String>();
+    string command = options["command"].as<string>();
 
     if(command == "max") 
         return std::unique_ptr<Operator>(new MaxOperator(options));
@@ -147,8 +147,8 @@ int main(int argc,char **argv)
     //these options do not show up in the help text
     po::options_description hidden("Hidden options");
     hidden.add_options()
-        ("command",po::value<String>(),"command string")
-        ("input",po::value<String>(),"input file")
+        ("command",po::value<string>(),"command string")
+        ("input",po::value<string>(),"input file")
         ;
 
     //-------------------------------------------------------------------------
@@ -159,9 +159,9 @@ int main(int argc,char **argv)
         ("verbose,v",po::value<bool>()->zero_tokens(),"show verbose output")
         ("quiet,q",po::value<bool>()->zero_tokens(),"show no output")
         ("header",po::value<bool>()->zero_tokens(),"Write header before output")
-        ("xcolumn",po::value<String>(),
+        ("xcolumn",po::value<string>(),
          "name of the column with bin center values")
-        ("ycolumn",po::value<String>(),
+        ("ycolumn",po::value<string>(),
          "name of the column with actual MCA data")
         ;
    
@@ -180,8 +180,8 @@ int main(int argc,char **argv)
     po::options_description scale_options("options for command 'scale'");
     scale_options.add_options()
         ("center,c",po::value<size_t>(), "Index of center bin")
-        ("delta,d",po::value<Float64>(), "Size of a bin")
-        ("cvalue,x",po::value<Float64>(), "position of the center bin")
+        ("delta,d",po::value<float64>(), "Size of a bin")
+        ("cvalue,x",po::value<float64>(), "position of the center bin")
         ;
    
     //set positional arguments
@@ -220,12 +220,12 @@ int main(int argc,char **argv)
     if(options.count("input"))
     {
         //----------------open the file holding the data-----------------------
-        String filename = options["input"].as<String>();
+        string filename = options["input"].as<string>();
 
-        FIOReader reader;
+        fio_reader reader;
         //read data from a file
         try{
-            reader = FIOReader(filename); 
+            reader = fio_reader(filename); 
         }
         catch(...)
         {
@@ -234,10 +234,10 @@ int main(int argc,char **argv)
         }
 
         //----------------read MCA data form the appropriate column-------------
-        String ycolumn;
+        string ycolumn;
         if(options.count("ycolumn"))
         {
-            ycolumn = options["ycolumn"].as<String>();
+            ycolumn = options["ycolumn"].as<string>();
         }
         else
         {
@@ -273,7 +273,7 @@ int main(int argc,char **argv)
             data = Operator::array_type(Operator::shape_type{reader.nrecords()},
                             reader.column<Operator::array_type::storage_type>(ycolumn));
         }
-        catch(KeyError &error)
+        catch(key_error &error)
         {
             std::cerr<<"Error reading MCA data from column "<<ycolumn;
             std::cerr<<" - column does not exist!"<<std::endl;
@@ -294,7 +294,7 @@ int main(int argc,char **argv)
         catch(...)
         {   
             std::cerr<<"Error reading MCA data from column ";
-            std::cerr<<options["ycolumn"].as<String>()<<"!";
+            std::cerr<<options["ycolumn"].as<string>()<<"!";
             return 1;
         }
 
@@ -303,19 +303,19 @@ int main(int argc,char **argv)
         if(options.count("xcolumn"))
             try{
                 channels = Operator::array_type(Operator::shape_type{reader.ncolumns()},
-                           reader.column<Operator::array_type::storage_type>(options["xcolumn"].as<String>()));
+                           reader.column<Operator::array_type::storage_type>(options["xcolumn"].as<string>()));
             }
-            catch(KeyError &error)
+            catch(key_error &error)
             {
                 std::cerr<<"Error reading bin data from column ";
-                std::cerr<<options["xcolumn"].as<String>();
+                std::cerr<<options["xcolumn"].as<string>();
                 std::cerr<<" - column does not exist!"<<std::endl;
                 return 1;
             }
             catch(...)
             {
                 std::cerr<<"Error reading bin data from column ";
-                std::cerr<<options["xcolumn"].as<String>()<<"!"<<std::endl;
+                std::cerr<<options["xcolumn"].as<string>()<<"!"<<std::endl;
                 return 1;
             }
         else

@@ -23,7 +23,7 @@
 #include "string_utils.hpp"
 
 //-----------------------------------------------------------------------------
-String trim(const String &s)
+string trim(const string &s)
 {
     size_t start_index = 0;
     for(auto iter = s.begin();iter!=s.end();++iter)
@@ -47,6 +47,6 @@ String trim(const String &s)
         else break;
     }
 
-    return String(s,start_index,(s.size()-stop_index-start_index));
+    return string(s,start_index,(s.size()-stop_index-start_index));
 }
 

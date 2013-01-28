@@ -22,8 +22,8 @@
 #pragma once
 
 #include <iostream>
-#include <pni/core/Types.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/core/types.hpp>
+#include <pni/io/nx/nx.hpp>
 
 using namespace pni::core;
 using namespace pni::io::nx::h5;
@@ -38,8 +38,8 @@ only the file and the current group.
 class environment
 {
     private:
-        NXFile _file; //!< currently opened file
-        NXGroup _current_group; //!< current group
+        nxfile _file; //!< currently opened file
+        nxgroup _current_group; //!< current group
     public:
         //=====================constructor and destructor=======================
         //! default constructor
@@ -52,7 +52,7 @@ class environment
         this case the root group /.
         \param file Nexus file to work on
         */
-        environment(NXFile file);
+        environment(nxfile file);
 
         //---------------------------------------------------------------------
         /*! 
@@ -62,7 +62,7 @@ class environment
         \param file file to work on 
         \param path the path to the new working group
         */
-        environment(NXFile file,const String &path);
+        environment(nxfile file,const string &path);
 
         //---------------------------------------------------------------------
         //! destructor
@@ -70,18 +70,18 @@ class environment
 
         //======================public member functions========================
         //! get file reference
-        const NXFile &file() const { return _file; }
+        const nxfile &file() const { return _file; }
 
         //---------------------------------------------------------------------
         //! get group reference
-        const NXGroup &current_group() const { return _current_group; }
+        const nxgroup &current_group() const { return _current_group; }
 
         //!--------------------------------------------------------------------
         //! set the current group
-        void current_group(const String &path);
+        void current_group(const string &path);
 
         //---------------------------------------------------------------------
         //! get curent path 
-        String get_current_path() const;
+        string get_current_path() const;
 
 };

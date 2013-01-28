@@ -20,8 +20,8 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include <pni/core/Types.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/core/types.hpp>
+#include <pni/io/nx/nx.hpp>
 #include <pni/core/config/cli_args.hpp>
 #include <pni/core/config/config_parser.hpp>
 
@@ -32,16 +32,16 @@ using namespace pni::io::nx::h5;
 #include "../common/string_utils.hpp"
 
 //-----------------------------------------------------------------------------
-void cmd_mkattr::setup(const std::vector<String> &cargs)
+void cmd_mkattr::setup(const std::vector<string> &cargs)
 {
     _config = std::unique_ptr<configuration>(new configuration);
-    _config->add_option(config_option<String>("type","t","attribute type"));
-    _config->add_option(config_option<String>("shape","s","attribute shape"));
+    _config->add_option(config_option<string>("type","t","attribute type"));
+    _config->add_option(config_option<string>("shape","s","attribute shape"));
     _config->add_option(config_option<bool>("overwrite","o",
                 "overwrite an attribute if it already exists",false));
-    _config->add_option(config_option<String>("name","n",
+    _config->add_option(config_option<string>("name","n",
                 "name of the attribute"));
-    _config->add_argument(config_argument<String>("parent",-1,
+    _config->add_argument(config_argument<string>("parent",-1,
                 "attribute parent"));
     
     //parse configuration
@@ -54,19 +54,19 @@ void cmd_mkattr::setup(const std::vector<String> &cargs)
 void cmd_mkattr::execute(std::unique_ptr<environment> &env)
 {
     //get the parent object
-    const NXGroup &cg = env->current_group();
-    NXObject o = cg[_config->value<String>("parent")];
+    const nxgroup &cg = env->current_group();
+    nxobject o = cg[_config->value<string>("parent")];
 
-    auto type = _config->value<String>("type");
+    auto type = _config->value<string>("type");
     
     if(_config->has_option("shape"))
-        mkattr(o,_config->value<String>("name"),
-                 _config->value<String>("type"),
-                 read_shape<shape_t>(_config->value<String>("shape")),
+        mkattr(o,_config->value<string>("name"),
+                 _config->value<string>("type"),
+                 read_shape<shape_t>(_config->value<string>("shape")),
                  _config->value<bool>("overwrite"));
     else
-        mkattr(o,_config->value<String>("name"),
-                 _config->value<String>("type"),
+        mkattr(o,_config->value<string>("name"),
+                 _config->value<string>("type"),
                  _config->value<bool>("overwrite"));
 
 }

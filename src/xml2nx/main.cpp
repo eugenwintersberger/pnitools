@@ -22,10 +22,10 @@
 
 #include<iostream>
 
-#include <pni/core/Types.hpp>
+#include <pni/core/types.hpp>
 #include <pni/core/config/configuration.hpp>
 #include <pni/core/config/config_parser.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/io/nx/nx.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -44,9 +44,9 @@ int main(int argc,char **argv)
     configuration conf;
     conf.add_option(config_option<nx_object_path>("parent","p",
                 "path to the parent object"));
-    conf.add_option(config_option<Bool>("append","a",
+    conf.add_option(config_option<bool>("append","a",
                 "append structure to existing file"));
-    conf.add_argument(config_argument<String>("input_file",-1));
+    conf.add_argument(config_argument<string>("input_file",-1));
    
     //show usage message
     if(argc <= 1)
@@ -72,26 +72,26 @@ int main(int argc,char **argv)
     tree::ptree xmltree; 
     try
     {
-        tree::read_xml(conf.value<String>("input_file"),xmltree);
+        tree::read_xml(conf.value<string>("input_file"),xmltree);
     }
     catch(...)
     {
         std::cerr<<"Error reading XML file ";
-        std::cerr<<conf.value<String>("input_file")<<"!"<<std::endl;
+        std::cerr<<conf.value<string>("input_file")<<"!"<<std::endl;
         return 1;
     }
 
 
     //get the target file
     auto opath = conf.value<nx_object_path>("parent");
-    NXFile nxfile;
+    nxfile file;
     if(conf.value<Bool>("append"))
     {
         try
         {
-            nxfile = NXFile::open_file(opath.filename(),false);
+            file = nxfile::open_file(opath.filename(),false);
         }
-        catch(pni::io::nx::NXFileError &error)
+        catch(pni::io::nx::nxfile_error &error)
         {
             std::cerr<<"Error opening file "<<opath.filename();
             std::cerr<<"for writing data"<<std::endl<<std::endl;
@@ -103,9 +103,9 @@ int main(int argc,char **argv)
     {
         try
         {
-            nxfile = NXFile::create_file(opath.filename(),false,0);
+            file = nxfile::create_file(opath.filename(),false,0);
         }
-        catch(pni::io::nx::NXFileError &error)
+        catch(pni::io::nx::nxfile_error &error)
         {
             std::cerr<<"Error creating file "<<opath.filename();
             std::cerr<<"for writing data!"<<std::endl<<std::endl;
@@ -115,14 +115,14 @@ int main(int argc,char **argv)
     }
 
     //get the group where to append XML data
-    NXGroup target_group = nxfile["/"];
+    nxgroup target_group = file["/"];
     if(opath.object_path()!="")
     {
         try
         {
-            target_group = nxfile[opath.object_path()];
+            target_group = file[opath.object_path()];
         }
-        catch(pni::io::nx::NXGroupError &error)
+        catch(pni::io::nx::nxgroup_error &error)
         {
             std::cerr<<"Error opening target group ";
             std::cerr<<opath.object_path()<<" to append object!";
@@ -135,6 +135,6 @@ int main(int argc,char **argv)
     create_objects(target_group,xmltree);
 
 
-    nxfile.close();
+    file.close();
     return 0;
 }

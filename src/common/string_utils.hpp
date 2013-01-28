@@ -23,7 +23,7 @@
 #pragma once
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
-#include <pni/core/Types.hpp>
+#include <pni/core/types.hpp>
 
 using namespace pni::core;
 
@@ -34,7 +34,7 @@ Remove leading and trailing blanks from a string.
 \param s string to trim
 \return trimmed string
 */
-String trim(const String &s);
+string trim(const string &s);
 
 //-----------------------------------------------------------------------------
 /*!
@@ -46,11 +46,11 @@ user.
 \param s string from which to construct the shape
 \return container with shape data
 */
-template<typename STYPE> STYPE read_shape(const String &s)
+template<typename STYPE> STYPE read_shape(const string &s)
 {
     boost::regex sr("\\d+");
-    String::const_iterator start = s.begin();
-    String::const_iterator end = s.end();
+    string::const_iterator start = s.begin();
+    string::const_iterator end = s.end();
     boost::smatch match;
     STYPE shape;
 

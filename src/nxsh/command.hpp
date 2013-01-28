@@ -50,7 +50,7 @@ class command
         \throws cli_help_request if the user requests help
         \param cargs command line arguments and options in a vector
         */
-        virtual void setup(const std::vector<String> &cargs) = 0;
+        virtual void setup(const std::vector<string> &cargs) = 0;
 
         //---------------------------------------------------------------------
         /*!

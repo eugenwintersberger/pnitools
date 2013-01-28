@@ -23,9 +23,9 @@
 
 #include <iostream>
 #include<boost/program_options/variables_map.hpp>
-#include <pni/core/Types.hpp>
-#include <pni/core/DArray.hpp>
-#include <pni/core/NumArray.hpp>
+#include <pni/core/types.hpp>
+#include <pni/core/darray.hpp>
+#include <pni/core/numarray.hpp>
 
 using namespace pni::core;
 namespace po = boost::program_options;
@@ -34,8 +34,8 @@ class Operator
 {
     public:
         //=================public types========================================
-        typedef DArray<Float64> array_type;
-        typedef NumArray<array_type> narray_type;
+        typedef darray<float64> array_type;
+        typedef numarray<array_type> narray_type;
         typedef std::vector<size_t> shape_type;
         //---------------------------------------------------------------------
         Operator(const po::variables_map &config){}

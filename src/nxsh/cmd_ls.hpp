@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include <pni/core/Types.hpp>
-#include <pni/core/Array.hpp>
+#include <pni/core/types.hpp>
+#include <pni/core/arrays.hpp>
 #include <pni/core/config/configuration.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/io/nx/nx.hpp>
 
 #include "command.hpp"
 
@@ -53,7 +53,7 @@ class cmd_ls : public command
         Print the content of a group objecct passed to the member function.
         \param g group object 
         */
-        void print_content(const NXGroup &g) const;
+        void print_content(const nxgroup &g) const;
 
         //---------------------------------------------------------------------
         /*!
@@ -62,7 +62,7 @@ class cmd_ls : public command
         Print a field to std output. 
         \param o field to print
         */
-        void print_field(const NXField &o) const;
+        void print_field(const nxfield &o) const;
 
         //---------------------------------------------------------------------
         /*!
@@ -71,7 +71,7 @@ class cmd_ls : public command
         Print group information to the output. 
         \param o group to print
         */
-        void print_group(const NXGroup &o) const;
+        void print_group(const nxgroup &o) const;
 
         //---------------------------------------------------------------------
         /*!
@@ -80,11 +80,11 @@ class cmd_ls : public command
         Print attribute information to output. 
         \param g attribute to print
         */
-        void print_attribute(const NXAttribute &g) const;
+        void print_attribute(const nxattribute &g) const;
     public:
         //! default constructor
         cmd_ls();
-        virtual void setup(const std::vector<String> &cargs);
+        virtual void setup(const std::vector<string> &cargs);
         virtual void execute(std::unique_ptr<environment> &env);
         virtual void help() const;
 };

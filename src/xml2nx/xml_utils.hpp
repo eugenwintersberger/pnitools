@@ -22,8 +22,8 @@
 
 #pragma once
 #include<sstream>
-#include<pni/core/Types.hpp>
-#include<pni/io/nx/NX.hpp>
+#include<pni/core/types.hpp>
+#include<pni/io/nx/nx.hpp>
 
 #include<boost/property_tree/ptree.hpp>
 #include<boost/property_tree/xml_parser.hpp>
@@ -56,49 +56,49 @@ Create a field from the information provided by the XML file.
 \return instance of NXField
 */
 template<typename PTYPE>
-NXField create_field(const PTYPE &parent,const String &name,
-                     const String &tc,const shape_t &s)
+nxfield create_field(const PTYPE &parent,const string &name,
+                     const string &tc,const shape_t &s)
 {
     if(tc == "uint8")
-        return parent.template create_field<UInt8>(name,s);
+        return parent.template create_field<uint8>(name,s);
     if(tc == "int8")
-        return parent.template create_field<Int8>(name,s);
+        return parent.template create_field<int8>(name,s);
     if(tc == "uint16")
-        return parent.template create_field<UInt16>(name,s);
+        return parent.template create_field<uint16>(name,s);
     if(tc == "int16")
-        return parent.template create_field<Int16>(name,s);
+        return parent.template create_field<int16>(name,s);
     if(tc == "uint32")
-        return parent.template create_field<UInt32>(name,s);
+        return parent.template create_field<uint32>(name,s);
     if(tc == "int32")
-        return parent.template create_field<Int32>(name,s);
+        return parent.template create_field<int32>(name,s);
     if(tc == "uint64")
-        return parent.template create_field<UInt64>(name,s);
+        return parent.template create_field<uint64>(name,s);
     if(tc == "int64")
-        return parent.template create_field<Int64>(name,s);
+        return parent.template create_field<int64>(name,s);
     if(tc == "float32")
-        return parent.template create_field<Float32>(name,s);
+        return parent.template create_field<float32>(name,s);
     if(tc == "float64")
-        return parent.template create_field<Float64>(name,s);
+        return parent.template create_field<float64>(name,s);
     if(tc == "float128")
-        return parent.template create_field<Float128>(name,s);
+        return parent.template create_field<float128>(name,s);
     if(tc == "complex32")
-        return parent.template create_field<Complex32>(name,s);
+        return parent.template create_field<complex32>(name,s);
     if(tc == "complex64")
-        return parent.template create_field<Complex64>(name,s);
+        return parent.template create_field<complex64>(name,s);
     if(tc == "complex128")
-        return parent.template create_field<Complex128>(name,s);
+        return parent.template create_field<complex128>(name,s);
     if(tc == "bool")
-        return parent.template create_field<Bool>(name,s);
+        return parent.template create_field<bool>(name,s);
     if(tc == "binary")
-        return parent.template create_field<Binary>(name,s);
+        return parent.template create_field<binary>(name,s);
     if(tc == "string")
-        return parent.template create_field<String>(name,s);
+        return parent.template create_field<string>(name,s);
 
     std::stringstream ss;
     ss<<"Error creating field - type code "<<tc<<" is not supported!";
-    throw pni::io::nx::NXFieldError(EXCEPTION_RECORD,ss.str());
+    throw pni::io::nx::nxfield_error(EXCEPTION_RECORD,ss.str());
 
-    return NXField(); //just to make the compiler happy
+    return nxfield(); //just to make the compiler happy
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +109,7 @@ Write data from XML file to the Nexus file.
 \param tag the actual tag whose data shall be written
 \param field the field where to write the data
 */
-void write_field(const tree::ptree &tag,const NXField &field);
+void write_field(const tree::ptree &tag,const nxfield &field);
 
 //-----------------------------------------------------------------------------
 /*!
@@ -128,17 +128,17 @@ void create_objects(const PTYPE &parent,tree::ptree &t)
         if(child.first == "group")
         {
             //create the group and call the function recursively
-            auto name = child.second.template get<String>("<xmlattr>.name");
-            auto type = child.second.template get<String>("<xmlattr>.type");
+            auto name = child.second.template get<string>("<xmlattr>.name");
+            auto type = child.second.template get<string>("<xmlattr>.type");
 
-            NXGroup g = parent.create_group(name,type);
+            nxgroup g = parent.create_group(name,type);
             create_objects(g,child.second);
 
         }
         else if(child.first == "field")
         {
-            auto name = child.second.template get<String>("<xmlattr>.name");
-            auto type = child.second.template get<String>("<xmlattr>.type");
+            auto name = child.second.template get<string>("<xmlattr>.name");
+            auto type = child.second.template get<string>("<xmlattr>.type");
 
             shape_t shape;
             //obtain the shape
@@ -152,13 +152,13 @@ void create_objects(const PTYPE &parent,tree::ptree &t)
             {}
 
             //create the field
-            NXField f = create_field(parent,name,type,shape);
+            nxfield f = create_field(parent,name,type,shape);
 
             //------------------try to write units attribute--------------------
             try
             {
-                auto units = child.second.template get<String>("<xmlattr>.units");
-                f.attr<String>("units").write(units);
+                auto units = child.second.template get<string>("<xmlattr>.units");
+                f.attr<string>("units").write(units);
             }
             catch(...)
             {}
@@ -166,8 +166,8 @@ void create_objects(const PTYPE &parent,tree::ptree &t)
             //-------------------try to write long_name attribute--------------
             try
             {
-                auto lname = child.second.template get<String>("<xmlattr>.long_name");
-                f.attr<String>("long_name").write(lname);
+                auto lname = child.second.template get<string>("<xmlattr>.long_name");
+                f.attr<string>("long_name").write(lname);
             }
             catch(...)
             {}
@@ -185,8 +185,8 @@ void create_objects(const PTYPE &parent,tree::ptree &t)
         }
         else if(child.first == "link")
         {
-            auto name = child.second.template get<String>("<xmlattr>.name");
-            auto target = child.second.template get<String>("<xmlattr>.target");
+            auto name = child.second.template get<string>("<xmlattr>.name");
+            auto target = child.second.template get<string>("<xmlattr>.target");
             parent.link(name,target);
         }
     }

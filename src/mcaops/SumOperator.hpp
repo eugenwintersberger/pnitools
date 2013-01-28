@@ -21,9 +21,8 @@
  */
 #pragma once
 
-#include <pni/core/Types.hpp>
-#include <pni/core/DArray.hpp>
-#include <pni/core/ArrayOperations.hpp>
+#include <pni/core/types.hpp>
+#include <pni/core/darray.hpp>
 
 #include "Operator.hpp"
 
@@ -33,7 +32,7 @@ using namespace pni::core;
 class SumOperator:public Operator
 {
     private:
-        Float64 _sum;
+        float64 _sum;
     public:
         SumOperator(const po::variables_map &config):
             Operator(config),
@@ -45,7 +44,8 @@ class SumOperator:public Operator
         virtual void operator()(const array_type &channels,
                                 const array_type &data)
         {
-            _sum = pni::core::sum(data);
+            _sum = 0;
+            for(auto e: data) _sum += e;
         }
 
 

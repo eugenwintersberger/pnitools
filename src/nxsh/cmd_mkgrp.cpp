@@ -20,8 +20,8 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include <pni/core/Types.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/core/types.hpp>
+#include <pni/io/nx/nx.hpp>
 #include <pni/core/config/cli_args.hpp>
 #include <pni/core/config/configuration.hpp>
 #include <pni/core/config/config_parser.hpp>
@@ -32,11 +32,11 @@ using namespace pni::io::nx::h5;
 #include "cmd_mkgrp.hpp"
 
 //-----------------------------------------------------------------------------
-void cmd_mkgrp::setup(const std::vector<String> &cargs)
+void cmd_mkgrp::setup(const std::vector<string> &cargs)
 {
     _config = std::unique_ptr<configuration>(new configuration);
-    _config->add_option(config_option<String>("class","c","group class",""));
-    _config->add_argument(config_argument<String>("name",-1,""));
+    _config->add_option(config_option<string>("class","c","group class",""));
+    _config->add_argument(config_argument<string>("name",-1,""));
 
     cli_args args(cargs);
     parse(*_config,args.argc(),args.argv());
@@ -48,17 +48,17 @@ void cmd_mkgrp::setup(const std::vector<String> &cargs)
 //-----------------------------------------------------------------------------
 void cmd_mkgrp::execute(std::unique_ptr<environment> &env)
 {
-    const NXGroup &cg = env->current_group();
+    const nxgroup &cg = env->current_group();
   
     //if no group name was passed - do nothing
     if(!_config->has_option("name")) return;
 
     //create the group
-    if(_config->value<String>("class").empty())
-        cg.create_group(_config->value<String>("name"));
+    if(_config->value<string>("class").empty())
+        cg.create_group(_config->value<string>("name"));
     else
-        cg.create_group(_config->value<String>("name"),
-                        _config->value<String>("class"));
+        cg.create_group(_config->value<string>("name"),
+                        _config->value<string>("class"));
 }
 
 //-----------------------------------------------------------------------------

@@ -21,8 +21,8 @@
  */
 
 #pragma once
-#include<pni/core/Types.hpp>
-#include<pni/core/Exceptions.hpp>
+#include<pni/core/types.hpp>
+#include<pni/core/exceptions.hpp>
 
 using namespace pni::core;
 
@@ -32,12 +32,12 @@ using namespace pni::core;
 This exception is thrown if the input or output file format cannot be
 handled.
 */
-class file_type_error:public Exception
+class file_type_error:public exception
 {
     public:
         //-----------------------------------------------------------------
         //! default constructor
-        file_type_error():Exception("FileTypeError"){}
+        file_type_error():exception("file_type_error"){}
         
         //-----------------------------------------------------------------
         /*!
@@ -46,8 +46,8 @@ class file_type_error:public Exception
         \param r exception record
         \param d description
         */
-        file_type_error(const ExceptionRecord &r,const String &d):
-            Exception("FileTypeError",r,d)
+        file_type_error(const exception_record &r,const string &d):
+            exception("file_type_error",r,d)
         {}
 
         //-----------------------------------------------------------------

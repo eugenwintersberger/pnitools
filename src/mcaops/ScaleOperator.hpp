@@ -21,8 +21,8 @@
  */
 #pragma once
 
-#include <pni/core/Types.hpp>
-#include <pni/core/ArrayOperations.hpp>
+#include <pni/core/types.hpp>
+#include <pni/core/array_operations.hpp>
 
 #include "Operator.hpp"
 
@@ -33,8 +33,8 @@ class ScaleOperator:public Operator
     private:
         bool _search_max;
         size_t _center;  //center bin
-        Float64 _delta;  //delta value
-        Float64 _cvalue; //center value
+        float64 _delta;  //delta value
+        float64 _cvalue; //center value
         array_type _channels;
         array_type _data;
     public:
@@ -53,10 +53,10 @@ class ScaleOperator:public Operator
             }
 
             if(config.count("delta"))
-                _delta = config["delta"].as<Float64>();
+                _delta = config["delta"].as<float64>();
 
             if(config.count("cvalue"))
-                _cvalue = config["cvalue"].as<Float64>();
+                _cvalue = config["cvalue"].as<float64>();
              
         }
 
@@ -76,9 +76,9 @@ class ScaleOperator:public Operator
 #ifdef NOFOREACH
             for(auto iter=_channels.begin();iter!=_channels.end();iter++)
             {
-                Float64 &v = *iter;
+                float64 &v = *iter;
 #else
-            for(Float64 &v: _channels)
+            for(float64 &v: _channels)
             {
 #endif
                 v = _cvalue + _delta*(v - _center); 

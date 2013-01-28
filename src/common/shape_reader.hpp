@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <pni/core/Types.hpp>
-#include <pni/core/Array.hpp>
+#include <pni/core/types.hpp>
+#include <pni/core/arrays.hpp>
 
 #include <boost/regex.hpp>
 using namespace pni::core;
@@ -36,8 +36,8 @@ class shape_reader
         boost::regex e;
     public:
         shape_reader();
-        shape_reader(char st,char et, String s);
+        shape_reader(char st,char et, string s);
 
-        shape_t read(const String &s);
+        shape_t read(const string &s);
 };
 

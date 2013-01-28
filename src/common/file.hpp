@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <pni/core/Types.hpp>
+#include <pni/core/types.hpp>
 #include <boost/filesystem.hpp>
 
 using namespace pni::core;
@@ -52,7 +52,7 @@ class file
         Constructor taking a string representing the full path to the file.
         \param f path to the file
         */
-        file(const String &path);
+        file(const string &path);
 
         //---------------------------------------------------------------------
         //! destructor
@@ -60,15 +60,15 @@ class file
 
         //=================general purpose methods=============================
         //! return the name of the file
-        String name() const;
+        string name() const;
 
         //---------------------------------------------------------------------
         //! return the path to the file
-        String base() const;
+        string base() const;
 
         //---------------------------------------------------------------------
         //! return the extension of the file
-        String extension() const;
+        string extension() const;
 
         //---------------------------------------------------------------------
         //! true if this is a regular file
@@ -76,5 +76,5 @@ class file
 
         //---------------------------------------------------------------------
         //! return the full path of the file
-        String path() const;
+        string path() const;
 };

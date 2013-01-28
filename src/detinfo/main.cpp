@@ -23,8 +23,8 @@
 #include<iostream>
 #include<vector>
 
-#include <pni/core/io/CBFReader.hpp>
-#include <pni/core/io/TIFFReader.hpp>
+#include <pni/core/io/cbf_reader.hpp>
+#include <pni/core/io/tiff_reader.hpp>
 
 #include <pni/core/config/configuration.hpp>
 #include <pni/core/config/config_parser.hpp>
@@ -32,12 +32,12 @@
 #include "../common/file_list.hpp"
 #include "../common/exceptions.hpp"
 
-typedef std::vector<String> strlist;
+typedef std::vector<string> strlist;
 
 int main(int argc,char **argv)
 {
     configuration config;
-    Bool verbose = false;
+    bool verbose = false;
 
     if(argc <= 1)
     {
@@ -48,8 +48,8 @@ int main(int argc,char **argv)
     }
 
     //---------------------setup program configuration-------------------------
-    config.add_option(config_option<Bool>("verbose","v","be verbose",&verbose));
-    config.add_option(config_option<Bool>("full-path","",
+    config.add_option(config_option<bool>("verbose","v","be verbose",&verbose));
+    config.add_option(config_option<bool>("full-path","",
                 "show the full path on output"));
     config.add_argument(config_argument<strlist>("input-files",-1));
 
@@ -82,7 +82,7 @@ int main(int argc,char **argv)
         auto path_list = config.value<strlist>("input-files");
         infiles = file_list(path_list);
     }
-    catch(FileError &error)
+    catch(file_error &error)
     {
         std::cerr<<error<<std::endl;
         return 1;
@@ -91,15 +91,15 @@ int main(int argc,char **argv)
     //-------------------processing input files--------------------------------
     for(auto file: infiles)
     {
-        pni::io::ImageInfo info;
+        pni::io::image_info info;
         if(file.extension()==".cbf")
         {
-            pni::io::CBFReader reader(file.path());
+            pni::io::cbf_reader reader(file.path());
             info = reader.info(0);
         }
         else if(file.extension()==".tiff")
         {
-            pni::io::TIFFReader reader(file.path());
+            pni::io::tiff_reader reader(file.path());
             info = reader.info(0);
         }
         else

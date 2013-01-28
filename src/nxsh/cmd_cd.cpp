@@ -23,8 +23,8 @@
 #include "cmd_cd.hpp"
 #include <boost/tokenizer.hpp>
 
-#include <pni/core/Types.hpp>
-#include <pni/io/nx/NX.hpp>
+#include <pni/core/types.hpp>
+#include <pni/io/nx/nx.hpp>
 #include <pni/core/config/cli_args.hpp>
 #include <pni/core/config/config_parser.hpp>
 
@@ -32,10 +32,10 @@ using namespace pni::core;
 using namespace pni::io::nx::h5;
 
 //-----------------------------------------------------------------------------
-void cmd_cd::setup(const std::vector<String> &cargs)
+void cmd_cd::setup(const std::vector<string> &cargs)
 {
     _config = std::unique_ptr<configuration>(new configuration);
-    _config->add_argument(config_argument<String>("target",-1,"",&_target));
+    _config->add_argument(config_argument<string>("target",-1,"",&_target));
     cli_args args(cargs);
     parse(*_config,args.argc(),args.argv());
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <pni/core/Types.hpp>
+#include <pni/core/types.hpp>
 #include <list>
 #include "file.hpp"
 #include <boost/tokenizer.hpp>
@@ -56,7 +56,7 @@ class file_list
         
         \param po path string
         */
-        bool _fill_from_num_range(const String &po);
+        bool _fill_from_num_range(const string &po);
     
     public:
         //==================public types====================================
