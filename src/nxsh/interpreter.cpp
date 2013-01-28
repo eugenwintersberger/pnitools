@@ -43,6 +43,7 @@ extern "C" {
     _current_env(new environment()),
     _cmd_stack()
 {
+    _cmd_stack["mkgrp"] = std::unique_ptr<command>(new cmd_mkgrp());
     _cmd_stack["ls"] = std::unique_ptr<command>(new cmd_ls());
     _cmd_stack["open"] = std::unique_ptr<command>(new cmd_open());
     _cmd_stack["cd"] = std::unique_ptr<command>(new cmd_cd());
