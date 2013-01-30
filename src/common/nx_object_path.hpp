@@ -30,11 +30,17 @@ using namespace pni::core;
 \brief representing path to an Nexus object
 
 This class represents the path of an object within a Nexus file. 
-A user can specify a Nexus object from the command line using the following
+A user can specify a Nexus object by a string using the following
 syntax
 \code
-<Filename>:<path to object>[@attribute name]
+[<Filename>://]<path to object>[@attribute name]
 \endcode
+The path to the object itself consist of elements of form 
+\code
+name:class
+\endcode
+where the first part is the name of the object and the second one the class.
+An element can consist either of a single class or name or both. 
 Using this one can not only address a group or a field but also a particular
 attribute.
 The class provides access to the different components of such a path:
@@ -49,6 +55,11 @@ name part.
 class nx_object_path
 {
     private:
+        //! seperator of object name and class
+        static const char class_seperator = ':';
+        //! seperator for path elements
+        static const char element_seperator = '/';
+
         //! name of the file where the object is stored
         string _fname;
         //! path to the object
@@ -83,6 +94,17 @@ class nx_object_path
         //---------------------------------------------------------------------
         //! get attribute name
         string attribute_name() const { return _attrname; }
+
+        //!--------------------------------------------------------------------
+        /*! 
+        \brief path is absolute
+
+        Method returns true if the path is an absolute path starting from the
+        root of the file. Otherwise the path is considered as relative meaning
+        relative to the actual position in a Nexus tree.
+        \return true if path is absolute
+        */
+        bool is_absolute() const;
 };
 
 //! output operator for NXObjectPath
@@ -90,4 +112,7 @@ std::ostream &operator<<(std::ostream &o,const nx_object_path &path);
 
 //! input operator for NXObjectPath
 std::istream &operator>>(std::istream &i,nx_object_path &path);
+
+//! construct a nexus path object from a string
+nx_path_object nx_path_from_string(const string &s);
 

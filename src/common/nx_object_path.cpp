@@ -70,6 +70,13 @@ nx_object_path::nx_object_path(const string &f,const string &p,const string &a):
 {}
 
 //-----------------------------------------------------------------------------
+nx_path_object nx_path_from_string(const string &s)
+{
+    
+    return nx_path_object();
+}
+
+//-----------------------------------------------------------------------------
 std::ostream &operator<<(std::ostream &o,const nx_object_path &path)
 {
     o<<path.filename()<<":"<<path.object_path();
