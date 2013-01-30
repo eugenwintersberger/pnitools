@@ -1,42 +1,57 @@
-/*!
-\defgroup detinfo detinfo 
-\brief provides basic information about detector data
+.TH detinfo 1 "29.01.2013" "" "User commands"
+.SH NAME
+detinfo \- prints information about data in a detector file
+.SH SYNOPSIS
+.B detinfo [OPTIONS] FILE [FILE ...]
+.SH DESCRIPTION
+detinfo prints information about the data stored in a detector file. The program is inteded to be used with old detector file formats like TIFF or CBF. It cannot be used with Nexus files as their are other tools available for managing Nexus files. One application would be to use detinfo to determine the shape and the datatype of detector images stored in individual files before merging them into a Nexus file. detinfo can either act on a single file or on a whole bunch of files which are passed as arguments to the program.
+.SH OPTIONS
+The programm takes the following options:
+.LP
+.B -h, --help
+.RS 4
+print short program help
+.RE
+.LP
+.B -v, --verbose  
+.RS 4
+produce verbose output
+.RE
+.LP
+.B --full-path 
+.RS 4
+output the full path of a detector file for which information is printed.
+.RE
+.SH "RETURN VALUE"
+0
+.DT
+if program finished sucessfully
+.LP
+1
+.DT
+otherwise
 
-\section SYNOPSIS
-\code 
-    detinfo [OPTIONS]... [FILES]...
-\endcode
+.SH AUTHOR
+Written bei Eugen Wintersberger <eugen.wintersberger@desy.de>
 
-\section DESCRIPTION
+.SH COPYRIGHT
+Copyright 2013 Eugen Wintersberger License GLPLv2+: GNU GPL version 2 or later <http://gnu.org/license/gpl.html>.
+This is free software: you are free to change and redistribute it. There is no WARRENTY, to the extent permitted by law.
 
-\b detinfo provides basic information about detector data stored in a file.
-Obviously this is only possible for detector file formats that provide this
-information. Currently the following file formats are supported
-\n
-\li CBF     the format used by DECTRIS for its PILATUS detectors
-\li TIFF    general image format used by several detector vendors
-\n
+.SH "SEE ALSO"
+The full documentation about 
+.B
+detinfo
+and other programs included in the
+.B
+pnitools
+code package see the Texinfo manual with
+.LP
+.RS 4
+.B
+info pnitools
+.RE
 
-Files can be passed as a list of single files or using a C format string as a
-name template and a numeric range. For details see the online documentation for
-pnitools. \n\n
 
-\section OPTIONS
 
-\b -h, \b --help  \n
-\t\t\t\t show help about  the program 
 
-\b -v, \b --verbose \t activate verbose output mode
-
-\b --full-path use the full path of a file instead of the filename only
-
-\section EXAMPLES
-
-The simplest application of the program would be this
-\code
-detinfo detecto.cbf
-\endcode
-
-\section AUTHOR
-Eugen Wintersberger <eugen.wintersberger@desy.de>
-*/

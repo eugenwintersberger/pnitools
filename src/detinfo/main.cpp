@@ -48,35 +48,39 @@ int main(int argc,char **argv)
     }
 
     //---------------------setup program configuration-------------------------
+    config.add_option(config_option<bool>("help","h","show help",false));
     config.add_option(config_option<bool>("verbose","v","be verbose",&verbose));
     config.add_option(config_option<bool>("full-path","",
-                "show the full path on output"));
-    config.add_argument(config_argument<strlist>("input-files",-1));
+                "show the full path on output",false));
+    config.add_argument(config_argument<strlist>("input-files",-1,strlist{"-"}));
 
     //------------------managing command line parsing--------------------------
     try
     {
         parse(config,argc,(const char**)argv);
     }
-    catch(cli_help_request &error)
-    {
-        std::cerr<<config<<std::endl;
-        return 1;
-    }
     catch(...)
     {
-        std::cerr<<"Error parsing command line - aborting!"<<std::endl;
-        std::cerr<<"For useage information use: "<<std::endl<<std::endl;
-        std::cerr<<"    detinfo -h"<<std::endl<<std::endl;
+        std::cerr<<"Wrong or insufficient command line options:"<<std::endl;
+        std::cerr<<std::endl;
+        std::cerr<<"use detinfo -h for more info"<<std::endl;
+        return 1;
+    }
 
+    //check for help request by the user
+    if(config.value<bool>("help"))
+    {
+        std::cerr<<"detinfo takes the following command line options";
+        std::cerr<<std::endl<<std::endl;
+        std::cerr<<config<<std::endl;
         return 1;
     }
 
     //-------------------obtain input files------------------------------------
     file_list infiles;
     
-    if(verbose)
-        std::cout<<"Checking input files ..."<<std::endl;
+    if(verbose) std::cout<<"Checking input files ..."<<std::endl;
+
     try
     {
         auto path_list = config.value<strlist>("input-files");
