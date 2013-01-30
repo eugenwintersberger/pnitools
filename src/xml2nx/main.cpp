@@ -42,6 +42,7 @@ namespace tree = boost::property_tree;
 int main(int argc,char **argv)
 {
     configuration conf;
+    conf.add_option(config_option<bool>("help","h","show help",false));
     conf.add_option(config_option<nx_object_path>("parent","p",
                 "path to the parent object"));
     conf.add_option(config_option<bool>("append","a",
@@ -62,7 +63,18 @@ int main(int argc,char **argv)
     {
         parse(conf,argc,(const char**)argv);
     }
-    catch(cli_help_request &error)
+    catch(...)
+    {
+        std::cerr<<"Error parsing command line options!"<<std::endl;
+        std::cerr<<"Maybe wrong or insufficient options given. ";
+        std::cerr<<"For more information about options and arguments see:";
+        std::cerr<<std::endl<<std::endl;
+        std::cerr<<"\txml2nx -h"<<std::endl;
+        return 1;
+    }
+
+    //check for user help request
+    if(conf.value<bool>("help"))
     {
         std::cerr<<conf<<std::endl;
         return 1;
