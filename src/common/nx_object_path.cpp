@@ -23,22 +23,7 @@
 #include "nx_object_path.hpp"
 
 //-----------------------------------------------------------------------------
-nx_object_path::nx_object_path(): _elements(), _filename(""), _attrname("") {}
-
-//-----------------------------------------------------------------------------
-nx_path_object nx_object_path::from_string(const string &s)
-{
-    nx_path_object path;
-
-    //check for a filename
-
-
-    //check for an attribute name 
-
-    //parse the residual string for path elements
-    
-    return path;
-}
+nx_object_path::nx_object_path(): _fname(""), _opath(""), _attrname("") {}
 
 //-----------------------------------------------------------------------------
 nx_object_path::nx_object_path(const string &path):
@@ -77,7 +62,12 @@ nx_object_path::nx_object_path(const string &path):
 
 }
 
-
+//-----------------------------------------------------------------------------
+nx_object_path::nx_object_path(const string &f,const string &p,const string &a):
+    _fname(f),
+    _opath(p),
+    _attrname(a)
+{}
 
 //-----------------------------------------------------------------------------
 std::ostream &operator<<(std::ostream &o,const nx_object_path &path)
