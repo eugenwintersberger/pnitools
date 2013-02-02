@@ -30,7 +30,7 @@
 #include<pni/core/types.hpp>
 #include<pni/core/darray.hpp>
 #include<pni/core/numarray.hpp>
-#include<pni/core/io/fio_reader.hpp>
+#include<pni/io/fio_reader.hpp>
 
 #include "Operator.hpp"
 #include "MaxOperator.hpp"

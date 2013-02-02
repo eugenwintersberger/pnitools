@@ -16,9 +16,9 @@
 #include<pni/core/types.hpp>
 #include<pni/core/arrays.hpp>
 #include<pni/core/rbuffer.hpp>
-#include<pni/core/io/image_info.hpp>
-#include<pni/core/io/cbf_reader.hpp>
-#include<pni/core/io/tiff_reader.hpp>
+#include<pni/io/image_info.hpp>
+#include<pni/io/cbf_reader.hpp>
+#include<pni/io/tiff_reader.hpp>
 
 #include<algorithm>
 
