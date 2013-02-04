@@ -25,7 +25,7 @@ env.Replace(CXX = env["CXX"])
 
 #set some default compiler options
 env.Append(CXXFLAGS=["-std=c++0x"])
-env.Append(CXXFLAGS=["-Wall","-fno-deduce-init-list"])
+env.Append(CXXFLAGS=["-Wall","-fno-deduce-init-list","-Wno-deprecated"])
 
 if GetOption("debug"):
     env.Append(CXXFLAGS=["-g","-O0"])

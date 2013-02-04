@@ -38,8 +38,7 @@ void cmd_mkgrp::setup(const std::vector<string> &cargs)
     _config->add_option(config_option<string>("class","c","group class",""));
     _config->add_argument(config_argument<string>("name",-1,""));
 
-    cli_args args(cargs);
-    parse(*_config,args.argc(),args.argv());
+    parse(*_config,cargs);
 
     if(_config->has_option("help"))
         throw cli_help_request(EXCEPTION_RECORD,"show help");

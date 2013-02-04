@@ -44,8 +44,7 @@ void cmd_mkfield::setup(const std::vector<string> &cargs)
     _config->add_argument(config_argument<string>("name",-1));
 
     //parse use arguments
-    cli_args args(cargs);
-    parse(*_config,args.argc(),args.argv());
+    parse(*_config,cargs);
 
     //check for help
     if(_config->has_option("help"))

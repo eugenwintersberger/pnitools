@@ -36,8 +36,7 @@ void cmd_cd::setup(const std::vector<string> &cargs)
 {
     _config = std::unique_ptr<configuration>(new configuration);
     _config->add_argument(config_argument<string>("target",-1,"",&_target));
-    cli_args args(cargs);
-    parse(*_config,args.argc(),args.argv());
+    parse(*_config,cargs);
 
     if(_config->has_option("help"))
     {

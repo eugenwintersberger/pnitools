@@ -31,8 +31,7 @@ void cmd_cat::setup(const std::vector<string> &cargs)
     _config = std::unique_ptr<configuration>(new configuration);
     _config->add_argument(config_argument<string>("sources",-1,"input fields"));
 
-    cli_args args(cargs);
-    parse(*_config,args.argc(),args.argv());
+    parse(*_config,cargs);
 }
 
 //-----------------------------------------------------------------------------

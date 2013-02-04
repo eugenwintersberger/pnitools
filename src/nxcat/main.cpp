@@ -22,7 +22,7 @@ int main(int argc,char **argv)
 
     conf.add_argument(config_argument<nx_object_path>("target",1));
 
-    parse(conf,argc,(const char**)argv);
+    parse(conf,cliargs2vector(argc,argv));
 
     //obtain the path to the target
     nx_object_path target = conf.value<nx_object_path>("target");

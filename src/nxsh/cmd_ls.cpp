@@ -42,8 +42,7 @@ void cmd_ls::setup(const std::vector<string> &cargs)
     _config->add_argument(config_argument<string>("target",-1,""));
 
     //parse configuration 
-    cli_args args(cargs);
-    parse(*_config,args.argc(),args.argv());
+    parse(*_config,cargs);
 
     //check if help should be shown
     if(_config->has_option("help"))

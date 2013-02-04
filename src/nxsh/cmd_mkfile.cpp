@@ -40,8 +40,7 @@ void cmd_mkfile::setup(const std::vector<string> &cargs)
                 "overwrite a file if it exists",false));
     _config->add_argument(config_argument<string>("name",-1,"file name"));
     
-    cli_args args(cargs);
-    parse(*_config,args.argc(),args.argv());
+    parse(*_config,cargs);
 }
 
 //-----------------------------------------------------------------------------

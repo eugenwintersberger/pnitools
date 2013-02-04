@@ -57,7 +57,7 @@ int main(int argc,char **argv)
     //------------------managing command line parsing--------------------------
     try
     {
-        parse(config,argc,(const char**)argv);
+        parse(config,cliargs2vector(argc,argv));
     }
     catch(...)
     {

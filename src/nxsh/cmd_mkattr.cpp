@@ -45,8 +45,7 @@ void cmd_mkattr::setup(const std::vector<string> &cargs)
                 "attribute parent"));
     
     //parse configuration
-    cli_args args(cargs);
-    parse(*_config,args.argc(),args.argv());
+    parse(*_config,cargs);
 
 }
 
