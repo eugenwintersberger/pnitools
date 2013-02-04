@@ -5,3 +5,4 @@
 *.o
 *.os
 src/detinfo/detinfo
+src/nxtee/nxtee
