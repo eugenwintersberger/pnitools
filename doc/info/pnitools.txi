@@ -1,0 +1,46 @@
+\input texinfo
+@setfilename pnitools.info
+@settitle pnitools
+
+@copying 
+Documentation on the pnitools programs
+
+Copyright @copyright{} 2013 Eugen Wintersberger 
+@end copying
+
+@titlepage
+@title pnitools documentation
+
+@page 
+@vskip 0pt plus 1fill
+@insertcopying
+@end titlepage
+
+@contents
+@node Top
+@top
+
+pnitools is a collection of small command-line programs helping you in managing
+Nexus files. It includes programms for creating Nexus files, feeding data into
+or reading data out of a Nexus file.
+
+@menu
+* General overview:: overview
+* Programms:: the individual programs in more detail
+@end menu
+
+@node General overview
+@chapter General overview
+
+
+hello world, this is the first part of the chatper
+
+@node Programms
+@chapter Programms 
+
+
+Yet some other stupid text
+
+
+
+@bye
