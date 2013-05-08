@@ -22,30 +22,28 @@
 #pragma once
 
 #include <pni/core/types.hpp>
-#include <pni/core/darray.hpp>
-#include <pni/core/numarray.hpp>
 #include <pni/core/array_operations.hpp>
 
-#include "Operator.hpp"
+#include "operation.hpp"
 
 using namespace pni::core;
 
 
-class MaxOperator:public Operator
+class max_operation:public operation
 {
     private:
         size_t _max_pos;
         float64 _max_value;
     public:
         //---------------------------------------------------------------------
-        MaxOperator(const po::variables_map &config):
-            Operator(config),
+        max_operation():
+            operation(),
             _max_pos(0),
             _max_value(0)
         {}
 
         //---------------------------------------------------------------------
-        ~MaxOperator(){}
+        ~max_operation(){}
 
         //---------------------------------------------------------------------
         virtual void operator()(const array_type &channels, 
