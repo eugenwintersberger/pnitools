@@ -29,13 +29,22 @@
 using namespace pni::core;
 
 
+/*!
+\ingroup mcaops_devel
+\brief compute maximum
+
+Computes the maximum value along with its position in the input data. 
+*/
 class max_operation:public operation
 {
     private:
+        //! position of the maximum
         size_t _max_pos;
+        //! maximum value
         float64 _max_value;
     public:
         //---------------------------------------------------------------------
+        //! default constructor
         max_operation():
             operation(),
             _max_pos(0),
@@ -43,9 +52,11 @@ class max_operation:public operation
         {}
 
         //---------------------------------------------------------------------
+        //! destructor
         ~max_operation(){}
 
         //---------------------------------------------------------------------
+        //!execute operation
         virtual void operator()(const array_type &channels, 
                                 const array_type &data)
         {
@@ -54,6 +65,7 @@ class max_operation:public operation
         }
 
         //---------------------------------------------------------------------
+        //! write result to output stream
         virtual std::ostream &stream_result(std::ostream &o) const
         {
             o<<_max_pos<<"\t"<<_max_value;

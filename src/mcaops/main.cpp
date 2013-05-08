@@ -21,73 +21,26 @@
  */
 #include<iostream>
 #include<memory>
-#include<boost/program_options/options_description.hpp>
-#include<boost/program_options/variables_map.hpp>
-#include<boost/program_options/parsers.hpp>
-#include<boost/program_options/positional_options.hpp>
-
 
 #include<pni/core/types.hpp>
 #include<pni/core/darray.hpp>
 #include<pni/core/numarray.hpp>
+#include<pni/core/config/configuration.hpp>
+#include<pni/core/config/config_parser.hpp>
 #include<pni/io/fio_reader.hpp>
 
-#include "Operator.hpp"
-#include "MaxOperator.hpp"
-#include "SumOperator.hpp"
-#include "RebinOperator.hpp"
-#include "ScaleOperator.hpp"
+#include "operation.hpp"
+#include "max_operation.hpp"
+#include "sum_operation.hpp" 
+#include "rebin_operation.hpp"
+#include "scale_operation.hpp"
+#include "io.hpp"
 
 using namespace pni::core;
 using namespace pni::io;
-namespace po = boost::program_options;
 
 
-
-//-----------------------------------------------------------------------------
-/*!
-\ingroup mcaops_devel
-\brief reads two column input
-
-Reads two column input from standard in and stores the result in a vector.
-\param channels array with channel data
-\param data array with channel data
-*/
-void read_from_stdin(Operator::array_type &channels,Operator::array_type &data)
-{
-    std::vector<float64> chvec;
-    std::vector<float64> dvec;
-    float64 ch,d;
-
-    while(std::cin>>ch>>d)
-    {
-        chvec.push_back(ch);
-        dvec.push_back(d);
-    }
-
-    channels = Operator::array_type(Operator::shape_type{chvec.size()});
-    data = Operator::array_type(Operator::shape_type{chvec.size()});
-    std::copy(chvec.begin(),chvec.end(),channels.begin());
-    std::copy(dvec.begin(),dvec.end(),data.begin());
-}
-
-
-
-//-----------------------------------------------------------------------------
-/*! 
-\ingroup mcaops_devel
-\brief create channel data
-
-\param n number of channels
-*/
-Operator::array_type create_channel_data(size_t n)
-{
-    Operator::array_type channels(Operator::shape_type{n});
-
-    for(size_t i=0;i<n;i++) channels[i] = float64(i);
-    return channels;
-}
-
+typedef std::unique_ptr<operation> op_ptr;
 //-----------------------------------------------------------------------------
 /*! 
 \ingroup mcaops_devel
@@ -96,26 +49,56 @@ Operator::array_type create_channel_data(size_t n)
 \param options program options
 \return unique pointer to the operator
 */
-std::unique_ptr<Operator> select_operator(const po::variables_map &options) 
+op_ptr select_operator(const configuration &config,
+                       const configuration &scale_config,
+                       const configuration &rebin_config) 
 {
-    string command = options["command"].as<string>();
+    string command = config.value<string>("comnmand");
 
     if(command == "max") 
-        return std::unique_ptr<Operator>(new MaxOperator(options));
+        return op_ptr(new max_operation());
 
     if(command == "sum")
-        return std::unique_ptr<Operator>(new SumOperator(options));
+        return op_ptr(new sum_operation());
 
     if(command == "rebin")
-        return std::unique_ptr<Operator>(new RebinOperator(options));
+    {
+        rebin_operation *op = new rebin_operation();
+
+        if(rebin_config.has_option("binsize"))
+            op->bin_size(rebin_config.value<size_t>("binsize"));
+
+        //switch of rebinning of the x-axis
+        if(rebin_config.has_option("noxrebin"))
+            op->no_x_rebinning(rebin_config.value<bool>("noxrebin"));
+
+        return op_ptr(op);
+    }
 
     if(command == "scale")
-        return std::unique_ptr<Operator>(new ScaleOperator(options));
+    {
+        scale_operation *op = new scale_operation();
+        if(scale_config.has_option("center"))
+        {
+            op->center_bin(scale_config.value<size_t>("center"));
+            op->use_data_maximum(false);
+        }
+        else 
+            op->use_data_maximum(true);
+
+        if(scale_config.has_option("delta"))
+            op->delta(scale_config.value<float64>("delta"));
+
+        if(scale_config.has_option("cvalue"))
+            op->center_value(scale_config.value<float64>("cvalue"));
+
+        return op_ptr(op);
+    }
 
     std::cerr<<"Unkown MCA operation - see manpage"<<std::endl;
 
     //better throw an exception here
-    return std::unique_ptr<Operator>(nullptr);
+    return op_ptr(nullptr);
 }
 
 //=============================================================================
@@ -142,85 +125,70 @@ int main(int argc,char **argv)
         std::cout<<"\nuse mcatool -h for more information"<<std::endl;
         return 1;
     }
+    configuration config;
 
     //----------------setting up the program options---------------------------
     //these options do not show up in the help text
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-        ("command",po::value<string>(),"command string")
-        ("input",po::value<string>(),"input file")
-        ;
+    config.add_argument(config_argument<string>("command",1));
+    config.add_argument(config_argument<string>("input",2));
 
     //-------------------------------------------------------------------------
     //global options valid for all commands
-    po::options_description global("Global options");
-    global.add_options()
-        ("help,h","show help text")
-        ("verbose,v",po::value<bool>()->zero_tokens(),"show verbose output")
-        ("quiet,q",po::value<bool>()->zero_tokens(),"show no output")
-        ("header",po::value<bool>()->zero_tokens(),"Write header before output")
-        ("xcolumn",po::value<string>(),
-         "name of the column with bin center values")
-        ("ycolumn",po::value<string>(),
-         "name of the column with actual MCA data")
-        ;
+    config.add_option(config_option<bool>("help","h","show help text",false));
+    config.add_option(config_option<bool>("verbose","v","show verbose output",false));
+    config.add_option(config_option<bool>(
+                "header","","write headers before output",false));
+    config.add_option(config_option<string>("xcolumn","",
+                "name of the column with bin center values"));
+    config.add_option(config_option<string>("ycolumn","",
+                "name of the column with actual MCA data"));
    
     //-------------------------------------------------------------------------
     //options for the rebin command
-    po::options_description rebin_options("Options for command 'rebin'");
-    rebin_options.add_options()
-        ("binsize,b",po::value<size_t>()->default_value(1),
-         "Number of bins to collate")
-        ("noxrebin",po::value<bool>()->zero_tokens()->default_value(false),
-         "do not rebin the x-axis, use simple index instead")
-        ;
+    configuration rebin_config;
+    rebin_config.add_option(config_option<size_t>("binsize","b",
+                "number of bins to collate",1));
+    rebin_config.add_option(config_option<bool>("noxrebin","",
+                "do not rebin the x-axis, use simple indices instead",false));
 
     //-------------------------------------------------------------------------
     //options for the scale command
-    po::options_description scale_options("options for command 'scale'");
-    scale_options.add_options()
-        ("center,c",po::value<size_t>(), "Index of center bin")
-        ("delta,d",po::value<float64>(), "Size of a bin")
-        ("cvalue,x",po::value<float64>(), "position of the center bin")
-        ;
+    configuration scale_config;
+    scale_config.add_option(config_option<size_t>("center","c",
+                "index of center bin"));
+    scale_config.add_option(config_option<float64>("delta","d",
+                "size of a bin"));
+    scale_config.add_option(config_option<float64>("cvalue","x",
+                "position of the center bin"));
    
-    //set positional arguments
-    po::positional_options_description posopts;
-    posopts.add("command",1);
-    posopts.add("input",2);
-
-    //assemble all the options that should be visible in the 
-    //command line help
-    po::options_description visible("Supported command line options");
-    visible.add(global).add(rebin_options).add(scale_options);
-
-    //assemble all options
-    po::options_description all("All options");
-    all.add(hidden).add(global).add(rebin_options).add(scale_options);
 
     //-------------------parse and store program options-----------------------
-    po::variables_map options;
-    po::store(po::command_line_parser(argc,argv).options(all)
-              .positional(posopts).run(),options);
-    po::notify(options);
+    std::vector<string> args = cliargs2vector(argc,argv);
+    parse(config,args);
 
-    if(options.count("help"))
+    if(config.has_option("help"))
     {
         std::cerr<<usage_string<<std::endl<<std::endl;
         std::cerr<<command_string<<std::endl;
-        std::cerr<<visible<<std::endl<<std::endl;
+        std::cerr<<config<<std::endl;
+        std::cerr<<std::endl<<"Options for the scale command:"<<std::endl;
+        std::cerr<<scale_config<<std::endl;
+        std::cerr<<std::endl<<"Options for the rebin command:"<<std::endl;
+        std::cerr<<rebin_config<<std::endl;
         std::cerr<<"See 'man mcaops' for more information!"<<std::endl;
-        return 1;
+        return -1;
     }
+
+    return 0;        
 
     //-------------------------------------------------------------------------
     //here we will read data either from the standard in or from a file 
-    Operator::array_type data,channels;
+    operation::array_type data,channels;
 
-    if(options.count("input"))
+    if(config.has_option("input"))
     {
         //----------------open the file holding the data-----------------------
-        string filename = options["input"].as<string>();
+        string filename = config.value<string>("input");
 
         fio_reader reader;
         //read data from a file
@@ -235,9 +203,9 @@ int main(int argc,char **argv)
 
         //----------------read MCA data form the appropriate column-------------
         string ycolumn;
-        if(options.count("ycolumn"))
+        if(config.has_option("ycolumn"))
         {
-            ycolumn = options["ycolumn"].as<string>();
+            ycolumn = config.value<string>("ycolumn");
         }
         else
         {
@@ -270,8 +238,8 @@ int main(int argc,char **argv)
         try
         {
             
-            data = Operator::array_type(Operator::shape_type{reader.nrecords()},
-                            reader.column<Operator::array_type::storage_type>(ycolumn));
+            data = operation::array_type(operation::shape_type{reader.nrecords()},
+                            reader.column<operation::array_type::storage_type>(ycolumn));
         }
         catch(key_error &error)
         {
@@ -294,28 +262,28 @@ int main(int argc,char **argv)
         catch(...)
         {   
             std::cerr<<"Error reading MCA data from column ";
-            std::cerr<<options["ycolumn"].as<string>()<<"!";
+            std::cerr<<config.value<string>("ycolumn")<<"!";
             return 1;
         }
 
         //if no column for channel data is provided we will simply use the 
         //bin number as a center value for each bin
-        if(options.count("xcolumn"))
+        if(config.has_option("xcolumn"))
             try{
-                channels = Operator::array_type(Operator::shape_type{reader.ncolumns()},
-                           reader.column<Operator::array_type::storage_type>(options["xcolumn"].as<string>()));
+                channels = operation::array_type(operation::shape_type{reader.ncolumns()},
+                           reader.column<operation::array_type::storage_type>(config.value<string>("xcolumn")));
             }
             catch(key_error &error)
             {
                 std::cerr<<"Error reading bin data from column ";
-                std::cerr<<options["xcolumn"].as<string>();
+                std::cerr<<config.value<string>("xcolumn");
                 std::cerr<<" - column does not exist!"<<std::endl;
                 return 1;
             }
             catch(...)
             {
                 std::cerr<<"Error reading bin data from column ";
-                std::cerr<<options["xcolumn"].as<string>()<<"!"<<std::endl;
+                std::cerr<<config.value<string>("xcolumn")<<"!"<<std::endl;
                 return 1;
             }
         else
@@ -328,7 +296,7 @@ int main(int argc,char **argv)
 
 
     //need to choose an operation
-    if(!options.count("command"))
+    if(!config.has_option("command"))
     {
         std::cerr<<"No command specified!"<<std::endl<<std::endl;
         std::cerr<<usage_string<<std::endl;
@@ -336,12 +304,12 @@ int main(int argc,char **argv)
     }
 
     //select the proper operator
-    std::unique_ptr<Operator> optr = select_operator(options);
+    op_ptr optr = select_operator(config,scale_config,rebin_config);
 
     //run the operation
     (*optr)(channels,data);
 
-    if(options.count("header"))
+    if(config.has_option("header"))
         std::cout<<"#chan data"<<std::endl;
 
     //output result data

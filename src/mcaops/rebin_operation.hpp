@@ -23,6 +23,7 @@
 
 #include <pni/core/types.hpp>
 #include <pni/core/darray.hpp>
+#include <pni/core/array_operations.hpp>
 
 #include "operation.hpp"
 
@@ -30,43 +31,56 @@ using namespace pni::core;
 
 /*!
 \ingroup mcaops_devel
-\brief compute summ of input data
+\brief implementation of rebining
 
-Compute the sum of the input data and output the result.
+This class provides the implementation of the rebining operation for MCA
+histograms. 
+
 */
-class sum_operation:public operation
+class rebin_operation:public operation
 {
     private:
-        //!sum
-        float64 _sum;
+        //! number of bins to collate
+        size_t _bsize; 
+        //! flag for not rebining the x-axis
+        bool   _noxrebin;
+        //! flag for normalization
+        bool   _norm;
+        //! output channel data
+        array_type _channels;
+        //! output mca data
+        array_type _data;
     public:
         //---------------------------------------------------------------------
         //! default constructor
-        sum_operation():
-            operation(),
-            _sum(0)
-        {}
+        rebin_operation();
 
         //---------------------------------------------------------------------
         //! destructor
-        ~sum_operation(){}
+        ~rebin_operation(){}
 
         //---------------------------------------------------------------------
-        //! execute operation
+        //! get bin size
+        size_t bin_size() const { return _bsize; } 
+
+        //---------------------------------------------------------------------
+        //! set bin size
+        void bin_size(size_t v) { _bsize = v; }
+
+        //---------------------------------------------------------------------
+        //! perform no x-rebinning
+        void no_x_rebinning(bool v) { _noxrebin = v; }
+
+        //---------------------------------------------------------------------
+        //! perform normalization
+        void do_normalization(bool v) { _norm = v; }
+
+
+        //---------------------------------------------------------------------
         virtual void operator()(const array_type &channels,
-                                const array_type &data)
-        {
-            _sum = 0;
-            for(auto e: data) _sum += e;
-        }
-
+                                const array_type &data);
 
         //---------------------------------------------------------------------
-        //! write result to output stream
-        virtual std::ostream &stream_result(std::ostream &o) const
-        {
-            o<<_sum;
-            return o;
-        }
+        virtual std::ostream &stream_result(std::ostream &o) const;
 };
 

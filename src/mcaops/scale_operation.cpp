@@ -24,26 +24,13 @@
 
 
 //-----------------------------------------------------------------------------
-scale_operation::scale_operation(const po::variables_map &config):
-    Operator(config),
+scale_operation::scale_operation():
+    operation(),
     _search_max(true),
     _center(0),
     _delta(1),
     _cvalue(0)
-{
-    if(config.count("center"))
-    {
-        _center = config["center"].as<size_t>();
-        _search_max = false;
-    }
-
-    if(config.count("delta"))
-        _delta = config["delta"].as<float64>();
-
-    if(config.count("cvalue"))
-        _cvalue = config["cvalue"].as<float64>();
-     
-}
+{ }
 
 //-----------------------------------------------------------------------------
 scale_operation::~scale_operation() 
@@ -82,6 +69,12 @@ void scale_operation::use_data_maximum(bool v)
 size_t scale_operation::center_bin() const
 {
     return _center;
+}
+
+//-----------------------------------------------------------------------------
+void scale_operation::center_bin(size_t v)
+{
+    _center = v;
 }
 
 //-----------------------------------------------------------------------------
