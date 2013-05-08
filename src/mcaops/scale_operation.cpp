@@ -73,6 +73,42 @@ void scale_operation::operator()(const array_type &channels,
 }
 
 //-----------------------------------------------------------------------------
+void scale_operation::use_data_maximum(bool v)
+{
+    _search_max = v;
+}
+
+//-----------------------------------------------------------------------------
+size_t scale_operation::center_bin() const
+{
+    return _center;
+}
+
+//-----------------------------------------------------------------------------
+float64 scale_operation::center_value() const
+{
+    return _cvalue;
+}
+
+//-----------------------------------------------------------------------------
+void scale_operation::center_value(float64 v) 
+{
+    _cvalue = v;
+}
+
+//-----------------------------------------------------------------------------
+float64 scale_operation::delta() const
+{
+    return _delta;
+}
+
+//-----------------------------------------------------------------------------
+void scale_operation::delta(float64 v) 
+{
+    _delta = v;
+}
+
+//-----------------------------------------------------------------------------
 std::ostream &scale_operation::stream_result(std::ostream &o) const
 {
     for(size_t i=0;i<_channels.size();i++)

@@ -29,7 +29,7 @@
 using namespace pni::core;
 
 /*!
-\ingroup mcaops_classes
+\ingroup mcaops_devel
 \brief scale operation implementation
 
 This class implements the scale operation. Scaling means that the center
