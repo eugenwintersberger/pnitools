@@ -22,26 +22,32 @@
 #pragma once
 
 #include <iostream>
-#include<boost/program_options/variables_map.hpp>
 #include <pni/core/types.hpp>
-#include <pni/core/darray.hpp>
-#include <pni/core/numarray.hpp>
+#include <pni/core/arrays.hpp>
 
 using namespace pni::core;
-namespace po = boost::program_options;
 
-class Operator
+/*!
+\brief base class for operations
+
+This class provides the basic interface for all operations (commands) that can
+be performed with mcaops.
+*/
+class operation
 {
     public:
         //=================public types========================================
+        //! general array type
         typedef darray<float64> array_type;
+        //! numeric array type
         typedef numarray<array_type> narray_type;
-        typedef std::vector<size_t> shape_type;
+        //! shape type
+        typedef shape_t shape_type;
         //---------------------------------------------------------------------
-        Operator(const po::variables_map &config){}
+        operation(){}
 
         //---------------------------------------------------------------------
-        virtual ~Operator() {}
+        virtual ~operation() {}
 
         //---------------------------------------------------------------------
         virtual void operator()(const array_type &channels,
@@ -52,7 +58,7 @@ class Operator
 };
 
 //-----------------------------------------------------------------------------
-std::ostream &operator<<(std::ostream &o,const Operator &op)
+std::ostream &operator<<(std::ostream &o,const operation &op)
 {
     return op.stream_result(o);
 }
