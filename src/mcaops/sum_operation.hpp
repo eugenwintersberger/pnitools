@@ -24,18 +24,18 @@
 #include <pni/core/types.hpp>
 #include <pni/core/darray.hpp>
 
-#include "Operator.hpp"
+#include "operation.hpp"
 
 using namespace pni::core;
 
 
-class SumOperator:public Operator
+class sum_operation:public operation
 {
     private:
         float64 _sum;
     public:
-        SumOperator(const po::variables_map &config):
-            Operator(config),
+        sum_operation():
+            operation(config),
             _sum(0)
         {}
 
