@@ -34,6 +34,7 @@ class RebinOperator:public Operator
     private:
         size_t _bsize;
         bool   _noxrebin;
+        bool   _norm;
         array_type _channels;
         array_type _data;
     public:
