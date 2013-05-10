@@ -1,70 +1,139 @@
 /*
- * main.cpp
+ * (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
  *
- * Main program for det2nx - a tool for converting arbitrary detector
- * data in valid Nexus files.
+ * This file is part of pnitools.
  *
- *  Created on: Jun 30, 2011
- *      Author: Eugen Wintersberger
+ * pnitools is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * pnitools is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
+ *************************************************************************
+ * Created on: 30.06.2011
+ *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-
 #include <iostream>
-#include <pni/utils/PNITypes.hpp>
-//#include <pni/utils/ScalarObject.hpp>
-#include <pni/utils/Scalar.hpp>
-#include <pni/nx/NX.hpp>
-#include <boost/filesystem.hpp>
+#include <pni/core/types.hpp>
+#include <pni/core/config/configuration.hpp>
+#include <pni/core/config/config_parser.hpp>
+#include <pni/io/nx/nx.hpp>
+#include "../common/file.hpp"
+#include "../common/file_list.hpp"
+#include "../common/exceptions.hpp"
+#include <boost/filesystem.hpp> 
 
-#include "Det2NxConfig.hpp"
-#include "../common/DetectorReader.hpp"
-
-using namespace pni::nx::h5;
-using namespace pni::utils;
+using namespace pni::io::nx::h5;
+using namespace pni::core;
 namespace fs = boost::filesystem;
 
+typedef std::vector<string> strlist;
 
 int main(int argc,char **argv)
 {
-	Det2NxConfig conf;
-	Det2NxConfig::InputFileList *iflist;
+    configuration config;
 
-	//if too less arguments are passed to the program exit
-	if(argc<2){
-		std::cerr<<"Usage: det2nx [options] FILE ..."<<std::endl;
-		std::cerr<<"Use det2nx -h for more information!"<<std::endl;
-		return 1;
-	}
+    config.add_option(config_option<bool>("help","h",
+                "show short help text",false));
+    config.add_option(config_option<string>("output","o",
+                "output file","output.h5.nx"));
+    config.add_option(config_option<string>("nx-path","p",
+                "target path","/entry/instrument/detector"));
+    config.add_option(config_option<string>("field","f",
+                "target field","data"));
+    config.add_option(config_option<bool>("append","a",
+                "append data to existing field",true));
+    config.add_argument(config_argument<strlist>("input-files",-1,strlist{"-"}));
+    
+    try
+    {
+        parse(config,cliargs2vector(argc,argv));
+    }
+    catch(...)
+    {
+        std::cerr<<"Wrong or insufficient command line options:"<<std::endl;
+        std::cerr<<std::endl;
+        std::cerr<<"use det2nx -h for more info"<<std::endl;
+        return 1;
+    }
 
-	//parse the command line options
-	conf.parse(argc,argv);
+    //check for help request by the user
+    if(config.value<bool>("help"))
+    {
+        std::cerr<<"det2nx takes the following command line options";
+        std::cerr<<std::endl<<std::endl;
+        std::cerr<<config<<std::endl;
+        return 1;
+    }
+   
+    //-------------------------generating the input file list------------------
+    file_list infiles;
+    try
+    {
+        auto path_list = config.value<strlist>("input-files");
+        infiles = file_list(path_list);
+    }
+    catch(file_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
 
-	//print help and exit
-	if(conf.help()) return 0;
-
-	//get the list of input files
-	iflist = conf.getInputFileList();
-
+    //------------------------opening the output file--------------------------
 	//have to create the file name of the output file
-	fs::path ofile(conf.getOutputFile());
-	NXFile nxofile;
-	nxofile.setFileName(ofile.string());
-	if((!fs::exists(ofile))||conf.getOverwrite()){
-		//if the file does not already exist we need to create it
-		nxofile.setOverwrite(true);
-		nxofile.setSplitSize(conf.getSplitSize());
-		nxofile.create();
-	}else{
-		//the file exists
-		nxofile.setReadOnly(false);
-		nxofile.open();
-	}
+	fs::path output_file_path(config.value<string>("output"));
+	nxfile output_file;
 
-	//we need to read the first file to obtain all information needed
-	//to store the data
-	DetectorReader reader;
-	reader.setInputFile((*iflist)[0]); reader();
-	ArrayObject::sptr array = reader.getData();
+	if((!fs::exists(output_file_path)))
+    {
+		//if the file does not already exist we need to create it
+        output_file = nxfile::create_file(config.value<string>("output"));
+	}
+    else
+    {
+        //open an existing output file
+        output_file = nxfile::open_file(config.value<string>("output"));
+	}
+    
+    //-------------------processing input files--------------------------------
+    for(auto file: infiles)
+    {
+        pni::io::image_info info;
+        if(file.extension()==".cbf")
+        {
+            pni::io::cbf_reader reader(file.path());
+            info = reader.info(0);
+        }
+        else if(file.extension()==".tiff")
+        {
+            pni::io::tiff_reader reader(file.path());
+            info = reader.info(0);
+        }
+        else
+        {
+            throw file_type_error(EXCEPTION_RECORD,"File ["+file.path()+"] is of"
+                    "unknown type!");
+        }
+
+        if(config.value<bool>("full-path"))
+            std::cout<<file.path();
+        else
+            std::cout<<file.name();
+
+        std::cout<<" ("<<info.nx()<<" x "<<info.ny()<<") ntot = "<<info.npixels();
+        std::cout<<" type = "<<info.get_channel(0).type_id()<<std::endl;
+
+    }
+
+
+
 
 	//create the shape objects for the data
 	Shape sframe(array->getShape());  //shape of a single detector frame
