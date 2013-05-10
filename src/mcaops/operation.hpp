@@ -58,8 +58,6 @@ class operation
 };
 
 //-----------------------------------------------------------------------------
-std::ostream &operator<<(std::ostream &o,const operation &op)
-{
-    return op.stream_result(o);
-}
+//! write operation to output stream
+std::ostream &operator<<(std::ostream &o,const operation &op);
 
