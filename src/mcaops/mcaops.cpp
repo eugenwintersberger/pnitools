@@ -85,7 +85,9 @@ int main(int argc,char **argv)
 
     //-------------------parse and store program options-----------------------
     std::vector<string> args = cliargs2vector(argc,argv);
-    parse(config,args);
+    parse(config,args,true);
+    parse(rebin_config,args,true);
+    parse(scale_config,args,true);
 
     if(config.value<bool>("help"))
     {
@@ -229,7 +231,7 @@ int main(int argc,char **argv)
     //run the operation
     (*optr)(channels,data);
 
-    if(config.has_option("header"))
+    if(config.value<bool>("header"))
         std::cout<<"#chan data"<<std::endl;
 
     //output result data
