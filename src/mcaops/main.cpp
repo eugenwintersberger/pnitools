@@ -19,28 +19,8 @@
  * Created on: 03.06.2012
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
-#include<iostream>
-#include<memory>
+#include "mcaops.hpp"
 
-#include<pni/core/types.hpp>
-#include<pni/core/darray.hpp>
-#include<pni/core/numarray.hpp>
-#include<pni/core/config/configuration.hpp>
-#include<pni/core/config/config_parser.hpp>
-#include<pni/io/fio_reader.hpp>
-
-#include "operation.hpp"
-#include "max_operation.hpp"
-#include "sum_operation.hpp" 
-#include "rebin_operation.hpp"
-#include "scale_operation.hpp"
-#include "io.hpp"
-
-using namespace pni::core;
-using namespace pni::io;
-
-
-typedef std::unique_ptr<operation> op_ptr;
 //-----------------------------------------------------------------------------
 /*! 
 \ingroup mcaops_devel
@@ -53,7 +33,7 @@ op_ptr select_operator(const configuration &config,
                        const configuration &scale_config,
                        const configuration &rebin_config) 
 {
-    string command = config.value<string>("comnmand");
+    string command = config.value<string>("command");
 
     if(command == "max") 
         return op_ptr(new max_operation());
