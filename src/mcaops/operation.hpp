@@ -35,6 +35,8 @@ be performed with mcaops.
 */
 class operation
 {
+    private:
+        bool _verbose;
     public:
         //=================public types========================================
         //! general array type
@@ -44,10 +46,16 @@ class operation
         //! shape type
         typedef shape_t shape_type;
         //---------------------------------------------------------------------
-        operation(){}
+        operation():_verbose(false){}
 
         //---------------------------------------------------------------------
         virtual ~operation() {}
+
+        //---------------------------------------------------------------------
+        bool verbose() const { return _verbose; }
+
+        //---------------------------------------------------------------------
+        void verbose(bool v) { _verbose = v; }
 
         //---------------------------------------------------------------------
         virtual void operator()(const array_type &channels,

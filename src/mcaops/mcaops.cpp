@@ -21,65 +21,6 @@
  */
 #include "mcaops.hpp"
 
-//-----------------------------------------------------------------------------
-/*! 
-\ingroup mcaops_devel
-\brief select the proper operator
-
-\param options program options
-\return unique pointer to the operator
-*/
-op_ptr select_operator(const configuration &config,
-                       const configuration &scale_config,
-                       const configuration &rebin_config) 
-{
-    string command = config.value<string>("command");
-
-    if(command == "max") 
-        return op_ptr(new max_operation());
-
-    if(command == "sum")
-        return op_ptr(new sum_operation());
-
-    if(command == "rebin")
-    {
-        rebin_operation *op = new rebin_operation();
-
-        if(rebin_config.has_option("binsize"))
-            op->bin_size(rebin_config.value<size_t>("binsize"));
-
-        //switch of rebinning of the x-axis
-        if(rebin_config.has_option("noxrebin"))
-            op->no_x_rebinning(rebin_config.value<bool>("noxrebin"));
-
-        return op_ptr(op);
-    }
-
-    if(command == "scale")
-    {
-        scale_operation *op = new scale_operation();
-        if(scale_config.has_option("center"))
-        {
-            op->center_bin(scale_config.value<size_t>("center"));
-            op->use_data_maximum(false);
-        }
-        else 
-            op->use_data_maximum(true);
-
-        if(scale_config.has_option("delta"))
-            op->delta(scale_config.value<float64>("delta"));
-
-        if(scale_config.has_option("cvalue"))
-            op->center_value(scale_config.value<float64>("cvalue"));
-
-        return op_ptr(op);
-    }
-
-    std::cerr<<"Unkown MCA operation - see manpage"<<std::endl;
-
-    //better throw an exception here
-    return op_ptr(nullptr);
-}
 
 //=============================================================================
 static const char usage_string[] = 
@@ -146,7 +87,7 @@ int main(int argc,char **argv)
     std::vector<string> args = cliargs2vector(argc,argv);
     parse(config,args);
 
-    if(config.has_option("help"))
+    if(config.value<bool>("help"))
     {
         std::cerr<<usage_string<<std::endl<<std::endl;
         std::cerr<<command_string<<std::endl;
@@ -159,7 +100,6 @@ int main(int argc,char **argv)
         return -1;
     }
 
-    return 0;        
 
     //-------------------------------------------------------------------------
     //here we will read data either from the standard in or from a file 

@@ -56,6 +56,9 @@ class sum_operation:public operation
         virtual void operator()(const array_type &channels,
                                 const array_type &data)
         {
+            if(this->verbose())
+                std::cout<<"Execute sum operation ..."<<std::endl;
+
             _sum = 0;
             for(auto e: data) _sum += e;
         }

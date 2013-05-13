@@ -42,13 +42,24 @@
 using namespace pni::core;
 using namespace pni::io;
 
-typedef std::map<string,configuration> cmd_config_registry_t;
 
-static const cmd_config_registry_t cmd_config_registry =
- {{"max",configuration()},
-  {"sum",configuration()},
-  {"rebin",configuration()},
-  {"scale",configuration()}};
-
-
+/*!
+\ingroup mcaops_devel
+\brief  pointer type for operations
+*/
 typedef std::unique_ptr<operation> op_ptr;
+
+/*!
+\ingroup mcaops_devel
+\brief select and configure operator
+
+This function selects the proper operator and configures it according to the
+command line options passed by the user. 
+\param config global configuration options
+\param scale_config configuration options for the scale operator
+\param rebin_config configuration options for the rebin operator
+*/
+op_ptr select_operator(const configuration &config,
+                       const configuration &scale_config,
+                       const configuration &rebin_config);
+
