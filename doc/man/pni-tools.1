@@ -1,0 +1,124 @@
+.\" pni-tools
+.\" Contact Eugen Wintersberger <eugen.wintersberger@desy.de> for typos and corrections
+
+.TH man 1 "14.05.2013" "1.0" "pni-tools man page"
+.SH NAME
+  pni-tools - a collection of programs for handling PNI data
+
+.SH DESCRIPTION
+This man page describes concepts common to most of the programs in the
+\fBpni-tools\fR collection. 
+
+.SS Managing Regions of Interest (ROIs)
+
+A region of interest (ROI) defines a particular region in a 1D or a 2D detector.
+If a program offers you the possibility to the specify one or several ROIs,
+whatever the program will do will be restricted to these ROIs.  ROIs are usually
+passed to a program by the \c -r or \c --roi command line option. For instance,
+if you are interested only in the data stored between channels 230 and 1025 of
+an MCA you can select this ROI with
+.IP
+$> prog --roi=230:1026 ......some other options...
+.P
+which will cause the program to act only on the data from channel 230 to 1024
+(the last value of the ROI is not included).
+For 2D data the ROI can be set with
+.IP
+$> prog -r230:1026,100:512 .....some other options....
+.P
+which will select data form pixel 230 to 1025 in the first and 100 to 511 in the
+second dimension. In many cases you can pass several ROIs to the program. In
+this case each ROI gets its own option. This is shown here for an MCA
+.IP
+\code
+$> prog -r20:45 -r100:512 -r1024:1398 .....some other options...
+.P
+
+.SS Selecting files for input and output
+In many cases a program acts on data stored in one or many files. The names of
+files (usually used for input) are passed as command line arguments to the
+program. In the simplest case you can just add the filename at the end of the
+command line used to run the program
+.IP
+$> prog ...options... input_file.dat
+.P
+If many files should be passed to a program one can use wildcards like this
+.IP
+$> prog ...options... data/may_2012/exp_*.dat
+.P
+which will pass a list of command line arguments with all file names matching
+the wildcar \c data/may_2012/exp_*.dat to the program. 
+Until now we this is the behavior one would expect for any UNIX program. 
+However, there is one case which needs a bit more care. 
+In many cases you have to read a whole bunch of individual detector files into
+your program. You might be tempted to use the wild card approach mentioned
+before to do this. However, in this case you cannot be sure that the files are
+passed in the appropriate order to your program. It depends on the shell how the
+files are ordered if wild cards are used. 
+In such a situation there are two approaches which can be used
+\li use the  \c --input option whose value is the name of a file containing the
+name of the files to read in the desired order
+\li use a template and a numeric range to specify the input files. 
+
+The first approach is rather straight forward: write the name of the files to an
+ASCII file (lets say files.txt)  and then use
+.IP
+$> prog --input=files.txt ...other options....
+.P
+To tell the program which files to process. 
+
+Though being very simple to understand using such an input file can be pretty
+tedious in particular if the number of files is large. However, in many cases
+where the order of the input files matters the filenames contain a number
+determining the position of the file in the total list of files. 
+Such a file typically looks like \c detector_may_2012_<NUMBER>.dat where
+\c <NUMBER> is the index of the file in the list. 
+In such a case the files can be described using the following syntax
+.IP
+$> prog ...options... detector_may_2012_%05i.dat:100:1000
+.P
+This means that read all files following the pattern \c detector_may_2012_%05i.dat
+starting from \c detector_may_2012_100.dat until \c detector_may_2012_1000.dat. 
+Unlike for ROIs the last number is included. You can even do more sophisticated
+things. Consider that you want only to read every second file from the list. In
+this case the above example changes to
+.IP
+$> prog ...options... detector_may_2012_%05i.dat:100:1000:2
+.P
+In general this follows the following syntax
+.IP
+    file_template:start:stop:stride
+.P
+where \c file_template is a C-format string (for integers). This is possible
+because a colon must not appear as a part of a file or path name (at least not
+on Unix systems). 
+
+.SS Acessing objects in a Nexus file
+
+Nexus files can be considered as a file-system in a file. Nexus as used here is
+assumed to use HDF5 as a storage backend. 
+If we would like to access an object in a file we can use the following syntax
+\code
+prog file:/path/to/object
+\endcode
+attributes attached to an object can be described with
+\code
+prog file:/path/to/object@attribute
+\endcode
+This syntax works when you know the exact path to a particular object. Aside
+from object names Nexus introduces the concept of base classes. Each object in
+a Nexus file belongs to one of these base classes. One can thus refine the path
+to an object to
+\code
+prog file:/path:class_1/to:class_2/object:class_3
+\endcode
+In this case no only the names of the different objects must match but also
+they must belong to a particular base class. 
+Finally, if we do not know the exact path but only the classes we can write the
+path only in terms of base classes
+\code
+prog file:/:class_1/:class_2/:class_3
+\endcode
+In this case the different types must be unique. In case of ambiguities the
+program will abort with an error message.
+
