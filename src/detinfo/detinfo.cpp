@@ -101,7 +101,7 @@ int main(int argc,char **argv)
             pni::io::cbf_reader reader(file.path());
             info = reader.info(0);
         }
-        else if(file.extension()==".tiff")
+        else if((file.extension()==".tiff")||(file.extension()==".tif"))
         {
             pni::io::tiff_reader reader(file.path());
             info = reader.info(0);

@@ -1,6 +1,6 @@
 Import("program_env")
 
-detinfo_objects =[program_env.Object("main.cpp")]
+detinfo_objects =[program_env.Object("detinfo.cpp")]
 detinfo_objects.extend(SConscript("../common/SConscript"))
 detinfo = program_env.Program(target="detinfo",source=detinfo_objects)
 detinfo_install = program_env.Install("$PREFIX/bin",detinfo)
