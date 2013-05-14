@@ -24,31 +24,48 @@
 #include <pni/core/types.hpp>
 #include <pni/core/darray.hpp>
 
-#include "Operator.hpp"
+#include "operation.hpp"
 
 using namespace pni::core;
 
+/*!
+\ingroup mcaops_devel
+\brief compute summ of input data
 
-class SumOperator:public Operator
+Compute the sum of the input data and output the result.
+*/
+class sum_operation:public operation
 {
     private:
+        //!sum
         float64 _sum;
     public:
-        SumOperator(const po::variables_map &config):
-            Operator(config),
+        //---------------------------------------------------------------------
+        //! default constructor
+        sum_operation():
+            operation(),
             _sum(0)
         {}
 
-        ~SumOperator(){}
+        //---------------------------------------------------------------------
+        //! destructor
+        ~sum_operation(){}
 
+        //---------------------------------------------------------------------
+        //! execute operation
         virtual void operator()(const array_type &channels,
                                 const array_type &data)
         {
+            if(this->verbose())
+                std::cout<<"Execute sum operation ..."<<std::endl;
+
             _sum = 0;
             for(auto e: data) _sum += e;
         }
 
 
+        //---------------------------------------------------------------------
+        //! write result to output stream
         virtual std::ostream &stream_result(std::ostream &o) const
         {
             o<<_sum;

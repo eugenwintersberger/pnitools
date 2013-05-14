@@ -21,45 +21,51 @@
  */
 #pragma once
 
+#include <iostream>
 #include <pni/core/types.hpp>
-#include <pni/core/darray.hpp>
-#include <pni/core/numarray.hpp>
-#include <pni/core/array_operations.hpp>
-
-#include "Operator.hpp"
+#include <pni/core/arrays.hpp>
 
 using namespace pni::core;
 
+/*!
+\brief base class for operations
 
-class MaxOperator:public Operator
+This class provides the basic interface for all operations (commands) that can
+be performed with mcaops.
+*/
+class operation
 {
     private:
-        size_t _max_pos;
-        float64 _max_value;
+        bool _verbose;
     public:
+        //=================public types========================================
+        //! general array type
+        typedef darray<float64> array_type;
+        //! numeric array type
+        typedef numarray<array_type> narray_type;
+        //! shape type
+        typedef shape_t shape_type;
         //---------------------------------------------------------------------
-        MaxOperator(const po::variables_map &config):
-            Operator(config),
-            _max_pos(0),
-            _max_value(0)
-        {}
+        operation():_verbose(false){}
 
         //---------------------------------------------------------------------
-        ~MaxOperator(){}
+        virtual ~operation() {}
 
         //---------------------------------------------------------------------
-        virtual void operator()(const array_type &channels, 
-                                const array_type &data)
-        {
-            _max_pos = pni::core::max_offset(data);
-            _max_value = data[_max_pos];
-        }
+        bool verbose() const { return _verbose; }
 
         //---------------------------------------------------------------------
-        virtual std::ostream &stream_result(std::ostream &o) const
-        {
-            o<<_max_pos<<"\t"<<_max_value;
-            return o;
-        }
+        void verbose(bool v) { _verbose = v; }
+
+        //---------------------------------------------------------------------
+        virtual void operator()(const array_type &channels,
+                                const array_type &data) = 0;
+
+        //---------------------------------------------------------------------
+        virtual std::ostream &stream_result(std::ostream &o) const = 0;
 };
+
+//-----------------------------------------------------------------------------
+//! write operation to output stream
+std::ostream &operator<<(std::ostream &o,const operation &op);
 

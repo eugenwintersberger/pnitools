@@ -6,3 +6,4 @@
 *.os
 src/detinfo/detinfo
 src/nxtee/nxtee
+src/nxcat/nxcat

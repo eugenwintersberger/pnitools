@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+ * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
  *
  * This file is part of pnitools.
  *
@@ -16,83 +16,63 @@
  * You should have received a copy of the GNU General Public License
  * along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
  *************************************************************************
- * Created on: 03.06.2012
+ * Created on: May 14,2013
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 #pragma once
 
 #include <pni/core/types.hpp>
-#include <pni/core/array_operations.hpp>
+#include <pni/core/darray.hpp>
 
-#include "Operator.hpp"
+#include "operation.hpp"
 
 using namespace pni::core;
 
-class ScaleOperator:public Operator
+/*!
+\ingroup mcaops_devel
+\brief pass through 
+
+The dump operation takes the input and passes it through without modification. 
+One application would be to read data from standard input or a file and print it
+to stdandard out.
+*/
+class dump_operation:public operation
 {
     private:
-        bool _search_max;
-        size_t _center;  //center bin
-        float64 _delta;  //delta value
-        float64 _cvalue; //center value
         array_type _channels;
         array_type _data;
     public:
         //---------------------------------------------------------------------
-        ScaleOperator(const po::variables_map &config):
-            Operator(config),
-            _search_max(true),
-            _center(0),
-            _delta(1),
-            _cvalue(0)
-        {
-            if(config.count("center"))
-            {
-                _center = config["center"].as<size_t>();
-                _search_max = false;
-            }
-
-            if(config.count("delta"))
-                _delta = config["delta"].as<float64>();
-
-            if(config.count("cvalue"))
-                _cvalue = config["cvalue"].as<float64>();
-             
-        }
+        //! default constructor
+        dump_operation():
+            operation()
+        {}
 
         //---------------------------------------------------------------------
-        ~ScaleOperator(){}
+        //! destructor
+        ~dump_operation(){}
 
         //---------------------------------------------------------------------
+        //! execute operation
         virtual void operator()(const array_type &channels,
                                 const array_type &data)
         {
-            _channels = array_type(channels);
-            _data = array_type(data);
-
-            if(_search_max)
-                _center = pni::core::max_offset(data);
-
-#ifdef NOFOREACH
-            for(auto iter=_channels.begin();iter!=_channels.end();iter++)
-            {
-                float64 &v = *iter;
-#else
-            for(float64 &v: _channels)
-            {
-#endif
-                v = _cvalue + _delta*(v - _center); 
-            }
-            
+            //here we do nothing
+            _channels = channels;
+            _data = data;
         }
 
+
         //---------------------------------------------------------------------
+        //! write result to output stream
         virtual std::ostream &stream_result(std::ostream &o) const
         {
-            for(size_t i=0;i<_channels.size();i++)
-            {
-                o<<_channels[i]<<"\t"<<_data[i]<<std::endl;
-            }
+            auto citer = _channels.begin();
+            auto diter = _data.begin();
+
+            while(citer!=_channels.end())
+                o<<*(citer++)<<"\t"<<*(diter++)<<std::endl;
+
             return o;
         }
 };

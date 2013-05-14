@@ -21,39 +21,55 @@
  */
 #pragma once
 
-#include <iostream>
-#include<boost/program_options/variables_map.hpp>
 #include <pni/core/types.hpp>
-#include <pni/core/darray.hpp>
-#include <pni/core/numarray.hpp>
+#include <pni/core/array_operations.hpp>
+
+#include "operation.hpp"
 
 using namespace pni::core;
-namespace po = boost::program_options;
 
-class Operator
+
+/*!
+\ingroup mcaops_devel
+\brief compute maximum
+
+Computes the maximum value along with its position in the input data. 
+*/
+class max_operation:public operation
 {
+    private:
+        //! position of the maximum
+        size_t _max_pos;
+        //! maximum value
+        float64 _max_value;
     public:
-        //=================public types========================================
-        typedef darray<float64> array_type;
-        typedef numarray<array_type> narray_type;
-        typedef std::vector<size_t> shape_type;
         //---------------------------------------------------------------------
-        Operator(const po::variables_map &config){}
+        //! default constructor
+        max_operation():
+            operation(),
+            _max_pos(0),
+            _max_value(0)
+        {}
 
         //---------------------------------------------------------------------
-        virtual ~Operator() {}
+        //! destructor
+        ~max_operation(){}
 
         //---------------------------------------------------------------------
-        virtual void operator()(const array_type &channels,
-                                const array_type &data) = 0;
+        //!execute operation
+        virtual void operator()(const array_type &channels, 
+                                const array_type &data)
+        {
+            _max_pos = pni::core::max_offset(data);
+            _max_value = data[_max_pos];
+        }
 
         //---------------------------------------------------------------------
-        virtual std::ostream &stream_result(std::ostream &o) const = 0;
+        //! write result to output stream
+        virtual std::ostream &stream_result(std::ostream &o) const
+        {
+            o<<_max_pos<<"\t"<<_max_value;
+            return o;
+        }
 };
-
-//-----------------------------------------------------------------------------
-std::ostream &operator<<(std::ostream &o,const Operator &op)
-{
-    return op.stream_result(o);
-}
 
