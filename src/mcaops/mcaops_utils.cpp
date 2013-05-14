@@ -34,6 +34,9 @@ op_ptr select_operator(const configuration &config,
     if(command == "sum")
         return op_ptr(new sum_operation());
 
+    if(command == "dump")
+        return op_ptr(new dump_operation());
+
     if(command == "rebin")
     {
         rebin_operation *op = new rebin_operation();
@@ -44,6 +47,9 @@ op_ptr select_operator(const configuration &config,
         //switch of rebinning of the x-axis
         if(cmd_config.has_option("noxrebin"))
             op->no_x_rebinning(cmd_config.value<bool>("noxrebin"));
+
+        if(cmd_config.has_option("normalize"))
+            op->normalization(cmd_config.value<bool>("normalize"));
 
         return op_ptr(op);
     }

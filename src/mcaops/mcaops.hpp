@@ -36,6 +36,7 @@
 #include "sum_operation.hpp" 
 #include "rebin_operation.hpp"
 #include "scale_operation.hpp"
+#include "dump_operation.hpp"
 #include "io.hpp"
 
 

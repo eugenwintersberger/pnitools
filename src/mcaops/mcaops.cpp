@@ -71,6 +71,8 @@ int main(int argc,char **argv)
                 "number of bins to collate",1));
     rebin_config.add_option(config_option<bool>("noxrebin","",
                 "do not rebin the x-axis, use simple indices instead",false));
+    rebin_config.add_option(config_option<bool>("normalize","",
+                "normalize the rebinned data",false));
 
     //-------------------------------------------------------------------------
     //options for the scale command
