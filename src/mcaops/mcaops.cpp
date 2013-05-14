@@ -236,8 +236,8 @@ int main(int argc,char **argv)
     }
     else if(config.value<string>("command") == "rebin")
     {
-        parse(scale_config,cmd_args,true);
-        optr = select_operator(config,scale_config);
+        parse(rebin_config,cmd_args,true);
+        optr = select_operator(config,rebin_config);
     }
     else
         optr = select_operator(config,config);
