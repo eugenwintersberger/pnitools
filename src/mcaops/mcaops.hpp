@@ -60,6 +60,5 @@ command line options passed by the user.
 \param rebin_config configuration options for the rebin operator
 */
 op_ptr select_operator(const configuration &config,
-                       const configuration &scale_config,
-                       const configuration &rebin_config);
+                       const configuration &cmd_config);
 

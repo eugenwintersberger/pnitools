@@ -24,8 +24,7 @@
 
 //-----------------------------------------------------------------------------
 op_ptr select_operator(const configuration &config,
-                       const configuration &scale_config,
-                       const configuration &rebin_config) 
+                       const configuration &cmd_config)
 {
     string command = config.value<string>("command");
 
@@ -39,12 +38,12 @@ op_ptr select_operator(const configuration &config,
     {
         rebin_operation *op = new rebin_operation();
 
-        if(rebin_config.has_option("binsize"))
-            op->bin_size(rebin_config.value<size_t>("binsize"));
+        if(cmd_config.has_option("binsize"))
+            op->bin_size(cmd_config.value<size_t>("binsize"));
 
         //switch of rebinning of the x-axis
-        if(rebin_config.has_option("noxrebin"))
-            op->no_x_rebinning(rebin_config.value<bool>("noxrebin"));
+        if(cmd_config.has_option("noxrebin"))
+            op->no_x_rebinning(cmd_config.value<bool>("noxrebin"));
 
         return op_ptr(op);
     }
@@ -52,19 +51,19 @@ op_ptr select_operator(const configuration &config,
     if(command == "scale")
     {
         scale_operation *op = new scale_operation();
-        if(scale_config.has_option("center"))
+        if(cmd_config.has_option("center"))
         {
-            op->center_bin(scale_config.value<size_t>("center"));
+            op->center_bin(cmd_config.value<size_t>("center"));
             op->use_data_maximum(false);
         }
         else 
             op->use_data_maximum(true);
 
-        if(scale_config.has_option("delta"))
-            op->delta(scale_config.value<float64>("delta"));
+        if(cmd_config.has_option("delta"))
+            op->delta(cmd_config.value<float64>("delta"));
 
-        if(scale_config.has_option("cvalue"))
-            op->center_value(scale_config.value<float64>("cvalue"));
+        if(cmd_config.has_option("cvalue"))
+            op->center_value(cmd_config.value<float64>("cvalue"));
 
         return op_ptr(op);
     }

@@ -85,9 +85,8 @@ int main(int argc,char **argv)
 
     //-------------------parse and store program options-----------------------
     std::vector<string> args = cliargs2vector(argc,argv);
-    parse(config,args,true);
-    parse(rebin_config,args,true);
-    parse(scale_config,args,true);
+    std::vector<string> cmd_args;
+    cmd_args = parse(config,args,true);
 
     if(config.value<bool>("help"))
     {
@@ -225,8 +224,21 @@ int main(int argc,char **argv)
         return 1;
     }
 
-    //select the proper operator
-    op_ptr optr = select_operator(config,scale_config,rebin_config);
+
+    op_ptr optr;
+
+    if(config.value<string>("command") == "scale")
+    {
+        parse(scale_config,cmd_args,true);
+        optr = select_operator(config,scale_config);
+    }
+    else if(config.value<string>("command") == "rebin")
+    {
+        parse(scale_config,cmd_args,true);
+        optr = select_operator(config,scale_config);
+    }
+    else
+        optr = select_operator(config,config);
 
     //run the operation
     (*optr)(channels,data);
