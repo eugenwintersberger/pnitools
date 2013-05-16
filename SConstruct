@@ -19,7 +19,11 @@ var.Add(PathVariable("BOOSTINCDIR","BOOST header installation directory","/usr/i
 #---------------create the build environment-----------------------------------
 env = Environment(variables=var,ENV={"PATH":os.environ["PATH"]},tools=['default'])
 #for the moment we relie on pkg-config for libpniutils
-env["ENV"]["PKG_CONFIG_PATH"] = os.environ["PKG_CONFIG_PATH"]
+try:
+    env["ENV"]["PKG_CONFIG_PATH"] = os.environ["PKG_CONFIG_PATH"]
+except:
+    pass
+
 env.ParseConfig('pkg-config --libs --cflags pniio')
 env.Replace(CXX = env["CXX"])
 
