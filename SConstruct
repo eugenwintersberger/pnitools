@@ -14,6 +14,7 @@ var.Add("CXX","set the compiler to use","g++")
 var.Add(PathVariable("PREFIX","Installation prefix","/usr"))
 var.Add(PathVariable("BOOSTLIBDIR","BOOST library installation directory","/usr/lib"))
 var.Add(PathVariable("BOOSTINCDIR","BOOST header installation directory","/usr/include"))
+var.Add(PathVariable("QT4DIR","QT4 installation directory",PathVariable.PathAccept))
 
 
 #---------------create the build environment-----------------------------------

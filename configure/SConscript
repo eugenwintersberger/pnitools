@@ -61,13 +61,14 @@ if not conf.CheckLib("boost_filesystem",language="C++"):
 #=================readline check===============================================
 print "================checking for readline headers and libraries============="
 
-if not conf.CheckHeader("readline/readline.h"):
+if not conf.CheckHeader(["stdio.h","readline/readline.h"]):
     print "Readline development files not installed!"
     Exit(1)
 
 if not conf.CheckLib("readline"):
-    print "Readline runtime library not installed"
-    Exit(1)
+    if not conf.CheckLib(["ncurses","readline"]):
+        print "Readline runtime library not installed"
+        Exit(1)
 
 #================pniio check===================================================
 print "==============checking for pniio headers and library==================="
