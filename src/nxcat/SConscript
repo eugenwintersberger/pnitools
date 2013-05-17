@@ -1,9 +1,9 @@
-Import("program_env")
+Import("cli_env")
 
-nxcat_objects =[program_env.Object(["main.cpp"])]
+nxcat_objects =[cli_env.Object(["main.cpp"])]
 nxcat_objects.extend(SConscript("../common/SConscript"))
-nxcat = program_env.Program(target="nxcat",source=nxcat_objects)
-nxcat_install = program_env.Install("$PREFIX/bin",nxcat)
+nxcat = cli_env.Program(target="nxcat",source=nxcat_objects)
+nxcat_install = cli_env.Install("$PREFIX/bin",nxcat)
 
-program_env.Alias("all",[nxcat])
-program_env.Alias("install",[nxcat_install])
+cli_env.Alias("all",[nxcat])
+cli_env.Alias("install",[nxcat_install])

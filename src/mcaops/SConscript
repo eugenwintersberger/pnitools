@@ -1,15 +1,15 @@
-Import("program_env")
+Import("cli_env")
 
 mcaops_src = ["mcaops.cpp","scale_operation.cpp","io.cpp",
               "rebin_operation.cpp","operation.cpp",
               "mcaops_utils.cpp"]
 
 if GetOption("static"):
-    mcaops = program_env.Program("mcaops",mcaops_src,LINKFLAGS="--static")
+    mcaops = cli_env.Program("mcaops",mcaops_src,LINKFLAGS="--static")
 else:
-    mcaops = program_env.Program("mcaops",mcaops_src)
+    mcaops = cli_env.Program("mcaops",mcaops_src)
 
-program_env.Alias("all",mcaops)
-mcaops_inst = program_env.Install("$PREFIX/bin",mcaops)
-program_env.Alias("install",mcaops_inst)
+cli_env.Alias("all",mcaops)
+mcaops_inst = cli_env.Install("$PREFIX/bin",mcaops)
+cli_env.Alias("install",mcaops_inst)
     

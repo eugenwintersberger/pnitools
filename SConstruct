@@ -18,15 +18,21 @@ var.Add(PathVariable("BOOSTINCDIR","BOOST header installation directory","/usr/i
 
 #---------------create the build environment-----------------------------------
 env = Environment(variables=var,ENV={"PATH":os.environ["PATH"]},tools=['default'])
-#for the moment we relie on pkg-config for libpniutils
+#check if the user has set PKG_CONFIG_PATH to some additional location
 try:
     env["ENV"]["PKG_CONFIG_PATH"] = os.environ["PKG_CONFIG_PATH"]
 except:
     pass
 
-env.ParseConfig('pkg-config --libs --cflags pniio')
-env.Replace(CXX = env["CXX"])
+#------------------------set library paths-------------------------------------
+#set boost installation directories
+env.AppendUnique(CPPPATH=[env["BOOSTINCDIR"]])
+env.AppendUnique(LIBPATH=[env["BOOSTLIBDIR"]])
 
+
+#----------------------set the compiler and compiler options-------------------
+#set the compiler
+env.Replace(CXX = env["CXX"])
 #set some default compiler options
 env.Append(CXXFLAGS=["-std=c++0x"])
 env.Append(CXXFLAGS=["-Wall","-fno-deduce-init-list","-Wno-deprecated"])
@@ -36,23 +42,16 @@ if GetOption("debug"):
 else:
     env.Append(CXXFLAGS=["-O2"])
 
+env.ParseConfig('pkg-config --libs --cflags pniio')
 
-env.AppendUnique(CPPPATH=[env["BOOSTINCDIR"]])
-env.AppendUnique(LIBPATH=[env["BOOSTLIBDIR"]])
 
+#--------------------start here with configuration-----------------------------
 Export("env")
-(build_env,test_env) = SConscript("configure/SConscript")
-program_env = build_env.Clone()
+(cli_env,gui_env,test_env) = SConscript("configure/SConscript")
 
-if GetOption("static"):
-    program_env.Append(LIBS = ["pthread"])
-
-gui_program_env = program_env.Clone()
-gui_program_env.ParseConfig('pkg-config --libs --cflags QtGui')
-gui_program_env.ParseConfig('pkg-config --libs --cflags QtCore')
-gui_program_env.Tool('qt4')
-Export("program_env")
-Export("gui_program_env")
+Export("cli_env")
+Export("gui_env")
+Export("test_env")
 
 
 #start the SConscript files for the individual tools

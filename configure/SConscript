@@ -14,6 +14,7 @@ env = compiler_checks.check_type_sizes(conf,env)
 
 
 #================================checking for header files=====================
+print "================checking for BOOST headers and libraries================"
 #check for mandatory header files
 if not conf.CheckCXXHeader("boost/numeric/conversion/cast.hpp"):
     print "BOOST header file cast.hpp does not exist!"
@@ -32,9 +33,6 @@ if not conf.CheckCXXHeader("boost/tokenizer.hpp"):
     print "BOOST tokenizer not found!"
     Exit(1)
 
-if not conf.CheckHeader("readline/readline.h"):
-    print "Readline development files not installed!"
-    Exit(1)
     
 if not conf.CheckCXXHeader("boost/program_options/options_description.hpp")\
     or not conf.CheckCXXHeader("boost/program_options/variables_map.hpp")\
@@ -43,8 +41,6 @@ if not conf.CheckCXXHeader("boost/program_options/options_description.hpp")\
     print "BOOST program options headers not installed!"
     Exit(1)
 
-
-#================checking for libraries========================================
 if not conf.CheckLib("boost_program_options"):
     print "BOOST program options library not installed!"
     Exit(1)
@@ -62,15 +58,49 @@ if not conf.CheckLib("boost_filesystem",language="C++"):
     print "BOOST filesystem library not found!"
     Exit(1)
 
+#=================readline check===============================================
+print "================checking for readline headers and libraries============="
+
+if not conf.CheckHeader("readline/readline.h"):
+    print "Readline development files not installed!"
+    Exit(1)
+
 if not conf.CheckLib("readline"):
     print "Readline runtime library not installed"
     Exit(1)
 
+#================pniio check===================================================
+print "==============checking for pniio headers and library==================="
+
+try:
+    #first try with pkg-config
+    env.ParseConfig('pkg-config --libs --cflags pniio')
+except:
+    print "pniio pkg-config file not found - module maybe not installed!"
+    Exit(1)
+    
 env = conf.Finish()
 
 #create the build environments for the library and the test
-build_env = env.Clone()
+cli_env = env.Clone()
+gui_env = env.Clone()
 test_env  = env.Clone()
+
+#================configuration for the GUI builds==============================
+try:
+    gui_env.ParseConfig('pkg-config --libs --cflags QtGui')
+except:
+    print "QtGui pkg-config file not found - module maybe not installed!"
+    Exit(1)
+
+try:
+    gui_env.ParseConfig('pkg-config --libs --cflags QtCore')
+except:
+    print "QtCore pkg-config file not found - module maybe not installed!"
+    Exit(1)
+
+#load the appropriate tool
+gui_env.Tool('qt4')
 
 #============================start configuration for tests=====================
 test_conf = Configure(test_env)
@@ -112,4 +142,4 @@ if not test_conf.CheckLib("cppunit",language="C++"):
 test_env = test_conf.Finish()
 
 
-Return('build_env test_env')
+Return('cli_env gui_env test_env')
