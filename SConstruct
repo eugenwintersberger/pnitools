@@ -14,7 +14,7 @@ var.Add("CXX","set the compiler to use","g++")
 var.Add(PathVariable("PREFIX","Installation prefix","/usr"))
 var.Add(PathVariable("BOOSTLIBDIR","BOOST library installation directory","/usr/lib"))
 var.Add(PathVariable("BOOSTINCDIR","BOOST header installation directory","/usr/include"))
-var.Add(PathVariable("QT4DIR","QT4 installation directory",PathVariable.PathAccept))
+var.Add(PathVariable("QT4DIR","QT4 installation directory","/usr"))
 
 
 #---------------create the build environment-----------------------------------
@@ -65,4 +65,4 @@ SConscript("src/nxsh/SConscript")
 SConscript("doc/man/SConscript")
 #SConscript("src/nxtee/SConscript")
 #SConscript("src/nxbrowse/SConscript")
-#SConscript("src/detview/SConscript")
+SConscript("src/detview/SConscript")
