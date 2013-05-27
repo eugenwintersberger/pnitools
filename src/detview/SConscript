@@ -13,3 +13,4 @@ objects = gui_env.Object(sources)
 detview = gui_env.Program("detview",objects)
 
 gui_env.Alias("all",[detview])
+gui_env.Alias("install",gui_env.Install("$PREFIX/bin",[detview]))
