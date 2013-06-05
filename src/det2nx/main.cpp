@@ -20,37 +20,14 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include <iostream>
-#include <pni/core/types.hpp>
-#include <pni/core/config/configuration.hpp>
-#include <pni/core/config/config_parser.hpp>
-#include <pni/io/nx/nx.hpp>
-#include "../common/file.hpp"
-#include "../common/file_list.hpp"
-#include "../common/exceptions.hpp"
-#include <boost/filesystem.hpp> 
 
-using namespace pni::io::nx::h5;
-using namespace pni::core;
-namespace fs = boost::filesystem;
+#include "det2nx.hpp"
 
-typedef std::vector<string> strlist;
 
 int main(int argc,char **argv)
 {
-    configuration config;
+    configuration config = create_configuration();
 
-    config.add_option(config_option<bool>("help","h",
-                "show short help text",false));
-    config.add_option(config_option<string>("output","o",
-                "output file","output.h5.nx"));
-    config.add_option(config_option<string>("nx-path","p",
-                "target path","/entry/instrument/detector"));
-    config.add_option(config_option<string>("field","f",
-                "target field","data"));
-    config.add_option(config_option<bool>("append","a",
-                "append data to existing field",true));
-    config.add_argument(config_argument<strlist>("input-files",-1,strlist{"-"}));
     
     try
     {
@@ -75,6 +52,8 @@ int main(int argc,char **argv)
    
     //-------------------------generating the input file list------------------
     file_list infiles;
+    if(create_inpt_file_list(conf.value<strlist>("input-files")))
+        return 1;
     try
     {
         auto path_list = config.value<strlist>("input-files");
@@ -88,20 +67,8 @@ int main(int argc,char **argv)
 
     //------------------------opening the output file--------------------------
 	//have to create the file name of the output file
-	fs::path output_file_path(config.value<string>("output"));
-	nxfile output_file;
+	nxfile output_file = open_output_file(config.value<string>("output"));
 
-	if((!fs::exists(output_file_path)))
-    {
-		//if the file does not already exist we need to create it
-        output_file = nxfile::create_file(config.value<string>("output"));
-	}
-    else
-    {
-        //open an existing output file
-        output_file = nxfile::open_file(config.value<string>("output"));
-	}
-    
     //-------------------processing input files--------------------------------
     for(auto file: infiles)
     {
@@ -133,11 +100,9 @@ int main(int argc,char **argv)
     }
 
 
-
-
 	//create the shape objects for the data
-	Shape sframe(array->getShape());  //shape of a single detector frame
-	Shape sdata;   //shape of the full data block
+	shape_t sframe(array->getShape());  //shape of a single detector frame
+	shape_t sdata;   //shape of the full data block
 	sdata.setRank(sframe.getRank()+1);
 	sdata.setDimension(0,iflist->size());
 	for(UInt32 i=0;i<sframe.getRank();i++) sdata.setDimension(i+1,sframe.getDimension(i));
@@ -152,6 +117,7 @@ int main(int argc,char **argv)
 
 	NXGroup g;
 	String field_path = "/"+conf.getEntryName()+"/"+conf.getInstrumentName()+"/"+conf.getDetectorName();
+    nxfield = nconfig.value<string>("nx-path");
 	if(!nxofile.exists(field_path)){
 		g = nxofile.createGroup(field_path);
 	}else{
