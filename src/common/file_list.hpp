@@ -31,6 +31,7 @@ using namespace pni::core;
 
 
 /*!
+\ingroup common_devel
 \brief an iterable list of files
 
 This is an iterable list of valid regular files. During list creation all files

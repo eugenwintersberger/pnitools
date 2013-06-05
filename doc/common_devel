@@ -1,0 +1,4 @@
+/*!
+\defgroup common_devel Common code
+\brief classes and functions used by all programms 
+*/
