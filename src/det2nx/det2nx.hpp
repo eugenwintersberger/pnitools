@@ -39,6 +39,9 @@ using namespace pni::core;
 namespace fs = boost::filesystem;
 
 typedef std::vector<string> strlist;
+typedef std::list<sring> string_list;
+typedef std::list<file> file_list;
+typedef std::unique_ptr<pni::io::image_reader> reader_ptr;
 
 //-----------------utility functions-------------------------------------------
 /*!

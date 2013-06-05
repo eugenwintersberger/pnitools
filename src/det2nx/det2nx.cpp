@@ -22,42 +22,45 @@
 
 
 #include "det2nx.hpp"
+#include "../common/config_utils.hpp"
+#include "../common/file_list_parser.hpp"
 
+static const string program_name = "det2nx";
+static const string help_header = "det2nx takes the following command line options";
 
 int main(int argc,char **argv)
 {
+    //create configuration
     configuration config = create_configuration();
+  
+    //parse command line options and arguments
+    if(parse_cli_opts(argc,argv,program_name,config)) return 1;
 
-    
-    try
-    {
-        parse(config,cliargs2vector(argc,argv));
-    }
-    catch(...)
-    {
-        std::cerr<<"Wrong or insufficient command line options:"<<std::endl;
-        std::cerr<<std::endl;
-        std::cerr<<"use det2nx -h for more info"<<std::endl;
-        return 1;
-    }
+    //check if the user requested help 
+    if(check_help_request(config,help_header)) return 1;
 
-    //check for help request by the user
-    if(config.value<bool>("help"))
-    {
-        std::cerr<<"det2nx takes the following command line options";
-        std::cerr<<std::endl<<std::endl;
-        std::cerr<<config<<std::endl;
-        return 1;
-    }
-   
     //-------------------------generating the input file list------------------
-    file_list infiles;
-    if(create_inpt_file_list(conf.value<strlist>("input-files")))
-        return 1;
     try
     {
-        auto path_list = config.value<strlist>("input-files");
-        infiles = file_list(path_list);
+        //create the input file list - this will throw a file_error exception if
+        //one of the input files does not exist
+        auto infiles = file_list_parser::parse<fille_list>(
+                config.value<string_list>("input-files"));
+
+        //the first image in the stack determines the file type and all other
+        //image paramters (like data type and shape)
+
+        //at first we need to obtain the 
+        //here we have to check if the files are all of a supported format -
+        //this function will throw file_type_error if one of the files if of an
+        //unsupported type. In addition an instance of image_info is obtained
+        //used to create the buffer where to store the data and, if necessary
+        //create the field where to store it. 
+        pni::io::image_info info = check_file_types(infiles,
+
+        //------------------------opening the output file-----------------------
+        //have to create the file name of the output file
+        nxfile output_file = open_output_file(config.value<string>("output"));
     }
     catch(file_error &error)
     {
@@ -65,9 +68,6 @@ int main(int argc,char **argv)
         return 1;
     }
 
-    //------------------------opening the output file--------------------------
-	//have to create the file name of the output file
-	nxfile output_file = open_output_file(config.value<string>("output"));
 
     //-------------------processing input files--------------------------------
     for(auto file: infiles)
