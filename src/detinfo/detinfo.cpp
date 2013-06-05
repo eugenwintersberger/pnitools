@@ -29,14 +29,19 @@
 #include <pni/core/config/configuration.hpp>
 #include <pni/core/config/config_parser.hpp>
 #include "../common/file.hpp"
-#include "../common/file_list.hpp"
+#include "../common/file_list_parser.hpp"
 #include "../common/exceptions.hpp"
 #include "../common/config_utils.hpp"
+#include "../common/file_utils.hpp"
 
 typedef std::vector<string> strlist;
+typedef std::list<file> file_list;
+typedef std::unique_ptr<pni::io::image_reader> reader_ptr;
 
 const static string help_header = "detinfo takes the following command line options";
 const static string prog_name = "detinfo";
+const static strlist cbf_exts = {".cbf",".CBF"};
+const static strlist tif_exts = {".tif",".tiff",".TIF",".TIFF"};
 
 int main(int argc,char **argv)
 {
@@ -64,52 +69,45 @@ int main(int argc,char **argv)
     //check for help request by the user
     if(check_help_request(config,help_header)) return 1;
 
-    //-------------------obtain input files------------------------------------
-    file_list infiles;
-    
-    if(verbose) std::cout<<"Checking input files ..."<<std::endl;
 
+    //-----------------------here comes the real business----------------------
     try
     {
-        auto path_list = config.value<strlist>("input-files");
-        infiles = file_list(path_list);
+        //-------------------obtain input files------------------------------------
+        if(verbose) std::cout<<"Checking input files ..."<<std::endl;
+        auto infiles = file_list_parser::parse<file_list>(config.value<strlist>("input-files"));
+
+        //-------------------processing input files--------------------------------
+        reader_ptr reader;
+        pni::io::image_info info;
+        for(auto file: infiles)
+        {
+            if(has_extension(file,cbf_exts)) 
+                reader = reader_ptr(new pni::io::cbf_reader(file.path()));
+            else if(has_extension(file,tif_exts))
+                reader = reader_ptr(new pni::io::tiff_reader(file.path()));
+            else
+            {
+                std::cerr<<"File ["<<file.path()<<"] is of" "unknown type!";
+                std::cerr<<std::endl;
+                return 1;
+            }
+
+            if(config.value<bool>("full-path"))
+                std::cout<<file.path();
+            else
+                std::cout<<file.name();
+            info = reader->info(0);
+            std::cout<<" ("<<info.nx()<<" x "<<info.ny()<<") ntot = "<<info.npixels();
+            std::cout<<" type = "<<info.get_channel(0).type_id()<<std::endl;
+
+        }
     }
     catch(file_error &error)
     {
         std::cerr<<error<<std::endl;
         return 1;
     }
-
-    //-------------------processing input files--------------------------------
-    for(auto file: infiles)
-    {
-        pni::io::image_info info;
-        if(file.extension()==".cbf")
-        {
-            pni::io::cbf_reader reader(file.path());
-            info = reader.info(0);
-        }
-        else if((file.extension()==".tiff")||(file.extension()==".tif"))
-        {
-            pni::io::tiff_reader reader(file.path());
-            info = reader.info(0);
-        }
-        else
-        {
-            throw file_type_error(EXCEPTION_RECORD,"File ["+file.path()+"] is of"
-                    "unknown type!");
-        }
-
-        if(config.value<bool>("full-path"))
-            std::cout<<file.path();
-        else
-            std::cout<<file.name();
-
-        std::cout<<" ("<<info.nx()<<" x "<<info.ny()<<") ntot = "<<info.npixels();
-        std::cout<<" type = "<<info.get_channel(0).type_id()<<std::endl;
-
-    }
-
     return 0;
 }
 
