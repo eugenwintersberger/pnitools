@@ -29,7 +29,7 @@ using namespace pni::core;
 namespace fs = boost::filesystem;
 
 /*!
-\ingroup common_code
+\ingroup common_devel
 \brief class describing a single file
 
 This class represents a single file stored somewhere on the file system. Its
@@ -50,7 +50,9 @@ class file
         \brief constructor
 
         Constructor taking a string representing the full path to the file.
-        \param f path to the file
+        An exception is thrown if path does not point to a regular file.
+        \throws file_error if path not pointing to a file
+        \param path path to the file
         */
         file(const string &path);
 

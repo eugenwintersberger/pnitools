@@ -31,8 +31,12 @@
 #include "../common/file.hpp"
 #include "../common/file_list.hpp"
 #include "../common/exceptions.hpp"
+#include "../common/config_utils.hpp"
 
 typedef std::vector<string> strlist;
+
+const static string help_header = "detinfo takes the following command line options";
+const static string prog_name = "detinfo";
 
 int main(int argc,char **argv)
 {
@@ -55,26 +59,10 @@ int main(int argc,char **argv)
     config.add_argument(config_argument<strlist>("input-files",-1,strlist{"-"}));
 
     //------------------managing command line parsing--------------------------
-    try
-    {
-        parse(config,cliargs2vector(argc,argv));
-    }
-    catch(...)
-    {
-        std::cerr<<"Wrong or insufficient command line options:"<<std::endl;
-        std::cerr<<std::endl;
-        std::cerr<<"use detinfo -h for more info"<<std::endl;
-        return 1;
-    }
+    if(parse_cli_opts(argc,argv,prog_name,config)) return 1;
 
     //check for help request by the user
-    if(config.value<bool>("help"))
-    {
-        std::cerr<<"detinfo takes the following command line options";
-        std::cerr<<std::endl<<std::endl;
-        std::cerr<<config<<std::endl;
-        return 1;
-    }
+    if(check_help_request(config,help_header)) return 1;
 
     //-------------------obtain input files------------------------------------
     file_list infiles;

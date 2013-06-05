@@ -1,6 +1,6 @@
 Import("cli_env")
 
-common_sources = ["file.cpp","file_list.cpp"]
+common_sources = ["file.cpp","file_list.cpp","config_utils.cpp"]
 common_sources.extend(["string_utils.cpp",'shape_reader.cpp'])
 common_sources.extend(["exceptions.cpp","nx_object_path.cpp"])
 common_sources.extend(["field_io.cpp"])
