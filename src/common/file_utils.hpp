@@ -56,10 +56,11 @@ template<typename CTYPE> bool has_extension(const file &f,const CTYPE &exts)
 
 Returns the image information from a reader type. 
 \tparam RTYPE reader type
-
+\param r reader instance of type RTYPE
+\param image_nr index of the image in the file 
 */
 template<typename RTYPE> 
-pni::io::image_info get_image_info(const RTYPE &r,size_t channel=0)
+pni::io::image_info get_image_info(const RTYPE &r,size_t image_nr=0)
 {
-    return r.info(channel);
+    return r.info(image_nr);
 }
