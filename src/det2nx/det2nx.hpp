@@ -28,18 +28,20 @@
 #include <pni/core/config/configuration.hpp>
 #include <pni/core/config/config_parser.hpp>
 #include <pni/io/nx/nx.hpp>
+#include <pni/io/nx/nxpath.hpp>
+#include <pni/io/image_reader.hpp>
+#include <pni/io/image_info.hpp>
 #include "../common/file.hpp"
-#include "../common/file_list.hpp"
 #include "../common/exceptions.hpp"
 #include <boost/filesystem.hpp> 
 
 //setting namespaces
-using namespace pni::io::nx::h5;
+using namespace pni::io::nx;
 using namespace pni::core;
 namespace fs = boost::filesystem;
 
-typedef std::vector<string> strlist;
-typedef std::list<sring> string_list;
+typedef std::vector<string> string_vector;
+typedef std::list<string> string_list;
 typedef std::list<file> file_list;
 typedef std::unique_ptr<pni::io::image_reader> reader_ptr;
 
@@ -53,17 +55,6 @@ Function creating the program configuration.
 */
 configuration create_configuration();
 
-//-----------------------------------------------------------------------------
-/*!
-\ingroup det2nx_devel
-\brief create input file list
-
-Creates the list of input files. 
-\param fnames list of input file names
-\param flist list of input files
-\return 0 in case of success, 1 otherwise
-*/
-int create_input_file_list(const strlist &fnames);
 
 //-----------------------------------------------------------------------------
 /*!
@@ -74,6 +65,54 @@ Opens the file wher the data should be stored.
 \param fname name of the output file
 \return an instance of nxfile
 */
-nxfile open_output_file(const string &fname);
+h5::nxfile open_output_file(const string &fname);
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup det2nx_devel
+\brief get reader
+
+Obtains the reader from the first image in the stack.
+\throws file_type_errror in case of an unsupported input file type
+\param flist list of input files
+\param cbf_exts list of extensions for CBF
+\param tiff_exts list of extensions for TIFF
+\return unique pointer to reader object
+*/
+reader_ptr get_reader(const file_list &flist,const string_list &cbf_exts,
+                      const string_list &tiff_exts);
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup det2nx_devel
+\brief retrieve image information
+
+Get the image information for a particular file and channel. By default the
+channel is 0 (the first image channel).
+\param reader pointer to the reader for the image
+\param path image file path
+\param image_nr image index in the file
+*/
+pni::io::image_info get_image_info(reader_ptr &reader,const string &path,
+                                   size_t image_nr=0);
 
 
+//---------------------------------------------------------------------------
+/*!
+\ingroup det2nx_devel
+\brief check input files 
+
+All input files must be checked if they have the same shape and data type. 
+This should be done in advance before the processing starts in order to avoid
+accidental stops after a lot of images (and thus time). 
+\throws type_error in case of a type missmatch
+\throws shape_missmatch_error in case of a shape missmatch
+\param flist input file list
+\param reader unique pointer to the reader object
+\param ref_info reference image info that all other images must match
+\param image_nr index of the image in the file
+\param channel_nr channel within the image
+*/
+void check_input_files(const file_list &flist,reader_ptr &reader,
+                       const pni::io::image_info &ref_info,
+                       size_t image_nr=0,size_t channel_nr=0);

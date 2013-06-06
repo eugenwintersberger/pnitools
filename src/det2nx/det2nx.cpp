@@ -28,6 +28,9 @@
 static const string program_name = "det2nx";
 static const string help_header = "det2nx takes the following command line options";
 
+static const string_list cbf_exts = {".cbf",".CBF"};
+static const string_list tif_exts = {".tif",".TIF",".tiff",".TIFF"};
+
 int main(int argc,char **argv)
 {
     //create configuration
@@ -42,27 +45,51 @@ int main(int argc,char **argv)
     //-------------------------generating the input file list------------------
     try
     {
+        //------------------dealing with input data----------------------------
         //create the input file list - this will throw a file_error exception if
         //one of the input files does not exist
-        auto infiles = file_list_parser::parse<fille_list>(
-                config.value<string_list>("input-files"));
+        auto infiles = file_list_parser::parse<file_list>(
+                config.value<string_vector>("input-files"));
+        std::cout<<"processing "<<infiles.size()<<" files ..."<<std::endl;
 
         //the first image in the stack determines the file type and all other
         //image paramters (like data type and shape)
 
-        //at first we need to obtain the 
-        //here we have to check if the files are all of a supported format -
-        //this function will throw file_type_error if one of the files if of an
-        //unsupported type. In addition an instance of image_info is obtained
-        //used to create the buffer where to store the data and, if necessary
-        //create the field where to store it. 
-        pni::io::image_info info = check_file_types(infiles,
+        //at first we need to obtain the appropriate reader
+        reader_ptr reader = get_reader(infiles,cbf_exts,tif_exts);
+
+        //get thre reference image information object
+        pni::io::image_info info = get_image_info(reader,infiles.begin()->path());
+
+        //need to check all the input files
+        check_input_files(infiles,reader,info);
+
+        //--------------parse the nexus path to get target information----------
+        nxpath nexus_path = path_from_string(config.value<string>("target"));
+        
+        //need to check the validity of the path
+        if(nexus_path.filename().empty())
+            throw file_error(EXCEPTION_RECORD,"No output file given!");
+
+        if(!nexus_path.attribute().empty())
+            throw file_error(EXCEPTION_RECORD,
+                    "Nexus target must not be an attribute!");
 
         //------------------------opening the output file-----------------------
         //have to create the file name of the output file
-        nxfile output_file = open_output_file(config.value<string>("output"));
+        h5::nxfile output_file = open_output_file(nexus_path.filename());
+
+        //----------------check for target objects------------------------------
+        //create the array object where to store the input data
+        shape_t frame_shape{info.nx(),info.ny()};
+
     }
     catch(file_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
+    catch(cli_option_error &error)
     {
         std::cerr<<error<<std::endl;
         return 1;
@@ -70,36 +97,9 @@ int main(int argc,char **argv)
 
 
     //-------------------processing input files--------------------------------
-    for(auto file: infiles)
-    {
-        pni::io::image_info info;
-        if(file.extension()==".cbf")
-        {
-            pni::io::cbf_reader reader(file.path());
-            info = reader.info(0);
-        }
-        else if(file.extension()==".tiff")
-        {
-            pni::io::tiff_reader reader(file.path());
-            info = reader.info(0);
-        }
-        else
-        {
-            throw file_type_error(EXCEPTION_RECORD,"File ["+file.path()+"] is of"
-                    "unknown type!");
-        }
-
-        if(config.value<bool>("full-path"))
-            std::cout<<file.path();
-        else
-            std::cout<<file.name();
-
-        std::cout<<" ("<<info.nx()<<" x "<<info.ny()<<") ntot = "<<info.npixels();
-        std::cout<<" type = "<<info.get_channel(0).type_id()<<std::endl;
-
-    }
 
 
+    /*
 	//create the shape objects for the data
 	shape_t sframe(array->getShape());  //shape of a single detector frame
 	shape_t sdata;   //shape of the full data block
@@ -188,6 +188,7 @@ int main(int argc,char **argv)
 	g.close();
 	field.close();
 	nxofile.close();
+    */
 	return 0;
 }
 

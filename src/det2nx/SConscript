@@ -3,7 +3,7 @@ from os import path
 Import("cli_env")
 prg_env = cli_env.Clone()
 
-src_list = ["main.cpp","det2nx_utils.cpp"]
+src_list = ["det2nx.cpp","det2nx_utils.cpp"]
 src_list.extend(SConscript(["../common/SConscript"]))
 det2nx = cli_env.Program("det2nx",src_list)
 
