@@ -65,6 +65,7 @@ int main(int argc,char **argv)
 
         //need to check all the input files
         check_input_files(infiles,reader,info);
+        
 
         //--------------parse the nexus path to get target information----------
         nxpath nexus_path = path_from_string(config.value<string>("target"));
@@ -93,14 +94,27 @@ int main(int argc,char **argv)
             {
                 //we have reached the last element - need to check for a field
                 std::cout<<"look for field "<<iter->first<<std::endl;
+                if(group.exists(iter->first))
+                {
+                    std::cout<<"opening field "<<iter->first<<std::endl;
+                    field = group[iter->first]; //append data if field exists
+                }
+                else
+                {
+                    std::cout<<"creating field "<<iter->first<<std::endl;
+                    //create the field and start from scratch
+                    create_field(group,iter->first,info.get_channel(0).type_id(),
+                                 shape_t{0,info.nx(),info.ny()},field);
+                }
             }
+            else
+                get_group(group,iter->first,iter->second,group);
 
-            get_group(group,iter->first,iter->second,group);
+            //increment iterator
             ++iter;
         }
 
         //----------------check for target objects------------------------------
-        //create the array object where to store the input data
         shape_t frame_shape{info.nx(),info.ny()};
 
         //create array to hold data
@@ -116,6 +130,10 @@ int main(int argc,char **argv)
     {
         std::cerr<<error<<std::endl;
         return 1;
+    }
+    catch(nxfield_error &error)
+    {
+        std::cerr<<error<<std::endl;
     }
 
 
