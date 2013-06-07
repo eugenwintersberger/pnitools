@@ -221,12 +221,16 @@ void get_group(const PTYPE &p,const string &name, const string &gclass,
         }
     }
     else if(!gclass.empty())
+    {
         if(!find_group_by_class(p,gclass,g))
             throw nxgroup_error(EXCEPTION_RECORD,
                 "cannot find group of class "+gclass+"!");
+    }
     else
+    {
         throw nxgroup_error(EXCEPTION_RECORD,
                 "Error retrieving group!");
+    }
 }
 
 //----------------------------------------------------------------------------

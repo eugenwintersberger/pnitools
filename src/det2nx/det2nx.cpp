@@ -86,7 +86,7 @@ int main(int argc,char **argv)
 
         auto iter = nexus_path.begin();
         auto fiter = nexus_path.begin();
-        auto fiter = advance(nexus_path.begin(),nexus_path.size()-1);
+        advance(fiter,nexus_path.size()-1);
         while(iter!=nexus_path.end())
         {
             if(iter==fiter)
