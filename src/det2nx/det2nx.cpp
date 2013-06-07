@@ -24,6 +24,8 @@
 #include "det2nx.hpp"
 #include "../common/config_utils.hpp"
 #include "../common/file_list_parser.hpp"
+#include "../common/array_utils.hpp"
+#include "../common/nexus_utils.hpp"
 
 static const string program_name = "det2nx";
 static const string help_header = "det2nx takes the following command line options";
@@ -77,11 +79,32 @@ int main(int argc,char **argv)
 
         //------------------------opening the output file-----------------------
         //have to create the file name of the output file
+        std::cout<<"create/open output target ..."<<std::endl;
         h5::nxfile output_file = open_output_file(nexus_path.filename());
+        h5::nxgroup group = output_file["/"];
+        h5::nxfield field;
+
+        auto iter = nexus_path.begin();
+        auto fiter = nexus_path.begin();
+        auto fiter = advance(nexus_path.begin(),nexus_path.size()-1);
+        while(iter!=nexus_path.end())
+        {
+            if(iter==fiter)
+            {
+                //we have reached the last element - need to check for a field
+                std::cout<<"look for field "<<iter->first<<std::endl;
+            }
+
+            get_group(group,iter->first,iter->second,group);
+            ++iter;
+        }
 
         //----------------check for target objects------------------------------
         //create the array object where to store the input data
         shape_t frame_shape{info.nx(),info.ny()};
+
+        //create array to hold data
+        array frame = create_array(info.get_channel(0).type_id(),frame_shape);
 
     }
     catch(file_error &error)
