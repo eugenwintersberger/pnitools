@@ -67,7 +67,7 @@ Opens the file wher the data should be stored.
 \param fname name of the output file
 \return an instance of nxfile
 */
-h5::nxfile open_output_file(const string &fname);
+h5::nxfile open_output_file(const string &fname,bool overwrite);
 
 //-----------------------------------------------------------------------------
 /*!

@@ -42,19 +42,22 @@ configuration create_configuration()
                 "append data to existing field",true));
     config.add_argument(config_argument<string_vector>("input-files",-1,
                 string_vector()));
+    config.add_option(config_option<bool>("overwrite","",
+                "overwrite existing data file",false));
+
     return config;
 }
 
 //-----------------------------------------------------------------------------
-h5::nxfile open_output_file(const string &fname)
+h5::nxfile open_output_file(const string &fname,bool overwrite)
 {
 	fs::path output_file_path(fname);
-	if((!fs::exists(output_file_path)))
+	if((!fs::exists(output_file_path))||overwrite)
 		//if the file does not already exist we need to create it
-        return h5::nxfile::create_file(fname);
+        return h5::nxfile::create_file(fname,overwrite);
     else
         //open an existing output file
-        return h5::nxfile::open_file(fname,true);
+        return h5::nxfile::open_file(fname,false);
 }
 
 //-----------------------------------------------------------------------------

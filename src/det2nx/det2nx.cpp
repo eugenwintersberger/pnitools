@@ -81,7 +81,8 @@ int main(int argc,char **argv)
         //------------------------opening the output file-----------------------
         //have to create the file name of the output file
         std::cout<<"create/open output target ..."<<std::endl;
-        h5::nxfile output_file = open_output_file(nexus_path.filename());
+        h5::nxfile output_file = open_output_file(nexus_path.filename(),
+                                 config.value<bool>("overwrite"));
         h5::nxfield field = get_field(output_file,info,nexus_path);
 
         //finally we need to process the data
