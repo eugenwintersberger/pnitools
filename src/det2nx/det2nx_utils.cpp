@@ -24,6 +24,7 @@
 #include <pni/io/cbf_reader.hpp>
 #include <pni/io/tiff_reader.hpp>
 #include "../common/file_utils.hpp"
+#include "../common/nexus_utils.hpp"
 
 
 //------------------------------------------------------------------------
@@ -35,6 +36,8 @@ configuration create_configuration()
     config.add_option(config_option<string>("target","t",
                 "Nexus target where to store data",
                 "output.nx:///:NXinstrument/:NXinstrument/:NXdetector/data"));
+    config.add_option(config_option<bool>("verbose","v",
+                "print verbose output",false));
     config.add_option(config_option<bool>("append","a",
                 "append data to existing field",true));
     config.add_argument(config_argument<string_vector>("input-files",-1,
@@ -51,7 +54,7 @@ h5::nxfile open_output_file(const string &fname)
         return h5::nxfile::create_file(fname);
     else
         //open an existing output file
-        return h5::nxfile::open_file(fname);
+        return h5::nxfile::open_file(fname,true);
 }
 
 //-----------------------------------------------------------------------------
@@ -121,4 +124,44 @@ void check_input_files(const file_list &flist,reader_ptr &reader,
         reader->close();
     }
 
+}
+
+//-----------------------------------------------------------------------------
+h5::nxfield get_field(const h5::nxfile &ofile,const pni::io::image_info &info,
+                      const nxpath &path) 
+{
+    h5::nxgroup group = ofile["/"];
+    h5::nxfield field;
+
+    auto iter = path.begin();
+    auto fiter = path.begin();
+    advance(fiter,path.size()-1);
+
+    while(iter!=path.end())
+    {
+        if(iter==fiter)
+        {
+            //we have reached the last element - need to check for a field
+            std::cout<<"look for field "<<iter->first<<std::endl;
+            if(group.exists(iter->first))
+            {
+                std::cout<<"opening field "<<iter->first<<std::endl;
+                field = group[iter->first]; //append data if field exists
+            }
+            else
+            {
+                std::cout<<"creating field "<<iter->first<<std::endl;
+                //create the field and start from scratch
+                create_field(group,iter->first,info.get_channel(0).type_id(),
+                             shape_t{0,info.nx(),info.ny()},field);
+            }
+        }
+        else
+            get_group(group,iter->first,iter->second,group);
+
+        //increment iterator
+        ++iter;
+    }
+
+    return field;
 }

@@ -20,12 +20,10 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-
 #include "det2nx.hpp"
 #include "../common/config_utils.hpp"
 #include "../common/file_list_parser.hpp"
-#include "../common/array_utils.hpp"
-#include "../common/nexus_utils.hpp"
+#include "../common/file_utils.hpp"
 
 static const string program_name = "det2nx";
 static const string help_header = "det2nx takes the following command line options";
@@ -44,6 +42,8 @@ int main(int argc,char **argv)
     //check if the user requested help 
     if(check_help_request(config,help_header)) return 1;
 
+    bool verbose = config.value<bool>("verbose");
+
     //-------------------------generating the input file list------------------
     try
     {
@@ -52,7 +52,8 @@ int main(int argc,char **argv)
         //one of the input files does not exist
         auto infiles = file_list_parser::parse<file_list>(
                 config.value<string_vector>("input-files"));
-        std::cout<<"processing "<<infiles.size()<<" files ..."<<std::endl;
+        if(verbose)
+            std::cout<<"processing "<<infiles.size()<<" files ..."<<std::endl;
 
         //the first image in the stack determines the file type and all other
         //image paramters (like data type and shape)
@@ -65,8 +66,7 @@ int main(int argc,char **argv)
 
         //need to check all the input files
         check_input_files(infiles,reader,info);
-        
-
+       
         //--------------parse the nexus path to get target information----------
         nxpath nexus_path = path_from_string(config.value<string>("target"));
         
@@ -82,43 +82,15 @@ int main(int argc,char **argv)
         //have to create the file name of the output file
         std::cout<<"create/open output target ..."<<std::endl;
         h5::nxfile output_file = open_output_file(nexus_path.filename());
-        h5::nxgroup group = output_file["/"];
-        h5::nxfield field;
+        h5::nxfield field = get_field(output_file,info,nexus_path);
 
-        auto iter = nexus_path.begin();
-        auto fiter = nexus_path.begin();
-        advance(fiter,nexus_path.size()-1);
-        while(iter!=nexus_path.end())
-        {
-            if(iter==fiter)
-            {
-                //we have reached the last element - need to check for a field
-                std::cout<<"look for field "<<iter->first<<std::endl;
-                if(group.exists(iter->first))
-                {
-                    std::cout<<"opening field "<<iter->first<<std::endl;
-                    field = group[iter->first]; //append data if field exists
-                }
-                else
-                {
-                    std::cout<<"creating field "<<iter->first<<std::endl;
-                    //create the field and start from scratch
-                    create_field(group,iter->first,info.get_channel(0).type_id(),
-                                 shape_t{0,info.nx(),info.ny()},field);
-                }
-            }
-            else
-                get_group(group,iter->first,iter->second,group);
+        //finally we need to process the data
+        if(has_extension(*infiles.begin(),cbf_exts))
+            append_data(pni::io::cbf_reader(),output_file,field,infiles);
+        else if(has_extension(*infiles.begin(),tif_exts))
+            append_data(pni::io::tiff_reader(),output_file,field,infiles);
+        
 
-            //increment iterator
-            ++iter;
-        }
-
-        //----------------check for target objects------------------------------
-        shape_t frame_shape{info.nx(),info.ny()};
-
-        //create array to hold data
-        array frame = create_array(info.get_channel(0).type_id(),frame_shape);
 
     }
     catch(file_error &error)

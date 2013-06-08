@@ -31,6 +31,8 @@
 #include <pni/io/nx/nxpath.hpp>
 #include <pni/io/image_reader.hpp>
 #include <pni/io/image_info.hpp>
+#include <pni/io/cbf_reader.hpp>
+#include <pni/io/tiff_reader.hpp>
 #include "../common/file.hpp"
 #include "../common/exceptions.hpp"
 #include <boost/filesystem.hpp> 
@@ -116,3 +118,68 @@ accidental stops after a lot of images (and thus time).
 void check_input_files(const file_list &flist,reader_ptr &reader,
                        const pni::io::image_info &ref_info,
                        size_t image_nr=0,size_t channel_nr=0);
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup det2nx_devel
+\brief get the data field
+
+This function returns the field to which the image data should be added. 
+\param ofile ouput nexus file
+\param info image information 
+\param path nexus path to the field
+\return data field
+*/
+h5::nxfield get_field(const h5::nxfile &ofile,const pni::io::image_info &info,
+                      const nxpath &path); 
+
+//-----------------------------------------------------------------------------
+template<typename RTYPE> 
+void append_data(RTYPE &&reader,const h5::nxfile &file,
+                 h5::nxfield &field,const file_list &ifiles)
+{
+    if(field.type_id() == type_id_t::UINT8)
+        append_data<uint8>(reader,file,field,ifiles);
+    else if(field.type_id() == type_id_t::INT8)
+        append_data<int8>(reader,file,field,ifiles);
+    else if(field.type_id() == type_id_t::UINT16)
+        append_data<uint16>(reader,file,field,ifiles);
+    else if(field.type_id() == type_id_t::INT16)
+        append_data<int16>(reader,file,field,ifiles);
+    else if(field.type_id() == type_id_t::UINT32)
+        append_data<uint32>(reader,file,field,ifiles);
+    else if(field.type_id() == type_id_t::INT32)
+        append_data<int32>(reader,file,field,ifiles);
+    else if(field.type_id() == type_id_t::UINT64)
+        append_data<uint64>(reader,file,field,ifiles);
+    else if(field.type_id() == type_id_t::INT64)
+        append_data<int64>(reader,file,field,ifiles);
+}
+
+//-----------------------------------------------------------------------------
+template<typename T,typename RTYPE>
+void append_data(RTYPE &&reader,const h5::nxfile &file,
+                 h5::nxfield &field,const file_list &ifiles)
+{
+    //find the start index
+    auto shape = field.shape<shape_t>();
+    size_t frame_index = shape[0];
+    size_t nx = shape[1];
+    size_t ny = shape[2];
+
+    //create a buffer for the data
+    dbuffer<T> buffer(nx*ny);
+
+    //iterate over all files
+    for(auto f: ifiles)
+    {
+        reader.filename(f.path());
+        reader.open();
+        reader.image(buffer,0,0);
+        
+        field.grow(0);
+        field(frame_index++,slice(0,nx),slice(0,ny)).write(buffer);
+        file.flush();
+        reader.close();
+    }
+}
