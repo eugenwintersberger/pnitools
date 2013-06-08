@@ -249,32 +249,36 @@ Create a field from a type_id_t and a shape object.
 \param shape instance of STYPE - the shape of the field
 \param field reference to the new field
 */
-template<typename PTYPE,typename FTYPE,typename STYPE>
+template<typename PTYPE,typename FTYPE,typename STYPE,typename ...FILTERT>
 void create_field(const PTYPE &parent,const string &name,type_id_t tid,
-                  const STYPE shape,FTYPE &field)
+                  const STYPE shape,FTYPE &field,FILTERT ...filters)
 {
+    STYPE cshape(shape.size());
+    std::copy(shape.begin(),shape.end(),cshape.begin());
+    *cshape.begin() = 1;
+
     if(tid == type_id_t::UINT8)
-        field = parent.create_field<uint8>(name,shape);
+        field = parent.create_field<uint8>(name,shape,cshape,filters...);
     else if(tid == type_id_t::INT8)
-        field = parent.create_field<int8>(name,shape);
+        field = parent.create_field<int8>(name,shape,cshape,filters...);
     else if(tid == type_id_t::UINT16)
-        field = parent.create_field<uint16>(name,shape);
+        field = parent.create_field<uint16>(name,shape,cshape,filters...);
     else if(tid == type_id_t::INT16)
-        field = parent.create_field<int16>(name,shape);
+        field = parent.create_field<int16>(name,shape,cshape,filters...);
     else if(tid == type_id_t::UINT32)
-        field = parent.create_field<uint32>(name,shape);
+        field = parent.create_field<uint32>(name,shape,cshape,filters...);
     else if(tid == type_id_t::INT32)
-        field = parent.create_field<int32>(name,shape);
+        field = parent.create_field<int32>(name,shape,cshape,filters...);
     else if(tid == type_id_t::UINT64)
-        field = parent.create_field<uint64>(name,shape);
+        field = parent.create_field<uint64>(name,shape,cshape,filters...);
     else if(tid == type_id_t::INT64)
-        field = parent.create_field<int64>(name,shape);
+        field = parent.create_field<int64>(name,shape,cshape,filters...);
     else if(tid == type_id_t::FLOAT32)
-        field = parent.create_field<float32>(name,shape);
+        field = parent.create_field<float32>(name,shape,cshape,filters...);
     else if(tid == type_id_t::FLOAT64)
-        field = parent.create_field<float64>(name,shape);
+        field = parent.create_field<float64>(name,shape,cshape,filters...);
     else if(tid == type_id_t::FLOAT128)
-        field = parent.create_field<float128>(name,shape);
+        field = parent.create_field<float128>(name,shape,cshape,filters...);
     else
         throw type_error(EXCEPTION_RECORD,
                 "Unkown data type!");

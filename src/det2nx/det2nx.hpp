@@ -128,10 +128,11 @@ This function returns the field to which the image data should be added.
 \param ofile ouput nexus file
 \param info image information 
 \param path nexus path to the field
+\param deflate compression level for deflate filter
 \return data field
 */
 h5::nxfield get_field(const h5::nxfile &ofile,const pni::io::image_info &info,
-                      const nxpath &path); 
+                      const nxpath &path,size_t deflate); 
 
 //-----------------------------------------------------------------------------
 template<typename RTYPE> 
@@ -173,6 +174,9 @@ void append_data(RTYPE &&reader,const h5::nxfile &file,
     //iterate over all files
     for(auto f: ifiles)
     {
+        if((frame_index % 100)  == 0)
+            std::cout<<"storing frame "<<frame_index<<" ..."<<std::endl;
+
         reader.filename(f.path());
         reader.open();
         reader.image(buffer,0,0);

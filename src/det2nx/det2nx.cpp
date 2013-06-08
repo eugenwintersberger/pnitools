@@ -83,7 +83,8 @@ int main(int argc,char **argv)
         std::cout<<"create/open output target ..."<<std::endl;
         h5::nxfile output_file = open_output_file(nexus_path.filename(),
                                  config.value<bool>("overwrite"));
-        h5::nxfield field = get_field(output_file,info,nexus_path);
+        h5::nxfield field = get_field(output_file,info,nexus_path,
+                                      config.value<size_t>("deflate"));
 
         //finally we need to process the data
         if(has_extension(*infiles.begin(),cbf_exts))
@@ -91,7 +92,9 @@ int main(int argc,char **argv)
         else if(has_extension(*infiles.begin(),tif_exts))
             append_data(pni::io::tiff_reader(),output_file,field,infiles);
         
-
+        //close the file 
+        field.close();
+        output_file.close();
 
     }
     catch(file_error &error)
@@ -107,102 +110,15 @@ int main(int argc,char **argv)
     catch(nxfield_error &error)
     {
         std::cerr<<error<<std::endl;
+        return 1;
+    }
+    catch(nxfile_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
     }
 
 
-    //-------------------processing input files--------------------------------
-
-
-    /*
-	//create the shape objects for the data
-	shape_t sframe(array->getShape());  //shape of a single detector frame
-	shape_t sdata;   //shape of the full data block
-	sdata.setRank(sframe.getRank()+1);
-	sdata.setDimension(0,iflist->size());
-	for(UInt32 i=0;i<sframe.getRank();i++) sdata.setDimension(i+1,sframe.getDimension(i));
-
-	//setup the selection for partial data IO
-	NXSelection sel;
-	sel.setDiskRank(sdata.getRank());
-	sel.setCount(0,1);
-	for(UInt32 i=0;i<sframe.getRank();i++) sel.setCount(i+1,sframe.getDimension(i));
-	//set offset values
-	for(UInt32 i=0;i<sel.getDiskRank();i++) sel.setOffset(i,0);
-
-	NXGroup g;
-	String field_path = "/"+conf.getEntryName()+"/"+conf.getInstrumentName()+"/"+conf.getDetectorName();
-    nxfield = nconfig.value<string>("nx-path");
-	if(!nxofile.exists(field_path)){
-		g = nxofile.createGroup(field_path);
-	}else{
-		g = nxofile.openGroup(field_path);
-	}
-
-	//creat the field where to store the data
-	NXField field;
-	if(g.exists("data")){
-		//if data already exists we have to check some options
-		if(conf.getReplace()){
-			g.remove("data");
-			if(conf.getCompression()=="deflate"){
-				NXDeflateFilter filter;
-				field = g.createField("data",array->getTypeID(),sdata,filter);
-			}else if(conf.getCompression()=="lzf"){
-				NXLZFFilter filter;
-				field = g.createField("data",array->getTypeID(),sdata,filter);
-			}else{
-				field = g.createField("data",array->getTypeID(),sdata);
-			}
-		}else if(conf.getAppend()){
-			field = g.openField("data");
-			//set the offset to the new starting point
-			sel.setOffset(0,field.getShape().getDimension(0));
-			field.resize(field.getShape().getDimension(0)+sdata.getDimension(0));
-
-		}else{
-			//abort the program here
-			g.close();
-			nxofile.close();
-			std::cerr<<"Data field already exists!"<<std::endl;
-			return 1;
-		}
-	}else{
-		if(conf.getCompression()=="deflate"){
-			NXDeflateFilter filter;
-			field = g.createField("data",array->getTypeID(),sdata,filter);
-		}else if(conf.getCompression()=="lzf"){
-			NXLZFFilter filter;
-			field = g.createField("data",array->getTypeID(),sdata,filter);
-		}else{
-			field = g.createField("data",array->getTypeID(),sdata);
-		}
-	}
-
-	//register selection with the field
-	field.registerSelection(sel);
-
-	//loop over all files and write the data
-	Det2NxConfig::InputFileIterator iter;
-	for(iter = iflist->begin();iter != iflist->end();++iter){
-		if(conf.isVerbose()){
-			std::cout<<"processing file: "<<*iter<<" ..."<<std::endl;
-		}
-		reader.setInputFile(*iter);
-		reader();
-		array = reader.getData();
-		field.write(*array);
-		//nxofile.flush();
-		sel.incOffset(0);
-	}
-
-
-
-
-	//loop over all files
-	g.close();
-	field.close();
-	nxofile.close();
-    */
 	return 0;
 }
 

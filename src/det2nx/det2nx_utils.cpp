@@ -44,6 +44,8 @@ configuration create_configuration()
                 string_vector()));
     config.add_option(config_option<bool>("overwrite","",
                 "overwrite existing data file",false));
+    config.add_option(config_option<size_t>("deflate","d",
+                "set deflate level",size_t(0)));
 
     return config;
 }
@@ -131,10 +133,11 @@ void check_input_files(const file_list &flist,reader_ptr &reader,
 
 //-----------------------------------------------------------------------------
 h5::nxfield get_field(const h5::nxfile &ofile,const pni::io::image_info &info,
-                      const nxpath &path) 
+                      const nxpath &path,size_t deflate) 
 {
     h5::nxgroup group = ofile["/"];
     h5::nxfield field;
+    h5::nxdeflate_filter filter(deflate,true);
 
     auto iter = path.begin();
     auto fiter = path.begin();
@@ -155,8 +158,12 @@ h5::nxfield get_field(const h5::nxfile &ofile,const pni::io::image_info &info,
             {
                 std::cout<<"creating field "<<iter->first<<std::endl;
                 //create the field and start from scratch
-                create_field(group,iter->first,info.get_channel(0).type_id(),
-                             shape_t{0,info.nx(),info.ny()},field);
+                if(deflate)
+                    create_field(group,iter->first,info.get_channel(0).type_id(),
+                                 shape_t{0,info.nx(),info.ny()},field,filter);
+                else
+                    create_field(group,iter->first,info.get_channel(0).type_id(),
+                                 shape_t{0,info.nx(),info.ny()},field);
             }
         }
         else
