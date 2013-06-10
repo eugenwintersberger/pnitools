@@ -193,31 +193,40 @@ void create_group(const PTYPE &p,const string &gname,GTYPE &g)
 
 Check if a group exists below a parent group and return it. The function handles
 several special cases. If the group does not exist it will be created as long as
-at least its name is given. If the groups name is an empty string one can still
-search for the group by its Nexus class. However, if the function cannot find a
-group of appropriate class it throws an exception.
+at least its name is given and the create flag is set to true. If the groups
+name is an empty string one can still search for the group by its Nexus class.
+However, if the function cannot find a group of appropriate class it throws an
+exception.
+\thows group_error in case of errors
 \tparam PTYPE parent type
 \tparam GTYPE group type
 \param p parent group
 \param name name of the searched group
 \param gclass nexus class of the searched group
 \param g reference to the group
+\param create true of the group should be created 
 */
 template<typename PTYPE,typename GTYPE>
 void get_group(const PTYPE &p,const string &name, const string &gclass,
-               GTYPE &g)
+               GTYPE &g,bool create=true)
 {
     if(!name.empty())
     {
         if(!gclass.empty())
         {
-            if(!find_group_by_name_and_class(p,name,gclass,g))
+            if((!find_group_by_name_and_class(p,name,gclass,g))&&create)
                 create_group(p,name,gclass,g);
+            else
+                throw nxgroup_error(EXCEPTION_RECORD,
+                        "("+name+":"+gclass+"does not exist!");
         }
         else
         {
-            if(!find_group_by_name(p,name,g))
+            if((!find_group_by_name(p,name,g))&&create)
                 create_group(p,name,g);
+            else
+                throw nxgroup_error(EXCEPTION_RECORD,
+                        "("+name+":"+gclass+"does not exist!");
         }
     }
     else if(!gclass.empty())
@@ -231,6 +240,29 @@ void get_group(const PTYPE &p,const string &name, const string &gclass,
         throw nxgroup_error(EXCEPTION_RECORD,
                 "Error retrieving group!");
     }
+}
+
+//----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief get a group
+
+This function  is an extension of the get_group. It walks through a Nexus path
+and returns the last group of the path. Non-existing groups are automatically
+created if the create flag is set to true. 
+\throws nxgroup_error in case of errors
+\tparam GTYPE group type
+\param p parent group
+\param path Nexus path object
+\param g resulting group
+\param create true if missing elements should be created
+*/
+template<typename GTYPE>
+void get_group(const GTYPE &p,const nxpath &path,GTYPE &g,bool create=true)
+{
+    g = p;
+    for(auto element: path)
+        get_group(g,element.first,element.second,g,create);
 }
 
 //----------------------------------------------------------------------------

@@ -45,7 +45,7 @@ shape_t dimensions2shape(const tree::ptree &dims)
 }
 
 //-----------------------------------------------------------------------------
-void write_field(const tree::ptree &tag,const nxfield &field)
+void write_field(const tree::ptree &tag,const h5::nxfield &field)
 {
     type_id_t tid = field.type_id();
 
@@ -65,4 +65,20 @@ void write_field(const tree::ptree &tag,const nxfield &field)
     else if(tid == type_id_t::COMPLEX128) field.write(tag.get_value<complex128>());
     else if(tid == type_id_t::BOOL) field.write(tag.get_value<bool>());
     else if(tid == type_id_t::STRING) field.write(trim(tag.get_value<string>()));
+}
+
+//-----------------------------------------------------------------------------
+bool open_xml_file(const string &fname,tree::ptree &tree)
+{
+    try
+    {
+        tree::read_xml(fname,tree);
+    }
+    catch(...)
+    {
+        std::cerr<<"Error reading XML file "<<fname<<"!"<<std::endl;
+        return true;
+    }
+
+    return false;
 }

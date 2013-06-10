@@ -29,12 +29,25 @@
 #include<boost/property_tree/xml_parser.hpp>
 
 using namespace pni::core;
-using namespace pni::io::nx::h5;
+using namespace pni::io::nx;
 namespace tree = boost::property_tree;
 
 //-----------------------------------------------------------------------------
 /*!
+\ingroup xml2nx_devel
+\brief open the xml file
 
+Open the XML file. If the operation was successful the function returns false. 
+In case of errors true is returned.
+\param fname name of the file
+\param tree reference to the tree
+\return true in case of errors, false otherwise
+*/
+bool open_xml_file(const string &fname,tree::ptree &tree);
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup xml2nx_devel
 \brief create shape form dimensions tag
 
 Create a shape container from the dimensions tag in the XML file. 
@@ -45,6 +58,7 @@ shape_t dimensions2shape(const tree::ptree &dims);
 
 //-----------------------------------------------------------------------------
 /*!
+\ingroup xml2nx_devel
 \brief create a field from xml data
 
 Create a field from the information provided by the XML file. 
@@ -56,7 +70,7 @@ Create a field from the information provided by the XML file.
 \return instance of NXField
 */
 template<typename PTYPE>
-nxfield create_field(const PTYPE &parent,const string &name,
+h5::nxfield create_field(const PTYPE &parent,const string &name,
                      const string &tc,const shape_t &s)
 {
     if(tc == "uint8")
@@ -96,23 +110,25 @@ nxfield create_field(const PTYPE &parent,const string &name,
 
     std::stringstream ss;
     ss<<"Error creating field - type code "<<tc<<" is not supported!";
-    throw pni::io::nx::nxfield_error(EXCEPTION_RECORD,ss.str());
+    throw nxfield_error(EXCEPTION_RECORD,ss.str());
 
-    return nxfield(); //just to make the compiler happy
+    return h5::nxfield(); //just to make the compiler happy
 }
 
 //-----------------------------------------------------------------------------
 /*!
+\ingroup xml2nx_devel
 \brief write static data from XML
 
 Write data from XML file to the Nexus file.
 \param tag the actual tag whose data shall be written
 \param field the field where to write the data
 */
-void write_field(const tree::ptree &tag,const nxfield &field);
+void write_field(const tree::ptree &tag,const h5::nxfield &field);
 
 //-----------------------------------------------------------------------------
 /*!
+\ingroup xml2nx_devel
 \brief create objects from XML
 
 Recursively creates the objects as described in the XML file below parent.
@@ -131,7 +147,7 @@ void create_objects(const PTYPE &parent,tree::ptree &t)
             auto name = child.second.template get<string>("<xmlattr>.name");
             auto type = child.second.template get<string>("<xmlattr>.type");
 
-            nxgroup g = parent.create_group(name,type);
+            h5::nxgroup g = parent.create_group(name,type);
             create_objects(g,child.second);
 
         }
@@ -152,7 +168,7 @@ void create_objects(const PTYPE &parent,tree::ptree &t)
             {}
 
             //create the field
-            nxfield f = create_field(parent,name,type,shape);
+            h5::nxfield f = create_field(parent,name,type,shape);
 
             //------------------try to write units attribute--------------------
             try
