@@ -31,8 +31,8 @@ configuration create_config()
     config.add_option(config_option<string>("parent","p",
                       "path to the parent object"));
     config.add_option(config_option<bool>("append","a",
-                      "append structure to existing file"));
-    config.add_argument(config_argument<string>("input_file",-1));
+                      "append structure to existing file",false));
+    config.add_argument(config_argument<string>("input-file",-1));
 
     return config;
 }
@@ -45,5 +45,5 @@ h5::nxfile open_nexus_file(const nxpath &path,bool append)
     if(append)
         return  h5::nxfile::open_file(path.filename(),false);
     else
-        return h5::nxfile::create_file(path.filename(),false,0);
+        return h5::nxfile::create_file(path.filename(),true,0);
 }

@@ -51,9 +51,9 @@ int main(int argc,char **argv)
 
         //get the target file
         nxpath path = path_from_string(conf.value<string>("parent"));
+        std::cout<<"output file: "<<path.filename()<<std::endl;
         h5::nxfile file = open_nexus_file(path,conf.value<bool>("append"));
     
-
         //get the group where to append XML data
         h5::nxgroup target_group = file["/"];
         get_group(target_group,path,target_group,false);
@@ -69,9 +69,9 @@ int main(int argc,char **argv)
         std::cerr<<error<<std::endl;
         return 1;
     }
-    catch(...)
+    catch(nxgroup_error &error)
     {
-        std::cerr<<"something went wrong!"<<std::endl;
+        std::cerr<<error<<std::endl;
         return 1;
     }
     return 0;

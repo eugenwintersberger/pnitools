@@ -1,0 +1,11 @@
+<group name="scan_1" type="NXentry">
+
+    <!--- setting up the instrument gruop -->
+    <group name="instrument" type="NXinstrument">
+        <group name = "source" type="NXsource"> </group>
+        <group name = "undulator" type="NXinsertion_device"></group>
+        <group name = "monchromator" type = "NXmonochromator"> </group>
+    </group>
+
+    <group name="sample" type="NXsample"> </group>
+</group>
