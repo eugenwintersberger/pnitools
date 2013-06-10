@@ -1,0 +1,76 @@
+.\" det2nx
+.\" Contact Eugen Wintersberger <eugen.wintersberger@desy.de> for typos and corrections
+.TH det2nx 1 "10.06.2013" "" "User commands"
+.SH NAME
+det2nx - add single image detector data to a Nexus file
+
+.SH SYNOPSIS
+.B det2nx [OPTIONS] FILE [FILE ...]
+
+.SH DESCRIPTION
+\fBdet2nx\fR adds detector data stored in single image files to an image stack
+in a Nexus file. Single files can be added as well as whole ranges of files.
+See the \fIpni-tools\fR man page for details about how to enter file ranges. 
+The Nexus file and the field in the file can be passed with the \fB\-t\fR
+option. See \fIpni-tools\fR for details how to specifiy a Nexus path.
+
+.SH OPTIONS
+The programm takes the following options:
+.TP
+\fB\-h\fR,\fB\-\-help\fR
+print short program help
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+produce verbose output
+.TP
+\fB\-\-overwrite\fR
+Newly create the file if it exists.
+.TP
+\fB\-\-deflate=[LEVEL]\fR
+Use deflate algorithm (zip) for compression. The compression level is given by
+\fILEVEL\fR.
+.TP
+\fB\-t\fR, \fB\-\-target=[NEXUSTARGET]\fR
+Defines the Nexus field where the data should be stored. 
+
+.SH EXIT CODE
+0 in the case of success, 1 otherwise
+
+.SH EXAMPLES
+The usage of the program is rather easy. 
+.IP
+$> TARGET=file.nx:///entry:NXentry/instrument:NXinstrument/detector:NXdetector/data
+
+$> SOURCE=$HOME/data/detector/files_%05i.cbf:1:1000
+
+$> det2nx -t$TARGET $SOURCE
+.P
+As shown in the first line the target field in the Nexus file is specified by a
+standard Nexus path. If the file or some of the groups do not exist they will be
+created automatically. In cases that the file and the data file already exists
+the data will be appended.
+If data should not be appended use the \fB\-\-overwrite\fR option like this
+.IP
+$> det2nx --overwrite -t$TARGET $SOURCE
+.P
+To add compression use 
+.IP
+$> det2nx --deflate=5 -t$TARGET $SOURCE
+.P
+which enables deflate compression, here with a compression level of 5.
+
+.SH AUTHOR
+Written bei Eugen Wintersberger <eugen.wintersberger@desy.de>
+
+.SH COPYRIGHT
+Copyright 2013 Eugen Wintersberger License GLPLv2+: GNU GPL version 2 or later
+<http://gnu.org/license/gpl.html>.  This is free software: you are free to
+change and redistribute it. There is no WARRENTY, to the extent permitted by
+law.
+
+.SH SEE ALSO
+.IP \fBpni-tools\fR 
+
+
+
+

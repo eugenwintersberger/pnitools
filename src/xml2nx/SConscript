@@ -1,6 +1,6 @@
 Import("cli_env")
 
-xml2nx_objects =[cli_env.Object(["main.cpp","xml_utils.cpp"])]
+xml2nx_objects =[cli_env.Object(["xml2nx.cpp","xml2nx_utils.cpp","xml_utils.cpp"])]
 xml2nx_objects.extend(SConscript("../common/SConscript"))
 xml2nx = cli_env.Program(target="xml2nx",source=xml2nx_objects)
 xml2nx_install = cli_env.Install("$PREFIX/bin",xml2nx)
