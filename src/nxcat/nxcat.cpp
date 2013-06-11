@@ -44,23 +44,30 @@ int main(int argc,char **argv)
     {
         //----------------------parse the input data----------------------------
         //get the source string
-        nxpath source = path_from_string(conf.value<string>("source"));
+        sources_list sources;
+        for(auto source_path: conf.value<string_list>("source"))
+            sources.push_back(path_from_string(source_path));
+      
+        //read all the data
+        std::list<array> columns;
+        for(auto p: sources)
+            columns.push_back(read_source(p));
         
-        //open file in read only mode - the file must obviously exist
-        h5::nxfile file = h5::nxfile::open_file(source.filename(),true);
-        h5::nxgroup root = file["/"];
-        h5::nxfield field; 
-        get_field(root,source,field);
+        //get iterators
+        auto stop_iter = columns.front().end();
+        record_t record;
+        for(auto c: columns)
+            record.push_back(c.begin());
 
-        //need to create an array from the data
-        auto shape = field.shape<shape_t>();
-        array data = create_array(field.type_id(),shape);
+        //print output
+        while(record.front()!=stop_iter)
+        {
+            //output data
+            for(auto iter: record)
+                std::cout<<*(iter++)<<"\t";
 
-        field.read(data);
-        for(auto v: data)
-            std::cout<<v<<std::endl;
-        
-            
+            std::cout<<std::endl;
+        }
 
     }
     catch(nxgroup_error &error)
@@ -68,11 +75,17 @@ int main(int argc,char **argv)
         std::cerr<<error<<std::endl;
         return 1;
     }
+    catch(memory_not_allocated_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
+    /*
     catch(...)
     {
         std::cerr<<"Something went wrong!"<<std::endl;
         return 1;
-    }
+    }*/
 
 
 

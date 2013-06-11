@@ -28,6 +28,7 @@
 
 #include<pni/core/types.hpp>
 #include<pni/io/nx/nx.hpp>
+#include<pni/io/nx/nxpath.hpp>
 #include<pni/io/nx/nxobject_type.hpp>
 
 #include <pni/core/config/configuration.hpp>
@@ -36,7 +37,11 @@
 #include "../common/field_io.hpp"
 
 using namespace pni::core;
-using namespace pni::io::nx::h5;
+using namespace pni::io::nx;
+
+typedef std::vector<string> string_list;
+typedef std::list<nxpath> sources_list;
+typedef std::list<array::iterator> record_t;
 
 /*!
 \ingroup nxcat_devel
@@ -46,3 +51,13 @@ Function to create the CLI configuration.
 \return configuration object
 */
 configuration create_configuration();
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup nxcat_devel
+\brief extract data from a particular source
+
+Extract the data from a particular source and returns it to the calling program
+
+*/
+array read_source(const nxpath &source_path);

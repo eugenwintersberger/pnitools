@@ -21,11 +21,30 @@
  */
 
 #include "nxcat.hpp"
+#include "../common/nexus_utils.hpp"
+#include "../common/array_utils.hpp"
 
 configuration create_configuration()
 {
     configuration config;
     config.add_option(config_option<bool>("help","h","show help",false));
-    config.add_argument(config_argument<string>("source",1));
+    config.add_argument(config_argument<string_list>("source",-1));
     return config;
+}
+
+//-----------------------------------------------------------------------------
+array read_source(const nxpath &source_path)
+{
+    //open file in read only mode - the file must obviously exist
+    h5::nxfile file = h5::nxfile::open_file(source_path.filename(),true);
+    h5::nxgroup root = file["/"];
+    h5::nxfield field; 
+    get_field(root,source_path,field);
+
+    //need to create an array from the data
+    auto shape = field.shape<shape_t>();
+    array data = create_array(field.type_id(),shape);
+    field.read(data);
+
+    return data;
 }
