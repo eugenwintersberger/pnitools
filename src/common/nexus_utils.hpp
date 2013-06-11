@@ -213,28 +213,35 @@ void get_group(const PTYPE &p,const string &name, const string &gclass,
 {
     if(!name.empty())
     {
+        //groups can only be created if we at least have a name
         if(!gclass.empty())
         {
-            if((!find_group_by_name_and_class(p,name,gclass,g))&&create)
-                create_group(p,name,gclass,g);
-            else
-                throw nxgroup_error(EXCEPTION_RECORD,
-                        "("+name+":"+gclass+"does not exist!");
+            if(!find_group_by_name_and_class(p,name,gclass,g))
+            {
+                //if group not found - either create it or throw an exception
+                if(create) create_group(p,name,gclass,g);
+                else
+                    throw nxgroup_error(EXCEPTION_RECORD,
+                            "("+name+":"+gclass+"does not exist!");
+            }
         }
         else
         {
-            if((!find_group_by_name(p,name,g))&&create)
-                create_group(p,name,g);
-            else
-                throw nxgroup_error(EXCEPTION_RECORD,
-                        "("+name+":"+gclass+"does not exist!");
+            if(!find_group_by_name(p,name,g))
+            {
+                //if group not found - either create it or throw an exception
+                if(create) create_group(p,name,g);
+                else
+                    throw nxgroup_error(EXCEPTION_RECORD,
+                            "("+name+":"+gclass+"does not exist!");
+            }
         }
     }
     else if(!gclass.empty())
     {
         if(!find_group_by_class(p,gclass,g))
             throw nxgroup_error(EXCEPTION_RECORD,
-                "cannot find group of class "+gclass+"!");
+                "::group_path_tcannot find group of class "+gclass+"!");
     }
     else
     {

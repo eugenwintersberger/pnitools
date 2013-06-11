@@ -23,6 +23,7 @@
 #include "nxcat.hpp"
 #include "../common/config_utils.hpp"
 #include "../common/nexus_utils.hpp"
+#include "../common/array_utils.hpp"
 
 
 static const string prg_name = "nxcat";
@@ -51,8 +52,21 @@ int main(int argc,char **argv)
         h5::nxfield field; 
         get_field(root,source,field);
 
+        //need to create an array from the data
+        auto shape = field.shape<shape_t>();
+        array data = create_array(field.type_id(),shape);
+
+        field.read(data);
+        for(auto v: data)
+            std::cout<<v<<std::endl;
+        
             
 
+    }
+    catch(nxgroup_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
     }
     catch(...)
     {
