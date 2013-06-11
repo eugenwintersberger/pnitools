@@ -1,6 +1,6 @@
 Import("cli_env")
 
-nxcat_objects =[cli_env.Object(["main.cpp"])]
+nxcat_objects =[cli_env.Object(["nxcat.cpp","nxcat_util.cpp"])]
 nxcat_objects.extend(SConscript("../common/SConscript"))
 nxcat = cli_env.Program(target="nxcat",source=nxcat_objects)
 nxcat_install = cli_env.Install("$PREFIX/bin",nxcat)

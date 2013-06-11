@@ -23,6 +23,7 @@
 
 #include <pni/core/types.hpp>
 #include <pni/io/nx/nx.hpp>
+#include <pni/io/nx/nxpath.hpp>
 
 using namespace pni::core;
 using namespace pni::io::nx;
@@ -263,6 +264,36 @@ void get_group(const GTYPE &p,const nxpath &path,GTYPE &g,bool create=true)
     g = p;
     for(auto element: path)
         get_group(g,element.first,element.second,g,create);
+}
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief get an existing field
+
+Return an existing field according to a path object. 
+\tparam GTYPE group type
+\tparam FTYPE field type
+\param p parent group 
+\param path the field path relative to the parent
+\param f field instance
+*/
+template<typename GTYPE,typename FTYPE>
+void get_field(const GTYPE &p,const nxpath &path,FTYPE &f)
+{
+    //here we assume that all elements in the path except the last one refer to
+    //groups - create a new path with one element less
+    nxpath::group_path_t groups(path.size()-1);
+    nxpath::group_path_t::const_iterator fielditer = path.begin();
+    std::advance(fielditer,path.size()-1);
+    std::copy(path.begin(),fielditer,groups.begin());
+    nxpath groups_only("",groups,"");
+
+    GTYPE parent; 
+    get_group(p,groups_only,parent,false);
+
+    f = parent[fielditer->first];
+
 }
 
 //----------------------------------------------------------------------------
