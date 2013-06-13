@@ -66,8 +66,11 @@ int main(int argc,char **argv)
         size_t end_index   = conf.value<size_t>("end")==0 ? data_tab.nrows() : 
                              conf.value<size_t>("end");
 
+        //loop over all rows
         for(size_t row_index=start_index;row_index<end_index;++row_index)
         {
+            //loop over all columns - this is currently not very nice 
+            //but works and seems to be fast enough
             for(auto key: keys)
             {
 

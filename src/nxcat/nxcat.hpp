@@ -44,9 +44,6 @@ using namespace pni::io::nx;
 
 typedef std::vector<string> string_list;
 typedef std::list<nxpath> sources_list;
-typedef array::const_iterator array_citer_t;
-typedef array::iterator array_iter_t;
-typedef std::list<array_citer_t> record_t;
 
 //storage type for columns
 typedef std::list<array> column_storage_t;
@@ -64,13 +61,22 @@ configuration create_configuration();
 
 //-----------------------------------------------------------------------------
 /*!
-\ingroup nxcat_devel
-\brief extract data from a particular source
+\ingroup nxcat_deval
+\brief read a single column
 
-Extract the data from a particular source and returns it to the calling program
-
+Read a single column from a source determined by an nxpath instance.
+\param nxpath location of the data
+\return column instance 
 */
-array read_source(const nxpath &source_path);
-
 column_t read_column(const nxpath &source_path);
+
+//------------------------------------------------------------------------------
+/*!
+\ingroup nxcat_devel
+\brief read full table
+
+Read all data from a set of nxpath instances and store the result in a table. 
+\param sources list of path object
+\return table instance
+*/
 table_t  read_table(const sources_list &sources);

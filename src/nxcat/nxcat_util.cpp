@@ -39,23 +39,6 @@ configuration create_configuration()
 }
 
 //-----------------------------------------------------------------------------
-array read_source(const nxpath &source_path)
-{
-    //open file in read only mode - the file must obviously exist
-    h5::nxfile file = h5::nxfile::open_file(source_path.filename(),true);
-    h5::nxgroup root = file["/"];
-    h5::nxfield field; 
-    get_field(root,source_path,field);
-
-    //need to create an array from the data
-    auto shape = field.shape<shape_t>();
-    array data = create_array(field.type_id(),shape);
-    field.read(data);
-
-    return data;
-}
-
-//-----------------------------------------------------------------------------
 column_t read_column(const nxpath &source_path)
 {
     //open file in read only mode - the file must obviously exist
