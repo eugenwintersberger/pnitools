@@ -29,6 +29,12 @@ configuration create_configuration()
     configuration config;
     config.add_option(config_option<bool>("help","h","show help",false));
     config.add_argument(config_argument<string_list>("source",-1));
+    config.add_option(config_option<bool>("header","",
+                      "show header with units",false));
+    config.add_option(config_option<size_t>("start","s",
+                "start index for data",size_t(0)));
+    config.add_option(config_option<size_t>("end","e",
+                "end index for data",size_t(0)));
     return config;
 }
 
