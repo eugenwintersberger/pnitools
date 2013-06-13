@@ -353,4 +353,24 @@ void create_field(const PTYPE &parent,const string &name,type_id_t tid,
         throw type_error(EXCEPTION_RECORD,
                 "Unkown data type!");
 }
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief get unit of a field
+
+Returns the unit of a Nexus field. If the Nexus field has no unit attached to it
+an empty string is returned. 
+\tparam FTYPE field type
+\param f instance of FTYPE
+\return string with the unit of the field
+*/
+template<typename FTYPE>  string get_unit(const FTYPE &f)
+{
+    string buffer;
+    if(f.has_attr("units"))
+        f.attr("units").read(buffer);
+
+    return buffer;
+}
                   

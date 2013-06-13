@@ -36,6 +36,9 @@
 #include "../common/nx_object_path.hpp"
 #include "../common/field_io.hpp"
 
+#include "../common/column.hpp"
+#include "../common/table.hpp"
+
 using namespace pni::core;
 using namespace pni::io::nx;
 
@@ -44,6 +47,11 @@ typedef std::list<nxpath> sources_list;
 typedef array::const_iterator array_citer_t;
 typedef array::iterator array_iter_t;
 typedef std::list<array_citer_t> record_t;
+
+//storage type for columns
+typedef std::list<array> column_storage_t;
+typedef column<column_storage_t> column_t;
+typedef table<column_t> table_t;
 
 /*!
 \ingroup nxcat_devel
@@ -63,3 +71,6 @@ Extract the data from a particular source and returns it to the calling program
 
 */
 array read_source(const nxpath &source_path);
+
+column_t read_column(const nxpath &source_path);
+table_t  read_table(const sources_list &sources);

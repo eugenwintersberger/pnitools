@@ -47,7 +47,11 @@ int main(int argc,char **argv)
         sources_list sources;
         for(auto source_path: conf.value<string_list>("source"))
             sources.push_back(path_from_string(source_path));
-      
+
+        //table with data
+        table_t data_tab = read_table(sources);
+     
+        /*
         //read all the data
         std::list<array> columns;
         for(auto p: sources) columns.push_back(read_source(p));
@@ -67,6 +71,7 @@ int main(int argc,char **argv)
 
             std::cout<<std::endl;
         }
+        */
 
     }
     catch(nxgroup_error &error)

@@ -50,11 +50,11 @@ template<typename CTYPE> class column
     public:
         //-----------------some public types------------------------------
         //! constant interator type
-        typedef CTYPE::const_iteartor const_iterator;
+        typedef typename CTYPE::const_iterator const_iterator;
         //! iterator type
-        typedef CTYPE::iterator iterator;
+        typedef typename CTYPE::iterator iterator;
         //! value type
-        typedef CTYPE::value_type value_type;
+        typedef typename CTYPE::value_type value_type;
     private:
         CTYPE _container;
         string _name;

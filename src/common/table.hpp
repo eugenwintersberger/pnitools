@@ -123,4 +123,10 @@ template<typename COLTYPE> class table
             return _colmap[key];
         }
 
+        //--------------------------------------------------------------------
+        void insert(const string &key,const COLTYPE &c)
+        {
+            _colmap.insert(std::make_pair(key,c));
+        }
+
 };
