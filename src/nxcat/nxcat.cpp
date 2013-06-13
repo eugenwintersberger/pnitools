@@ -40,6 +40,7 @@ int main(int argc,char **argv)
     if(check_help_request(conf,help_hdr))
         return 1;
 
+
     try
     {
         //----------------------parse the input data----------------------------
@@ -52,10 +53,24 @@ int main(int argc,char **argv)
         table_t data_tab = read_table(sources);
 
         auto keys = data_tab.keys<string_list>();
-        for(size_t row_index=0;row_index<data_tab.nrows();++row_index)
+        if(conf.value<bool>("header"))
+        {
+            for(auto key: keys)
+                std::cout<<"#"<<data_tab[key].name()<<" ("
+                         <<data_tab[key].unit()<<")"<<std::endl;
+        }
+
+        //get start and stop indices
+        size_t start_index = conf.value<size_t>("start");
+        //if the stop index is 0 we print everything
+        size_t end_index   = conf.value<size_t>("end")==0 ? data_tab.nrows() : 
+                             conf.value<size_t>("end");
+
+        for(size_t row_index=start_index;row_index<end_index;++row_index)
         {
             for(auto key: keys)
             {
+
                 column_t::iterator iter = data_tab[key].begin();
                 std::advance(iter,row_index);
                 std::cout<<*iter<<"\t";
@@ -63,28 +78,6 @@ int main(int argc,char **argv)
 
             std::cout<<std::endl;
         }
-     
-        /*
-        //read all the data
-        std::list<array> columns;
-        for(auto p: sources) columns.push_back(read_source(p));
-        
-        //we are working only with const_iterators as we do not intend to change
-        //any value.
-        array_citer_t stop_iter = ((const array &)columns.front()).end();
-        record_t record;
-        for(const array& c: columns) record.push_back(c.begin());
-
-
-        //print output
-        while(record.front()!=stop_iter)
-        {
-            //output data
-            for(array_citer_t& iter: record) std::cout<<*(iter++)<<"\t";
-
-            std::cout<<std::endl;
-        }
-        */
 
     }
     catch(nxgroup_error &error)
