@@ -66,7 +66,7 @@ column_t read_column(const nxpath &source_path)
     
     //prepear the column
     column_t column;
-    column.name(field.name());
+    column.name(field.path());
     column.unit(get_unit(field));
 
     //need to create an array from the data
@@ -86,6 +86,7 @@ column_t read_column(const nxpath &source_path)
 
     for(size_t i=0;i<field_shape[0];++i)
     {
+        selection[0] = slice(i);
         field(selection).read(data);
         column.push_back(data);
     }

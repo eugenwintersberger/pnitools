@@ -50,6 +50,19 @@ int main(int argc,char **argv)
 
         //table with data
         table_t data_tab = read_table(sources);
+
+        auto keys = data_tab.keys<string_list>();
+        for(size_t row_index=0;row_index<data_tab.nrows();++row_index)
+        {
+            for(auto key: keys)
+            {
+                column_t::iterator iter = data_tab[key].begin();
+                std::advance(iter,row_index);
+                std::cout<<*iter<<"\t";
+            }
+
+            std::cout<<std::endl;
+        }
      
         /*
         //read all the data
