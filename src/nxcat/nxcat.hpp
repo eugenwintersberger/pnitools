@@ -41,7 +41,9 @@ using namespace pni::io::nx;
 
 typedef std::vector<string> string_list;
 typedef std::list<nxpath> sources_list;
-typedef std::list<array::iterator> record_t;
+typedef array::const_iterator array_citer_t;
+typedef array::iterator array_iter_t;
+typedef std::list<array_citer_t> record_t;
 
 /*!
 \ingroup nxcat_devel

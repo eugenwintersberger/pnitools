@@ -50,21 +50,20 @@ int main(int argc,char **argv)
       
         //read all the data
         std::list<array> columns;
-        for(auto p: sources)
-            columns.push_back(read_source(p));
+        for(auto p: sources) columns.push_back(read_source(p));
         
-        //get iterators
-        auto stop_iter = columns.front().end();
+        //we are working only with const_iterators as we do not intend to change
+        //any value.
+        array_citer_t stop_iter = ((const array &)columns.front()).end();
         record_t record;
-        for(auto c: columns)
-            record.push_back(c.begin());
+        for(const array& c: columns) record.push_back(c.begin());
+
 
         //print output
         while(record.front()!=stop_iter)
         {
             //output data
-            for(auto iter: record)
-                std::cout<<*(iter++)<<"\t";
+            for(array_citer_t& iter: record) std::cout<<*(iter++)<<"\t";
 
             std::cout<<std::endl;
         }
