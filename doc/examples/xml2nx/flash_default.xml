@@ -1,0 +1,57 @@
+<group name="entry" type="NXentry">
+
+    <group name="instrument" type="NXinstrument">
+        <group name="source" type="NXsource">
+            <field name="type" type="string" unit="">
+                Free-Electron Laser
+            </field>
+            <field name="probe" type="string" unit="">
+                ultraviolet
+            </field>
+            <field name="name" type="string" unit="">
+                FLASH
+            </field>
+            <field name="energy" type="float64" unit="GeV"> </field>
+            <field name="power" type="float64" unit="GW"></field>
+        </source>
+
+        <group name="undulator_1" type="NXinsertion_device">
+
+        </group>
+
+        <group name="pinhole" type="NXpinhole">
+            <field name="diameter" type="float64" unit="mm"> </field> 
+        </group>
+
+        <group name="monitor_pre_attenuator" type="NXmonitor">
+            <field name="mode" type="string" unit=""> monitor </field>
+            <field name="type" type="string" unit=""> Ion Chamber </field>
+            <field name="data" type="float64" > </field>
+            <field name="count_time" type="float64" > </field>            
+        </group>
+
+        <group name="attenuator" type="NXattenuator">
+            <field name="type" type="string" unit="">gas</field>
+            <field name="thickness" type="float64" unit="mm"> 1000 </field>
+            <field name="attenuator_transmission" type="float64"> </field>
+            <field name="status" type="string"> in </field>
+        </group>
+        
+        <group name="monitor_post_attenuator" type="NXmonitor">
+            <field name="mode" type="string" unit=""> monitor </field>
+            <field name="type" type="string" unit=""> Ion Chamber </field>
+            <field name="data" type="float64" > </field>
+            <field name="count_time" type="float64" > </field>            
+        </group>
+
+        <group name="bunch_clock" type="NXlog">
+            <field name="time" type="float64" unit=""> </field>
+            <field name="value" type="uint64" unit=""> </field>
+        </group>
+
+    </group>
+
+
+
+    <group name="sample" type="NXsample"> </group>
+</group>
