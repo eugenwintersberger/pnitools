@@ -27,11 +27,19 @@
 #include "../common/nexus_utils.hpp"
 
 static const string program_name = "xml2nx";
-static const string help_header = "Program usage";
+static const string help_header = 
+"Program usage:\n  xml2nx [OPTIONS] INPUT FILES";
 
 int main(int argc,char **argv)
 {
     configuration conf = create_config();
+
+    if(argc<2)
+    {
+        std::cerr<<"Insufficient number of command line arguments!"<<std::endl;
+        std::cerr<<"Use xml2nx -h for help  ..."<<std::endl;
+        return 1;
+    }
 
     //--------- setup CLI configuration ---------------------------------------
     if(parse_cli_opts(argc,argv,program_name,conf))

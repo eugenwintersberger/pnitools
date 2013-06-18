@@ -50,9 +50,8 @@ int main(int argc,char **argv)
 
     if(argc <= 1)
     {
-        std::cerr<<"Program usage: "<<std::endl<<std::endl;
-        std::cerr<<"detinfo [OPTIONS] FILE [ FILE] .."<<std::endl<<std::endl;
-        std::cerr<<"for more details use: detinfo -h"<<std::endl;
+        std::cerr<<"Insufficient number of command line arguments!"<<std::endl;
+        std::cerr<<"Use detinfo -h for help  ..."<<std::endl;
         return 1;
     }
 

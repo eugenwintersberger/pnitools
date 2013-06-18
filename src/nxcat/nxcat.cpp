@@ -27,12 +27,19 @@
 
 
 static const string prg_name = "nxcat";
-static const string help_hdr = "nxcat usage:";
+static const string help_hdr = "nxcat usage:\t  nxcat [OPTIONS] INPUT FILES";
 
 int main(int argc,char **argv)
 {
     //--------------------setup program configuration--------------------------
     configuration conf = create_configuration();
+    
+    if(argc<2)
+    {
+        std::cerr<<"Insufficient number of command line arguments!"<<std::endl;
+        std::cerr<<"Use nxcat -h for help  ..."<<std::endl;
+        return 1;
+    }
 
     if(parse_cli_opts(argc,argv,prg_name,conf))
         return 1;
