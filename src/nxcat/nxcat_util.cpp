@@ -84,7 +84,7 @@ table_t  read_table(const sources_list &sources)
     for(auto source: sources)
     {
         column_t c = read_column(source);
-        t.insert(c.name(),c);
+        t.push_back(c);
     }
 
     return t;

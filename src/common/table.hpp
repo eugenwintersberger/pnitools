@@ -22,8 +22,9 @@
 
 #pragma once
 
-#include <map>
+#include <list>
 #include <pni/core/types.hpp>
+#include <pni/core/exceptions.hpp>
 
 using namespace pni::core;
 
@@ -39,27 +40,27 @@ template<typename COLTYPE> class table
         typedef COLTYPE column_type;
     private:
         //! map for columns - can be indexed by their name
-        std::map<string,COLTYPE> _colmap;
+        std::list<COLTYPE> _collist;
 
     public:
         //================constructors========================================
         //! default constructor
-        table(): _colmap() {}
+        table(): _collist() {}
 
         //--------------------------------------------------------------------
         //! copy constructor
-        table(const table<COLTYPE> &c):_colmap(c._colmap) {}
+        table(const table<COLTYPE> &c):_collist(c._collist) {}
 
         //--------------------------------------------------------------------
         //! move constructor
-        table(table<COLTYPE> &&c):_colmap(std::move(c._colmap)) {}
+        table(table<COLTYPE> &&c):_collist(std::move(c._collist)) {}
 
         //===================assignment operators=============================
         //! copy assignment operator
         table<COLTYPE> &operator=(const table<COLTYPE> &t)
         {
             if(this == &t) return *this;
-            this->_colmap = t._colmap;
+            this->_collist = t._collist;
             return *this;
         }
         
@@ -68,17 +69,17 @@ template<typename COLTYPE> class table
         table<COLTYPE> &operator=(table<COLTYPE> &&t)
         {
             if(this == &t) return *this;
-            this->_colmap = std::move(t._colmap);
+            this->_collist = std::move(t._collist);
             return *this;
         }
 
         //===============public member functions==============================
         //! get number of columns
-        size_t ncols() const { return _colmap.size(); }
+        size_t ncols() const { return _collist.size(); }
 
         //--------------------------------------------------------------------
         //! get number of rows
-        size_t nrows() const { return _colmap.begin()->second.size(); }
+        size_t nrows() const { return _collist.begin()->size(); }
 
         //--------------------------------------------------------------------
         /*! 
@@ -92,8 +93,8 @@ template<typename COLTYPE> class table
         template<typename CTYPE> CTYPE keys() const
         {
             CTYPE r;
-            for(const auto &c:_colmap)
-                r.push_back(c.first);
+            for(const auto &c:_collist)
+                r.push_back(c.name());
 
             return r;
         }
@@ -108,25 +109,30 @@ template<typename COLTYPE> class table
         */
         const COLTYPE &column(const string &key) const
         {
-            return _colmap[key];
+            for(const auto &c: _collist) if(c.name() == key) return c;
+
+            //throw an exception here
+            throw key_error(EXCEPTION_RECORD,
+                    "Cannot find columne of name "+key+"!");
         }
 
         //--------------------------------------------------------------------
         const COLTYPE &operator[](const string &key) const 
         {
-            return _colmap[key];
+
+            return column(key);
         }
 
         //--------------------------------------------------------------------
         COLTYPE &operator[](const string &key) 
         {
-            return _colmap[key];
+            return const_cast<COLTYPE&>(column(key));
         }
 
         //--------------------------------------------------------------------
-        void insert(const string &key,const COLTYPE &c)
+        void push_back(const COLTYPE &c)
         {
-            _colmap.insert(std::make_pair(key,c));
+            _collist.push_back(c);
         }
 
 };
