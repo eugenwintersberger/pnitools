@@ -1,0 +1,6 @@
+<group name="scan_1" type="NXentry">
+    <group name="instrument" type="NXinstrument"> </group>
+    <group name="sample" type="NXsample"> </group>
+    <group name="control" type="NXmonitor"> </group>
+    <group name="data" type="NXdata"> </group>
+</group>

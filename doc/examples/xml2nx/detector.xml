@@ -1,4 +1,4 @@
-<!--- XML configuration of the mythen detector -->
+<!--- XML configuration for a strip detector -->
 <group name ="detector" type="NXdetector">
     <field name="data" type="uint32" units="cps" 
         long_name = "detector raw data">
@@ -22,7 +22,7 @@
     </field>
 
     <field name="description" type="string" unit="">
-        DECTRIS Mythen PSD
+        PSD
     </field>
 
     <field name="distance" type="float32" unit="m">
