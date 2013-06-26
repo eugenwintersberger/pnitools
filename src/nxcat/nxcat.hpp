@@ -33,7 +33,6 @@
 
 #include <pni/core/config/configuration.hpp>
 #include <pni/core/config/config_parser.hpp>
-#include "../common/nx_object_path.hpp"
 #include "../common/field_io.hpp"
 
 #include "../common/column.hpp"
