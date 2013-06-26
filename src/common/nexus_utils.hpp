@@ -140,37 +140,73 @@ as it must hold other objects
 template<typename PTYPE, typename OTYPE>
 bool find_object(const PTYPE &p,const nxpath &path,OTYPE &object)
 {
-    auto stopiter=path.begin();
-    std::advance(stopiter,path.size()-1);
+    nxpath group_path;
+    nxpath target_path;
 
-    /*
-    for(auto iter = path.begin();iter!=stopiter;++iter)
-    {
-        if(!element.first.empty())
+    split_path(path,path.size()-1,group_path,target_path);
 
-        else if(!element.second.empty())
+    //try to fetch the groups 
+    PTYPE t_group;
+    if(!get_group(p,group_path,t_group,false)) return false;
 
-        else
-            return false;
-    }
-    */
+    /*now we need to fetch the target object. This can be either a group or a
+     * field - need to take this into account
+     */
+    //first we try to fetch a group
+    if(get_group(t_group,target_path,object)) return true;
+
+    
+
+    return true;
 }
 
-/*!
-\ingroup common_devel
-\brief get object by class
-
-Return an object by class. Clealy in this case the object must be a group. 
-However, it is not treated as such.
-*/
+//-----------------------------------------------------------------------------
 template<typename PTYPE,typename OTYPE>
-bool get_object_by_class(const PTYPE &p,const string &oclass,OTYPE &o)
+bool find_object_by_name(const PTYPE &p,const string &name,OTYPE &o)
 {
     for(auto iter=p.begin();iter!=p.end();++iter)
     {
+        //check name
+        if(iter->name() == name) 
+        {
+            o = *iter;
+            return true;
+        }
     }
 
+    return false;
 }
+
+//------------------------------------------------------------------------------
+template<typename PTYPE,typename OTYPE>
+bool find_object_by_class(const PTYPE &p,const string &oclass,OTYPE &o)
+{
+
+    for(auto iter=p.begin();iter!=p.end();++iter)
+    {
+        if(is_class(*iter,oclass))
+        {
+            o = *iter;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+template<typename PTYPE,typename OTYPE>
+bool find_object_by_name_and_class(const PTYPE &p,const string &name,
+                                   const string &oclass,OTYPE &o)
+{
+    if(!find_object_by_name(p,name,o))
+        return false;
+
+    if(!is_class(o,oclass)) return false;
+
+    return true;
+}
+
 //-----------------------------------------------------------------------------
 /*!
 \ingroup common_devel
