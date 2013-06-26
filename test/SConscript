@@ -1,0 +1,11 @@
+from os import path
+import re
+Import("test_env")
+
+
+#need to use here prepend in order to avoid triggering the istallation process
+sources_list = ["pnitoolstest.cpp"]
+
+
+pnitools_test = test_env.Program("pnitoolstest",sources_list)
+test_env.Alias("test",pnitools_test)
