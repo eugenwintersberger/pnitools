@@ -30,6 +30,150 @@ using namespace pni::io::nx;
 
 /*!
 \ingroup common_devel
+\brief get the object class
+
+Returns the class of an object by returning the value of the NX_class attribute
+of an object. Currently this will only return a value if the object is a group
+type. However, due to the generallity of the code this could also be a field or
+any other type that can hold attributes.
+If the object has no attribute NX_class an empty string will be returned.
+\tparam OTYPE object type
+\param o reference to an instance of OTYPE
+\return value of NX_class attribute
+*/
+template<typename OTYPE> string get_class(const OTYPE &o)
+{
+    string value;
+    if(o.has_attr("NX_class"))
+        o.attr("NX_class").read(value);
+
+    return value;
+}
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief check object class
+
+Returns true if an object is of a particular class. 
+\tparam OTYPE object type
+\param o reference to instance of OTYPE
+\param type type string 
+\return true if object class and type are equal
+*/
+template<typename OTYPE> bool is_class(const OTYPE &o,const string &type)
+{
+    return get_class(o)==type;
+}
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief true if object is group
+
+Return true if an instance of an object is a group type.
+\tparam OTYPE object type
+\param o reference to an instance of OTYPE
+\return true if o is a group 
+*/
+template<typename OTYPE> bool is_group(const OTYPE &o)
+{
+    return o.object_type()==nxobject_type::NXGROUP;
+}
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief true if object is a field
+
+Return true if an instance of an object is a field object.
+\tparam OTYPE object type
+\param o reference to an instance of OTYPE
+\return true of o is a field
+*/
+template<typename OTYPE> bool is_field(const OTYPE &o)
+{
+    return o.object_type() == nxobject_type::NXFIELD;
+}
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief get unit of a field
+
+Returns the unit of a Nexus field. If the Nexus field has no unit attached to it
+an empty string is returned. 
+\tparam FTYPE field type
+\param f instance of FTYPE
+\return string with the unit of the field
+*/
+template<typename FTYPE>  string get_unit(const FTYPE &f)
+{
+    string buffer;
+    if(f.has_attr("units"))
+        f.attr("units").read(buffer);
+
+    return buffer;
+}
+
+//----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief split a nexus path
+
+Splits  a given Nexus path in to two parts at  a particular index s.
+\param p original path
+\param s index where to split 
+\param p1 first part of the path
+\param p2 second part of the path
+*/
+void split_path(const nxpath &p,size_t s,nxpath &p1,nxpath &n2);
+//----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief get object by name
+
+Return an object specified by a Nexus path. From the nature of a nexus file we
+can assume that every object in the path except the last one has to be a group
+as it must hold other objects 
+*/
+template<typename PTYPE, typename OTYPE>
+bool find_object(const PTYPE &p,const nxpath &path,OTYPE &object)
+{
+    auto stopiter=path.begin();
+    std::advance(stopiter,path.size()-1);
+
+    /*
+    for(auto iter = path.begin();iter!=stopiter;++iter)
+    {
+        if(!element.first.empty())
+
+        else if(!element.second.empty())
+
+        else
+            return false;
+    }
+    */
+}
+
+/*!
+\ingroup common_devel
+\brief get object by class
+
+Return an object by class. Clealy in this case the object must be a group. 
+However, it is not treated as such.
+*/
+template<typename PTYPE,typename OTYPE>
+bool get_object_by_class(const PTYPE &p,const string &oclass,OTYPE &o)
+{
+    for(auto iter=p.begin();iter!=p.end();++iter)
+    {
+    }
+
+}
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
 \brief search for group by class
 
 Search for a child group below p for a group with a particular class name
@@ -60,15 +204,10 @@ bool find_group_by_class(const PTYPE &p,const string &gclass,GTYPE &g)
     for(auto iter=p.begin();iter!=p.end();++iter)
     {
         //continue the loop if the object is not a group
-        if(iter->object_type() != nxobject_type::NXGROUP) continue;
-
-        //if the group object has no NX_class attribute just go ahead
-        if(!iter->has_attr("NX_class")) continue;
+        if(is_group(*iter)) continue;
 
         //here we can do the check
-        string buffer;
-        iter->attr("NX_class").read(buffer);
-        if(buffer == gclass) 
+        if(is_class(*iter,gclass)) 
         {
             g = *iter;
             return true;
@@ -107,11 +246,10 @@ if(!find_group_by_name(inst,"detector_channel_1",detector))
 template<typename PTYPE,typename GTYPE>
 bool find_group_by_name(const PTYPE &p,const string &gname,GTYPE &g)
 {
-    auto iter = p.begin();
     for(auto iter=p.begin();iter!=p.end();++iter)
     {
         //continue with the loop of the object is not a group
-        if(iter->object_type() != nxobject_type::NXGROUP) continue;
+        if(is_group(*iter)) continue;
 
         //check name
         if(iter->name() == gname) 
@@ -147,12 +285,7 @@ bool find_group_by_name_and_class(const PTYPE &p,const string &gname,
     if(!find_group_by_name(p,gname,g))
         return false;
 
-    if(g.has_attr("NX_class"))
-    {
-        string buffer;
-        g.attr("NX_class").read(buffer);
-        if(buffer == gclass) return true;
-    }
+    if(is_class(g,gclass)) return true;
 
     return false;
 }
@@ -249,6 +382,8 @@ void get_group(const PTYPE &p,const string &name, const string &gclass,
                 "Error retrieving group!");
     }
 }
+
+
 
 //----------------------------------------------------------------------------
 /*!
@@ -354,23 +489,4 @@ void create_field(const PTYPE &parent,const string &name,type_id_t tid,
                 "Unkown data type!");
 }
 
-//-----------------------------------------------------------------------------
-/*!
-\ingroup common_devel
-\brief get unit of a field
-
-Returns the unit of a Nexus field. If the Nexus field has no unit attached to it
-an empty string is returned. 
-\tparam FTYPE field type
-\param f instance of FTYPE
-\return string with the unit of the field
-*/
-template<typename FTYPE>  string get_unit(const FTYPE &f)
-{
-    string buffer;
-    if(f.has_attr("units"))
-        f.attr("units").read(buffer);
-
-    return buffer;
-}
                   
