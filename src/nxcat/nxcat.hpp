@@ -38,6 +38,7 @@
 
 #include "../common/column.hpp"
 #include "../common/table.hpp"
+#include "../common/array_utils.hpp"
 
 using namespace pni::core;
 using namespace pni::io::nx;
@@ -80,3 +81,48 @@ Read all data from a set of nxpath instances and store the result in a table.
 \return table instance
 */
 table_t  read_table(const sources_list &sources);
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup nxcat_devel
+\brief column from nexus object
+
+Create a column from a Nexus object (either a field or an attribute). As
+attributes do not provide a unit attribute one has to add the unit manually.
+\tparam NXOT nexus object type
+\param o instance of NXOT
+\param unit string with the physical unit
+\return instance of column_t
+*/
+template<typename NXOT> 
+column_t column_from_nexus_object(const NXOT &o,const string &unit)
+{
+    column_t column;
+    column.name(o.path());
+    column.unit(unit);
+    return column;
+}
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup nxcat_devel
+\brief create an array from a Nexus readable
+
+Create an instance of array from a Nexus readable object type. This type might
+be either a field or an attribute type. 
+\tparam NXOT Nexus readable type
+\param o reference to NXOT instance
+\return instance of array
+*/
+template<typename NXOT> array array_from_nexus_readable(const NXOT &o)
+{
+    auto file_shape = o.template shape<shape_t>();
+    shape_t array_shape{1};
+
+    if(o.size() != 1)
+    {
+        array_shape = shape_t(file_shape.size()-1);
+        std::copy(file_shape.begin()+1,file_shape.end(),array_shape.begin());
+    }
+    return create_array(o.type_id(),array_shape);
+}

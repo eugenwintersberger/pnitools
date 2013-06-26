@@ -22,7 +22,6 @@
 
 #include "nxcat.hpp"
 #include "../common/nexus_utils.hpp"
-#include "../common/array_utils.hpp"
 
 configuration create_configuration()
 {
@@ -38,8 +37,9 @@ configuration create_configuration()
     return config;
 }
 
+
 //-----------------------------------------------------------------------------
-column_t read_column(const nxpath &source_path)
+column_t read_column_from_field(const nxpath &source_path)
 {
     //open file in read only mode - the file must obviously exist
     h5::nxfile file = h5::nxfile::open_file(source_path.filename(),true);
@@ -48,22 +48,15 @@ column_t read_column(const nxpath &source_path)
     get_field(root,source_path,field);
     
     //prepear the column
-    column_t column;
-    column.name(field.path());
-    column.unit(get_unit(field));
+    column_t column = column_from_nexus_object(field,get_unit(field));
 
     //need to create an array from the data
-    auto field_shape = field.shape<shape_t>();
-    shape_t array_shape{1};
-    if(field_shape.size() != 1)
-    {
-        array_shape = shape_t(field_shape.size()-1);
-        std::copy(field_shape.begin()+1,field_shape.end(),array_shape.begin());
-    }
-    array data = create_array(field.type_id(),array_shape);
+    array data = array_from_nexus_readable(field);
 
     std::vector<slice> selection;
     selection.push_back(slice(0));
+    auto array_shape = data.shape<shape_t>();
+    auto field_shape = field.shape<shape_t>();
     for(auto d: array_shape)
         selection.push_back(slice(0,d));
 
@@ -83,7 +76,10 @@ table_t  read_table(const sources_list &sources)
     table_t t;
     for(auto source: sources)
     {
-        column_t c = read_column(source);
+        column_t c;
+        if(source.attribute().empty())
+            c = read_column_from_field(source);
+
         t.push_back(c);
     }
 
