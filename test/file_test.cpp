@@ -24,56 +24,41 @@
 #include <boost/current_function.hpp>
 #include<cppunit/extensions/HelperMacros.h>
 
-#include "array_utils_test.hpp"
+#include "file_test.hpp"
 
-#define CREATE_TEST(tid)\
-    a = create_array(tid,shape); \
-    CPPUNIT_ASSERT(a.type_id() == tid); \
-    check_shape();\
-    CPPUNIT_ASSERT(a.rank() == 3)
 
-CPPUNIT_TEST_SUITE_REGISTRATION(array_utils_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(file_test);
 
 //-----------------------------------------------------------------------------
-void array_utils_test::setUp()
+void file_test::setUp()
 {
-    shape = shape_t{1,3,4};
+    p1 = "./file_test.hpp";
+    p2 = ".";
+    p3 = "./nothing.txt";
 }
 
 //-----------------------------------------------------------------------------
-void array_utils_test::tearDown() { }
+void file_test::tearDown() { }
+
 
 //-----------------------------------------------------------------------------
-void array_utils_test::check_shape()
+void file_test::test_creation()
 {
-    auto ashape = a.shape<shape_t>();
-
-    auto siter = shape.begin();
-    auto aiter = ashape.begin();
-
-    for(; siter!=shape.end();++siter,++aiter)
-        CPPUNIT_ASSERT(*siter == *aiter);
-
+    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    file f;
+    CPPUNIT_ASSERT_NO_THROW(f = file(p1));
+    CPPUNIT_ASSERT_THROW(f = file(p3),file_error);;
+    CPPUNIT_ASSERT_THROW(f = file(p2),file_error);
 }
 
 //-----------------------------------------------------------------------------
-void array_utils_test::test_creation()
+void file_test::test_inquery()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
     
-    CREATE_TEST(type_id_t::UINT8);
-    CREATE_TEST(type_id_t::INT8);
-    CREATE_TEST(type_id_t::UINT16);
-    CREATE_TEST(type_id_t::INT16);
-    CREATE_TEST(type_id_t::UINT32);
-    CREATE_TEST(type_id_t::INT32);
-    CREATE_TEST(type_id_t::UINT64);
-    CREATE_TEST(type_id_t::INT64);
-
-    CREATE_TEST(type_id_t::FLOAT32);
-    CREATE_TEST(type_id_t::FLOAT64);
-    CREATE_TEST(type_id_t::FLOAT128);
-
-    CPPUNIT_ASSERT_THROW(create_array(type_id_t::COMPLEX32,shape),
-                         type_error);
+    file f(p1);
+    CPPUNIT_ASSERT(f.name() == "file_test.hpp");
+    CPPUNIT_ASSERT(f.extension() == ".hpp");
+    CPPUNIT_ASSERT(f.path() == "./file_test.hpp");
+    CPPUNIT_ASSERT(f.base() == ".");
 }

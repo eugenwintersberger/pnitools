@@ -27,7 +27,9 @@
 file::file(const string &path):
     _path(path)
 {
-    if(!fs::is_regular_file(_path))
+    if(!fs::is_regular_file(_path) || 
+       fs::is_directory(_path) ||
+       !fs::exists(_path))
     {
         throw file_error(EXCEPTION_RECORD,"File ["+path+"] is not a regular"
                         "file!");

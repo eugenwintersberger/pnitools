@@ -6,6 +6,7 @@ Import("test_env")
 #need to use here prepend in order to avoid triggering the istallation process
 sources_list = ["pnitoolstest.cpp"]
 sources_list.append('array_utils_test.cpp')
+sources_list.append('file_test.cpp')
 object_list = test_env.Object(sources_list)
 
 object_list.extend(SConscript("../src/common/SConscript"))

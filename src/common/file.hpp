@@ -50,7 +50,8 @@ class file
         \brief constructor
 
         Constructor taking a string representing the full path to the file.
-        An exception is thrown if path does not point to a regular file.
+        An exception is thrown if path does not point to a regular file or does
+        not exist.
         \throws file_error if path not pointing to a file
         \param path path to the file
         */
