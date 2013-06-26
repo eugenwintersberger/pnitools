@@ -42,6 +42,8 @@ array create_array(type_id_t tid,const shape_t &shape)
         return array(darray<int32,dbuffer<int32>>(shape));
     else if(tid == type_id_t::UINT64)
         return array(darray<uint64,dbuffer<uint64>>(shape));
+    else if(tid == type_id_t::INT64)
+        return array(darray<int64,dbuffer<int64>>(shape));
     else if(tid == type_id_t::FLOAT32)
         return array(darray<float32,dbuffer<float32>>(shape));
     else if(tid == type_id_t::FLOAT64)
