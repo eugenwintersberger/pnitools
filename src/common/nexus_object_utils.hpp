@@ -25,6 +25,9 @@
 #include <pni/io/nx/nx.hpp>
 #include <pni/io/nx/nxpath.hpp>
 
+using namespace pni::core;
+using namespace pni::io::nx;
+
 /*!
 \ingroup common_devel
 \brief get the object class

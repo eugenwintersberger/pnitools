@@ -35,18 +35,6 @@ using namespace pni::io::nx;
 //----------------------------------------------------------------------------
 /*!
 \ingroup common_devel
-\brief split a nexus path
-
-Splits  a given Nexus path in to two parts at  a particular index s.
-\param p original path
-\param s index where to split 
-\param p1 first part of the path
-\param p2 second part of the path
-*/
-void split_path(const nxpath &p,size_t s,nxpath &p1,nxpath &n2);
-//----------------------------------------------------------------------------
-/*!
-\ingroup common_devel
 \brief get object by name
 
 Return an object specified by a Nexus path. From the nature of a nexus file we
