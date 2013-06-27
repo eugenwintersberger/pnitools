@@ -34,7 +34,9 @@ using namespace pni::io::nx;
 \brief split a nexus path
 
 Splits  a given Nexus path in to two parts at  a particular index s of the group
-part of the path.
+part of the path.If the split index is larger or equal the size of the input
+path an exception will be thrown.
+
 The best is to have a look at the following example
 \code{.cpp}
 nxpath path = path_from_string("file.nx:///entry:NXentry/instrument:NXinstrument/data");
@@ -49,12 +51,76 @@ std::cout<<p2<<std::endl;
 // instrument:NXinstrument/data
 
 \endcode
+\throws pni::core::index_error if s exceeds input path size
 \param p original path
 \param s index where to split 
 \param p1 first part of the path
 \param p2 second part of the path
 */
 void split_path(const nxpath &p,size_t s,nxpath &p1,nxpath &n2);
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief split path at last element
+
+Split the path at the last element. This is a particularly usefull function for
+traversing through a path. The only portion of a path which mast not be a group
+is the last element. 
+\throws pni::core::index_error 
+\param p reference to the original path
+\param gp path with groups
+\param op path with final object
+*/
+void split_last(const nxpath &p,nxpath &gp,nxpath &op);
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief convert path to string 
+
+Convert a Nexus path to a string. 
+\param p reference to nexus path
+\return string representation of p
+*/
+string string_from_path(const nxpath &p);
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief checks name part of a path element
+
+This function returns true when the path element passed to it has a name. 
+\param e reference to the element
+\return true if e has a name, false otherwise
+*/
+bool has_name(const nxpath::group_element_t &e);
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief checks class part of a path element
+
+This function returns true when the path element passed to it has a non-empty
+class string. 
+\param e reference to the element
+\return true if e has a class, false otherwise
+*/
+bool has_class(const nxpath::group_element_t &e);
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief check element completness
+
+A path element is considered as complete if both, name and class field are not
+empty. It follows from this that an element refering to a field must never be
+complete as it has no attribute NX_class. Thus, this function can be used as a
+first check if a path element referes to a field or to a group. 
+\param e reference to the path element
+\return true if element is complete, false otherwise
+*/
+bool is_complete(const nxpath::group_element_t &e);
 
 //-----------------------------------------------------------------------------
 /*!

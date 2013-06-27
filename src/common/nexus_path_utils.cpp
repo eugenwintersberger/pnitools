@@ -26,7 +26,10 @@
 //-----------------------------------------------------------------------------
 void split_path(const nxpath &p,size_t s,nxpath &p1,nxpath &p2)
 {
-    
+
+    if(s>=p.size())
+        throw index_error(EXCEPTION_RECORD,
+                "Split index exceeds size of input path!");
     auto split_iter = p.begin();
     std::advance(split_iter,s);
 
@@ -39,6 +42,53 @@ void split_path(const nxpath &p,size_t s,nxpath &p1,nxpath &p2)
 }
 
 //-----------------------------------------------------------------------------
+void split_last(const nxpath &p,nxpath &gpath,nxpath &opath)
+{
+    split_path(p,p.size()-1,gpath,opath);
+}
+
+//-----------------------------------------------------------------------------
+string string_from_path(const nxpath &p)
+{
+    string ostr;
+    if(!p.filename().empty())
+        ostr += p.filename()+":///";
+
+    //dump groups
+    auto slash_iter = p.begin();
+    std::advance(slash_iter,p.size()-1);
+    for(auto iter = p.begin();iter!=p.end();++iter)
+    {
+        if(!iter->first.empty()) ostr += iter->first;
+        if(!iter->second.empty()) ostr += ":"+iter->second;
+        if(iter!=slash_iter) ostr += "/";
+    }
+
+    if(!p.attribute().empty())
+        ostr += "@"+p.attribute();
+
+    return ostr;
+}
+
+//-----------------------------------------------------------------------------
+bool has_name(const nxpath::group_element_t &e)
+{
+    return !e.first.empty();
+}
+
+//-----------------------------------------------------------------------------
+bool has_class(const nxpath::group_element_t &e)
+{
+    return !e.second.empty();
+}
+
+//-----------------------------------------------------------------------------
+bool is_complete(const nxpath::group_element_t &e)
+{
+    return has_name(e)&&has_class(e);
+}
+
+//-----------------------------------------------------------------------------
 std::ostream &operator<<(std::ostream &o,const nxpath &p)
 {
     /*
@@ -46,23 +96,7 @@ std::ostream &operator<<(std::ostream &o,const nxpath &p)
        absolute. Thus the leading / for the group section can be added without
        further concern.
     */
-    if(!p.filename().empty())
-        o<<p.filename()<<":///";
-
-    //dump groups
-    auto slash_iter = p.begin();
-    std::advance(slash_iter,p.size()-1);
-    for(auto iter = p.begin();iter!=p.end();++iter)
-    {
-        if(!iter->first.empty()) o<<iter->first;
-        if(!iter->second.empty()) o<<":"<<iter->second;
-        if(iter!=slash_iter) o<<"/";
-    }
-
-    if(!p.attribute().empty())
-        o<<"@"<<p.attribute();
-
-    return o;
+    return o<<string_from_path(p);
 }
 
 //-----------------------------------------------------------------------------

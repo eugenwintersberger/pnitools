@@ -38,6 +38,7 @@ class nexus_path_utils_test : public CppUnit::TestFixture
 {
         CPPUNIT_TEST_SUITE(nexus_path_utils_test);
         CPPUNIT_TEST(test_path_input);
+        CPPUNIT_TEST(test_path_strrep);
         CPPUNIT_TEST(test_path_output);
         CPPUNIT_TEST(test_path_comparison);
         CPPUNIT_TEST(test_path_split);
@@ -51,6 +52,7 @@ class nexus_path_utils_test : public CppUnit::TestFixture
         void setUp();
         void tearDown();
 
+        void test_path_strrep();
         void test_path_input();
         void test_path_output();
         void test_path_comparison();

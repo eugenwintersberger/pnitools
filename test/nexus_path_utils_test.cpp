@@ -86,6 +86,23 @@ void nexus_path_utils_test::test_path_output()
 }
 
 //-----------------------------------------------------------------------------
+void nexus_path_utils_test::test_path_strrep()
+{
+    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+
+    nxpath path1 = path_from_string(p1);
+    nxpath path2 = path_from_string(p2);
+    nxpath path3 = path_from_string(p3);
+
+    std::cout<<p1<<std::endl;
+    std::cout<<string_from_path(path1)<<std::endl;
+    CPPUNIT_ASSERT(string_from_path(path1) == p1);
+    CPPUNIT_ASSERT(string_from_path(path2) == p2);
+    CPPUNIT_ASSERT(string_from_path(path3) == p3);
+
+}
+
+//-----------------------------------------------------------------------------
 void nexus_path_utils_test::test_path_comparison()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
@@ -112,6 +129,10 @@ void nexus_path_utils_test::test_path_split()
 
     std::cout<<p1_1<<std::endl;
     std::cout<<p1_2<<std::endl;
+
+    nxpath p;
+    CPPUNIT_ASSERT_THROW(split_last(p,p1_1,p1_2),index_error);
+    CPPUNIT_ASSERT_THROW(split_path(path1,10,p1_1,p1_2),index_error);
 
 
 }
