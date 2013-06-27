@@ -53,5 +53,6 @@ class nexus_object_utils_test : public CppUnit::TestFixture
         void test_object_class();
         void test_object_unit();
 
+        void test_object_bool();
 };
 

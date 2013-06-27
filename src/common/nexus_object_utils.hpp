@@ -146,3 +146,18 @@ template<typename OTYPE> void set_unit(const OTYPE &o,const string &u)
 {
     o.template attr<string>("units",true).write(u);
 }
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup common_devel
+\brief return status
+
+Return true if a Nexus object is valid. 
+\tparam OTPYE object type
+\param o reference to the object
+\return true if the object is valid
+*/
+template<typename OTYPE> bool is_valid(const OTYPE &o)
+{
+    return o.is_valid();
+}

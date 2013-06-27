@@ -84,3 +84,12 @@ void nexus_object_utils_test::test_object_unit()
     CPPUNIT_ASSERT(get_unit(file["/data"])=="mm");
 
 }
+
+void nexus_object_utils_test::test_object_bool()
+{
+    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    
+    h5::nxgroup g;
+    CPPUNIT_ASSERT(!is_valid(g));
+    CPPUNIT_ASSERT(is_valid(file["/data"]));
+}
