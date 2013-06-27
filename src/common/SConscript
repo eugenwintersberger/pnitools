@@ -2,7 +2,7 @@ Import("cli_env")
 
 common_sources = ["file.cpp","config_utils.cpp","array_utils.cpp"]
 common_sources.extend(["string_utils.cpp","exceptions.cpp"])
-common_sources.extend(["field_io.cpp","nexus_utils.cpp"])
+common_sources.extend(["field_io.cpp","nexus_path_utils.cpp"])
 common_objects = cli_env.Object(common_sources)
 
 Return("common_objects")

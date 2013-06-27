@@ -16,23 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
  *************************************************************************
- * Created on: Jun 26, 2013
+ * Created on: Jun 27, 2013
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
+#pragma once
 
-#include "nexus_utils.hpp"
+#include <pni/core/types.hpp>
+#include <pni/io/nx/nx.hpp>
+#include <pni/io/nx/nxpath.hpp>
 
+using namespace pni::core;
+using namespace pni::io::nx;
 
-void split_path(const nxpath &p,size_t s,nxpath &p1,nxpath &p2)
-{
-    
-    auto split_iter = p.begin();
-    std::advance(split_iter,s);
+/*!
+\ingroup common_devel
+\brief split a nexus path
 
-    nxpath::group_path_t gp1(s),gp2(p.size()-s);
-    std::copy(p.begin(),split_iter,gp1.begin());
-    std::copy(split_iter,p.end(),gp2.begin());
-
-    p1 = nxpath(p.filename(),gp1,"");
-    p2 = nxpath("",gp2,p2.attribute());
-}
+Splits  a given Nexus path in to two parts at  a particular index s.
+\param p original path
+\param s index where to split 
+\param p1 first part of the path
+\param p2 second part of the path
+*/
+void split_path(const nxpath &p,size_t s,nxpath &p1,nxpath &n2);
