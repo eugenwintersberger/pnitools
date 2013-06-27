@@ -37,7 +37,8 @@ using namespace pni::io::nx;
 
 Search for a child group below p for a group with a particular class name
 and return the group if found. The function returs false if not successful
-and true otherwise. 
+and true otherwise. This is the case when the group has not been found or
+another object which is not a group has been found under this name.
 
 \code
 nxgroup g = file["/"];
@@ -150,34 +151,6 @@ bool find_group_by_name_and_class(const PTYPE &p,const string &gname,
     return false;
 }
 
-//-------------------------------------------------------------------------
-/*!
-\brief common_devel
-\brief create a group
-
-Creates a group of type GTYPE below a group of type GTYPE. 
-\code{.cpp}
-h5::nxfile file = h5::nxfile::open_file("test.nx");
-h5::nxgroup entry;
-create_group(file,"entry","NXentry",entry);
-\endcode
-
-\throws pni::io::nx::nxgroup_error 
-\throws pni::io::nx::nxattribute_error
-\tparam PTYPE type of parent group
-\tparam GTYPE type of target group
-\param p parent groupt
-\param gname name of the new group
-\param gclass class of the new group
-\param g target group
-*/
-template<typename PTYPE,typename GTYPE>
-void create_group(const PTYPE &p,const string &gname,const string &gclass,
-                  GTYPE &g)
-{
-    g=p.create_group(gname,gclass);
-}
-
 //-----------------------------------------------------------------------------
 /*!
 \ingroup common_devel
@@ -200,24 +173,6 @@ GTYPE create_group(const PTYPE &p,const string &gname,const string &gclass)
     return p.create_group(gname,gclass);
 }
 
-//-----------------------------------------------------------------------------
-/*!
-\ingroup common_devel
-\brief create a group
-
-Create a new group where only the name is given by the user.
-\throws pni::io::nx::nxgroup_error
-\tparam PTYPE parent type
-\tparam GTYPE group type
-\param p instance of PTYPE 
-\param gname  name of the new group
-\param reference to the new group
-*/
-template<typename PTYPE,typename GTYPE>
-void create_group(const PTYPE &p,const string &gname,GTYPE &g)
-{
-    g=p.create_group(gname);
-}
 
 //-----------------------------------------------------------------------------
 /*!
@@ -270,7 +225,7 @@ void get_group(const PTYPE &p,const string &name, const string &gclass,
             if(!find_group_by_name_and_class(p,name,gclass,g))
             {
                 //if group not found - either create it or throw an exception
-                if(create) create_group(p,name,gclass,g);
+                if(create) g = create_group(p,name,gclass);
                 else
                     throw nxgroup_error(EXCEPTION_RECORD,
                             "("+name+":"+gclass+"does not exist!");
@@ -281,7 +236,7 @@ void get_group(const PTYPE &p,const string &name, const string &gclass,
             if(!find_group_by_name(p,name,g))
             {
                 //if group not found - either create it or throw an exception
-                if(create) create_group(p,name,g);
+                if(create) g = create_group(p,name);
                 else
                     throw nxgroup_error(EXCEPTION_RECORD,
                             "("+name+":"+gclass+"does not exist!");

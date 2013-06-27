@@ -77,6 +77,23 @@ void nexus_group_utils_test::test_find_by_all()
 }
 
 //-----------------------------------------------------------------------------
+void nexus_group_utils_test::test_create()
+{
+    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    
+    h5::nxgroup tg;
+
+    CPPUNIT_ASSERT_NO_THROW(tg = create_group(rootg,"entry2","NXentry"));
+    CPPUNIT_ASSERT(is_group(tg));
+    CPPUNIT_ASSERT_THROW(create_group(rootg,"entry2"),nxgroup_error);
+    CPPUNIT_ASSERT_NO_THROW(create_group(rootg,"entry3"));
+    CPPUNIT_ASSERT(is_valid(tg = create_group(rootg,"entry4","NXentry")));
+    CPPUNIT_ASSERT(is_valid(tg));
+
+    
+}
+
+//-----------------------------------------------------------------------------
 void nexus_group_utils_test::test_get_no_create()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;

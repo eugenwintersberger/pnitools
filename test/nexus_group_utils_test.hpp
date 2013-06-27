@@ -42,6 +42,7 @@ class nexus_group_utils_test : public CppUnit::TestFixture
         CPPUNIT_TEST(test_find_by_all);
         CPPUNIT_TEST(test_get_no_create);
         CPPUNIT_TEST(test_get_create);
+        CPPUNIT_TEST(test_create);
         CPPUNIT_TEST_SUITE_END();
 
         h5::nxfile file;
@@ -57,6 +58,7 @@ class nexus_group_utils_test : public CppUnit::TestFixture
         void test_find_by_all();
         void test_get_no_create();
         void test_get_create();
+        void test_create();
 
 };
 
