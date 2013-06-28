@@ -29,6 +29,7 @@
 #include "nexus_path_utils.hpp"
 #include "nexus_group_utils.hpp"
 #include "nexus_field_utils.hpp"
+#include "nxvariant_traits.hpp"
 
 using namespace pni::core;
 using namespace pni::io::nx;
@@ -43,17 +44,17 @@ Return an object specified by a Nexus path. From the nature of a nexus file we
 can assume that every object in the path except the last one has to be a group
 as it must hold other objects 
 */
-template<typename PTYPE, typename OTYPE>
-bool find_object(const PTYPE &p,const nxpath &path,OTYPE &object)
+template<typename PTYPE> typename nxvariant_traits<PTYPE>::object_types 
+find_object(const PTYPE &p,const nxpath &path)
 {
     nxpath group_path;
     nxpath target_path;
 
-    split_path(path,path.size()-1,group_path,target_path);
+    split_last(path,group_path,target_path);
 
     //try to fetch the groups 
     PTYPE t_group;
-    if(!get_group(p,group_path,t_group,false)) return false;
+    if(!is_valid(t_group = get_group(p,group_pathfalse))) return PTYPE();
 
     /*now we need to fetch the target object. This can be either a group or a
      * field - need to take this into account

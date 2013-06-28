@@ -92,7 +92,7 @@ void nexus_group_utils_test::test_create()
 
     //here we test the case that we use a parent class that differs in type from
     //the group type 
-    CPPUNIT_ASSERT(is_valid(tg = create_group<h5::nxgroup>(file,"log","NXlog")));
+    CPPUNIT_ASSERT(is_valid(tg = create_group(rootg,"log","NXlog")));
     CPPUNIT_ASSERT(is_class(tg,"NXlog"));
     CPPUNIT_ASSERT(is_group(tg));
     
@@ -102,11 +102,43 @@ void nexus_group_utils_test::test_create()
 void nexus_group_utils_test::test_get_no_create()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+
+    h5::nxgroup g;
+    g=create_group(rootg,"entry","NXentry");
+    g=create_group(g,"instrument","NXinstrument");
+    g=create_group(g,"detector","NXdetector");
+
+    CPPUNIT_ASSERT_THROW(get_group(rootg,"entry10","NXentry",false),nxgroup_error);
+    CPPUNIT_ASSERT(is_valid(g=get_group(rootg,"entry","NXentry",false)));
+
+    nxpath p = path_from_string("../:NXentry/:NXinstrument/:NXdetector");
+    CPPUNIT_ASSERT(is_valid(get_group(g,p,false)));
+    CPPUNIT_ASSERT(is_valid(g =get_group(g,path_from_string("././:NXinstrument/:NXdetector"),
+                    false)));
+    CPPUNIT_ASSERT(is_class(g,"NXdetector"));
 }
 
 //------------------------------------------------------------------------------
 void nexus_group_utils_test::test_get_create()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+
+    h5::nxgroup g;
+
+    CPPUNIT_ASSERT(is_valid(g=get_group(rootg,"entry","NXentry")));
+    CPPUNIT_ASSERT(is_valid(g=get_group(rootg,
+                    path_from_string("./entry2:NXentry/instrument:NXinstrument/"))));
+    CPPUNIT_ASSERT(is_valid(g=get_group(rootg,
+                    path_from_string("./entry2/:NXinstrument/log"))));
+    CPPUNIT_ASSERT(is_valid(g=get_group(rootg,
+                    path_from_string("./entry2/:NXinstrument/detector:NXdetector"))));
+
+    //should throw an error as the group does not exist and cannot be created
+    //due to a missing name
+    CPPUNIT_ASSERT_THROW(get_group(rootg,
+                path_from_string("./entry2/:NXsource/")),nxgroup_error);
+    
+    CPPUNIT_ASSERT_THROW(get_group(rootg,
+                path_from_string("./entry2/instrument/:NXsource/data")),nxgroup_error);
 
 }
