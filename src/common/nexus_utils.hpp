@@ -54,13 +54,13 @@ find_object(const PTYPE &p,const nxpath &path)
 
     //try to fetch the groups 
     PTYPE t_group;
-    if(!is_valid(t_group = get_group(p,group_pathfalse))) return PTYPE();
+    if(!is_valid(t_group = get_group(p,group_path,false))) return PTYPE();
 
     /*now we need to fetch the target object. This can be either a group or a
      * field - need to take this into account
      */
     //first we try to fetch a group
-    if(get_group(t_group,target_path,object)) return true;
+    //if(get_group(t_group,target_path,object)) return true;
 
     return true;
 }
