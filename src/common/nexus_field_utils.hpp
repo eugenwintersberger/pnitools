@@ -50,7 +50,7 @@ void get_field(const GTYPE &p,const nxpath &path,FTYPE &f)
     split_last(path,group_path,field_path);
 
     GTYPE parent; 
-    get_group(p,group_path,parent,false);
+    parent = get_group(p,group_path,false);
 
     f = parent[field_path.begin()->first];
 

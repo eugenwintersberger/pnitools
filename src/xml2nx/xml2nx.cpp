@@ -64,7 +64,7 @@ int main(int argc,char **argv)
     
         //get the group where to append XML data
         h5::nxgroup target_group = file["/"];
-        get_group(target_group,path,target_group,false);
+        target_group = get_group(target_group,path,false);
        
         //create the objects below the target group
         create_objects(target_group,xmltree);

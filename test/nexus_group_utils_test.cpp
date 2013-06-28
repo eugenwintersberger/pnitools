@@ -52,8 +52,8 @@ void nexus_group_utils_test::test_find_by_name()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
 
-    CPPUNIT_ASSERT(find_group_by_name(rootg,"group",g));
-    CPPUNIT_ASSERT(!find_group_by_name(rootg,"bla",g));
+    CPPUNIT_ASSERT(is_valid(find_group_by_name(rootg,"group")));
+    CPPUNIT_ASSERT(!is_valid(find_group_by_name(rootg,"bla")));
 }
 
 //-----------------------------------------------------------------------------
@@ -61,8 +61,8 @@ void nexus_group_utils_test::test_find_by_class()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
    
-    CPPUNIT_ASSERT(find_group_by_class(rootg,"NXentry",g));
-    CPPUNIT_ASSERT(!find_group_by_class(rootg,"NXinstrument",g));
+    CPPUNIT_ASSERT(is_valid(find_group_by_class(rootg,"NXentry")));
+    CPPUNIT_ASSERT(!is_valid(find_group_by_class(rootg,"NXinstrument")));
 }
 
 //-----------------------------------------------------------------------------
@@ -70,9 +70,9 @@ void nexus_group_utils_test::test_find_by_all()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
    
-    CPPUNIT_ASSERT(find_group_by_name_and_class(rootg,"group","NXentry",g));
-    CPPUNIT_ASSERT(!find_group_by_name_and_class(rootg,"hallo","NXentry",g));
-    CPPUNIT_ASSERT(!find_group_by_name_and_class(rootg,"group","NXinstrument",g));
+    CPPUNIT_ASSERT(is_valid(find_group_by_name_and_class(rootg,"group","NXentry")));
+    CPPUNIT_ASSERT(!is_valid(find_group_by_name_and_class(rootg,"hallo","NXentry")));
+    CPPUNIT_ASSERT(!is_valid(find_group_by_name_and_class(rootg,"group","NXinstrument")));
 
 }
 
@@ -90,6 +90,11 @@ void nexus_group_utils_test::test_create()
     CPPUNIT_ASSERT(is_valid(tg = create_group(rootg,"entry4","NXentry")));
     CPPUNIT_ASSERT(is_valid(tg));
 
+    //here we test the case that we use a parent class that differs in type from
+    //the group type 
+    CPPUNIT_ASSERT(is_valid(tg = create_group<h5::nxgroup>(file,"log","NXlog")));
+    CPPUNIT_ASSERT(is_class(tg,"NXlog"));
+    CPPUNIT_ASSERT(is_group(tg));
     
 }
 

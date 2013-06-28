@@ -167,7 +167,7 @@ h5::nxfield get_field(const h5::nxfile &ofile,const pni::io::image_info &info,
             }
         }
         else
-            get_group(group,iter->first,iter->second,group);
+            group = get_group(group,iter->first,iter->second);
 
         //increment iterator
         ++iter;

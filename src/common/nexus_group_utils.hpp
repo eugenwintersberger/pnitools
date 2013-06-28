@@ -36,45 +36,42 @@ using namespace pni::io::nx;
 \brief search for group by class
 
 Search for a child group below p for a group with a particular class name
-and return the group if found. The function returs false if not successful
-and true otherwise. This is the case when the group has not been found or
-another object which is not a group has been found under this name.
+and return the group if found. If the group is not found an invalid group is
+returned. Using the is_valid() function a simple check can be made if the search
+was successful. 
 
+A typicall application would look like this
 \code
 nxgroup g = file["/"];
 nxgroup e;
 
-if(!find_group_by_class(g,"NXentry",e))
+if(!is_valid(e = find_group_by_class(g,"NXentry")))
 {
     //no entry found - do something here.
 }
 
 \endcode
 
-\tparam PTYPE parent type 
 \tparam GTYPE group type
 \param p parent group whose childs to search
 \param gclass name of the class
-\param g resulting group
-\return true if group has been found, false otherwise
+\return an instance of GTYPE
+\sa find_group_by_name,find_group_by_name_and_class
 */
-template<typename PTYPE, typename GTYPE> 
-bool find_group_by_class(const PTYPE &p,const string &gclass,GTYPE &g)
+template<typename GTYPE> 
+GTYPE find_group_by_class(const GTYPE &p,const string &gclass)
 {
     for(auto iter=p.begin();iter!=p.end();++iter)
     {
-        //continue the loop if the object is not a group
+        //check if the current object is a group and if not continue with the
+        //next child
         if(!is_group(*iter)) continue;
 
         //here we can do the check
-        if(is_class(*iter,gclass)) 
-        {
-            g = *iter;
-            return true;
-        }
+        if(is_class(*iter,gclass)) return GTYPE(*iter);
     }
 
-    return false;
+    return GTYPE();
 }
 
 
@@ -83,28 +80,27 @@ bool find_group_by_class(const PTYPE &p,const string &gclass,GTYPE &g)
 \ingroup common_devel
 \brief search for group names
 
-Search for a child group with a particular name. The function returns true
-if the search was successful, false otherwise. 
+Search for a child group with a particular name. The function returns a valid
+group object if the requested group has been found, an invalid object otherwise.
 A typical application would look like this:
 \code
 nxgroup inst = file["/entry/instrument"];
-nxgruop detector;
-if(!find_group_by_name(inst,"detector_channel_1",detector))
+nxgroup detector;
+if(!is_valid(detector=find_group_by_name(inst,"detector_channel_1")))
 {
     std::cerr<<"Cannot find detector!"<<std::endl;
     return -1;
 }
 \endcode
 
-\tparam PTYPE parent group type
 \tparam GTYPE target group type
 \param p parent group 
 \param gname name of the group to look for
-\param g target group
-\return true if group has been found, false otherwise
+\return instance of GTYPE
+\sa find_group_by_class,find_group_by_name_and_class
 */
-template<typename PTYPE,typename GTYPE>
-bool find_group_by_name(const PTYPE &p,const string &gname,GTYPE &g)
+template<typename GTYPE>
+GTYPE find_group_by_name(const GTYPE &p,const string &gname)
 {
     for(auto iter=p.begin();iter!=p.end();++iter)
     {
@@ -112,14 +108,10 @@ bool find_group_by_name(const PTYPE &p,const string &gname,GTYPE &g)
         if(!is_group(*iter)) continue;
 
         //check name
-        if(iter->name() == gname) 
-        {
-            g = *iter;
-            return true;
-        }
+        if(iter->name() == gname) return GTYPE(*iter);
     }
 
-    return false;
+    return GTYPE();
 }
 
 //-------------------------------------------------------------------------
@@ -128,27 +120,37 @@ bool find_group_by_name(const PTYPE &p,const string &gname,GTYPE &g)
 \brief find group by class and name
 
 Find a child group with a particular name and class. If the search succeeds 
-the function returns true, false otherwise. 
+a valid group object is returned, an invalid object otherwise.
+The function can be used as find_group_by_name or find_group_by_class
+\code{.cpp}
+nxgroup root = file["/"];
+nxgroup entry;
 
-\tparam PTYPE parent type
+if(!is_valid(entry = find_group_by_name_and_class(root,"entry","NXentry")))
+{
+    std::cerr<<"Cannot find entry group of the Nexus file!"<<std::endl;
+    return -1;
+}
+\endcode
+
 \tparam GTYPE target group type
 \param p parent instance
 \param gname group name
 \param gclass class name
-\param g target group
 \return true if found, false otherwise
+\sa find_group_by_name,find_group_by_class
 */
-template<typename PTYPE,typename GTYPE>
-bool find_group_by_name_and_class(const PTYPE &p,const string &gname,
-                                  const string &gclass,GTYPE &g)
+template<typename GTYPE>
+GTYPE find_group_by_name_and_class(const GTYPE &p,const string &gname,
+                                  const string &gclass)
 {
+    GTYPE g;
     //ok - if already the name is not correct we do not need to check the class
-    if(!find_group_by_name(p,gname,g))
-        return false;
+    if(!is_valid(g=find_group_by_name(p,gname))) return GTYPE();
 
-    if(is_class(g,gclass)) return true;
+    if(is_class(g,gclass)) return g;
 
-    return false;
+    return GTYPE();
 }
 
 //-----------------------------------------------------------------------------
@@ -156,19 +158,37 @@ bool find_group_by_name_and_class(const PTYPE &p,const string &gname,
 \ingroup common_devel
 \brief create a group
 
-Creates a group below a parent and returns it to the callee. This flavor of
-group creation requires that the parent is already a group type. 
+Creates a group below a parent and returns it to the callee.  
+
+\code{.cpp}
+nxgroup root = file["/"];
+nxgroup entry;
+
+try
+{
+    entry = create_group(root,"entry","NXentry");
+}
+catch(nxgroup_error &error)
+{
+    ...............
+}
+catch(nxattribute_error &error)
+{
+    ...............
+}
+\endcode
+
 \throws pni::io::nx::nxgroup_error
 \throws pni::io::nx::nxattribute_error
-\tparam PTYPE parent and group type
-\tparam GTYPE group type, by default the same as PTYPE
-\param p instance of PTYPE as parent
+\tparam GTYPE group type
+\param p instance of GTYPE 
 \param gname name of the new group
 \param gclass name of the class the group belongs to
-\return instance of PTYPE as the new group
+\return instance of GTYPE
+\sa create_group(p,gname)
 */
-template<typename PTYPE,typename GTYPE = PTYPE>
-GTYPE create_group(const PTYPE &p,const string &gname,const string &gclass)
+template<typename GTYPE>
+GTYPE create_group(const GTYPE &p,const string &gname,const string &gclass)
 {
     return p.create_group(gname,gclass);
 }
@@ -179,16 +199,38 @@ GTYPE create_group(const PTYPE &p,const string &gname,const string &gclass)
 \ingroup common_devel
 \brief create a group
 
-Create a group and return it to the callee. 
+Create a group and return it to the callee. In this case only the name of the
+group is required. This function should generally not be used as each Nexus
+group should belong to a particular class. However in some rare cases this might
+be not the case. 
+
+\code{.cpp}
+nxgroup root = file["/"];
+nxgroup log;
+
+try
+{
+    entry = create_group(root,"log");
+}
+catch(nxgroup_error &error)
+{
+    ...................
+}
+catch(nxattribute_error &error)
+{
+    ...................
+}
+\endcode
+
+
 \throws pni::io::nx::nxgroup_error
-\tparam PTYPE parent type
-\tparam GTYPE group type, by default the same as PTYPE
+\tparam GTYPE group type
 \param p reference to parent group
 \param gname name of the group
 \return instance of GTYPE
 */
-template<typename PTYPE,typename GTYPE=PTYPE>
-GTYPE create_group(const PTYPE &p,const string &gname)
+template<typename GTYPE>
+GTYPE create_group(const GTYPE &p,const string &gname)
 {
     return p.create_group(gname);
 }
@@ -204,25 +246,26 @@ at least its name is given and the create flag is set to true. If the groups
 name is an empty string one can still search for the group by its Nexus class.
 However, if the function cannot find a group of appropriate class it throws an
 exception.
-\thows group_error in case of errors
+\thows nxgroup_error in case of errors
 \tparam PTYPE parent type
 \tparam GTYPE group type
 \param p parent group
 \param name name of the searched group
 \param gclass nexus class of the searched group
-\param g reference to the group
 \param create true of the group should be created 
+\return instance of GTYPE 
 */
-template<typename PTYPE,typename GTYPE>
-void get_group(const PTYPE &p,const string &name, const string &gclass,
-               GTYPE &g,bool create=true)
+template<typename GTYPE>
+GTYPE get_group(const GTYPE &p,const string &name, const string &gclass,
+                bool create=true)
 {
+    GTYPE g;
     if(!name.empty())
     {
         //groups can only be created if we at least have a name
         if(!gclass.empty())
         {
-            if(!find_group_by_name_and_class(p,name,gclass,g))
+            if(!is_valid(g = find_group_by_name_and_class(p,name,gclass)))
             {
                 //if group not found - either create it or throw an exception
                 if(create) g = create_group(p,name,gclass);
@@ -233,7 +276,7 @@ void get_group(const PTYPE &p,const string &name, const string &gclass,
         }
         else
         {
-            if(!find_group_by_name(p,name,g))
+            if(!is_valid(g = find_group_by_name(p,name)))
             {
                 //if group not found - either create it or throw an exception
                 if(create) g = create_group(p,name);
@@ -245,7 +288,7 @@ void get_group(const PTYPE &p,const string &name, const string &gclass,
     }
     else if(!gclass.empty())
     {
-        if(!find_group_by_class(p,gclass,g))
+        if(!is_valid(g = find_group_by_class(p,gclass)))
             throw nxgroup_error(EXCEPTION_RECORD,
                 "::group_path_tcannot find group of class "+gclass+"!");
     }
@@ -254,55 +297,29 @@ void get_group(const PTYPE &p,const string &name, const string &gclass,
         throw nxgroup_error(EXCEPTION_RECORD,
                 "Error retrieving group!");
     }
+
+    return g;
 }
 
 
 
-//----------------------------------------------------------------------------
-/*!
-\ingroup common_devel
-\brief get a group
-
-This function  is an extension of the get_group. It walks through a Nexus path
-and returns the last group of the path. Non-existing groups are automatically
-created if the create flag is set to true. 
-\throws nxgroup_error in case of errors
-\tparam GTYPE group type
-\param p parent group
-\param path Nexus path object
-\param g resulting group
-\param create true if missing elements should be created
-*/
-template<typename GTYPE>
-void get_group(const GTYPE &p,const nxpath &path,GTYPE &g,bool create=true)
-{
-    g = p;
-    for(auto element: path)
-    {
-        if(element.first == ".") continue;
-        if(element.first == "..") 
-        {
-            g = g.parent();
-            continue;
-        }
-
-        get_group(g,element.first,element.second,g,create);
-    }
-}
 
 //-----------------------------------------------------------------------------
 template<typename GTYPE> 
 GTYPE get_group(const GTYPE &p,const nxpath &path,bool create=true)
 {
-    GTYPE g; 
-    try
+    GTYPE g = p; //this is still a problem: 
+                   
+    for(auto eiter = path.begin(); eiter!=path.end();++eiter)
     {
-        get_group(p,path,g,create);
-    }
-    catch(nxgroup_error &error)
-    {
-        error.append(EXCEPTION_RECORD);
-        throw error;
+        if(eiter->first == ".") continue;
+        if(eiter->first == "..") 
+        {
+            g = g.parent();
+            continue;
+        }
+
+        g = get_group(g,eiter->first,eiter->second,create);
     }
 
     return g;
