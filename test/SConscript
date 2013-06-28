@@ -12,6 +12,7 @@ sources_list.append('nexus_object_utils_test.cpp')
 sources_list.append('nexus_path_utils_test.cpp')
 sources_list.append('nexus_group_utils_test.cpp')
 sources_list.append('is_group_test.cpp')
+sources_list.append('is_field_test.cpp')
 object_list = test_env.Object(sources_list)
 
 object_list.extend(SConscript("../src/common/SConscript"))
