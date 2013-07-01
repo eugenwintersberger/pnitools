@@ -23,38 +23,35 @@
 
 #include "nxvariant_traits.hpp"
 
-template<typename OTYPE> 
-class is_valid_visitor :: public boost::static_visitor<bool>
+template<typename VTYPE> 
+class is_valid_visitor : public boost::static_visitor<bool>
 {
     public:
-        DEFINE_NXGROUP(OTYPE) group_type;
-        DEFINE_NXFIELD(OTYPE) field_type;
-        DEFINE_NXATTRIBUTE(OTYPE) attribute_type;
+        typedef typename nxvariant_member_type<VTYPE,0>::type first_member;
+        typedef bool result_type;
+        DEFINE_NXGROUP(first_member) group_type;
+        DEFINE_NXFIELD(first_member) field_type;
+        DEFINE_NXATTRIBUTE(first_member) attribute_type;
         
-        bool operator()(const group_type &g)
+        result_type operator()(const group_type &g) const
         {
             return g.is_valid();
         }
 
-        bool operator()(const field_type &f)
+        result_type operator()(const field_type &f) const
         {
-            return g.is_valid();
+            return f.is_valid();
         }
 
-        bool operator()(const attribute_type &a)
+        result_type operator()(const attribute_type &a) const
         {
             return a.is_valid();
         }
 };
 
-template<typename OTYPE> 
-bool is_valid(const typename nxvariant_traits<OTYPE>::object_types &o)
+template<typename VTYPE> 
+typename is_valid_visitor<VTYPE>::result_type is_valid(const VTYPE &o)
 {
-    return boost::apply_visitor(is_valid_visitor<OTYPE>(),o);
+    return boost::apply_visitor(is_valid_visitor<VTYPE>(),o);
 }
 
-template<typename OTYPE> 
-bool is_valid(const typename nxvariant_traits<OTYPE>::io_types &o)
-{
-    return boost::apply_visitor(is_valid_visitor<OTYPE>(),o);
-}
