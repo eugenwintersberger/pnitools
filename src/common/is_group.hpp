@@ -22,39 +22,36 @@
 #pragma once
 
 #include "nxvariant_traits.hpp"
-#include <boost/mpl/begin_end.hpp>
-#include <boost/mpl/deref.hpp>
 
-using namespace boost::mpl;
-
-template<typename OTYPE> 
+template<typename VTYPE> 
 class is_group_visitor : public boost::static_visitor<bool>
 {
     public:
-        DEFINE_NXGROUP(OTYPE) group_type;
-        DEFINE_NXFIELD(OTYPE) field_type;
-        DEFINE_NXATTRIBUTE(OTYPE) attribute_type;
+        typedef typename nxvariant_member_type<VTYPE,0>::type first_member;
+        typedef bool result_type;
+        DEFINE_NXGROUP(first_member) group_type;
+        DEFINE_NXFIELD(first_member) field_type;
+        DEFINE_NXATTRIBUTE(first_member) attribute_type;
         
-        bool operator()(const group_type &g) const
+        result_type operator()(const group_type &g) const
         {
             return true;
         }
 
-        bool operator()(const field_type &f) const
+        result_type operator()(const field_type &f) const
         {
             return false;
         }
 
-        bool operator()(const attribute_type &a) const
+        result_type operator()(const attribute_type &a) const
         {
             return false;
         }
 };
 
-template<typename VTYPE> bool is_group(const VTYPE &o)
+template<typename VTYPE> 
+typename is_group_visitor<VTYPE>::result_type is_group(const VTYPE &o)
 {
-    typedef typename VTYPE::types vtypes;
-    typedef typename begin<vtypes>::type   viter;
-    return boost::apply_visitor(is_group_visitor<typename deref<viter>::type>(),o);
+    return boost::apply_visitor(is_group_visitor<VTYPE>(),o);
 }
 

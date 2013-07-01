@@ -30,58 +30,50 @@
 #include <boost/mpl/int.hpp>
 
 using namespace pni::io::nx;
-using namespace boost;
 
 /*!
 \ingroup common_devel
 \brief nexus object variants
 
-This traits provides different boost::variant types for data IO. 
+This traits provides different boost::variant types for data IO. The template
+cna be instantiated from any nexus low level type. Internally nxobject_traits is
+used to obtain all related nexus objects.  
+
+All operations on such a type should be done by visitors (see the BOOST::variant
+documentation for details about that. 
+
 \tparam OTYPE object type
 */
 template<typename OTYPE> struct nxvariant_traits
 {
+    typedef typename nxobject_traits<OTYPE>::group_type group_type;
+    typedef typename nxobject_traits<OTYPE>::field_type field_type;
+    typedef typename nxobject_traits<OTYPE>::attribute_type attribute_type;
     /*!
     \brief general object types
 
     A variant holding all types interesting for an application using Nexus.
     */
-    typedef boost::variant<typename nxobject_traits<OTYPE>::group_type,
-                           typename nxobject_traits<OTYPE>::field_type,
-                           typename nxobject_traits<OTYPE>::attribute_type>
-                               object_types;
+    typedef boost::variant<group_type,field_type,attribute_type> object_types;
+
+    /*!
+    \brief child types
+
+    This variant collates all types that are possible child types of a group or
+    file. 
+    */
+    typedef boost::variant<group_type,field_type> child_types;
 
     /*!
     \brief IO types
 
     A variant holding all nexus types that can do data IO.
     */
-    typedef boost::variant<typename nxobject_traits<OTYPE>::field_type,
-                           typename nxobject_traits<OTYPE>::attribute_type>
-                               io_types;
+    typedef boost::variant<field_type,attribute_type> io_types;
 };
 
-
-/*!
-\ingroup common_devel
-\brief get group type
-
-Returns the group type from a object_types variant. In some cases we need to
-obtain the differnt types form the variants.
-
-\tparam VTYPE variant type
-*/
-template<typename VTYPE> struct nxvariant_object_types
+template<typename VTYPE,int i> struct nxvariant_member_type
 {
-    typedef typename mpl::at<typename VTYPE::types,mpl::int_<0> >::type group_type; //!< the group type
-    typedef typename mpl::at<typename VTYPE::types,mpl::int_<1> >::type field_type;
-    typedef typename mpl::at<typename VTYPE::types,mpl::int_<2> >::type attribute_type;
+    typedef typename boost::mpl::at<typename VTYPE::types,boost::mpl::int_<0> >::type type; 
 };
-
-template<typename VTYPE> struct nxvariant_io_types
-{
-    typedef typename mpl::at<typename VTYPE::types,mpl::int_<0> >::type field_type;
-    typedef typename mpl::at<typename VTYPE::types,mpl::int_<1> >::type attribute_type;
-};
-
 
