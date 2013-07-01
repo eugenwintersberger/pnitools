@@ -15,6 +15,7 @@ sources_list.append('is_group_test.cpp')
 sources_list.append('is_field_test.cpp')
 sources_list.append('is_attribute_test.cpp')
 sources_list.append('is_valid_test.cpp')
+sources_list.append('set_class_test.cpp')
 object_list = test_env.Object(sources_list)
 
 object_list.extend(SConscript("../src/common/SConscript"))
