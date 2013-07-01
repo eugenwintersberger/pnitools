@@ -44,8 +44,7 @@ column_t read_column_from_field(const nxpath &source_path)
     //open file in read only mode - the file must obviously exist
     h5::nxfile file = h5::nxfile::open_file(source_path.filename(),true);
     h5::nxgroup root = file["/"];
-    h5::nxfield field; 
-    get_field(root,source_path,field);
+    h5::nxfield field = get_field(root,source_path);
     
     //prepear the column
     column_t column = column_from_nexus_object(field,get_unit(field));

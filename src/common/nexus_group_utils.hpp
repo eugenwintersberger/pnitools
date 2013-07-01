@@ -302,8 +302,6 @@ GTYPE get_group(const GTYPE &p,const string &name, const string &gclass,
 }
 
 
-
-
 //-----------------------------------------------------------------------------
 template<typename GTYPE> 
 GTYPE get_group(const GTYPE &p,const nxpath &path,bool create=true)

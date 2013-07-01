@@ -159,11 +159,11 @@ h5::nxfield get_field(const h5::nxfile &ofile,const pni::io::image_info &info,
                 std::cout<<"creating field "<<iter->first<<std::endl;
                 //create the field and start from scratch
                 if(deflate)
-                    create_field(group,iter->first,info.get_channel(0).type_id(),
-                                 shape_t{0,info.nx(),info.ny()},field,filter);
+                    field = create_field(group,iter->first,info.get_channel(0).type_id(),
+                                         shape_t{0,info.nx(),info.ny()},filter);
                 else
-                    create_field(group,iter->first,info.get_channel(0).type_id(),
-                                 shape_t{0,info.nx(),info.ny()},field);
+                    field = create_field(group,iter->first,info.get_channel(0).type_id(),
+                                         shape_t{0,info.nx(),info.ny()});
             }
         }
         else

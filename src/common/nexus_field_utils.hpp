@@ -26,6 +26,7 @@
 #include <pni/io/nx/nxpath.hpp>
 
 #include "nexus_group_utils.hpp"
+#include "nxobject_traits.hpp"
 
 using namespace pni::core;
 using namespace pni::io::nx;
@@ -36,13 +37,13 @@ using namespace pni::io::nx;
 
 Return an existing field according to a path object. 
 \tparam GTYPE group type
-\tparam FTYPE field type
 \param p parent group 
 \param path the field path relative to the parent
 \param f field instance
 */
-template<typename GTYPE,typename FTYPE>
-void get_field(const GTYPE &p,const nxpath &path,FTYPE &f)
+template<typename GTYPE>
+typename nxobject_traits<GTYPE>::field_type 
+get_field(const GTYPE &p,const nxpath &path)
 {
     //here we assume that all elements in the path except the last one refer to
     //groups - create a new path with one element less
@@ -52,7 +53,7 @@ void get_field(const GTYPE &p,const nxpath &path,FTYPE &f)
     GTYPE parent; 
     parent = get_group(p,group_path,false);
 
-    f = parent[field_path.begin()->first];
+    return parent[field_path.begin()->first];
 
 }
 
@@ -64,7 +65,6 @@ void get_field(const GTYPE &p,const nxpath &path,FTYPE &f)
 Create a field from a type_id_t and a shape object. 
 \throws type_error if data type is not supported
 \tparam PTYPE parent type
-\tparam FTYPE field type
 \tparam STYPE shape type
 \param parent instance of PTYPE - there parent object
 \param name the name of the new field
@@ -72,39 +72,39 @@ Create a field from a type_id_t and a shape object.
 \param shape instance of STYPE - the shape of the field
 \param field reference to the new field
 */
-template<typename PTYPE,typename FTYPE,typename STYPE,typename ...FILTERT>
-void create_field(const PTYPE &parent,const string &name,type_id_t tid,
-                  const STYPE shape,FTYPE &field,FILTERT ...filters)
+template<typename PTYPE,typename STYPE,typename ...FILTERT>
+typename nxobject_traits<PTYPE>::field_type 
+create_field(const PTYPE &parent,const string &name,type_id_t tid, 
+             const STYPE shape,FILTERT ...filters)
 {
     STYPE cshape(shape.size());
     std::copy(shape.begin(),shape.end(),cshape.begin());
     *cshape.begin() = 1;
 
     if(tid == type_id_t::UINT8)
-        field = parent.create_field<uint8>(name,shape,cshape,filters...);
+        return parent.create_field<uint8>(name,shape,cshape,filters...);
     else if(tid == type_id_t::INT8)
-        field = parent.create_field<int8>(name,shape,cshape,filters...);
+        return parent.create_field<int8>(name,shape,cshape,filters...);
     else if(tid == type_id_t::UINT16)
-        field = parent.create_field<uint16>(name,shape,cshape,filters...);
+        return parent.create_field<uint16>(name,shape,cshape,filters...);
     else if(tid == type_id_t::INT16)
-        field = parent.create_field<int16>(name,shape,cshape,filters...);
+        return parent.create_field<int16>(name,shape,cshape,filters...);
     else if(tid == type_id_t::UINT32)
-        field = parent.create_field<uint32>(name,shape,cshape,filters...);
+        return parent.create_field<uint32>(name,shape,cshape,filters...);
     else if(tid == type_id_t::INT32)
-        field = parent.create_field<int32>(name,shape,cshape,filters...);
+        return parent.create_field<int32>(name,shape,cshape,filters...);
     else if(tid == type_id_t::UINT64)
-        field = parent.create_field<uint64>(name,shape,cshape,filters...);
+        return parent.create_field<uint64>(name,shape,cshape,filters...);
     else if(tid == type_id_t::INT64)
-        field = parent.create_field<int64>(name,shape,cshape,filters...);
+        return parent.create_field<int64>(name,shape,cshape,filters...);
     else if(tid == type_id_t::FLOAT32)
-        field = parent.create_field<float32>(name,shape,cshape,filters...);
+        return parent.create_field<float32>(name,shape,cshape,filters...);
     else if(tid == type_id_t::FLOAT64)
-        field = parent.create_field<float64>(name,shape,cshape,filters...);
+        return parent.create_field<float64>(name,shape,cshape,filters...);
     else if(tid == type_id_t::FLOAT128)
-        field = parent.create_field<float128>(name,shape,cshape,filters...);
+        return parent.create_field<float128>(name,shape,cshape,filters...);
     else
-        throw type_error(EXCEPTION_RECORD,
-                "Unkown data type!");
+        throw type_error(EXCEPTION_RECORD,"Unkown data type!");
 }
 
                   
