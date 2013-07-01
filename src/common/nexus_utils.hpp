@@ -44,25 +44,39 @@ Return an object specified by a Nexus path. From the nature of a nexus file we
 can assume that every object in the path except the last one has to be a group
 as it must hold other objects 
 */
-template<typename PTYPE> typename nxvariant_traits<PTYPE>::object_types 
-find_object(const PTYPE &p,const nxpath &path)
+template<typename VTYPE> 
+typename nxvariant_traits<typename nxvariants_member_type<VTYPE,0>::type>::object_types 
+get_object(const VTYPE &p,const nxpath &path)
 {
+    typedef typename nxvariant_traits<PTYPE>::object_types object_types;
     nxpath group_path;
     nxpath target_path;
+    object_types result;
 
     split_last(path,group_path,target_path);
 
-    //try to fetch the groups 
-    PTYPE t_group;
-    if(!is_valid(t_group = get_group(p,group_path,false))) return PTYPE();
+    //loop over all parent groups
+    object_types parent = p;
+    for(auto element: group_path)
+    {
+        if(element.first == ".") continue;
+        if(element.first == "..")
+        {
+            parent = get_parent(parent);
+            continue;
+        }
 
-    /*now we need to fetch the target object. This can be either a group or a
-     * field - need to take this into account
-     */
-    //first we try to fetch a group
-    //if(get_group(t_group,target_path,object)) return true;
+        parent = get_child(parent,element.first,element.second);
+    }
 
-    return true;
+    //having obtained the parent object we have to look now into it
+    result = get_child(parent,target_path.begin()->first,
+                              target_path.begin()->second);
+
+    if(!target_path.attribute().empty())
+        result = get_attribute(target_path.attribute());
+
+    return result;
 }
 
 //-----------------------------------------------------------------------------
