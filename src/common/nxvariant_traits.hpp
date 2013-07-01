@@ -24,8 +24,13 @@
 #include "nxobject_traits.hpp"
 
 #include <boost/variant.hpp>
+#include <boost/mpl/begin_end.hpp>
+#include <boost/mpl/deref.hpp>
+#include <boost/mpl/at.hpp>
+#include <boost/mpl/int.hpp>
 
 using namespace pni::io::nx;
+using namespace boost;
 
 /*!
 \ingroup common_devel
@@ -55,3 +60,28 @@ template<typename OTYPE> struct nxvariant_traits
                            typename nxobject_traits<OTYPE>::attribute_type>
                                io_types;
 };
+
+
+/*!
+\ingroup common_devel
+\brief get group type
+
+Returns the group type from a object_types variant. In some cases we need to
+obtain the differnt types form the variants.
+
+\tparam VTYPE variant type
+*/
+template<typename VTYPE> struct nxvariant_object_types
+{
+    typedef typename mpl::at<typename VTYPE::types,mpl::int_<0> >::type group_type; //!< the group type
+    typedef typename mpl::at<typename VTYPE::types,mpl::int_<1> >::type field_type;
+    typedef typename mpl::at<typename VTYPE::types,mpl::int_<2> >::type attribute_type;
+};
+
+template<typename VTYPE> struct nxvariant_io_types
+{
+    typedef typename mpl::at<typename VTYPE::types,mpl::int_<0> >::type field_type;
+    typedef typename mpl::at<typename VTYPE::types,mpl::int_<1> >::type attribute_type;
+};
+
+

@@ -54,7 +54,6 @@ get_field(const GTYPE &p,const nxpath &path)
     parent = get_group(p,group_path,false);
 
     return parent[field_path.begin()->first];
-
 }
 
 //----------------------------------------------------------------------------

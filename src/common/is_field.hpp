@@ -51,10 +51,22 @@ class is_field_visitor : public boost::static_visitor<bool>
         }
 };
 
+/*!
+\ingroup common_devel
+\brief check if field
+
+\tparam VTYPE Nexus object variant type
+\param o instance of VTYPE
+\return true if the object is a field
+*/
 template<typename VTYPE> bool is_field(const VTYPE &o)
 {
+    /*
     typedef typename VTYPE::types vtypes;
     typedef typename begin<vtypes>::type   viter;
     return boost::apply_visitor(is_field_visitor<typename deref<viter>::type>(),o);
+    */
+    return boost::apply_visitor(is_field_visitor<typename
+            nxvariant_object_type<VTYPE>::group_type>(),o);
 }
 
