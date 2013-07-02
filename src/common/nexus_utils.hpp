@@ -32,6 +32,8 @@
 #include "nxvariant_traits.hpp"
 #include "get_parent.hpp"
 #include "get_attribute.hpp"
+#include "get_child.hpp"
+
 
 using namespace pni::core;
 using namespace pni::io::nx;
@@ -83,6 +85,7 @@ get_object(const VTYPE &p,const nxpath &path)
 }
 
 //-----------------------------------------------------------------------------
+/*
 template<typename PTYPE,typename OTYPE>
 bool find_object_by_name(const PTYPE &p,const string &name,OTYPE &o)
 {
@@ -128,5 +131,6 @@ bool find_object_by_name_and_class(const PTYPE &p,const string &name,
 
     return true;
 }
+*/
 
 
