@@ -30,6 +30,7 @@
 #include "nexus_group_utils.hpp"
 #include "nexus_field_utils.hpp"
 #include "nxvariant_traits.hpp"
+#include "get_parent.hpp"
 
 using namespace pni::core;
 using namespace pni::io::nx;
@@ -45,10 +46,11 @@ can assume that every object in the path except the last one has to be a group
 as it must hold other objects 
 */
 template<typename VTYPE> 
-typename nxvariant_traits<typename nxvariants_member_type<VTYPE,0>::type>::object_types 
+typename nxvariant_traits<typename nxvariant_member_type<VTYPE,0>::type>::object_types 
 get_object(const VTYPE &p,const nxpath &path)
 {
-    typedef typename nxvariant_traits<PTYPE>::object_types object_types;
+    typedef typename nxvariant_member_type<VTYPE,0>::type first_type;
+    typedef typename nxvariant_traits<first_type>::object_types object_types;
     nxpath group_path;
     nxpath target_path;
     object_types result;
@@ -73,8 +75,10 @@ get_object(const VTYPE &p,const nxpath &path)
     result = get_child(parent,target_path.begin()->first,
                               target_path.begin()->second);
 
+    /*
     if(!target_path.attribute().empty())
         result = get_attribute(target_path.attribute());
+        */
 
     return result;
 }

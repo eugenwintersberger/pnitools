@@ -38,19 +38,19 @@ class get_parent_visitor : public boost::static_visitor<
         
         result_type operator()(const group_type &g) const
         {
-            return group_type(g.parent());
+            return result_type(group_type(g.parent()));
         }
 
         result_type operator()(const field_type &f) const
         {
-            return group_type(f.parent());
+            return result_type(group_type(f.parent()));
         }
 
         result_type operator()(const attribute_type &a) const
         {
             throw nxattribute_error(EXCEPTION_RECORD,
                     "Parent access currently not implemented for attribute!");
-            return result_type()
+            return result_type();
         }
 };
 
