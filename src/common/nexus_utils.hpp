@@ -31,6 +31,7 @@
 #include "nexus_field_utils.hpp"
 #include "nxvariant_traits.hpp"
 #include "get_parent.hpp"
+#include "get_attribute.hpp"
 
 using namespace pni::core;
 using namespace pni::io::nx;
@@ -75,10 +76,8 @@ get_object(const VTYPE &p,const nxpath &path)
     result = get_child(parent,target_path.begin()->first,
                               target_path.begin()->second);
 
-    /*
     if(!target_path.attribute().empty())
-        result = get_attribute(target_path.attribute());
-        */
+        result = get_attribute(result,target_path.attribute());
 
     return result;
 }
