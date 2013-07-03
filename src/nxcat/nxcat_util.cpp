@@ -21,7 +21,7 @@
  */
 
 #include "nxcat.hpp"
-#include "../common/nexus_utils.hpp"
+#include "../common/nexus_field_utils.hpp"
 
 configuration create_configuration()
 {

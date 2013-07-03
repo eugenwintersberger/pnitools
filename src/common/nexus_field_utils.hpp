@@ -24,9 +24,9 @@
 #include <pni/core/types.hpp>
 #include <pni/io/nx/nx.hpp>
 #include <pni/io/nx/nxpath.hpp>
+#include <pni/io/nx/nxobject_traits.hpp>
 
 #include "nexus_group_utils.hpp"
-#include "nxobject_traits.hpp"
 
 using namespace pni::core;
 using namespace pni::io::nx;

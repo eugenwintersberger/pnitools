@@ -24,7 +24,7 @@
 #include "xml2nx.hpp"
 #include "xml_utils.hpp"
 #include "../common/config_utils.hpp"
-#include "../common/nexus_utils.hpp"
+#include "../common/nexus_group_utils.hpp"
 
 static const string program_name = "xml2nx";
 static const string help_header = 

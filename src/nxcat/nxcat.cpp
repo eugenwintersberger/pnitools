@@ -22,8 +22,8 @@
 
 #include "nxcat.hpp"
 #include "../common/config_utils.hpp"
-#include "../common/nexus_utils.hpp"
 #include "../common/array_utils.hpp"
+#include "../common/nexus_group_utils.hpp"
 
 
 static const string prg_name = "nxcat";
