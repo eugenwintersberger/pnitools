@@ -50,6 +50,8 @@ array create_array(type_id_t tid,const shape_t &shape)
         return array(darray<float64,dbuffer<float64>>(shape));
     else if(tid == type_id_t::FLOAT128)
         return array(darray<float128,dbuffer<float128>>(shape));
+    else if(tid == type_id_t::STRING)
+        return array(darray<string,dbuffer<string>>(shape));
     else
         throw type_error(EXCEPTION_RECORD,
                 "unsupported data type!");

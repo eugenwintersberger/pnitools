@@ -131,12 +131,18 @@ array array_from_nexus_object(const NXVAR &o)
 {
     //get the shape of the object in the file
     auto file_shape = get_shape<shape_t>(o);
-    shape_t array_shape{1};
+    shape_t array_shape{1}; //in the worst case we have a scalar object 
+                            //than we can use this
 
-    if(file_shape.size() != 1)
+    if(is_field(o))
     {
-        array_shape = shape_t(file_shape.size()-1);
-        std::copy(file_shape.begin()+1,file_shape.end(),array_shape.begin());
+        //when the object is a field where we can do partial IO we simply 
+        if(file_shape.size() > 1)
+        {
+            array_shape = shape_t(file_shape.size()-1);
+            std::copy(file_shape.begin()+1,file_shape.end(),array_shape.begin());
+        }
     }
+
     return create_array(get_type(o),array_shape);
 }

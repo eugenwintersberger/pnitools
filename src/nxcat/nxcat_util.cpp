@@ -55,17 +55,25 @@ column_t read_column(const nxpath &source_path)
     //need to create an array from the data
     array data = array_from_nexus_object(object);
 
-    std::vector<slice> selection;
-    selection.push_back(slice(0));
-    auto array_shape = data.shape<shape_t>();
-    auto field_shape = get_shape<shape_t>(object);
-    for(auto d: array_shape)
-        selection.push_back(slice(0,d));
-
-    for(size_t i=0;i<field_shape[0];++i)
+    if(is_field(object))
     {
-        selection[0] = slice(i);
-        read(object,data,selection);
+        std::vector<slice> selection;
+        selection.push_back(slice(0));
+        auto array_shape = data.shape<shape_t>();
+        auto field_shape = get_shape<shape_t>(object);
+        for(auto d: array_shape)
+            selection.push_back(slice(0,d));
+
+        for(size_t i=0;i<field_shape[0];++i)
+        {
+            selection[0] = slice(i);
+            read(object,data,selection);
+            column.push_back(data);
+        }
+    }
+    else if(is_attribute(object))
+    {
+        read(object,data);
         column.push_back(data);
     }
 
@@ -78,11 +86,7 @@ table_t  read_table(const sources_list &sources)
     table_t t;
     for(auto source: sources)
     {
-        column_t c;
-        if(source.attribute().empty())
-            c = read_column(source);
-
-        t.push_back(c);
+        t.push_back(read_column(source));
     }
 
     return t;
