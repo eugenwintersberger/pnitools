@@ -101,7 +101,9 @@ template<typename CTYPE> class column
         column<CTYPE> &operator=(column<CTYPE> &&c)
         {
             if(this == &c) return *this;
-            *this = column<CTYPE>(std::move(c));
+            this->_container = std::move(c._container);
+            this->_unit = std::move(c._unit);
+            this->_name = std::move(c._name);
             return *this;
         }
 

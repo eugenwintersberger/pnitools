@@ -21,7 +21,7 @@
  */
 
 #include "nxcat.hpp"
-#include "../common/nexus_field_utils.hpp"
+#include <pni/io/nx/nxvariant.hpp>
 
 configuration create_configuration()
 {
@@ -39,30 +39,33 @@ configuration create_configuration()
 
 
 //-----------------------------------------------------------------------------
-column_t read_column_from_field(const nxpath &source_path)
+column_t read_column(const nxpath &source_path)
 {
+    typedef nxvariant_traits<h5::nxfile>::object_types object_types;
     //open file in read only mode - the file must obviously exist
     h5::nxfile file = h5::nxfile::open_file(source_path.filename(),true);
-    h5::nxgroup root = file["/"];
-    h5::nxfield field = get_field(root,source_path);
-    
-    //prepear the column
-    column_t column = column_from_nexus_object(field,get_unit(field));
+    object_types root = h5::nxgroup(file["/"]);
+
+    //have to retrieve the object from the file
+    auto object = get_object(root,source_path);
+        
+    //try to get a column type from the Nexus object
+    column_t column = column_from_nexus_object(object);
 
     //need to create an array from the data
-    array data = array_from_nexus_readable(field);
+    array data = array_from_nexus_object(object);
 
     std::vector<slice> selection;
     selection.push_back(slice(0));
     auto array_shape = data.shape<shape_t>();
-    auto field_shape = field.shape<shape_t>();
+    auto field_shape = get_shape<shape_t>(object);
     for(auto d: array_shape)
         selection.push_back(slice(0,d));
 
     for(size_t i=0;i<field_shape[0];++i)
     {
         selection[0] = slice(i);
-        field(selection).read(data);
+        read(object,data,selection);
         column.push_back(data);
     }
 
@@ -77,7 +80,7 @@ table_t  read_table(const sources_list &sources)
     {
         column_t c;
         if(source.attribute().empty())
-            c = read_column_from_field(source);
+            c = read_column(source);
 
         t.push_back(c);
     }
