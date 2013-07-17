@@ -22,9 +22,7 @@
 
 
 #include "xml2nx.hpp"
-#include "xml_utils.hpp"
 #include "../common/config_utils.hpp"
-#include "../common/nexus_group_utils.hpp"
 
 static const string program_name = "xml2nx";
 static const string help_header = 
@@ -51,28 +49,35 @@ int main(int argc,char **argv)
     try
     {
         //-------------- read the XML data ------------------------------------
-        tree::ptree xmltree;
-        if(open_xml_file(conf.value<string>("input-file"),xmltree))
-            return 1;
+        auto filename = conf.value<string>("input-file");
+        xml::node root_node = xml::create_from_file(filename);
 
         //---------------------------- open the nexus file --------------------
 
-        //get the target file
+        //get parent path
         nxpath path = path_from_string(conf.value<string>("parent"));
-        std::cout<<"output file: "<<path.filename()<<std::endl;
-        h5::nxfile file = open_nexus_file(path,conf.value<bool>("append"));
-    
-        //get the group where to append XML data
-        h5::nxgroup target_group = file["/"];
-        target_group = get_group(target_group,path,false);
-       
+
+        //obtain the file for the parent
+        h5::nxfile file = open_nexus_file(path,conf.value<bool>("overwrite"));
+        nxobject_t parent_group = h5::nxgroup(file["/"]);
+
+        if(path.size()!=0) 
+            //get the group where to append XML data
+            parent_group = get_object(parent_group,path);
+
+
         //create the objects below the target group
-        create_objects(target_group,xmltree);
+        xml::create_objects(parent_group,root_node);
 
 
         file.close();
     }
     catch(nxfile_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
+    catch(file_error &error)
     {
         std::cerr<<error<<std::endl;
         return 1;
