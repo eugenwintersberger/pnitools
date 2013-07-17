@@ -21,7 +21,6 @@
  */
 
 #include "nxcat.hpp"
-#include <pni/io/nx/nxvariant.hpp>
 
 configuration create_configuration()
 {

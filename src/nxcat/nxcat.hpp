@@ -30,6 +30,7 @@
 #include<pni/io/nx/nx.hpp>
 #include<pni/io/nx/nxpath.hpp>
 #include<pni/io/nx/nxobject_type.hpp>
+#include <pni/io/nx/nxvariant.hpp>
 
 #include <pni/core/config/configuration.hpp>
 #include <pni/core/config/config_parser.hpp>
@@ -39,7 +40,6 @@
 #include "../common/table.hpp"
 #include "../common/array_utils.hpp"
 
-#include <pni/io/nx/nxvariant.hpp>
 
 using namespace pni::core;
 using namespace pni::io::nx;
