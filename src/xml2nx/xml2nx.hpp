@@ -26,13 +26,15 @@
 #include <pni/core/config/configuration.hpp>
 #include <pni/io/nx/nx.hpp>
 #include <pni/io/nx/nxpath.hpp>
+#include <pni/io/nx/xml.hpp>
+#include <pni/io/nx/nxvariant.hpp>
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
 
 using namespace pni::core;
 using namespace pni::io::nx;
-namespace tree = boost::property_tree;
+
+//define a general object type for HDF5 objects
+typedef nxvariant_traits<h5::nxfile>::object_types nxobject_t;
 
 //-----------------------------------------------------------------------------
 /*!
@@ -50,7 +52,7 @@ configuration create_config();
 \brief create/open the nexus file
 
 \param path Nexus path object
-\param append true if file should be opened for appending
+\param overwrite true if the file should be rewritten
 \return instance of nxfile
 */
-h5::nxfile open_nexus_file(const nxpath &path,bool append);
+h5::nxfile open_nexus_file(const nxpath &path,bool overwrite);

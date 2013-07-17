@@ -30,6 +30,7 @@
 #include<pni/io/nx/nx.hpp>
 #include<pni/io/nx/nxpath.hpp>
 #include<pni/io/nx/nxobject_type.hpp>
+#include <pni/io/nx/nxvariant.hpp>
 
 #include <pni/core/config/configuration.hpp>
 #include <pni/core/config/config_parser.hpp>
@@ -38,6 +39,7 @@
 #include "../common/column.hpp"
 #include "../common/table.hpp"
 #include "../common/array_utils.hpp"
+
 
 using namespace pni::core;
 using namespace pni::io::nx;
@@ -86,42 +88,61 @@ table_t  read_table(const sources_list &sources);
 \ingroup nxcat_devel
 \brief column from nexus object
 
-Create a column from a Nexus object (either a field or an attribute). As
-attributes do not provide a unit attribute one has to add the unit manually.
-\tparam NXOT nexus object type
-\param o instance of NXOT
-\param unit string with the physical unit
+Create a column from a Nexus object (either a field or an attribute). 
+This Nexus object is stored in a variant types as defined by nxvariant_types.
+As attributes do not provide a unit one can use the unit argument to this
+function. By default the unit will be taken from the field. However, if this
+fails the unit will be taken from the argument.
+
+\tparam NXVAR nexus object variant type
+\param o instance of NXVAR
+\param unit string with unit values
 \return instance of column_t
 */
-template<typename NXOT> 
-column_t column_from_nexus_object(const NXOT &o,const string &unit)
+template<typename NXVAR> 
+column_t column_from_nexus_object(const NXVAR &o,const string &unit="")
 {
     column_t column;
-    column.name(o.path());
-    column.unit(unit);
+    column.name(get_name(o));
+    if(is_attribute(o))
+        column.unit(unit);
+    else
+        column.unit(get_unit(o));
+
     return column;
 }
 
 //-----------------------------------------------------------------------------
 /*!
 \ingroup nxcat_devel
-\brief create an array from a Nexus readable
+\brief create an array from a Nexus object
 
-Create an instance of array from a Nexus readable object type. This type might
-be either a field or an attribute type. 
-\tparam NXOT Nexus readable type
+Create an instance of array from a Nexus object stored in a Nexus variant type. 
+An nxgroup_error exception is thrown in cases where the stored object is a group
+but not an attribute or a field.
+
+\throws nxgroup_error if object is not an attribute or a field
+\tparam NXVAR Nexus variant type
 \param o reference to NXOT instance
 \return instance of array
 */
-template<typename NXOT> array array_from_nexus_readable(const NXOT &o)
+template<typename NXVAR> 
+array array_from_nexus_object(const NXVAR &o)
 {
-    auto file_shape = o.template shape<shape_t>();
-    shape_t array_shape{1};
+    //get the shape of the object in the file
+    auto file_shape = get_shape<shape_t>(o);
+    shape_t array_shape{1}; //in the worst case we have a scalar object 
+                            //than we can use this
 
-    if(o.size() != 1)
+    if(is_field(o))
     {
-        array_shape = shape_t(file_shape.size()-1);
-        std::copy(file_shape.begin()+1,file_shape.end(),array_shape.begin());
+        //when the object is a field where we can do partial IO we simply 
+        if(file_shape.size() > 1)
+        {
+            array_shape = shape_t(file_shape.size()-1);
+            std::copy(file_shape.begin()+1,file_shape.end(),array_shape.begin());
+        }
     }
-    return create_array(o.type_id(),array_shape);
+
+    return create_array(get_type(o),array_shape);
 }

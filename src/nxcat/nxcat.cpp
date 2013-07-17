@@ -22,8 +22,6 @@
 
 #include "nxcat.hpp"
 #include "../common/config_utils.hpp"
-#include "../common/nexus_utils.hpp"
-#include "../common/array_utils.hpp"
 
 
 static const string prg_name = "nxcat";
@@ -48,11 +46,11 @@ int main(int argc,char **argv)
         return 1;
 
 
+    sources_list sources;
     try
     {
         //----------------------parse the input data----------------------------
         //get the source string
-        sources_list sources;
         for(auto source_path: conf.value<string_list>("source"))
             sources.push_back(path_from_string(source_path));
 
@@ -100,9 +98,22 @@ int main(int argc,char **argv)
         std::cerr<<error<<std::endl;
         return 1;
     }
+    catch(nxattribute_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
+    catch(nxfield_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
     catch(...)
     {
         std::cerr<<"Something went wrong!"<<std::endl;
+        for(auto s: sources)
+            std::cerr<<s<<std::endl;
+
         return 1;
     }
 

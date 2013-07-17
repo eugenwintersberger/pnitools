@@ -83,9 +83,11 @@ int main(int argc,char **argv)
         std::cout<<"create/open output target ..."<<std::endl;
         h5::nxfile output_file = open_output_file(nexus_path.filename(),
                                  config.value<bool>("overwrite"));
-        h5::nxfield field = get_field(output_file,info,nexus_path,
+        nxobject_t root_group = h5::nxgroup(output_file["/"]);
+        nxobject_t field = get_field(root_group,info,nexus_path,
                                       config.value<size_t>("deflate"));
 
+        //------------------append the data------------------------------------
         //finally we need to process the data
         if(has_extension(*infiles.begin(),cbf_exts))
             append_data(pni::io::cbf_reader(),output_file,field,infiles);
@@ -93,7 +95,7 @@ int main(int argc,char **argv)
             append_data(pni::io::tiff_reader(),output_file,field,infiles);
         
         //close the file 
-        field.close();
+        close(field);
         output_file.close();
 
     }

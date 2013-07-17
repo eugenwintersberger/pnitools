@@ -24,7 +24,7 @@
 #include <pni/io/cbf_reader.hpp>
 #include <pni/io/tiff_reader.hpp>
 #include "../common/file_utils.hpp"
-#include "../common/nexus_utils.hpp"
+//#include "../common/nexus_field_utils.hpp"
 
 
 //------------------------------------------------------------------------
@@ -113,7 +113,7 @@ void check_input_files(const file_list &flist,reader_ptr &reader,
              (ref_info.ny()==info.ny())))
         {
             reader->close();
-            throw shape_missmatch_error(EXCEPTION_RECORD,
+            throw shape_mismatch_error(EXCEPTION_RECORD,
                     "Image shapes do not match!");
         }
 
@@ -131,46 +131,55 @@ void check_input_files(const file_list &flist,reader_ptr &reader,
 
 }
 
+
+template<typename ...ARGST>
+nxobject_t create_field(const nxobject_t &root,const nxpath &path,type_id_t tid,ARGST ...args)
+{
+    if(tid == type_id_t::UINT8)
+        return create_field<uint8>(root,path,args...);
+    else if(tid == type_id_t::INT8)
+        return create_field<int8>(root,path,args...);
+    if(tid == type_id_t::UINT16)
+        return create_field<uint16>(root,path,args...);
+    else if(tid == type_id_t::INT16)
+        return create_field<int16>(root,path,args...);
+    if(tid == type_id_t::UINT32)
+        return create_field<uint32>(root,path,args...);
+    else if(tid == type_id_t::INT32)
+        return create_field<int32>(root,path,args...);
+    if(tid == type_id_t::UINT64)
+        return create_field<uint64>(root,path,args...);
+    else if(tid == type_id_t::INT64)
+        return create_field<int64>(root,path,args...);
+
+    return nxobject_t();
+}
+
 //-----------------------------------------------------------------------------
-h5::nxfield get_field(const h5::nxfile &ofile,const pni::io::image_info &info,
+nxobject_t get_field(const nxobject_t &root,const pni::io::image_info &info,
                       const nxpath &path,size_t deflate) 
 {
-    h5::nxgroup group = ofile["/"];
-    h5::nxfield field;
+    nxobject_t field;
     h5::nxdeflate_filter filter(deflate,true);
 
-    auto iter = path.begin();
-    auto fiter = path.begin();
-    advance(fiter,path.size()-1);
 
-    while(iter!=path.end())
+    try
     {
-        if(iter==fiter)
-        {
-            //we have reached the last element - need to check for a field
-            std::cout<<"look for field "<<iter->first<<std::endl;
-            if(group.exists(iter->first))
-            {
-                std::cout<<"opening field "<<iter->first<<std::endl;
-                field = group[iter->first]; //append data if field exists
-            }
-            else
-            {
-                std::cout<<"creating field "<<iter->first<<std::endl;
-                //create the field and start from scratch
-                if(deflate)
-                    create_field(group,iter->first,info.get_channel(0).type_id(),
-                                 shape_t{0,info.nx(),info.ny()},field,filter);
-                else
-                    create_field(group,iter->first,info.get_channel(0).type_id(),
-                                 shape_t{0,info.nx(),info.ny()},field);
-            }
-        }
-        else
-            group = get_group(group,iter->first,iter->second);
+        field = get_object(root,path);
+    }
+    catch(nxgroup_error &error)
+    {
+        //if something went wrong we can first assume that the field does not
+        //exist
+        shape_t shape{0,info.nx(),info.ny()};
+        shape_t chunk_shape{1,info.nx(),info.ny()};
 
-        //increment iterator
-        ++iter;
+        if(deflate)
+            field = create_field(root,path,info.get_channel(0).type_id(),
+                                 shape,chunk_shape,filter);
+        else
+            field = create_field(root,path,info.get_channel(0).type_id(),
+                                 shape,chunk_shape);
     }
 
     return field;

@@ -30,8 +30,8 @@ configuration create_config()
     config.add_option(config_option<bool>("help","h","show help",false));
     config.add_option(config_option<string>("parent","p",
                       "path to the parent object"));
-    config.add_option(config_option<bool>("append","a",
-                      "append structure to existing file",false));
+    config.add_option(config_option<bool>("overwrite","o",
+                      "overwrite an eventually existing file",false));
     config.add_argument(config_argument<string>("input-file",-1));
 
     return config;
@@ -39,11 +39,13 @@ configuration create_config()
 
 
 //------------------------------------------------------------------------
-h5::nxfile open_nexus_file(const nxpath &path,bool append)
+h5::nxfile open_nexus_file(const nxpath &path,bool overwrite)
 {
 
-    if(append)
-        return  h5::nxfile::open_file(path.filename(),false);
-    else
+    if(overwrite)
+        //when the overwrite flag is set we simply recreate the file
         return h5::nxfile::create_file(path.filename(),true,0);
+    else
+        //without overwrite the file is opened in append mode
+        return h5::nxfile::open_file(path.filename(),false);
 }

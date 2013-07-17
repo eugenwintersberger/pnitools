@@ -29,6 +29,7 @@
 #include <pni/core/config/config_parser.hpp>
 #include <pni/io/nx/nx.hpp>
 #include <pni/io/nx/nxpath.hpp>
+#include <pni/io/nx/nxvariant.hpp>
 #include <pni/io/image_reader.hpp>
 #include <pni/io/image_info.hpp>
 #include <pni/io/cbf_reader.hpp>
@@ -46,6 +47,7 @@ typedef std::vector<string> string_vector;
 typedef std::list<string> string_list;
 typedef std::list<file> file_list;
 typedef std::unique_ptr<pni::io::image_reader> reader_ptr;
+typedef nxvariant_traits<h5::nxfile>::object_types nxobject_t;
 
 //-----------------utility functions-------------------------------------------
 /*!
@@ -125,45 +127,45 @@ void check_input_files(const file_list &flist,reader_ptr &reader,
 \brief get the data field
 
 This function returns the field to which the image data should be added. 
-\param ofile ouput nexus file
+\param nxobject_t variant instance of the parent object
 \param info image information 
 \param path nexus path to the field
 \param deflate compression level for deflate filter
-\return data field
+\return field as variant type
 */
-h5::nxfield get_field(const h5::nxfile &ofile,const pni::io::image_info &info,
+nxobject_t get_field(const nxobject_t &parent,const pni::io::image_info &info,
                       const nxpath &path,size_t deflate); 
 
 //-----------------------------------------------------------------------------
 template<typename RTYPE> 
 void append_data(RTYPE &&reader,const h5::nxfile &file,
-                 h5::nxfield &field,const file_list &ifiles)
+                 nxobject_t &field,const file_list &ifiles)
 {
-    if(field.type_id() == type_id_t::UINT8)
+    if(get_type(field) == type_id_t::UINT8)
         append_data<uint8>(reader,file,field,ifiles);
-    else if(field.type_id() == type_id_t::INT8)
+    else if(get_type(field) == type_id_t::INT8)
         append_data<int8>(reader,file,field,ifiles);
-    else if(field.type_id() == type_id_t::UINT16)
+    else if(get_type(field) == type_id_t::UINT16)
         append_data<uint16>(reader,file,field,ifiles);
-    else if(field.type_id() == type_id_t::INT16)
+    else if(get_type(field) == type_id_t::INT16)
         append_data<int16>(reader,file,field,ifiles);
-    else if(field.type_id() == type_id_t::UINT32)
+    else if(get_type(field) == type_id_t::UINT32)
         append_data<uint32>(reader,file,field,ifiles);
-    else if(field.type_id() == type_id_t::INT32)
+    else if(get_type(field) == type_id_t::INT32)
         append_data<int32>(reader,file,field,ifiles);
-    else if(field.type_id() == type_id_t::UINT64)
+    else if(get_type(field) == type_id_t::UINT64)
         append_data<uint64>(reader,file,field,ifiles);
-    else if(field.type_id() == type_id_t::INT64)
+    else if(get_type(field) == type_id_t::INT64)
         append_data<int64>(reader,file,field,ifiles);
 }
 
 //-----------------------------------------------------------------------------
 template<typename T,typename RTYPE>
 void append_data(RTYPE &&reader,const h5::nxfile &file,
-                 h5::nxfield &field,const file_list &ifiles)
+                 nxobject_t &field,const file_list &ifiles)
 {
     //find the start index
-    auto shape = field.shape<shape_t>();
+    auto shape = get_shape<shape_t>(field);
     size_t frame_index = shape[0];
     size_t nx = shape[1];
     size_t ny = shape[2];
@@ -180,9 +182,9 @@ void append_data(RTYPE &&reader,const h5::nxfile &file,
         reader.filename(f.path());
         reader.open();
         reader.image(buffer,0,0);
-        
-        field.grow(0);
-        field(frame_index++,slice(0,nx),slice(0,ny)).write(buffer);
+       
+        grow(field,0);
+        write(field,buffer,frame_index++,slice(0,nx),slice(0,ny));
         file.flush();
         reader.close();
     }

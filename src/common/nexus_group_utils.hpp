@@ -24,9 +24,9 @@
 #include <pni/core/types.hpp>
 #include <pni/io/nx/nx.hpp>
 #include <pni/io/nx/nxpath.hpp>
+#include <pni/io/nx/nxpath_utils.hpp>
 
 #include "nexus_object_utils.hpp"
-#include "nexus_path_utils.hpp"
 
 using namespace pni::core;
 using namespace pni::io::nx;
@@ -300,8 +300,6 @@ GTYPE get_group(const GTYPE &p,const string &name, const string &gclass,
 
     return g;
 }
-
-
 
 
 //-----------------------------------------------------------------------------
