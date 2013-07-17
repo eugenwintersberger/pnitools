@@ -38,8 +38,6 @@ configuration create_configuration()
                 "output.nx:///:NXinstrument/:NXinstrument/:NXdetector/data"));
     config.add_option(config_option<bool>("verbose","v",
                 "print verbose output",false));
-//    config.add_option(config_option<bool>("append","a",
- //               "append data to existing field",true));
     config.add_argument(config_argument<string_vector>("input-files",-1,
                 string_vector()));
     config.add_option(config_option<bool>("overwrite","",
@@ -166,6 +164,10 @@ nxobject_t get_field(const nxobject_t &root,const pni::io::image_info &info,
     try
     {
         field = get_object(root,path);
+    }
+    catch(pni::core::index_error &error)
+    {
+        std::cerr<<error<<std::endl;
     }
     catch(nxgroup_error &error)
     {
