@@ -1,0 +1,6 @@
+#!/bin/sh
+
+XDATA=$1
+YDATA=$2
+
+nxcat $1 $2

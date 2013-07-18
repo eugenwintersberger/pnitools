@@ -1,0 +1,14 @@
+<group name="scan_1" type="NXentry">
+    <!--- here we have to set some metadata -->
+    <field name="title" type="string"> ${TITLE} </field>
+    <field name="experiment_identifier" type="string"> </field>
+    <field name="experiment_description" type="string"> </field>
+
+
+    <group name="instrument" type="NXinstrument"> 
+    <!--- here the detector data will go --> 
+    </group>
+    <group name="sample" type="NXsample"> </group>
+    <group name="control" type="NXmonitor"> </group>
+    <group name="data" type="NXdata"> </group>
+</group>

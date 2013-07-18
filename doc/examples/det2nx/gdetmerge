@@ -1,0 +1,17 @@
+#!/bin/sh
+
+DETDIR=$(zenity --title="Select detector data directory" --file-selection --directory)
+DETFILE=$(zenity --title="Set file name and range" --forms \
+                 --add-entry="File pattern:" \
+                 --add-entry="first image" \
+                 --add-entry="last image:" \
+                --separator=':')
+
+file_patter="$DETDIR/$DETFILE"
+
+#select the file where data should be stored
+TARGETFILE=$(zenity --title="Select target file" --file-selection)
+
+#select the location in the file where to store the data
+
+
