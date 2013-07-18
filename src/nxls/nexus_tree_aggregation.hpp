@@ -30,6 +30,7 @@
 using namespace pni::core;
 using namespace pni::io::nx;
 
+
 //-----------------------------------------------------------------------------
 template<typename OTYPE> void assemble_path(const OTYPE &o,string &path)
 {
