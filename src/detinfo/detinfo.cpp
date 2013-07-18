@@ -60,6 +60,16 @@ int main(int argc,char **argv)
     config.add_option(config_option<bool>("verbose","v","be verbose",&verbose));
     config.add_option(config_option<bool>("full-path","",
                 "show the full path on output",false));
+    config.add_option(config_option<bool>("nx","x",
+                "show number of points along the first dimension",false));
+    config.add_option(config_option<bool>("ny","y",
+                "show number of points along the second dimension",false));
+    config.add_option(config_option<bool>("ntot","n",
+                "show the total number of points",false));
+    config.add_option(config_option<bool>("dtype","d",
+                "show the data type",false));
+    config.add_option(config_option<bool>("list-files","l",
+                "just list the files found",false));
     config.add_argument(config_argument<strlist>("input-files",-1,strlist{"-"}));
 
     //------------------managing command line parsing--------------------------
@@ -91,14 +101,30 @@ int main(int argc,char **argv)
                 std::cerr<<std::endl;
                 return 1;
             }
-
-            if(config.value<bool>("full-path"))
-                std::cout<<file.path();
-            else
-                std::cout<<file.name();
+           
+            //obtain image information
             info = reader->info(0);
-            std::cout<<" ("<<info.nx()<<" x "<<info.ny()<<") ntot = "<<info.npixels();
-            std::cout<<" type = "<<info.get_channel(0).type_id()<<std::endl;
+
+            if(config.value<bool>("nx"))
+                std::cout<<info.nx()<<std::endl;
+            else if(config.value<bool>("ny"))
+                std::cout<<info.ny()<<std::endl;
+            else if(config.value<bool>("ntot"))
+                std::cout<<info.npixels()<<std::endl;
+            else if(config.value<bool>("dtype"))
+                std::cout<<info.get_channel(0).type_id()<<std::endl;
+            else if(config.value<bool>("list-files"))
+                std::cout<<file.path()<<std::endl;
+            else
+            {
+
+                if(config.value<bool>("full-path"))
+                    std::cout<<file.path();
+                else
+                    std::cout<<file.name();
+                std::cout<<" ("<<info.nx()<<" x "<<info.ny()<<") ntot = "<<info.npixels();
+                std::cout<<" type = "<<info.get_channel(0).type_id()<<std::endl;
+            }
 
         }
     }
