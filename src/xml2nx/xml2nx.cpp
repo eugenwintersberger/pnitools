@@ -20,7 +20,7 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-
+#include <iostream>
 #include "xml2nx.hpp"
 #include "../common/config_utils.hpp"
 
@@ -40,17 +40,41 @@ int main(int argc,char **argv)
     }
 
     //--------- setup CLI configuration ---------------------------------------
-    if(parse_cli_opts(argc,argv,program_name,conf))
+    try
+    {
+        if(parse_cli_opts(argc,argv,program_name,conf))
+            return 1;
+       
+        if(check_help_request(conf,help_header)) 
+            return 1;
+    }
+    catch(pni::core::cli_option_error &error)
+    {
+        std::cerr<<"Error during parsing command line options and arguments!";
+        std::cerr<<std::endl;
+        std::cerr<<error<<std::endl;
         return 1;
-   
-    if(check_help_request(conf,help_header)) 
-        return 1;
+    }
   
     try
     {
         //-------------- read the XML data ------------------------------------
-        auto filename = conf.value<string>("input-file");
-        xml::node root_node = xml::create_from_file(filename);
+        xml::node root_node;
+        if(!conf.has_option("input-file"))
+        {
+            //read input data from a stream
+            string buffer;
+            char value;
+            while(std::cin.get(value)) buffer += value;
+
+            root_node = xml::create_from_string(buffer);
+        }
+        else
+        {
+            //read data from a file
+            auto filename = conf.value<string>("input-file");
+            root_node = xml::create_from_file(filename);
+        }
 
         //---------------------------- open the nexus file --------------------
 
@@ -71,6 +95,11 @@ int main(int argc,char **argv)
 
 
         file.close();
+    }
+    catch(const pni::core::cli_option_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
     }
     catch(nxfile_error &error)
     {
