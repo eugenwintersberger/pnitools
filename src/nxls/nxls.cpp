@@ -65,7 +65,8 @@ int main(int argc,char **argv)
         
         std::vector<string> path_v;
         aggregate_nexus_path(root,path_v,
-                  config.value<bool>("recursive"),false);
+                  config.value<bool>("recursive"),
+                  config.value<bool>("show-attributes"));
 
         for(auto p: path_v)
             std::cout<<p<<std::endl;
