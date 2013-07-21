@@ -1,0 +1,9 @@
+Import("cli_env")
+
+nx2xml_objects =[cli_env.Object(["nx2xml.cpp","nx2xml_utils.cpp","xml_utils.cpp"])]
+nx2xml_objects.extend(SConscript("../common/SConscript"))
+nx2xml = cli_env.Program(target="nx2xml",source=nx2xml_objects)
+nx2xml_install = cli_env.Install("$PREFIX/bin",nx2xml)
+
+cli_env.Alias("all",[nx2xml])
+cli_env.Alias("install",[nx2xml_install])
