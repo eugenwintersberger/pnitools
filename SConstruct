@@ -18,7 +18,7 @@ var.Add(PathVariable("QT4DIR","QT4 installation directory","/usr"))
 
 
 #---------------create the build environment-----------------------------------
-env = Environment(variables=var,ENV={"PATH":os.environ["PATH"]},tools=['default'])
+env = Environment(variables=var,ENV={"PATH":"/usr/lib/ccache:"+os.environ["PATH"]},tools=['default'])
 #check if the user has set PKG_CONFIG_PATH to some additional location
 try:
     env["ENV"]["PKG_CONFIG_PATH"] = os.environ["PKG_CONFIG_PATH"]
