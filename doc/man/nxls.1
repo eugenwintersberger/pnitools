@@ -1,0 +1,160 @@
+.\" detinfo
+.\" Contact Eugen Wintersberger <eugen.wintersberger@desy.de> for typos and corrections
+.TH xml2nx 1 "Jul 22,2013" "" "User commands"
+.SH NAME
+nxls - list content of a Nexus file
+
+.SH SYNOPSIS
+.B nxls [OPTIONS] NEXUSPATH 
+
+.SH DESCRIPTION
+\fBnxls\fR can be understood as the Nexus counterpart of the \fBls\fR on a Unix
+shell. It lists the content of a Nexus file to standard out. \fBnxls\fR takes
+either a single file name or a full Nexus path as input. In the first case the
+content of the root-level of the file is shown. In the latter one all children
+of a given group are shown. See the examples section of this man-page for more
+information about this.
+
+.SH OPTIONS
+The programm takes the following options:
+.TP
+\fB\-h\fR,\fB\-\-help\fR
+print short program help
+.TP
+\fB\-r\fR,\fB\-\-recursive\fR
+show the content of all subgroups of a given Nexus group
+.TP
+\fB\-a\fR,\fB\-\-show\-attributes\fR
+shows attributes in addition to groups and field.
+
+.SH EXAMPLES
+In the most simplest case one can simply use
+.IP
+$> nxls output.nx
+.RS
+/scan_1:NXentry
+.RE 0
+.P
+which shows only the objects stored at the top level of the file. To see the
+entire file use the \fB\-r\fR option like this
+.IP
+$> nxls -r output.nx
+.RS
+/scan_1:NXentry
+.RS 0
+/scan_1:NXentry/control:NXmonitor
+.RS 0
+/scan_1:NXentry/data:NXdata
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/description
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/distance
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/layout
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size
+.RS 0
+/scan_1:NXentry/sample:NXsample
+
+.RE 0 
+.P
+which shows the fields and groups stored in the file along with their full Nexus
+path. With the \fB\-a\fR option attributes are shown too
+.IP
+$> nxls -ra output.nx
+.RS
+/scan_1:NXentry
+.RS 0
+/scan_1:NXentry@NX_class
+.RS 0
+/scan_1:NXentry/control:NXmonitor
+.RS 0
+/scan_1:NXentry/control:NXmonitor@NX_class
+.RS 0
+/scan_1:NXentry/data:NXdata
+.RS 0
+/scan_1:NXentry/data:NXdata@NX_class
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument@NX_class
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector@NX_class
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data@long_name
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data@units
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/description
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/distance
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/layout
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size
+.RS 0
+/scan_1:NXentry/sample:NXsample
+.RS 0
+/scan_1:NXentry/sample:NXsample@NX_class
+.RE 0
+.P
+Finally, in some cases one is only interested in the content of a part of the
+Nexus file. Let's assume for the moment that only the detector section is of
+interest. In this case one could use
+.IP
+$> nxls -ra output.nx:///:NXentry/:NXinstrument/:NXdetector
+.RS 
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data@long_name
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data@units
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/description
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/distance
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/layout
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size
+.RS 0
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size
+.RE 0
+.P
+As shown in this last example \fBnxls\fR can be used along with a Nexus path
+like most of the tools in the \fBpni\-tools\fR package.
+
+
+
+.SH EXIT CODE
+0 in the case of success, 1 otherwise
+
+.SH AUTHOR
+Written bei Eugen Wintersberger <eugen.wintersberger@desy.de>
+
+.SH COPYRIGHT
+Copyright 2013 Eugen Wintersberger License GLPLv2+: GNU GPL version 2 or later
+<http://gnu.org/license/gpl.html>.  This is free software: you are free to
+change and redistribute it. There is no WARRENTY, to the extent permitted by
+law.
+
+.SH SEE ALSO
+.IP \fBpni-tools\fR 
+
+
+
+
