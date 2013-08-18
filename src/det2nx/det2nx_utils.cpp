@@ -21,8 +21,8 @@
  */
 
 #include "det2nx.hpp"
-#include <pni/io/cbf_reader.hpp>
-#include <pni/io/tiff_reader.hpp>
+#include <pni/io/cbf/cbf_reader.hpp>
+#include <pni/io/tiff/tiff_reader.hpp>
 #include "../common/file_utils.hpp"
 //#include "../common/nexus_field_utils.hpp"
 

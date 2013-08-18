@@ -23,8 +23,8 @@
 #include<iostream>
 #include<vector>
 
-#include <pni/io/cbf_reader.hpp>
-#include <pni/io/tiff_reader.hpp>
+#include <pni/io/cbf/cbf_reader.hpp>
+#include <pni/io/tiff/tiff_reader.hpp>
 
 #include <pni/core/config/configuration.hpp>
 #include <pni/core/config/config_parser.hpp>

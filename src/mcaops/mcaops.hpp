@@ -29,7 +29,7 @@
 #include<pni/core/numarray.hpp>
 #include<pni/core/config/configuration.hpp>
 #include<pni/core/config/config_parser.hpp>
-#include<pni/io/fio_reader.hpp>
+#include<pni/io/fio/fio_reader.hpp>
 
 #include "operation.hpp"
 #include "max_operation.hpp"

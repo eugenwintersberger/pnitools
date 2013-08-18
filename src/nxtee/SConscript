@@ -1,9 +1,0 @@
-Import("program_env")
-
-nxtee_objects =[program_env.Object(["main.cpp"])]
-nxtee_objects.extend(SConscript("../common/SConscript"))
-nxtee = program_env.Program(target="nxtee",source=nxtee_objects)
-nxtee_install = program_env.Install("$PREFIX/bin",nxtee)
-
-program_env.Alias("all",[nxtee])
-program_env.Alias("install",[nxtee_install])

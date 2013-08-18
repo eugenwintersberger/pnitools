@@ -32,8 +32,8 @@
 #include <pni/io/nx/nxvariant.hpp>
 #include <pni/io/image_reader.hpp>
 #include <pni/io/image_info.hpp>
-#include <pni/io/cbf_reader.hpp>
-#include <pni/io/tiff_reader.hpp>
+#include <pni/io/cbf/cbf_reader.hpp>
+#include <pni/io/tiff/tiff_reader.hpp>
 #include "../common/file.hpp"
 #include "../common/exceptions.hpp"
 #include <boost/filesystem.hpp> 
