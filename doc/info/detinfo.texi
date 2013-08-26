@@ -1,1 +1,75 @@
-Documentation about detinfo
+The @command{detinfo} program tries to retrieve basic information about the data
+stored in a detector file. A typical application would be to determine detector
+parameters to create a Nexus file template into which existing existing data
+should be merged. Currently the following file formats are supported
+@itemize @bullet
+@item 
+CBF - the CIF binary format written by DECTRIS detectors
+
+@item 
+TIFF - the tagged image file format
+@end itemize
+
+Nexus is currently not supported but will be in a future release. The program
+output provides the following information
+
+@itemize @bullet
+@item 
+the name of the file
+@item
+the resolution of the image in the format width times height
+@item 
+the total number of pixels stored 
+@item 
+the data type used for storing the data
+@end itemize
+
+This information can be retrieved either collectively or individually.
+@command{detinfo} returns 0 in case of success and 1 otherwise. 
+
+@menu 
+* program options:: command line options taken by @command{detinfo}
+* examples:: some examples 
+@end menu
+
+@node program options
+@subsection Program options
+
+The following options can be passed to @command{detinfo}
+
+@table @samp
+@item -h
+@itemx --help
+show a brief help text 
+
+@item -v
+@itemx --verbose
+provide verbose output
+
+@item --full-path
+show the full path to the detector file  (by default only the filename is shown)
+
+@item -x
+@itemx --nx
+print only number of pixels in x-direction 
+
+@item -y
+@itemx --ny
+print only number of pixels in y-direction
+
+@item -n
+@itemx --ntot
+print total number of pixels stored in the image
+
+@item -d
+@itemx --dtype
+print only the data type used in the image file 
+
+@item -l
+@item --list-file
+list the detector files found by the program.
+
+@end table
+
+@node examples
+@subsection examples
