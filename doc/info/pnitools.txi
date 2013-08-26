@@ -38,9 +38,45 @@ hello world, this is the first part of the chatper
 @node Programms
 @chapter Programms 
 
+The following packages are currently provided by the pnitools distribution
+@menu 
+* detinfo:: program to obtain information from a detector file
+* det2nx:: program to merge detector images in a Nexus file
+* mcaops:: program for the manipulation of MCA data
+* nxls:: list the content of a nexus file
+* nxcat:: write the content of Nexus data fields to standard out
+* xml2nx:: convert XML structures to a Nexus file
+* nx2xml:: convert a Nexus structure to XML
+@end menu
 
-Yet some other stupid text
+@node detinfo
+@section detinfo
+@include detinfo.texi
 
+
+@node det2nx
+@section det2nx
+@include det2nx.texi
+
+@node mcaops
+@section mcaops
+@include mcaops.texi
+
+@node nxls
+@section nxls
+@include nxls.texi
+
+@node nxcat
+@section nxcat
+@include nxcat.texi
+
+@node xml2nx
+@section xml2nx
+@include xml2nx.texi
+
+@node nx2xml
+@section nx2xml
+@include nx2xml.texi
 
 
 @bye
