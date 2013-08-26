@@ -11,6 +11,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COMPILER_RELEASE_FLAGS}")
 
 add_subdirectory("configure")
 add_subdirectory("doc/man")
+add_subdirectory("doc/info")
 add_subdirectory("src/common")
 add_subdirectory("src/det2nx")
 add_subdirectory("src/detinfo")
