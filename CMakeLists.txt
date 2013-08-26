@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 include(GNUInstallDirs)
 project(pnitools)
-set(CMAKE_VERBOSE_MAKEFILE ON)
 
 #======================do here some setup work=================================
 #setting the compiler flags
@@ -18,7 +17,7 @@ add_subdirectory("src/mcaops")
 add_subdirectory("src/nx2xml")
 add_subdirectory("src/nxcat")
 add_subdirectory("src/nxls")
-add_subdirectory("src/nxsh")
+#add_subdirectory("src/nxsh")
 #add_subdirectory("src/nxtee")
 add_subdirectory("src/xml2nx")
 
