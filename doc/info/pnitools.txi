@@ -32,8 +32,16 @@ or reading data out of a Nexus file.
 @node General overview
 @chapter General overview
 
+All programms included in the pnitools distribution share some common behavior. 
+This chapter describes the common concepts used throughout all programms.
 
-hello world, this is the first part of the chatper
+@menu
+* Regions of interest:: how to specify regions of interests for detector data
+@end menu
+
+@node Regions of interest
+@section Regions of interest
+@include rois.texi
 
 @node Programms
 @chapter Programms 

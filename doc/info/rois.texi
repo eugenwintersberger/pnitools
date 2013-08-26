@@ -1,0 +1,30 @@
+
+A region of interest (ROI) defines a particular region in a 1D or a 2D detector.
+If a program offers you the possibility to the specify one or several ROIs,
+whatever the program will do will be restricted to these ROIs.  ROIs are usually
+passed to a program by the @option{-r} or @option{--roi} command line option. For instance,
+if you are interested only in the data stored between channels 230 and 1025 of
+an MCA you can select this ROI with
+
+@example
+$ prog --roi=230:1026 ......some other options...
+@end example
+
+@noindent which will cause the program to act only on the data from channel 230
+to 1024. The last index 1024 is not included in the selection - this should
+resemble the behavior of numpy slices which are well known by many scientists.
+
+@noindent For 2D data the ROI can be set with
+
+@example
+$ prog -r230:1026,100:512 .....some other options....
+@end example
+
+@noindent which will select data form pixel 230 to 1025 in the first and 100 to
+511 in the second dimension. In many cases you can pass several ROIs to the
+program. In this case each ROI gets its own option. This is shown here for an
+MCA (1D data)
+
+@example
+$ prog -r20:45 -r100:512 -r1024:1398 .....some other options...
+@end example
