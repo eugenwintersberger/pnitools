@@ -1,0 +1,73 @@
+Many of the programs provided by pnitools work with data stored in one ore many
+files. The names of these files are generally passed as command line arguments
+at the end of a program's command line. In the case of a single input file a
+syntax like this can be expected 
+
+@example
+$ prog OPTIONS input_file.dat
+@end example
+
+@noindent If supported by the executing shell, wildcards can be used to pass an
+entire list of files to a program 
+
+@example
+$ prog OPTIONS data/may_2012/exp_*.dat
+@end example
+
+@noindent which will pass a list of filenames all matching the pattern
+@file{data/may_2012/exp_*.dat} to the program. Though being consistent with
+standard Unix behavior such an approach can cause problems when the order in
+which the files are passed matters and the way the files are ordered depends on
+the executing shell. In such a situation most programs provide two approaches to
+attack this issue 
+
+@enumerate 
+@item
+use the  @option{--input} option whose value is the name of a file containing
+the name of the files to read in the desired order
+@item
+use a template and a numeric range to specify the input files. 
+@end enumerate
+
+@noindent The first approach is rather straight forward: write the name of the
+files to an ASCII file (lets say @file{files.txt})  and pass this file via the
+@option{--input} to the program
+
+@example
+$ prog --input=files.txt OPTIONS
+@end example
+
+@noindent this approach is not only simple to understand it also has the
+advantage that the filenames stored in the input file must not follow any
+particular pattern. You can pass whatever files you want. The obvious drawback
+of this method is that one first has to generate the input file with the
+filenames. This can be come expensive if the number of input files is large.
+
+Fortunately, in many applications that produce a large series of files
+use simple file name patterns for their output files. This pattern typically
+Such a file typically looks like @file{detector_may_2012_<NUMBER>.dat} where
+@emph{<NUMBER>} is the index of the file in the list. In such cases most of the
+programs in pnitools support a special syntax to describe such a series of files
+
+@example
+$ prog OPTIONS detector_may_2012_%05i.dat:100:1000
+@end example
+
+@noindent 
+The first part is a C-style format string representing the file name pattern. In
+the previous example this would be @file{detector_may_2012_%05i.dat}. 
+This name pattern can be follows by two or three positive integer numbers
+separated by a : from each other. The first two are the start and stop
+index. In our previous example, files, starting from
+@file{detector_may_2012_100.dat} until @file{detector_may_2012_1000.dat} would
+have been read.  Unlike for ROIs the last index is included in the list. The
+last number can be used to pass a stride to the index range as shown in this
+next example
+
+@example
+$ prog OPTIONS detector_may_2012_%05i.dat:100:1000:2
+@end example
+
+@noindent
+where only every second file from the indices 100 to 1000 is read.
+

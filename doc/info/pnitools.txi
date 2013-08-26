@@ -37,11 +37,21 @@ This chapter describes the common concepts used throughout all programms.
 
 @menu
 * Regions of interest:: how to specify regions of interests for detector data
+* Input file selection:: how to specify input files for programs
+* Addressing Nexus objects:: how to specify a Nexus object within a file
 @end menu
 
 @node Regions of interest
 @section Regions of interest
 @include rois.texi
+
+@node Input file selection
+@section Input file selection
+@include input_files.texi
+
+@node Addressing Nexus objects
+@section Addressing Nexus objects
+@include nexus_path.texi
 
 @node Programms
 @chapter Programms 
