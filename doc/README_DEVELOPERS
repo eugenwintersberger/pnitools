@@ -1,0 +1,48 @@
+Remarks for Developers
+======================
+
+This directory contains the sources for the documentation of the pnitools
+project. In this file the general documentation strategy is described. 
+There are currently tow main sets of documentation available:
+
+1.) user documentation 
+2.) developer documentation
+
+1.) user documentation
+    ------------------
+
+According to the GNU standard man-pages are considered as deprecated and should
+no longer be used. Instead documentation should be provided as texinfo files. 
+However, many users, including the author, like to use man-pages to quickly look
+up the available command line options or return values provided by a program. To
+get best of both worlds (texinfo and man-pages) and at the same time minimizing
+the efforts the following strategy is suggested
+
+.) the man pages provided contain only the basic information like a short 
+   description along with the command line options, the return value of 
+   the program, and reported bugs. Additionally contact information to the 
+   author should be provided. Finally the man-page should encourage the user 
+   to lookup the more detailed documentation provided by texinfo.
+
+.) A full documentation of each program including also examples should be
+   provided by texinfo. 
+
+The pnitools.1 manpage should provide only a short description and mention the
+texinfo documentation as the primary source of information. 
+
+All further information like PDFs or HTML can be created directly from the
+texinfo pages. 
+The user documentation should be installed in locations common for documentation
+on a specific platform.
+
+2.) developer documentation
+    -----------------------
+
+The developer documentation should give a fellow programmer an overview over the
+structure of the project and provided detailed information about the
+implementation of the individual programs. Unlike the user documentation, this
+set of information is not installed on a production system but remains in the
+source tree within this directory. There is also no automatic build for the
+documentation. You have to call 'doxygen' manually from within this directory. 
+Doxygen will create a directory 'html' in this directory which contains the C++
+class documentation.
