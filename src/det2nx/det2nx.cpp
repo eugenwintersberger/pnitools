@@ -35,6 +35,13 @@ int main(int argc,char **argv)
 {
     //create configuration
     configuration config = create_configuration();
+
+    if(argc<2)
+    {
+        std::cerr<<"det2nx called with to less arguments!"<<std::endl;
+        std::cerr<<std::endl<<"Use det2nx -h for more information"<<std::endl;
+        return 1;
+    }
   
     //parse command line options and arguments
     if(parse_cli_opts(argc,argv,program_name,config)) return 1;
