@@ -26,13 +26,11 @@
 #include <map>
 #include <vector>
 #include <pni/core/types.hpp>
-#include <pni/io/nx/nx.hpp>
 
 #include "environment.hpp"
 #include "command.hpp"
 
 using namespace pni::core;
-using namespace pni::io::nx::h5;
 
 /*!
 \brief interpreter for nexus shell

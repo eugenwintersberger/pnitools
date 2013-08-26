@@ -27,7 +27,6 @@ extern "C" {
 #include<readline/history.h>
 }
 
-#include "environment.hpp"
 #include "interpreter.hpp"
 #include "cmd_ls.hpp"
 #include "cmd_open.hpp"

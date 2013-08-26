@@ -20,20 +20,19 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include <boost/tokenizer.hpp>
 #include "environment.hpp"
 
 //-----------------------------------------------------------------------------
-environment::environment(nxfile file):_file(file)
-{
-    _current_group = file["/"];
-}
+environment::environment(nxfile file):
+    _file(file),
+    _current_group(file["/"])
+{ }
 
 //-----------------------------------------------------------------------------
-environment::environment(nxfile file,const string &path):_file(file)
-{
-    _current_group = file[path];
-}
+environment::environment(nxfile file,const string &path):
+    _file(file),
+    _current_group(file[path])
+{ }
 
 //-----------------------------------------------------------------------------
 environment::~environment()
@@ -61,12 +60,8 @@ void environment::current_group(const string &path)
     //need to check if the target is a group
     nxobject o = _current_group[path];
     if(o.object_type() == pni::io::nx::nxobject_type::NXFIELD)
-    {
         std::cout<<"You cannot cd to a field!"<<std::endl;
-    }
     else
-    {
         _current_group = nxgroup(o);
-    }
 }
 
