@@ -7,30 +7,54 @@ det2nx [OPTIONS] INPUT-FILES
 @end example
 
 @noindent
-where @var{INPUT-FILES} specifies the input file selection 
-@pxref{Input file selection}.
+where @var{INPUT-FILES} specifies the input files as described in 
+@ref{Input file selection}.
 
+@command{det2nx} adds detector data stored in single image files to an image stack
+in a Nexus file. Single files can be added as well as whole ranges of files.
+The Nexus file and the field in the file can be passed with the @option{-t}
+option. 
 
 @menu
-* Program options:: command line options description
-* Examples:: usage examples
+* det2nx_options:: command line options description
+* det2nx_examples:: usage examples
 @end menu
 
 
-@node Program options
+@node det2nx_options
 @subsection Program options
 
+Currently the following command line options are allowed
+@table @samp
+@item -h
+@itemx --help
+print short program help
 
+@item -v
+@itemx --verbose
+produce verbose output
 
-@node Examples
+@item --overwrite
+Newly create the file if it exists.
+
+@item --deflate=@var{LEVEL}
+Use deflate algorithm (zip) for compression. The compression level is determined
+by @var{ILEVEL}
+
+@item -t@var{NEXUSTARGET}
+@item --target=@var{NEXUSTARGET}
+Defines the Nexus field where the data should be stored. 
+@end table
+
+@node det2nx_examples
 @subsection Examples
 
 The usage of the program is rather easy. 
 
 @example
-$> TARGET=file.nx:///entry:NXentry/instrument:NXinstrument/detector:NXdetector/data
-$> SOURCE=$HOME/data/detector/files_%05i.cbf:1:1000
-$> det2nx -t$TARGET $SOURCE
+$ TARGET=file.nx:///:NXentry/:NXinstrument/detector:NXdetector/data
+$ SOURCE=$HOME/data/detector/files_%05i.cbf:1:1000
+$ det2nx -t$TARGET $SOURCE
 @end example
 
 @noindent
@@ -41,7 +65,7 @@ the data will be appended.
 If data should not be appended use the @option{--overwrite} option like this
 
 @example
-$> det2nx --overwrite -t$TARGET $SOURCE
+$ det2nx --overwrite -t$TARGET $SOURCE
 @end example
 
 @noindent

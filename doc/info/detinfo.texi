@@ -35,17 +35,15 @@ detinfo [OPTIONS] FILESPEC
 
 @noindent
 @var{FILESPEC} describes the list of files that should be read by
-@command{detinfo}.  (@pxref{Input file selection} for more information about how
-to specify input files). 
-
+@command{detinfo}. For more information about how to specify input files see
+@ref{Input file selection}.
 @command{detinfo} returns 0 in case of success and 1 otherwise. 
 
 @menu 
-* program options:: command line options taken by @command{detinfo}
-* examples:: some examples 
+* Program options:: command line options taken by @command{detinfo}
 @end menu
 
-@node program options
+@node Program options
 @subsection Program options
 
 The following options can be passed to @command{detinfo}
@@ -84,5 +82,3 @@ list the detector files found by the program.
 
 @end table
 
-@node examples
-@subsection examples
