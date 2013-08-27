@@ -22,9 +22,22 @@ the resolution of the image in the format width times height
 the total number of pixels stored 
 @item 
 the data type used for storing the data
+@item
+it can list all found detector file
 @end itemize
 
 This information can be retrieved either collectively or individually.
+The invocation of detinfo is rather straight forward. 
+
+@example
+detinfo [OPTIONS] FILESPEC
+@end example
+
+@noindent
+@var{FILESPEC} describes the list of files that should be read by
+@command{detinfo}.  (@pxref{Input file selection} for more information about how
+to specify input files). 
+
 @command{detinfo} returns 0 in case of success and 1 otherwise. 
 
 @menu 
