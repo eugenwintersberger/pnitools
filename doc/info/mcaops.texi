@@ -118,12 +118,13 @@ and named @file{test.dat}. Here the first column is the channel
 index while the second holds the channel data.  
 With 
 @example
-$ cat test.dat | gnuplot -p -e "plot '-' u 1:2 w l" 
+$ GCMD="set xlabel \"channels\"; set xtics -2,1,12; plot '-' u 1:2 w boxes"
+$ cat test.dat | gnuplot -p -e "$GCMD" 
 @end example
 @noindent 
 gies
 @float
-@center @image{gnuplot,,3in}
+@center @image{mcaops_testdata,,3in}
 @end float
 
 @noindent
@@ -143,4 +144,50 @@ $> cat test.dat | mcaops max
 @noindent
 the two  numbers are the index of the maximum and its value respectively. 
 It is important to note that the index is 0-based like in C. 
+
+@example
+$ cat test.dat | mcaops rebin --noxrebin -b3
+0       11
+1       350
+2       240
+3       1
+$ cat test.dat | mcaops rebin --noxrebin -b3 | gnuplot -p -e "$GCMD"
+@end example
+@float
+@center @image{mcaops_rebin3,,3in}
+@end float
+@noindent
+@command{mcaops} does not normalize the re-binned data by default. To normalize
+the data use the @option{--normalize} 
+
+@example
+$ cat test.dat | mcaops rebin --noxrebin --normalize -b3 
+0       3.66667
+1       116.667
+2       80
+3       0.5
+@end example
+
+@noindent
+Another operation is to scale the data. This means that the channel numbers are
+associated with a particular numeric value (a time for instance).
+
+@example
+$ cat test.dat | mcaops scale -c5 -d0.5 -x0.0
+-2.5    1
+-2      0
+-1.5    10
+-1      50
+-0.5    100
+0       200
+0.5     70
+1       150
+1.5     20
+2       1
+2.5     0
+@end example
+
+@noindent 
+Here the maximum channel (5) is used as the origin of the new axis. The axis
+value at the origin is set to 0.0 and the step size to 0.5. 
 

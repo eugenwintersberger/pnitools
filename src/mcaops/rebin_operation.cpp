@@ -77,7 +77,9 @@ void rebin_operation::operator()(const array_type &channels,
     //when we are done we have to manage the last bin 
     if(channels.size()%_bsize != 0)
     {
-        _data[new_index] /= channels.size()%_bsize;
+        if(_norm)
+            _data[new_index] /= channels.size()%_bsize;
+
         if(_noxrebin) 
             _channels[new_index] = new_index; 
         else
