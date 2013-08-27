@@ -1,1 +1,56 @@
-Documentation about det2nx
+
+@command{det2nx} is a program for merging single image detector files into a
+Nexus file. Program invocation follows the convention
+
+@example
+det2nx [OPTIONS] INPUT-FILES
+@end example
+
+@noindent
+where @var{INPUT-FILES} specifies the input file selection 
+@pxref{Input file selection}.
+
+
+@menu
+* Program options:: command line options description
+* Examples:: usage examples
+@end menu
+
+
+@node Program options
+@subsection Program options
+
+
+
+@node Examples
+@subsection Examples
+
+The usage of the program is rather easy. 
+
+@example
+$> TARGET=file.nx:///entry:NXentry/instrument:NXinstrument/detector:NXdetector/data
+$> SOURCE=$HOME/data/detector/files_%05i.cbf:1:1000
+$> det2nx -t$TARGET $SOURCE
+@end example
+
+@noindent
+As shown in the first line the target field in the Nexus file is specified by a
+standard Nexus path. If the file or some of the groups do not exist they will be
+created automatically. In cases that the file and the data file already exists
+the data will be appended.
+If data should not be appended use the @option{--overwrite} option like this
+
+@example
+$> det2nx --overwrite -t$TARGET $SOURCE
+@end example
+
+@noindent
+To add compression use 
+
+@example
+$> det2nx --deflate=5 -t$TARGET $SOURCE
+@end example
+
+@noindent
+which enables deflate compression, here with a compression level of 5.
+
