@@ -100,7 +100,7 @@ The @command{sum} and @command{max} command have no additional options.
 
 Lets start with a very simple example reading data form standard input and using
 the accumulating operations @command{sum} and @command{max}. For the sake of
-convenience a data file should be created which looks like this
+convenience a data file with the following content should be created 
 @example
 0 1
 1 0
@@ -114,24 +114,33 @@ convenience a data file should be created which looks like this
 9 1
 10 0
 @end example
-and store the file as @file{test.dat}. Here the first column is the channel
+and named @file{test.dat}. Here the first column is the channel
 index while the second holds the channel data.  
-Plotting this data looks like this
+With 
+@example
+$ cat test.dat | gnuplot -p -e "plot '-' u 1:2 w l" 
+@end example
+@noindent 
+gies
 @float
 @center @image{gnuplot,,3in}
 @end float
 
-To compute the sum of the data
+@noindent
+Lets start with the accumulative commands.  To compute the sum of the data
 stored use
 @example 
 $ cat test.dat | mcaops sum 
 602
 @end example 
+@noindent
 where the output, 602, is the sum of values stored in the second column.
 Analogously, to find the maximum use
 @example 
 $> cat test.dat | mcaops max
 5   200
 @end example 
-the two  numbers are the position of the maximum and its value respectively. 
+@noindent
+the two  numbers are the index of the maximum and its value respectively. 
+It is important to note that the index is 0-based like in C. 
 
