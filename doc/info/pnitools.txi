@@ -16,6 +16,21 @@ Copyright @copyright{} 2013 Eugen Wintersberger
 @insertcopying
 @end titlepage
 
+@c =======================sections to include to the info system===============
+@dircategory pnitools documentation
+@direntry 
+* pnitools: (pnitools). pnitools full documentation
+* detinfo: (pnitools) detinfo. documentation of detinfo 
+* det2nx: (pnitools) det2nx. documentation of det2nx
+* mcaops: (pnitools) mcaops. documentation of mcaops
+* nxcat: (pnitools) nxcat. documentation of nxcat
+* nxls: (pnitools) nxls. documentation of nxls
+* nx2xml: (pnitools) nx2xml. documentation of nx2xml
+* xml2nx: (pnitools) xml2nx. documentation of xml2nx
+@end direntry
+
+@c ============================================================================
+
 @contents
 
 @c =================this is only required for INFO=============================
