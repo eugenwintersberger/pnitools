@@ -11,6 +11,7 @@ add_custom_command(OUTPUT pnitools.info
                   )
 add_custom_command(OUTPUT pnitools.pdf 
                    COMMAND pdftex --output-directory=${CMAKE_CURRENT_BINARY_DIR} ${INFO_SRC}
+                   COMMAND pdftex --output-directory=${CMAKE_CURRENT_BINARY_DIR} ${INFO_SRC}
                    DEPENDS ${TEXI_SRC}
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                    )
