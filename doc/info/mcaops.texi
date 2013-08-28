@@ -158,7 +158,7 @@ $ cat test.dat | mcaops rebin --noxrebin -b3 | gnuplot -p -e "$GCMD"
 @end float
 @noindent
 @command{mcaops} does not normalize the re-binned data by default. To normalize
-the data use the @option{--normalize} 
+the data use the @option{--normalize}. 
 
 @example
 $ cat test.dat | mcaops rebin --noxrebin --normalize -b3 
@@ -169,6 +169,10 @@ $ cat test.dat | mcaops rebin --noxrebin --normalize -b3
 @end example
 
 @noindent
+The @option{--noxrebin} option tells the program to not rebin the x-axis.
+Typically one would not use this option if the x-axis has some physical meaning
+(instead of just bin numbers as in this example). 
+
 Another operation is to scale the data. This means that the channel numbers are
 associated with a particular numeric value (a time for instance).
 

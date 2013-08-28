@@ -67,19 +67,22 @@ The following packages are currently provided by the pnitools distribution
 * nx2xml:: convert a Nexus structure to XML
 @end menu
 
+@page
 @node detinfo
 @section detinfo
 @include detinfo.texi
 
-
+@page
 @node det2nx
 @section det2nx
 @include det2nx.texi
 
+@page
 @node mcaops
 @section mcaops
 @include mcaops.texi
 
+@page
 @node nxls
 @section nxls
 @include nxls.texi

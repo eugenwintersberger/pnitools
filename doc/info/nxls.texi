@@ -1,1 +1,107 @@
-Documentation about nxls
+
+@command{nxls} lists the content of a Nexus file to standard out. It is somhow
+the equivalent to the @command{ls} on a Unix filesystem. 
+
+@example
+$ nxls [OPTIONS] FILE-SPEC
+@end example
+
+@noindent
+@var{FILE-SPEC} is a Nexus file specification as described in @ref{Input file
+selection}. The program returns 0 in case of success and 1 otherwise.
+
+@subsection Program options
+
+@command{nxls} accepts the following command line arguments
+@table @samp
+@item -h
+@itemx --help
+print short program help
+
+@item -r
+@itemx --recursive
+show the content of all subgroups of a given Nexus group
+
+@item -a
+@itemx --show-attributes
+shows attributes in addition to groups and field.
+@end table
+
+@subsection Examples
+
+In the most simplest case one can simply use
+
+@example
+$ nxls output.nx
+/scan_1:NXentry
+@end example
+
+@noindent
+which shows only the objects stored at the top level of the file. To see the
+entire file use the @option{-r} option like this
+
+@example
+$ nxls -r output.nx
+/scan_1:NXentry
+/scan_1:NXentry/control:NXmonitor
+/scan_1:NXentry/data:NXdata
+/scan_1:NXentry/instrument:NXinstrument
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/description
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/distance
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/layout
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size
+/scan_1:NXentry/sample:NXsample
+@end example
+
+@noindent
+which shows the fields and groups stored in the file along with their full Nexus
+path. With the @option{-a} option attributes are shown too
+
+@example
+$ nxls -ra output.nx
+/scan_1:NXentry
+/scan_1:NXentry@@NX_class
+/scan_1:NXentry/control:NXmonitor
+/scan_1:NXentry/control:NXmonitor@@NX_class
+/scan_1:NXentry/data:NXdata
+/scan_1:NXentry/data:NXdata@@NX_class
+/scan_1:NXentry/instrument:NXinstrument
+/scan_1:NXentry/instrument:NXinstrument@@NX_class
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector@@NX_class
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data@@long_name
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data@@units
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/description
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/distance
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/layout
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size
+/scan_1:NXentry/sample:NXsample
+/scan_1:NXentry/sample:NXsample@@NX_class
+@end example
+
+@noindent
+Finally, in some cases one is only interested in the content of a part of the
+Nexus file. In this example only the content of the @verb{|NXdetector|} group is
+shown
+
+@example
+$> nxls -ra output.nx:///:NXentry/:NXinstrument/:NXdetector
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data@@long_name
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/data@@units
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/description
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/distance
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/layout
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size
+/scan_1:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size
+@end example
+
+@noindent
+As shown in this last example @command{nxls} can be used along with a Nexus path
+like most of the tools in the pnitools distribution.
+

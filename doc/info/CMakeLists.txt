@@ -6,10 +6,12 @@ set(INFO_SRC pnitools.txi)
 
 add_custom_command(OUTPUT pnitools.info  
                   COMMAND makeinfo -o${CMAKE_CURRENT_BINARY_DIR}/pnitools.info ${INFO_SRC}
+                  DEPENDS ${TEXI_SRC}
                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
                   )
 add_custom_command(OUTPUT pnitools.pdf 
                    COMMAND pdftex --output-directory=${CMAKE_CURRENT_BINARY_DIR} ${INFO_SRC}
+                   DEPENDS ${TEXI_SRC}
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                    )
 add_custom_target(pnitool_info ALL SOURCES "pnitools.info" "pnitools.pdf")
