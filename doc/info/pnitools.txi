@@ -38,9 +38,9 @@ Copyright @copyright{} 2013 Eugen Wintersberger
 @node Top
 @top
 
-pnitools is a collection of command-line programs helping you in managing Nexus
-files. There are programs for reading data from fields stored in Nexus fields,
-converting XML to Nexus files and Nexus to XML. 
+pnitools is a collection of command-line programs to manage and access data
+stored in Nexus files. Besides this more general purpose programs are provided
+that may help to make the every day business at the beamline easier.
 
 @menu
 * Common concepts:: concepts common to all programs
@@ -60,7 +60,8 @@ There are a lot of tools available on Unix terminals like @command{grep},
 Nexus, as a binary data format cannot make use of these tools. The @b{pnitools}
 distribution tries to fill this gap and provides command line programs to
 interact with Nexus files in a similar way as the above tools do with text
-files. 
+files. In addition @b{pnitools} provides some more general purpose programs 
+for data analysis which already do or will support Nexus.
 Currently, programs are available for 
 @itemize 
 @item creating Nexus files from XML
@@ -165,9 +166,6 @@ info pages
 all the other documentation including the pdf documents
 @end table
 
-
-
-
 @end iftex
 @c ============================================================================
 
@@ -179,6 +177,10 @@ functionality they all share some common concepts which shall be described here.
 Read this chapter carefully before proceeding to the detailed description of the
 individual programs. @command{prog} as used in the examples in this chapter is a
 placeholder for an arbitrary program from the @b{pnitools} distribution.
+
+Though this section is called @emph{Common concepts} it must be mentioned that
+individual programs can deviate from the procedures presented here. However, if
+this is the case it will be explicitly mentioned in the programs documentation.
 
 @menu
 * Regions of interest:: how to specify regions of interests for detector data

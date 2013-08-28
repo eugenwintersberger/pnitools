@@ -1,18 +1,37 @@
 
-Nexus files can be considered as a file-system in a file. Nexus as used here is
-assumed to use HDF5 as a storage backend. 
-If we would like to access an object in a file we can use the following syntax
+The internal structure of a Nexus files resembles that of a file system. Fields
+are organized in groups and can be addressed by an Unix like path. And this is
+what every program supporting the Nexus file format supports
 
 @example
 $ prog file:///path/to/object
 @end example
 
 @noindent
-attributes attached to an object can be described with
+In addition to groups and fields the Nexus path syntax allows also to address
+attributes
 
 @example
 $ prog file:///path/to/object@@attribute
 @end example
+
+@noindent
+However, while on a Unix filesystem all directories are basically the same, this
+is not true for Nexus groups. A Nexus group can also have a special type which
+provides information about the data stored in a particular group. 
+This can be used to refine the search for a specific object. 
+@example 
+$ prog file:///path:class_1/to:class_2/object:class_3
+@end example
+
+@noindent
+This path can only be expanded to its last object if not only the names of the
+groups match but also their class.
+
+This gives us an additional degree of freedom. 
+in every group a particular type of group appears only once we do not need to
+know the names of the groups in order to specify a path. We canIf we would like to access an object in a file
+we can use the following syntax
 
 @noindent
 This syntax works when you know the exact path to a particular object. Aside
@@ -20,9 +39,6 @@ from object names Nexus introduces the concept of base classes. Each object in
 a Nexus file belongs to one of these base classes. One can thus refine the path
 to an object to
 
-@example 
-$ prog file:///path:class_1/to:class_2/object:class_3
-@end example
 
 @noindent
 In this case no only the names of the different objects must match but also
