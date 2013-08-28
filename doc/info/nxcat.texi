@@ -15,7 +15,7 @@ necessarily from the same file.
 @command{nxcat} returns 0 on success and 1 otherwise.
 
 @subsection Program options
-The programm takes the following options:
+The programm takes the following options
 @table @samp
 @item -h
 @itemx --help

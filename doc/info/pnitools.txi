@@ -92,10 +92,12 @@ The following packages are currently provided by the pnitools distribution
 @section nxcat
 @include nxcat.texi
 
+@page
 @node xml2nx
 @section xml2nx
 @include xml2nx.texi
 
+@page
 @node nx2xml
 @section nx2xml
 @include nx2xml.texi
