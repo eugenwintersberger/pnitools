@@ -68,7 +68,25 @@ Currently, programs are available for
 @item listing the content and extract data from Nexus files
 @item merging detector data stored in individual files into a Nexus file.
 @end itemize
+@noindent
 In future this list may become longer.
+
+@section How to read
+
+New users are strongly recommended to read @ref{Common
+concepts} before anything else (including the rest of this chapter).
+Understanding the concepts presented in @ref{Common concepts} is crucial to read
+the documentation of the individual programs.
+
+The rest of this chapter deals with building and installing of the
+@b{pnitools}-distribution. It is thus for system administrators or experienced
+users only who know how to build code on their systems. 
+
+Users who have already experience with @b{pnitools} and want to use this manual
+as a quick reference for a particular program can immediately
+proceed to the appropriate section in the manual. However, as @b{pnitools}
+evolves it is recommended to have a quick look through @ref{Common concepts}
+from time to time to keep informed about new developments and possible changes.
 
 @section Installation
 
@@ -159,7 +177,8 @@ all the other documentation including the pdf documents
 Though all programs included in the pnitools distribution provide different
 functionality they all share some common concepts which shall be described here.
 Read this chapter carefully before proceeding to the detailed description of the
-individual programs.
+individual programs. @command{prog} as used in the examples in this chapter is a
+placeholder for an arbitrary program from the @b{pnitools} distribution.
 
 @menu
 * Regions of interest:: how to specify regions of interests for detector data
