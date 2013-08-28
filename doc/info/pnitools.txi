@@ -3,7 +3,7 @@
 @settitle pnitools
 
 @copying 
-Documentation on the pnitools programs
+pnitools documentation
 
 Copyright @copyright{} 2013 Eugen Wintersberger 
 @end copying
@@ -17,23 +17,134 @@ Copyright @copyright{} 2013 Eugen Wintersberger
 @end titlepage
 
 @contents
+
+@c =================this is only required for INFO=============================
+@ifinfo
 @node Top
 @top
 
-pnitools is a collection of small command-line programs helping you in managing
-Nexus files. It includes programms for creating Nexus files, feeding data into
-or reading data out of a Nexus file.
+pnitools is a collection of command-line programs helping you in managing Nexus
+files. There are programs for reading data from fields stored in Nexus fields,
+converting XML to Nexus files and Nexus to XML. 
 
 @menu
-* General overview:: overview
-* Programms:: the individual programs in more detail
+* Common concepts:: concepts common to all programs
+* Programms:: detailed description of the individual programs
 @end menu
+@end ifinfo
+@c ============================================================================
 
-@node General overview
-@chapter General overview
+@c ============================================================================
+@c Need some overview and installation instructions in the printed manual
 
-All programms included in the pnitools distribution share some common behavior. 
-This chapter describes the common concepts used throughout all programms.
+@iftex
+@chapter Overview
+
+There are a lot of tools available on Unix terminals like @command{grep},
+@command{cat}, or @command{awk} to manipulate and extract data from ASCII files. 
+Nexus, as a binary data format cannot make use of these tools. The @b{pnitools}
+distribution tries to fill this gap and provides command line programs to
+interact with Nexus files in a similar way as the above tools do with text
+files. 
+Currently, programs are available for 
+@itemize 
+@item creating Nexus files from XML
+@item convert Nexus files to XML
+@item listing the content and extract data from Nexus files
+@item merging detector data stored in individual files into a Nexus file.
+@end itemize
+In future this list may become longer.
+
+@section Installation
+
+@subsection Build requirements
+To build and install the @b{pnitools} distribution the following additional
+software packages must be available
+@itemize
+@item a full installation of the  @b{pnicore} and @b{pniio} libraries
+@item @command{pkg-config} for library configuration
+@item @command{cmake} version 2.6 and higher
+@item @command{pdftex} and  @command{makeinfo} for building the user
+documentation
+@item @command{doxygen} for developer documentation
+@end itemize
+A working setup for @command{pkg-config} is recommended as it would be difficult
+to get the configuration for @b{pnicore} and @b{pniio} right. Both libraries
+provide configuration files for @command{pkg-config} with the default
+installation. If the libraries cannot be found you may have to set the
+@env{PKG_CONFIG_PATH} environment variable according to the installation
+directories of @b{pniio} and @b{pnicore}.
+
+@subsection Building and installing pnitools
+
+After having ensured yourself that your system satisfies the build requirements
+download the sources from the @url{https://code.google.com/p/pnitools/,project website}. 
+Sources can be retrieved either by downloading a tarball or by checking out the
+actual sources from the git repository. 
+
+I strongly recommend to use the code directly from the GIT repository. The
+@emph{stable} branch always provides the latest release with all the bugfixes
+and is guaranteed to build. To get the code from GIT use 
+
+@example
+$ git clone https://code.google.com/p/pnitools pnitools-code
+@end example
+
+@noindent
+As we use @command{cmake} for building the distribution create an extra build
+directory somewhere on your filesystem and run cmake there
+
+@example
+$ mkdir pnitools-build
+$ cd pnitools-build
+$ cmake /PATH/TO/pnitools-code
+@end example
+
+@noindent 
+Once @command{cmake} finished the configuration successfully simply run
+@command{make} and @command{make install} form within the build directory
+
+@example 
+$ make
+$ make install
+@end example
+
+@noindent 
+By default @command{make} the default installation prefix is @file{/usr}. You
+can change this during the configuration run by setting the
+@env{CMAKE_INSTALL_REPFIX} variable with 
+
+@example
+$ cmake -DCMAKE_INSTALL_PREFIX=/opt/pnitools /PATH/TO/pnitools-code
+@end example
+
+@noindent
+During @command{make install} files will be copied to the following directories
+@table @file
+@item CMAKE_INSTALL_PREFIX/bin
+all the program binaries
+@item CMAKE_INSTALL_PREFIX/share/man
+manpages for the programs (you may need to add this to your @env{MANPATH}
+environment variable)
+@item CMAKE_INSTALL_PREFIX/share/info
+info pages 
+@item CMAKE_INSTALL_PREFIX/share/pnitools-doc
+all the other documentation including the pdf documents
+@end table
+
+
+
+
+@end iftex
+@c ============================================================================
+
+@node Common concepts
+@chapter Common concepts
+
+Though all programs included in the pnitools distribution provide different
+functionality they all share some common concepts which shall be described here.
+Read this chapter carefully before proceeding to the detailed description of the
+individual programs.
 
 @menu
 * Regions of interest:: how to specify regions of interests for detector data
