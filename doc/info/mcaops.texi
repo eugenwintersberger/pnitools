@@ -1,6 +1,10 @@
 @command{mcaops} is a program acting on MCA data. 
 
+@example
+mcaops [COMMAND] [OPTIONS] [INPUT FILE| - ]
+@end example
 
+@noindent
 @command{mcaops} is a utility program applying certain operations on MCA data.
 The MCA data can be either read from a file or from standard input. MCA data is
 passed in two columns, the first containing the bin number or the bin center
@@ -194,4 +198,8 @@ $ cat test.dat | mcaops scale -c5 -d0.5 -x0.0
 @noindent 
 Here the maximum channel (5) is used as the origin of the new axis. The axis
 value at the origin is set to 0.0 and the step size to 0.5. 
+
+Though @command{mcaops} currently not supports Nexus files, one can use it in
+connection with @command{ncat} by piping the output of @command{nxcat} as new
+input to @command{mcaops}. See @ref{nxcat} for more information.
 
