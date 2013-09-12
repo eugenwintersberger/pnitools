@@ -39,7 +39,11 @@ file::file(const string &path):
 //-----------------------------------------------------------------------------
 string file::name() const
 {
+#if BOOST_FILESYSTEM_VERSION <= 2
     return string(_path.filename());
+#else
+    return _path.filename().string();
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -51,7 +55,11 @@ string file::base() const
 //-----------------------------------------------------------------------------
 string file::extension() const
 {
+#if BOOST_FILESYSTEM_VERSION <= 2
     return string(_path.extension());
+#else 
+    return _path.extension().string();
+#endif
 }
 
 //-----------------------------------------------------------------------------
