@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
  *
- * This file is part of libpnicore.
+ * This file is part of pnitools.
  *
  * pnitools is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,35 +17,26 @@
  * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
  *************************************************************************
  *
- *  Created on: Jun 26, 2013
+ *  Created on: Sep 12, 2013
  *      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
-#pragma once
-#include<cppunit/TestFixture.h>
+
+#include <boost/current_function.hpp>
 #include<cppunit/extensions/HelperMacros.h>
-#include<boost/current_function.hpp>
 
-#include "common/array_utils.hpp"
-#include <pni/core/types.hpp>
-#include <pni/core/arrays.hpp>
+#include <vector>
+#include <list>
 
-using namespace pni::core;
+#include "column_test.hpp"
 
-//-----------------------------------------------------------------------------
-class array_utils_test : public CppUnit::TestFixture
-{
-        CPPUNIT_TEST_SUITE(array_utils_test);
-        CPPUNIT_TEST(test_creation);
-        CPPUNIT_TEST_SUITE_END();
+typedef std::vector<scalar<double> > vector_scalar_cell_t;
+typedef std::vector<darray<double> > vector_array_cell_t;
 
-        shape_t shape;
-        array a;
+typedef std::list<scalar<double> > list_scalar_cell_t;
+typedef std::list<darray<double> > list_array_cell_t;
 
-        void check_shape();
-    public:
-        void setUp();
-        void tearDown();
-
-        void test_creation();
-};
+CPPUNIT_TEST_SUITE_REGISTRATION(column_test<vector_scalar_cell_t>);
+//CPPUNIT_TEST_SUITE_REGISTRATION(column_test<vector_array_cell_t>);
+//CPPUNIT_TEST_SUITE_REGISTRATION(column_test<list_scalar_cell_t>);
+//CPPUNIT_TEST_SUITE_REGISTRATION(column_test<list_array_cell_t>);
 

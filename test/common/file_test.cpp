@@ -32,7 +32,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(file_test);
 //-----------------------------------------------------------------------------
 void file_test::setUp()
 {
-    p1 = "./file_test.hpp";
+    p1 = "./data/scan_mca_00001.fio";
     p2 = ".";
     p3 = "./nothing.txt";
 }
@@ -46,8 +46,11 @@ void file_test::test_creation()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
     file f;
+    //should be ok - the file exists
     CPPUNIT_ASSERT_NO_THROW(f = file(p1));
+    //not ok - we try to open a directory
     CPPUNIT_ASSERT_THROW(f = file(p3),file_error);;
+    //not ok - the file does not exist
     CPPUNIT_ASSERT_THROW(f = file(p2),file_error);
 }
 
@@ -57,8 +60,8 @@ void file_test::test_inquery()
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
     
     file f(p1);
-    CPPUNIT_ASSERT(f.name() == "file_test.hpp");
-    CPPUNIT_ASSERT(f.extension() == ".hpp");
-    CPPUNIT_ASSERT(f.path() == "./file_test.hpp");
-    CPPUNIT_ASSERT(f.base() == ".");
+    CPPUNIT_ASSERT(f.name() == "scan_mca_00001.fio");
+    CPPUNIT_ASSERT(f.extension() == ".fio");
+    CPPUNIT_ASSERT(f.path() == "./data/scan_mca_00001.fio");
+    CPPUNIT_ASSERT(f.base() == "./data");
 }

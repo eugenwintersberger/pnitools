@@ -151,7 +151,8 @@ template<typename CTYPE> class column
         /*!
         \brief number of elements
         
-        Return the number of elements stored in the column.
+        Return the number of elements stored in the column. This is the number
+        of cells.
         \return number of elements
         */
         size_t size() const { return _container.size(); }
@@ -223,7 +224,7 @@ supports full STL iterator interface.
 \param c container from which to copy data
 \return instance of column
 */
-template<typename UC,typename CTYPE>
+template<typename CTYPE,typename UC>
 column<CTYPE> create_column(const string &n,const string &u,const UC &c)
 {
     column<CTYPE> col;
