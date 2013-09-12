@@ -1,5 +1,4 @@
-file(GLOB COMMON_SOURCES *.cpp)
+set(COMMON_SOURCES array_utils.cpp config_utils.cpp exceptions.cpp
+                   field_io.cpp file.cpp file_utils.cpp string_utils.cpp)
 
-link_directories(${PNIIO_PKG_LIBRARY_DIRS})
-include_directories(${PNIIO_PKG_INCLUDE_DIRS})
-add_library(common_objects OBJECT ${COMMON_SOURCES})
+add_library(common_objects STATIC ${COMMON_SOURCES})

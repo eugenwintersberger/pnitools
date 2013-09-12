@@ -28,6 +28,10 @@
 #include<boost/property_tree/ptree.hpp>
 #include<boost/property_tree/xml_parser.hpp>
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 using namespace pni::core;
 using namespace pni::io::nx;
 namespace tree = boost::property_tree;
@@ -139,7 +143,11 @@ Recursively creates the objects as described in the XML file below parent.
 template<typename PTYPE>
 void create_objects(const PTYPE &parent,tree::ptree &t)
 {
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto child,t)
+#else
     for(auto child: t)
+#endif
     {
         if(child.first == "group")
         {

@@ -46,7 +46,7 @@ void read_from_stdin(operation::array_type &channels,operation::array_type &data
 //-----------------------------------------------------------------------------
 operation::array_type create_channel_data(size_t n)
 {
-    operation::array_type channels(operation::shape_type{n});
+    operation::array_type channels(operation::shape_type({n}));
 
     for(size_t i=0;i<n;i++) channels[i] = float64(i);
     return channels;

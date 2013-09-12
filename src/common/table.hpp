@@ -26,6 +26,10 @@
 #include <pni/core/types.hpp>
 #include <pni/core/exceptions.hpp>
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 using namespace pni::core;
 
 /*!
@@ -93,7 +97,11 @@ template<typename COLTYPE> class table
         template<typename CTYPE> CTYPE keys() const
         {
             CTYPE r;
+#ifdef NOFOREACH
+            BOOST_FOREACH(const auto &c,_collist)
+#else
             for(const auto &c:_collist)
+#endif
                 r.push_back(c.name());
 
             return r;
@@ -109,7 +117,12 @@ template<typename COLTYPE> class table
         */
         const COLTYPE &column(const string &key) const
         {
-            for(const auto &c: _collist) if(c.name() == key) return c;
+#ifdef NOFOREACH
+            BOOST_FOREACH(const auto &c,_collist)
+#else
+            for(const auto &c: _collist) 
+#endif
+                if(c.name() == key) return c;
 
             //throw an exception here
             throw key_error(EXCEPTION_RECORD,

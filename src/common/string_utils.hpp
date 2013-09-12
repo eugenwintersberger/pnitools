@@ -25,6 +25,10 @@
 #include <boost/lexical_cast.hpp>
 #include <pni/core/types.hpp>
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 using namespace pni::core;
 
 /*!
@@ -56,7 +60,11 @@ template<typename STYPE> STYPE read_shape(const string &s)
 
     while(boost::regex_search(start,end,match,sr))
     {
+#ifdef NOFOREACH
+        BOOST_FOREACH(auto value,match)
+#else
         for(auto value: match)
+#endif
             shape.push_back(boost::lexical_cast<typename STYPE::value_type>(value));
 
         start = match[0].second;

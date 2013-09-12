@@ -32,7 +32,11 @@ shape_t dimensions2shape(const tree::ptree &dims)
     //initialize the shape with zero
     std::fill(s.begin(),s.end(),0);
 
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto dim,dims)
+#else
     for(auto dim: dims)
+#endif
     {
         if(dim.first != "dim") continue;
 

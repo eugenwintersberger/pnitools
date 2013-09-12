@@ -22,6 +22,10 @@
 
 #include <pni/io/image_info.hpp>
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 /*!
 \ingroup common_devel 
 \brief checks file extension
@@ -37,7 +41,11 @@ Otherwise it returns false.
 template<typename CTYPE> bool has_extension(const file &f,const CTYPE &exts)
 {
     bool result = false;
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto ext,exts)
+#else
     for(auto ext: exts)
+#endif
     {
         if(f.extension() == ext)
         {

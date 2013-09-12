@@ -24,6 +24,10 @@
 #include <pni/core/types.hpp>
 #include <pni/core/darray.hpp>
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 #include "operation.hpp"
 
 using namespace pni::core;
@@ -60,7 +64,12 @@ class sum_operation:public operation
                 std::cout<<"Execute sum operation ..."<<std::endl;
 
             _sum = 0;
-            for(auto e: data) _sum += e;
+#ifdef NOFOREACH
+            BOOST_FOREACH(auto e,data)
+#else
+            for(auto e: data) 
+#endif
+                _sum += e;
         }
 
 

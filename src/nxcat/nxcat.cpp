@@ -23,6 +23,9 @@
 #include "nxcat.hpp"
 #include "../common/config_utils.hpp"
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
 
 static const string prg_name = "nxcat";
 static const string help_hdr = "nxcat usage:\t  nxcat [OPTIONS] INPUT FILES";
@@ -51,7 +54,11 @@ int main(int argc,char **argv)
     {
         //----------------------parse the input data----------------------------
         //get the source string
+#ifdef NOFOREACH
+        BOOST_FOREACH(auto source_path,conf.value<string_list>("source"))
+#else
         for(auto source_path: conf.value<string_list>("source"))
+#endif
             sources.push_back(path_from_string(source_path));
 
         //table with data
@@ -60,7 +67,11 @@ int main(int argc,char **argv)
         auto keys = data_tab.keys<string_list>();
         if(conf.value<bool>("header"))
         {
+#ifdef NOFOREACH
+            BOOST_FOREACH(auto key,keys)
+#else
             for(auto key: keys)
+#endif
                 std::cout<<"#"<<data_tab[key].name()<<" ("
                          <<data_tab[key].unit()<<")"<<std::endl;
         }
@@ -76,7 +87,11 @@ int main(int argc,char **argv)
         {
             //loop over all columns - this is currently not very nice 
             //but works and seems to be fast enough
+#ifdef NOFOREACH
+            BOOST_FOREACH(auto key,keys)
+#else
             for(auto key: keys)
+#endif
             {
 
                 column_t::iterator iter = data_tab[key].begin();
@@ -111,7 +126,11 @@ int main(int argc,char **argv)
     catch(...)
     {
         std::cerr<<"Something went wrong!"<<std::endl;
+#ifdef NOFOREACH
+        BOOST_FOREACH(auto s,sources)
+#else
         for(auto s: sources)
+#endif
             std::cerr<<s<<std::endl;
 
         return 1;

@@ -26,6 +26,10 @@
 #include "../common/file_utils.hpp"
 //#include "../common/nexus_field_utils.hpp"
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 
 //------------------------------------------------------------------------
 configuration create_configuration()
@@ -101,7 +105,11 @@ void check_input_files(const file_list &flist,reader_ptr &reader,
     if(!reader->filename().empty())
         reader->close();
 
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto file,flist)
+#else
     for(auto file:flist)
+#endif
     {
         reader->filename(file.path());
         reader->open();
@@ -173,8 +181,8 @@ nxobject_t get_field(const nxobject_t &root,const pni::io::image_info &info,
     {
         //if something went wrong we can first assume that the field does not
         //exist
-        shape_t shape{0,info.nx(),info.ny()};
-        shape_t chunk_shape{1,info.nx(),info.ny()};
+        shape_t shape({0,info.nx(),info.ny()});
+        shape_t chunk_shape({1,info.nx(),info.ny()});
 
         if(deflate)
             field = create_field(root,path,info.get_channel(0).type_id(),

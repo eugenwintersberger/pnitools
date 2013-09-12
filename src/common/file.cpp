@@ -39,7 +39,7 @@ file::file(const string &path):
 //-----------------------------------------------------------------------------
 string file::name() const
 {
-    return _path.filename().string();
+    return string(_path.filename());
 }
 
 //-----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ string file::base() const
 //-----------------------------------------------------------------------------
 string file::extension() const
 {
-    return _path.extension().string();
+    return string(_path.extension());
 }
 
 //-----------------------------------------------------------------------------

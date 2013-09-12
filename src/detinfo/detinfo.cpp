@@ -34,6 +34,10 @@
 #include "../common/config_utils.hpp"
 #include "../common/file_utils.hpp"
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 typedef std::vector<string> strlist;
 typedef std::list<file> file_list;
 typedef std::unique_ptr<pni::io::image_reader> reader_ptr;
@@ -89,7 +93,12 @@ int main(int argc,char **argv)
         //-------------------processing input files--------------------------------
         reader_ptr reader;
         pni::io::image_info info;
+
+#ifdef NOFOREACH
+        BOOST_FOREACH(auto file,infiles)
+#else
         for(auto file: infiles)
+#endif
         {
             if(has_extension(file,cbf_exts)) 
                 reader = reader_ptr(new pni::io::cbf_reader(file.path()));

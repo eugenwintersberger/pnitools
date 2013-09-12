@@ -68,7 +68,11 @@ int main(int argc,char **argv)
                   config.value<bool>("recursive"),
                   config.value<bool>("show-attributes"));
 
+#ifdef NOFOREACH
+        BOOST_FOREACH(auto p,path_v)
+#else
         for(auto p: path_v)
+#endif
             std::cout<<p<<std::endl;
 
     }

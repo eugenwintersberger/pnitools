@@ -28,6 +28,10 @@
 #include <boost/tokenizer.hpp>
 #include <boost/format.hpp>
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 using namespace pni::core;
 
 
@@ -81,7 +85,11 @@ class file_list_parser
             static OTYPE parse(const ITYPE &pl)
         {
             OTYPE flist;
+#ifdef NOFOREACH
+            BOOST_FOREACH(auto po,pl)
+#else
             for(auto po: pl)
+#endif
             {
                 if(!_fill_from_num_range(po,flist))
                     flist.push_back(po);

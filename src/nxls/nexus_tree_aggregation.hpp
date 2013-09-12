@@ -27,6 +27,10 @@
 #include <pni/io/nx/nxpath.hpp>
 #include <pni/io/nx/nxvariant.hpp>
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 using namespace pni::core;
 using namespace pni::io::nx;
 
@@ -90,7 +94,11 @@ void aggregate_nexus_path(const VTYPE &o,CTYPE &c,bool recursive,bool
     vector_t children;
     get_children(o,children);
 
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto child,children)
+#else
     for(auto child: children)
+#endif
     {
         //get the full path of the current child object
         string path;
@@ -105,7 +113,12 @@ void aggregate_nexus_path(const VTYPE &o,CTYPE &c,bool recursive,bool
             vector_t attributes;
             get_attributes(child,attributes);
 
-            for(auto a: attributes) c.push_back(path+"@"+get_name(a));
+#ifdef NOFOREACH
+            BOOST_FOREACH(auto a,attributes)
+#else
+            for(auto a: attributes) 
+#endif
+                c.push_back(path+"@"+get_name(a));
         }
 
         //if the child is a group call this function recursively

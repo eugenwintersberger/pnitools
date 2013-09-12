@@ -22,6 +22,10 @@
 
 #include "nxcat.hpp"
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 configuration create_configuration()
 {
     configuration config;
@@ -60,7 +64,11 @@ column_t read_column(const nxpath &source_path)
         selection.push_back(slice(0));
         auto array_shape = data.shape<shape_t>();
         auto field_shape = get_shape<shape_t>(object);
+#ifdef NOFOREACH
+        BOOST_FOREACH(auto d,array_shape)
+#else
         for(auto d: array_shape)
+#endif
             selection.push_back(slice(0,d));
 
         for(size_t i=0;i<field_shape[0];++i)
@@ -83,7 +91,11 @@ column_t read_column(const nxpath &source_path)
 table_t  read_table(const sources_list &sources)
 {
     table_t t;
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto source,sources)
+#else
     for(auto source: sources)
+#endif
     {
         t.push_back(read_column(source));
     }

@@ -38,6 +38,10 @@
 #include "../common/exceptions.hpp"
 #include <boost/filesystem.hpp> 
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 //setting namespaces
 using namespace pni::io::nx;
 using namespace pni::core;
@@ -174,7 +178,11 @@ void append_data(RTYPE &&reader,const h5::nxfile &file,
     dbuffer<T> buffer(nx*ny);
 
     //iterate over all files
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto f,ifiles)
+#else
     for(auto f: ifiles)
+#endif
     {
         if((frame_index % 100)  == 0)
             std::cout<<"storing frame "<<frame_index<<" ..."<<std::endl;

@@ -24,6 +24,10 @@
 
 #include <pni/core/types.hpp>
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 using namespace pni::core;
 
 /*!
@@ -226,7 +230,11 @@ column<CTYPE> create_column(const string &n,const string &u,const UC &c)
     col.name(n);
     col.unit(u);
 
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto v,c)
+#else
     for(auto v: c)
+#endif
         col.push_back(v);
 
     return col;

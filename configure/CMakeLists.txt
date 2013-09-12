@@ -60,4 +60,5 @@ pkg_search_module(CPPUNIT_PKG REQUIRED cppunit)
 link_directories(${CPPUNIT_PKG_LIBRARY_DIRS})
 link_directories(${PNIIO_PKG_LIBRARY_DIRS})
 include_directories(${PNIIO_PKG_INCLUDE_DIRS})
+add_definitions(${PNIIO_PKG_CFLAGS})
 
