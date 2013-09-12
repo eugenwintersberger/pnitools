@@ -1,15 +1,22 @@
 cmake_minimum_required(VERSION 2.6)
-include(GNUInstallDirs)
 project(pnitools)
 
+set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_PREFIX}/lib")
+set(CMAKE_INSTALL_BINDIR "${CMAKE_INSTALL_PREFIX}/bin")
+set(CMAKE_INSTALL_SYSCONFDIR "${CMAKE_INSTALL_PREFIX}/etc")
+set(CMAKE_INSTALL_SHAREDIR "${CMAKE_INSTALL_PREFIX}/share")
+set(CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_PREFIX}/share/doc")
+set(CMAKE_INSTALL_INFODIR "${CMAKE_INSTALL_PREFIX}/share/info")
+set(CMAKE_INSTALL_INCLUDEDIR "${CMAKE_INSTALL_PREFIX}/include")
+
+
+if(NOT CMAKE_BUILD_TYPE)
+    message("No build type specified - default is RELEASE")
+    set(CMAKE_BUILD_TYPE RELEASE)
+endif()
 #======================do here some setup work=================================
-#setting the compiler flags
-set(GCC_COMPILER_RELEASE_FLAGS "-std=c++11 -O3")
-set(GCC_COMPILER_DEBUG_FLAGS "-std=c++11 -O0 -g")
+include(configure/CMakeLists.txt)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COMPILER_RELEASE_FLAGS}")
-
-add_subdirectory("configure")
 add_subdirectory("doc/man")
 add_subdirectory("doc/info")
 add_subdirectory("src/common")
