@@ -128,7 +128,7 @@ $ cat test.dat | gnuplot -p -e "$GCMD"
 @noindent 
 gies
 @float
-@center @image{mcaops_testdata,,3in}
+@center @image{mcaops_testdata,,3in,,.png}
 @end float
 
 @noindent
@@ -158,7 +158,7 @@ $ cat test.dat | mcaops rebin --noxrebin -b3
 $ cat test.dat | mcaops rebin --noxrebin -b3 | gnuplot -p -e "$GCMD"
 @end example
 @float
-@center @image{mcaops_rebin3,,3in}
+@center @image{mcaops_rebin3,,3in,,.png}
 @end float
 @noindent
 @command{mcaops} does not normalize the re-binned data by default. To normalize
