@@ -23,6 +23,7 @@
 #pragma once
 
 #include <pni/core/types.hpp>
+#include <pni/core/array.hpp>
 
 #ifdef NOFOREACH
 #include <boost/foreach.hpp>
@@ -63,6 +64,17 @@ template<typename CTYPE> class column
         CTYPE _container;
         string _name;
         string _unit;
+
+        template<typename ATYPE> static type_id_t get_type_id(const ATYPE &a)
+        {
+            return ATYPE::type_id;
+        }
+
+        static type_id_t get_type_id(const array &a)
+        {
+            return a.type_id();
+        }
+
     public: 
         //===================constructors and destructor========================
         //! default constructor
@@ -144,7 +156,13 @@ template<typename CTYPE> class column
         //! get element type ID
         type_id_t type_id() const 
         {
-            return _container.front().type_id();
+            return get_type_id(_container.front());
+        }
+
+        //---------------------------------------------------------------------
+        size_t rank() const
+        {
+            return _container.front().rank();
         }
 
         //---------------------------------------------------------------------

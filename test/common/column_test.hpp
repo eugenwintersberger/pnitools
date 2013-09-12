@@ -28,15 +28,50 @@
 #include<boost/current_function.hpp>
 
 #include "common/column.hpp"
+#include "../compare.hpp"
+#include "../type_id.hpp"
 #include <pni/core/types.hpp>
 #include <pni/core/arrays.hpp>
 #include <pni/core/scalar.hpp>
+#include <pni/core/array.hpp>
 
 #ifdef NODEBUG
 #include <boost/foreach.hpp>
 #endif
 
 using namespace pni::core;
+//---------------------------------------------------------------------
+template<typename IT,typename T>
+void init_cell(const shape_t &s, IT init_value, scalar<T> &cell)
+{
+    cell = T(init_value); 
+}
+/*
+    typename = typename std::enable_if<
+    !std::is_same<CT,scalar<typename CT::value_type> >::value 
+    >::type
+    */
+//---------------------------------------------------------------------
+template<typename T,typename CT >
+void init_cell(const shape_t &s,
+               T init_value, 
+               CT &cell)
+{
+    typedef typename CT::value_type value_type;
+    cell = CT(s);
+    std::fill(cell.begin(),cell.end(),value_type(init_value));
+}
+
+//---------------------------------------------------------------------
+template<typename T>
+void init_cell(const shape_t &s,T init_value,array &cell)
+{
+    typedef darray<T> array_t;
+
+    array_t a(s);
+    std::fill(a.begin(),a.end(),init_value);
+    cell = array(a);
+}
 
 //-----------------------------------------------------------------------------
 template<typename STYPE>
@@ -47,9 +82,9 @@ class column_test : public CppUnit::TestFixture
         CPPUNIT_TEST(test_move_creation);
         CPPUNIT_TEST(test_copy_creation);
 /*        CPPUNIT_TEST(test_copy_assignment);
-        CPPUNIT_TEST(test_move_assignment);
+        CPPUNIT_TEST(test_move_assignment);*/
         CPPUNIT_TEST(test_inquery);
-        CPPUNIT_TEST(test_access);*/
+        CPPUNIT_TEST(test_access);
         CPPUNIT_TEST_SUITE_END();
 
         //the cell type
@@ -60,36 +95,6 @@ class column_test : public CppUnit::TestFixture
         shape_t cell_shape;
         std::vector<cell_t> ref_list;
         
-        //---------------------------------------------------------------------
-        template<typename CT,
-            typename = typename std::enable_if<
-            std::is_same<CT,
-                         scalar<typename CT::value_type> 
-                        >::value 
-            >::type
-            >
-        void init_cell(const shape_t &s,
-                       typename CT::value_type init_value,
-                       CT &cell)
-        {
-            cell = init_value; 
-        }
-        
-        //---------------------------------------------------------------------
-        template<typename CT,
-            typename = typename std::enable_if<
-            !std::is_same<CT,scalar<typename CT::value_type> >::value 
-            >::type
-            >
-        void init_cell(const shape_t &s,
-                       typename cell_t::value_type init_value, 
-                       CT &cell)
-        {
-            cell = CT(s);
-            std::fill(cell.begin(),cell.end(),init_value);
-        }
-
-   
     public:
         void setUp();
         void tearDown();
@@ -97,10 +102,8 @@ class column_test : public CppUnit::TestFixture
         void test_creation();
         void test_move_creation();
         void test_copy_creation();
-        /*
         void test_inquery();
         void test_access();
-        */
 };
 
 //-----------------------------------------------------------------------------
@@ -179,19 +182,33 @@ void column_test<STYPE>::test_move_creation()
 
 }
 //-----------------------------------------------------------------------------
-/*
 template<typename STYPE> 
 void column_test<STYPE>::test_inquery()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
     
-}*/
+    auto c1 = create_column<STYPE>("hello","m",ref_list);
+    CPPUNIT_ASSERT(c1.type_id() == type_id(*(ref_list.begin())));
+    CPPUNIT_ASSERT(c1.size() == ref_list.size());
+    CPPUNIT_ASSERT(c1.name() == "hello");
+    CPPUNIT_ASSERT(c1.unit() == "m");
+}
 
 //-----------------------------------------------------------------------------
-/*
 template<typename STYPE>
 void column_test<STYPE>::test_access()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
 
-}*/
+    auto c1 = create_column<STYPE>("hello","m",ref_list);
+    size_t i=0;
+
+    auto riter = ref_list.begin();
+    auto citer = c1.begin();
+    for(; citer != c1.end(); ++riter,++citer)
+    {
+        auto iter1 = riter->begin();
+        auto iter2 = citer->begin();
+        for(;iter1!=riter->end();++iter1,++iter2) compare(*iter1,*iter2);
+    }
+}
