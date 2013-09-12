@@ -22,6 +22,7 @@
  */
 #pragma once
 #include <type_traits>
+#include <complex>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -54,6 +55,13 @@ void compare(T a,T b,
         typename std::enable_if<std::is_floating_point<T>::value,T>::type* =0)
 {
     CPPUNIT_ASSERT_DOUBLES_EQUAL(a,b,1.e-12);
+}
+
+template<typename T>
+void compare(std::complex<T> a,std::complex<T> b)
+{
+    compare(a.real,b.real);
+    compare(a.imag,b.imag);
 }
 
 /*!

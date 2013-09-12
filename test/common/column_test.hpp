@@ -74,6 +74,17 @@ void init_cell(const shape_t &s,T init_value,array &cell)
 }
 
 //-----------------------------------------------------------------------------
+template<typename A> shape_t init_shape(const A &a)
+{
+    return shape_t({3,4});
+}
+
+template<typename T> shape_t init_shape(const scalar<T> &a)
+{
+    return shape_t();
+}
+
+//-----------------------------------------------------------------------------
 template<typename STYPE>
 class column_test : public CppUnit::TestFixture
 {
@@ -109,7 +120,7 @@ class column_test : public CppUnit::TestFixture
 //-----------------------------------------------------------------------------
 template<typename STYPE> void column_test<STYPE>::setUp() 
 { 
-    cell_shape = shape_t({4,10});
+    cell_shape = init_shape(cell_t());
     
     for(size_t i=0;i<10;i++)
     {
@@ -192,6 +203,7 @@ void column_test<STYPE>::test_inquery()
     CPPUNIT_ASSERT(c1.size() == ref_list.size());
     CPPUNIT_ASSERT(c1.name() == "hello");
     CPPUNIT_ASSERT(c1.unit() == "m");
+    CPPUNIT_ASSERT(c1.rank() == cell_shape.size());
 }
 
 //-----------------------------------------------------------------------------
