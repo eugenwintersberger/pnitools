@@ -41,7 +41,12 @@ template<typename OTYPE> void assemble_path(const OTYPE &o,string &path)
     if(is_group(o))
     {
         auto group_name = get_name(o);
-        auto group_class = get_class(o);
+        string group_class;
+        try
+        {
+            group_class = get_class(o);
+        }
+        catch(nxgroup_error &error) { }
 
         string element = "/"+group_name;
         if(!group_class.empty()) element+=":"+group_class;
