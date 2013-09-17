@@ -33,6 +33,20 @@
 Checks if a file has an extension listed in a container of strings. The template
 function returns true if the file has one of the extensions in the container.
 Otherwise it returns false.
+\code{cpp}
+file f = ....;
+std::vector<string> exts = {".tif",".cbf",".jpg"};
+
+if(has_extension(f,exts))
+{
+    //do something with the file
+}
+else
+{
+    throw file_error(...);
+}
+\endcode
+
 \tparam CTYPE container type for extensions
 \param f file to check
 \param exts instance of CTYPE with extensions
