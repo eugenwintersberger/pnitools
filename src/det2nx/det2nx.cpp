@@ -131,6 +131,16 @@ int main(int argc,char **argv)
         std::cerr<<error<<std::endl;
         return 1;
     }
+    catch(nxgroup_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
+    catch(file_type_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
 
 
 	return 0;
