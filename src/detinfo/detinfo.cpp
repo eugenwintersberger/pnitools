@@ -94,6 +94,11 @@ int main(int argc,char **argv)
         reader_ptr reader;
         pni::io::image_info info;
 
+        bool print_nx = config.value<bool>("nx");
+        bool print_ny = config.value<bool>("ny");
+        bool print_ntot = config.value<bool>("ntot");
+        bool print_type = config.value<bool>("dtype");
+
 #ifdef NOFOREACH
         BOOST_FOREACH(auto file,infiles)
 #else
@@ -106,7 +111,7 @@ int main(int argc,char **argv)
                 reader = reader_ptr(new pni::io::tiff_reader(file.path()));
             else
             {
-                std::cerr<<"File ["<<file.path()<<"] is of" "unknown type!";
+                std::cerr<<"File ["<<file.path()<<"] is of unknown type!";
                 std::cerr<<std::endl;
                 return 1;
             }
@@ -114,13 +119,10 @@ int main(int argc,char **argv)
             //obtain image information
             info = reader->info(0);
 
-            if(config.value<bool>("nx"))
-                std::cout<<info.nx()<<std::endl;
-            else if(config.value<bool>("ny"))
-                std::cout<<info.ny()<<std::endl;
-            else if(config.value<bool>("ntot"))
-                std::cout<<info.npixels()<<std::endl;
-            else if(config.value<bool>("dtype"))
+            if(print_nx) std::cout<<info.nx()<<std::endl;
+            else if(print_ny) std::cout<<info.ny()<<std::endl;
+            else if(print_ntot) std::cout<<info.npixels()<<std::endl;
+            else if(print_type)
                 std::cout<<info.get_channel(0).type_id()<<std::endl;
             else if(config.value<bool>("list-files"))
                 std::cout<<file.path()<<std::endl;
