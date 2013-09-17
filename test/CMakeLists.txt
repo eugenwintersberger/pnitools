@@ -2,7 +2,8 @@ set(TEST_SOURCES pnitoolstest.cpp
                  common/array_utils_test.cpp 
                  common/file_list_parser_test.cpp 
                  common/file_test.cpp
-                 common/column_test.cpp)
+                 common/column_test.cpp
+                 compare.cpp)
 
 file(COPY data DESTINATION .)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)

@@ -64,30 +64,7 @@ void compare(std::complex<T> a,std::complex<T> b)
     compare(a.imag,b.imag);
 }
 
-/*!
-\brief comparison of value_ref instances
-*/
-#define COMPARE_VALUE_REF(a,b,tid)\
-    if((a.type_id() == tid) &&\
-       (b.type_id() == tid)) \
-    {\
-        compare(a.as<id_type_map<tid>::type>(),\
-                b.as<id_type_map<tid>::type>());\
-        return; \
-    }
 
-void compare(const value_ref &a,const value_ref &b)
-{
-    COMPARE_VALUE_REF(a,b,type_id_t::UINT8);
-    COMPARE_VALUE_REF(a,b,type_id_t::INT8);
-    COMPARE_VALUE_REF(a,b,type_id_t::UINT16);
-    COMPARE_VALUE_REF(a,b,type_id_t::INT16);
-    COMPARE_VALUE_REF(a,b,type_id_t::UINT32);
-    COMPARE_VALUE_REF(a,b,type_id_t::INT32);
-    COMPARE_VALUE_REF(a,b,type_id_t::UINT64);
-    COMPARE_VALUE_REF(a,b,type_id_t::INT64);
-    COMPARE_VALUE_REF(a,b,type_id_t::FLOAT32);
-    COMPARE_VALUE_REF(a,b,type_id_t::FLOAT64);
-    COMPARE_VALUE_REF(a,b,type_id_t::FLOAT128);
-    COMPARE_VALUE_REF(a,b,type_id_t::STRING);
-}
+void compare(const value_ref &a,const value_ref &b);
+void compare(const value &a,const value &b);
+
