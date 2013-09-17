@@ -40,6 +40,6 @@ typedef std::list<array> list_te_array_cell_t;
 CPPUNIT_TEST_SUITE_REGISTRATION(column_test<vector_scalar_cell_t>);
 CPPUNIT_TEST_SUITE_REGISTRATION(column_test<vector_array_cell_t>);
 CPPUNIT_TEST_SUITE_REGISTRATION(column_test<vector_te_array_cell_t>);
-//CPPUNIT_TEST_SUITE_REGISTRATION(column_test<list_scalar_cell_t>);
-//CPPUNIT_TEST_SUITE_REGISTRATION(column_test<list_array_cell_t>);
+CPPUNIT_TEST_SUITE_REGISTRATION(column_test<list_scalar_cell_t>);
+CPPUNIT_TEST_SUITE_REGISTRATION(column_test<list_array_cell_t>);
 
