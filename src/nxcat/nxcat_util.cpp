@@ -64,12 +64,18 @@ column_t read_column(const nxpath &source_path)
         selection.push_back(slice(0));
         auto array_shape = data.shape<shape_t>();
         auto field_shape = get_shape<shape_t>(object);
+
+        if(get_rank(object)>1)
+        {
+            //if the original object is not scalar we have to extend the
+            //selection by the array shape - otherwise we can leave it as it is
 #ifdef NOFOREACH
-        BOOST_FOREACH(auto d,array_shape)
+            BOOST_FOREACH(auto d,array_shape)
 #else
-        for(auto d: array_shape)
+            for(auto d: array_shape)
 #endif
-            selection.push_back(slice(0,d));
+                selection.push_back(slice(0,d));
+        }
 
         for(size_t i=0;i<field_shape[0];++i)
         {

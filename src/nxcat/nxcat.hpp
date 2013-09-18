@@ -120,6 +120,9 @@ column_t column_from_nexus_object(const NXVAR &o,const string &unit="")
 Create an instance of array from a Nexus object stored in a Nexus variant type. 
 An nxgroup_error exception is thrown in cases where the stored object is a group
 but not an attribute or a field.
+In the case of a multidimensional with n dimensions the output array will have
+n-1 dimensions with the first dimension of the original object stripped of. 
+
 
 \throws nxgroup_error if object is not an attribute or a field
 \tparam NXVAR Nexus variant type
@@ -139,7 +142,9 @@ array array_from_nexus_object(const NXVAR &o)
         //when the object is a field where we can do partial IO we simply 
         if(file_shape.size() > 1)
         {
+            //create a new shape with n-1 dimensions
             array_shape = shape_t(file_shape.size()-1);
+            //copy the original shape by omitting the first dimension
             std::copy(file_shape.begin()+1,file_shape.end(),array_shape.begin());
         }
     }
