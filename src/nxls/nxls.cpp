@@ -101,6 +101,11 @@ int main(int argc,char **argv)
         std::cerr<<error<<std::endl;
         return 1;
     }
+    catch(nxobject_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
 
 
 	return 0;
