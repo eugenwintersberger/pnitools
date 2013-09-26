@@ -21,6 +21,7 @@
  */
 
 #include "xml2nx.hpp"
+#include "../common/file.hpp"
 
 //-------------------------------------------------------------------------
 configuration create_config()
@@ -41,9 +42,19 @@ configuration create_config()
 //------------------------------------------------------------------------
 h5::nxfile open_nexus_file(const nxpath &path,bool overwrite)
 {
+    //have to check if the file existsa
+    bool exists = false;
+    try
+    {
+        file f(path.filename());
+        exists = true;
+    }
+    catch(file_error &error)
+    {}
 
-    if(overwrite)
-        //when the overwrite flag is set we simply recreate the file
+    if(overwrite || (!exists))
+        //when the overwrite flag is set or the file does not exist we 
+        //we simply recreate or create it 
         return h5::nxfile::create_file(path.filename(),true,0);
     else
         //without overwrite the file is opened in append mode

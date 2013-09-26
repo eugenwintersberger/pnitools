@@ -21,7 +21,6 @@
  */
 
 #include "xml_utils.hpp"
-#include "../common/string_utils.hpp"
 
 //-----------------------------------------------------------------------------
 shape_t dimensions2shape(const tree::ptree &dims)
@@ -46,29 +45,6 @@ shape_t dimensions2shape(const tree::ptree &dims)
     }
 
     return s;
-}
-
-//-----------------------------------------------------------------------------
-void write_field(const tree::ptree &tag,const h5::nxfield &field)
-{
-    type_id_t tid = field.type_id();
-
-    if(tid == type_id_t::UINT8) field.write(tag.get_value<uint8>());
-    else if(tid == type_id_t::INT8) field.write(tag.get_value<int8>());
-    else if(tid == type_id_t::UINT16) field.write(tag.get_value<uint16>());
-    else if(tid == type_id_t::INT16) field.write(tag.get_value<int16>());
-    else if(tid == type_id_t::UINT32) field.write(tag.get_value<uint32>());
-    else if(tid == type_id_t::INT32) field.write(tag.get_value<int32>());
-    else if(tid == type_id_t::UINT64) field.write(tag.get_value<uint32>());
-    else if(tid == type_id_t::INT64) field.write(tag.get_value<int64>());
-    else if(tid == type_id_t::FLOAT32) field.write(tag.get_value<float32>());
-    else if(tid == type_id_t::FLOAT64) field.write(tag.get_value<float64>());
-    else if(tid == type_id_t::FLOAT128) field.write(tag.get_value<float128>());
-    else if(tid == type_id_t::COMPLEX32) field.write(tag.get_value<complex32>());
-    else if(tid == type_id_t::COMPLEX64) field.write(tag.get_value<complex64>());
-    else if(tid == type_id_t::COMPLEX128) field.write(tag.get_value<complex128>());
-    else if(tid == type_id_t::BOOL) field.write(tag.get_value<bool>());
-    else if(tid == type_id_t::STRING) field.write(trim(tag.get_value<string>()));
 }
 
 //-----------------------------------------------------------------------------

@@ -101,6 +101,11 @@ int main(int argc,char **argv)
         std::cerr<<error<<std::endl;
         return 1;
     }
+    catch(pni::io::parser_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
     catch(nxfile_error &error)
     {
         std::cerr<<error<<std::endl;

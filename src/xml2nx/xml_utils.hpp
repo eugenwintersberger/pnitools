@@ -28,6 +28,8 @@
 #include<boost/property_tree/ptree.hpp>
 #include<boost/property_tree/xml_parser.hpp>
 
+#include "../common/string_utils.hpp"
+
 #ifdef NOFOREACH
 #include <boost/foreach.hpp>
 #endif
@@ -122,13 +124,76 @@ h5::nxfield create_field(const PTYPE &parent,const string &name,
 //-----------------------------------------------------------------------------
 /*!
 \ingroup xml2nx_devel
+\brief create a attribute from xml data
+
+Create an attribute at a parent as descriped by the xml definition. Attributes
+actually can only be scalar - so we will stick to this convention.
+\tparam PTYPE parent type
+\param parent instance of PTYPE - the parent of the field
+\param name the fields name
+\param tc type code 
+\return instance of NXField
+*/
+template<typename PTYPE>
+h5::nxfield create_attribute(const PTYPE &parent,const string &name,
+                     const string &tc,const shape_t &s)
+{
+    if(tc == "uint8") return parent.template attr<uint8>(name);
+    if(tc == "int8")  return parent.template attr<int8>(name);
+    if(tc == "uint16") return parent.template attr<uint16>(name);
+    if(tc == "int16")  return parent.template attr<int16>(name);
+    if(tc == "uint32") return parent.template attr<uint32>(name);
+    if(tc == "int32")  return parent.template attr<int32>(name);
+    if(tc == "uint64") return parent.template attr<uint64>(name);
+    if(tc == "int64")  return parent.template attr<int64>(name);
+    if(tc == "float32") return parent.template attr<float32>(name);
+    if(tc == "float64") return parent.template attr<float64>(name);
+    if(tc == "float128") return parent.template attr<float128>(name);
+    if(tc == "complex32") return parent.template attr<complex32>(name);
+    if(tc == "complex64") return parent.template attr<complex64>(name);
+    if(tc == "complex128") return parent.template attr<complex128>(name);
+    if(tc == "bool") return parent.template attr<bool>(name);
+    if(tc == "binary") return parent.template attr<binary>(name);
+    if(tc == "string") return parent.template attr<string>(name);
+
+    std::stringstream ss;
+    ss<<"Error creating attribute - type code "<<tc<<" is not supported!";
+    throw nxattribute_error(EXCEPTION_RECORD,ss.str());
+
+    return h5::nxattribute(); //just to make the compiler happy
+}
+//-----------------------------------------------------------------------------
+/*!
+\ingroup xml2nx_devel
 \brief write static data from XML
 
-Write data from XML file to the Nexus file.
+Write data from XML file to the Nexus file. The target object can be either a
+field or an attribute.
 \param tag the actual tag whose data shall be written
 \param field the field where to write the data
 */
-void write_field(const tree::ptree &tag,const h5::nxfield &field);
+template<typename WTYPE>
+void write_data(const tree::ptree &tag,const WTYPE &object)
+{
+    type_id_t tid = object.type_id();
+
+    if(tid == type_id_t::UINT8) object.write(tag.get_value<uint8>());
+    else if(tid == type_id_t::INT8) object.write(tag.get_value<int8>());
+    else if(tid == type_id_t::UINT16) object.write(tag.get_value<uint16>());
+    else if(tid == type_id_t::INT16) object.write(tag.get_value<int16>());
+    else if(tid == type_id_t::UINT32) object.write(tag.get_value<uint32>());
+    else if(tid == type_id_t::INT32) object.write(tag.get_value<int32>());
+    else if(tid == type_id_t::UINT64) object.write(tag.get_value<uint32>());
+    else if(tid == type_id_t::INT64) object.write(tag.get_value<int64>());
+    else if(tid == type_id_t::FLOAT32) object.write(tag.get_value<float32>());
+    else if(tid == type_id_t::FLOAT64) object.write(tag.get_value<float64>());
+    else if(tid == type_id_t::FLOAT128) object.write(tag.get_value<float128>());
+    else if(tid == type_id_t::COMPLEX32) object.write(tag.get_value<complex32>());
+    else if(tid == type_id_t::COMPLEX64) object.write(tag.get_value<complex64>());
+    else if(tid == type_id_t::COMPLEX128) object.write(tag.get_value<complex128>());
+    else if(tid == type_id_t::BOOL) object.write(tag.get_value<bool>());
+    else if(tid == type_id_t::STRING) object.write(trim(tag.get_value<string>()));
+}
 
 //-----------------------------------------------------------------------------
 /*!
@@ -199,12 +264,23 @@ void create_objects(const PTYPE &parent,tree::ptree &t)
             //--------------------now we can try to write default data---------
             try
             {
-                write_field(child.second,f);
+                write_data(child.second,f);
             }
             catch(...)
             {}
 
           
+
+        }
+        else if(child.first == "attribute")
+        {
+            auto name = child.second.template get<string>("<xmlattr>.name");
+            auto type = child.second.template get<string>("<xmlattr>.type");
+
+            h5::nxattribute a = create_attribute(parent,name,type);
+
+            //try to write some data
+            write_data(child.second,a);
 
         }
         else if(child.first == "link")
