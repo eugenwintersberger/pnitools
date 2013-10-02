@@ -7,15 +7,15 @@
         </dimensions>
     </field>
 
-    <field name = "x_pixel_size" unit="um" type="float32">
+    <field name = "x_pixel_size" units="um" type="float32">
     12.45
     </field>
 
-    <field name = "y_pixel_size" unit="um" type="float32">
+    <field name = "y_pixel_size" units="um" type="float32">
     13.45
     </field>
 
-    <field name = "layout" type="string" unit=""> linear </field>
-    <field name = "description" type = "string" unit=""> PSD </field>
-    <field name = "distance" type="float32" unit="m"> 0.8 </field>
+    <field name = "layout" type="string"> linear </field>
+    <field name = "description" type = "string"> PSD </field>
+    <field name = "distance" type="float32" units="m"> 0.8 </field>
 </group>
