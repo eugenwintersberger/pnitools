@@ -1,0 +1,51 @@
+<?xml verison="1.0" encoding="UTF8"?>
+<group name = "entry" type="NXentry">
+    <field name = "title" type="string"> Default entry </field>
+
+    <field name = "experiment_description" type="string">
+    This is a plain template which contains the standard field and groups
+    </field>
+
+    <field name = "start_time" type="string"> 123 </field>
+    <field name = "end_time" type="string"> 124 </field>
+
+    <field name = "program_name" type="string"> 
+        xml2nx 
+        <attribute name = "version" type="string">
+            0.1.0
+        </attribute>
+
+        <attribute name = "configuration" type = "string">
+            none
+        </attribute>
+    </field>
+
+    <group name = "instrument" type = "NXinstrument"> 
+        <field name = "name" type = "string">
+        High resolution beamline
+        <attribute name = "short_name" type="string"> P08 </attribute>
+        </field>
+    
+        <group name = "source" type = "NXsource">
+            <field name = "name" type = "string">
+                Positron-Elektron Tandem Ring Anlage III
+                <attribute name = "short_name" type = "string">
+                PETRA III
+                </attribute>
+            </field>
+
+            <field name = "type" type = "string">
+                Synchrotron X-ray Source
+            </field>
+
+            <field name = "probe" type = "string"> x-ray </field>
+        </group>
+
+    </group>
+
+    <group name = "sample" type = "NXsample"> </group>
+    <group name = "control" type = "NXmonitor"> </group>
+    <group name = "data" type = "NXdata"> </group>
+
+
+</group>
