@@ -46,44 +46,16 @@ int main(int argc,char **argv)
         std::cout<<"\nuse mcatool -h for more information"<<std::endl;
         return 1;
     }
-    configuration config;
+    configuration config = create_global_config();
 
-    //----------------setting up the program options---------------------------
-    //these options do not show up in the help text
-    config.add_argument(config_argument<string>("command",1));
-    config.add_argument(config_argument<string>("input",2));
-
-    //-------------------------------------------------------------------------
-    //global options valid for all commands
-    config.add_option(config_option<bool>("help","h","show help text",false));
-    config.add_option(config_option<bool>("verbose","v","show verbose output",false));
-    config.add_option(config_option<bool>(
-                "header","","write headers before output",false));
-    config.add_option(config_option<string>("xcolumn","",
-                "name of the column with bin center values"));
-    config.add_option(config_option<string>("ycolumn","",
-                "name of the column with actual MCA data"));
    
     //-------------------------------------------------------------------------
     //options for the rebin command
-    configuration rebin_config;
-    rebin_config.add_option(config_option<size_t>("binsize","b",
-                "number of bins to collate",1));
-    rebin_config.add_option(config_option<bool>("noxrebin","",
-                "do not rebin the x-axis, use simple indices instead",false));
-    rebin_config.add_option(config_option<bool>("normalize","",
-                "normalize the rebinned data",false));
+    configuration rebin_config = create_rebin_config();
 
     //-------------------------------------------------------------------------
     //options for the scale command
-    configuration scale_config;
-    scale_config.add_option(config_option<size_t>("center","c",
-                "index of center bin"));
-    scale_config.add_option(config_option<float64>("delta","d",
-                "size of a bin"));
-    scale_config.add_option(config_option<float64>("cvalue","x",
-                "position of the center bin"));
-   
+    configuration scale_config = create_scale_config();
 
     //-------------------parse and store program options-----------------------
     std::vector<string> args = cliargs2vector(argc,argv);
@@ -110,110 +82,14 @@ int main(int argc,char **argv)
 
     if(config.has_option("input"))
     {
-        //----------------open the file holding the data-----------------------
-        string filename = config.value<string>("input");
-
-        fio_reader reader;
-        //read data from a file
-        try{
-            reader = fio_reader(filename); 
-        }
-        catch(...)
-        {
-            std::cerr<<"Error reading file "<<filename<<"!"<<std::endl;
-            return 1;
-        }
-
-        //----------------read MCA data form the appropriate column-------------
-        string ycolumn;
-        if(config.has_option("ycolumn"))
-        {
-            ycolumn = config.value<string>("ycolumn");
-        }
-        else
-        {
-            //if the file holds more than one column we have to abort the
-            //program as we cannot know from which column to read data
-            if(reader.ncolumns() != 1)
-            {
-                std::cerr<<"File "<<filename<<" contains more than one ";
-                std::cerr<<"columns - specify from which to read MCA data!";
-                std::cerr<<std::endl;
-                return 1;
-            }
-            
-            //if the file contains only one column we can assume that this
-            //column holds the MCA data
-#ifdef NOFOREACH
-            for(auto iter=reader.begin();iter!=reader.end();iter++)
-            {
-                auto c = *iter;
-#else
-            for(auto c: reader) 
-            {
-#endif
-                ycolumn = c.name();
-            }
-
-        }
-
-        //finally read column data from the file
-        try
-        {
-            
-            data = operation::array_type(operation::shape_type{reader.nrecords()},
-                            reader.column<operation::array_type::storage_type>(ycolumn));
-        }
-        catch(key_error &error)
-        {
-            std::cerr<<"Error reading MCA data from column "<<ycolumn;
-            std::cerr<<" - column does not exist!"<<std::endl;
-            std::cerr<<"The following columns are available in this file:";
-            std::cerr<<std::endl;
-#ifdef NOFOREACH
-            for(auto iter=reader.begin();iter!=reader.end();iter++)
-            {
-                auto c = *iter;
-#else
-            for(auto c: reader)
-            {
-#endif
-                std::cerr<<c<<std::endl;
-            }
-            return 1;
-        }
-        catch(...)
-        {   
-            std::cerr<<"Error reading MCA data from column ";
-            std::cerr<<config.value<string>("ycolumn")<<"!";
-            return 1;
-        }
-
-        //if no column for channel data is provided we will simply use the 
-        //bin number as a center value for each bin
-        if(config.has_option("xcolumn"))
-            try{
-                channels = operation::array_type(operation::shape_type{reader.ncolumns()},
-                           reader.column<operation::array_type::storage_type>(config.value<string>("xcolumn")));
-            }
-            catch(key_error &error)
-            {
-                std::cerr<<"Error reading bin data from column ";
-                std::cerr<<config.value<string>("xcolumn");
-                std::cerr<<" - column does not exist!"<<std::endl;
-                return 1;
-            }
-            catch(...)
-            {
-                std::cerr<<"Error reading bin data from column ";
-                std::cerr<<config.value<string>("xcolumn")<<"!"<<std::endl;
-                return 1;
-            }
-        else
-            channels = create_channel_data(data.size());
+        //read channel and mca data from a file
+        read_from_file(config.value<string>("input"),channels,data,
+                       config.value<string>("xcolumn"),
+                       config.value<string>("ycolumn"));
     }
     else
     {
+        //read channel and mca data from stdandard input
         read_from_stdin(channels,data);
     }
 

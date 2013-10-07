@@ -23,6 +23,59 @@
 #include "mcaops.hpp"
 
 //-----------------------------------------------------------------------------
+configuration create_global_config()
+{
+    configuration config;
+
+    //----------------setting up the program options---------------------------
+    //these options do not show up in the help text
+    config.add_argument(config_argument<string>("command",1));
+    config.add_argument(config_argument<string>("input",2));
+
+    //-------------------------------------------------------------------------
+    //global options valid for all commands
+    config.add_option(config_option<bool>("help","h","show help text",false));
+    config.add_option(config_option<bool>("verbose","v","show verbose output",
+                                          false));
+    config.add_option(config_option<bool>(
+                "header","","write headers before output",false));
+    config.add_option(config_option<string>("xcolumn","",
+                "name of the column with bin center values",""));
+    config.add_option(config_option<string>("ycolumn","",
+                "name of the column with actual MCA data",""));
+
+    return config;
+}
+
+//-----------------------------------------------------------------------------
+configuration create_rebin_config()
+{
+    configuration config;
+    config.add_option(config_option<size_t>("binsize","b",
+                "number of bins to collate",1));
+    config.add_option(config_option<bool>("noxrebin","",
+                "do not rebin the x-axis, use simple indices instead",false));
+    config.add_option(config_option<bool>("normalize","",
+                "normalize the rebinned data",false));
+
+    return config;
+}
+
+//-----------------------------------------------------------------------------
+configuration create_scale_config()
+{
+    configuration config;
+    config.add_option(config_option<size_t>("center","c",
+                "index of center bin"));
+    config.add_option(config_option<float64>("delta","d",
+                "size of a bin"));
+    config.add_option(config_option<float64>("cvalue","x",
+                "position of the center bin"));
+
+    return config;
+}
+
+//-----------------------------------------------------------------------------
 op_ptr select_operator(const configuration &config,
                        const configuration &cmd_config)
 {

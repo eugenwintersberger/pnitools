@@ -43,6 +43,34 @@
 using namespace pni::core;
 using namespace pni::io;
 
+/*!
+\ingroup mcaops_devel
+\brief setup global configuration
+
+Function sets up the global command line options for mcaops
+\return configuration instance
+*/
+configuration create_global_config();
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup mcaops_devel
+\brief setup rebin configuration
+
+Function sets up the command line options configuration for the rebin command.
+\return configuration instance
+*/
+configuration create_rebin_config();
+
+//-----------------------------------------------------------------------------
+/*!
+\ingroup mcaops_devel
+\brief setup scale configuration
+
+Function sets up the command line options configuration for the scale command.
+\return configuration instance
+*/
+configuration create_scale_config();
 
 /*!
 \ingroup mcaops_devel

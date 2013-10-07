@@ -22,6 +22,123 @@
 
 #include "io.hpp"
 
+#include <sstream>
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
+std::vector<string> get_column_list(const fio_reader &reader)
+{
+    std::vector<string> column_names;
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto c, reader)
+#else
+    for(auto c: reader)
+#endif
+        column_names.push_back(c.name());
+
+    return column_names;
+}
+
+//-----------------------------------------------------------------------------
+operation::array_type read_column(const string &cname,fio_reader &reader)
+{
+    operation::array_type data;
+    try
+    {
+        data = operation::array_type(operation::shape_type{reader.nrecords()},
+                        reader.column<operation::array_type::storage_type>(cname));
+    }
+    catch(key_error &error)
+    {
+        std::stringstream ss;
+        ss<<"Error reading column ["<<cname<<"] - column does not exist!"<<std::endl;
+        ss<<"The following columns are available in this file:"<<std::endl;
+        std::vector<string> column_list = get_column_list(reader);
+#ifdef NOFOREACH
+        BOOST_FOREACH(auto c,reader)
+#else
+        for(auto names: column_list)
+#endif
+            ss<<names<<std::endl;
+        
+        throw key_error(EXCEPTION_RECORD,ss.str());
+    }
+    catch(...)
+    {   
+        std::stringstream ss;
+        ss<<"Error reading data from column ["<<cname<<"]!"<<std::endl;;
+        throw file_error(EXCEPTION_RECORD,ss.str());
+    }
+}
+
+
+//-----------------------------------------------------------------------------
+void read_from_file(const string &ifile,operation::array_type &channels,
+                    operation::array_type &data,const string &xcol_name,
+                    const string &ycol_name)
+{
+    fio_reader reader;
+    //read data from a file
+    try{
+        reader = fio_reader(ifile); 
+    }
+    catch(...)
+    {
+        throw file_error(EXCEPTION_RECORD,
+                "Error reading file "+ifile+"!");
+    }
+
+    string xcolumn = xcol_name;
+    string ycolumn = ycol_name;
+
+    //if no ycolumn name is given and the file contains more than one row 
+    //we have to abort as we do not no which column to choose for MCA data
+    if(ycolumn.empty())
+    {
+        if(reader.ncolumns() != 1)
+        {
+            std::stringstream ss;
+            ss<<"File "<<ifile<<" contains more than one ";
+            ss<<"columns - specify from which to read MCA data!";
+            ss<<std::endl;
+            
+            throw file_error(EXCEPTION_RECORD,ss.str());
+        }
+
+        //if the file contains only one column and no ycolumn name has been
+        //given by the use we can assume that this single column holds the 
+        //MCA data
+        ycolumn = reader.begin()->name();
+    }
+
+    //read MCA data
+    data = read_column(ycolumn,reader);
+
+    //perform some other check
+    //if the xcolumn name is set and the file contains only one column something
+    //is wrong
+    if(xcolumn.empty())
+        //if no channel column name has been passed by the user - create the
+        //channel data automatically
+        channels = create_channel_data(data.size());
+    else
+    {
+        //if the user has passed a name for the channel column but the file has
+        //only one folumn throw an exception
+        if(reader.ncolumns() == 1)
+        {
+            std::stringstream ss;
+            ss<<"The file contains only one columne - explicitely passing ";
+            ss<<"a channel column name does not make sense!"<<std::endl;
+            throw file_error(EXCEPTION_RECORD,ss.str());
+        }
+        
+        //read the data from the file
+        channels = read_column(xcolumn,reader);
+    }
+}
+
 //-----------------------------------------------------------------------------
 void read_from_stdin(operation::array_type &channels,operation::array_type &data)
 {
