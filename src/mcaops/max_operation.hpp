@@ -68,7 +68,7 @@ class max_operation:public operation
         //! write result to output stream
         virtual std::ostream &stream_result(std::ostream &o) const
         {
-            o<<_max_pos<<"\t"<<_max_value;
+            o<< _max_pos<<"\t"<<_max_value;
             return o;
         }
 };

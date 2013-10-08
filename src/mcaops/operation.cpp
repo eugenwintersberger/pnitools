@@ -20,11 +20,17 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
+#include <limits>
+#include <ios>
+#include <iomanip>
 #include "operation.hpp"
 
 
 //-----------------------------------------------------------------------------
 std::ostream &operator<<(std::ostream &o,const operation &op)
 {
+    typedef operation::array_type::value_type value_type;
+    o<<std::setprecision(std::numeric_limits<value_type>::digits10)
+     <<std::scientific;
     return op.stream_result(o);
 }

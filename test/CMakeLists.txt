@@ -4,6 +4,7 @@ set(TEST_SOURCES pnitoolstest.cpp
                  common/file_test.cpp
                  common/column_test.cpp
                  mcaops/sum_operation_test.cpp
+                 mcaops/max_operation_test.cpp
                  compare.cpp
                  ../src/mcaops/operation.cpp
                  type_id.cpp)
