@@ -17,20 +17,14 @@
  * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
  *************************************************************************
  *
- *  Created on: Sep 12, 2013
+ *  Created on: Oct 08, 2013
  *      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
-#pragma once
-#include <type_traits>
 
-#include <pni/core/types.hpp>
-#include <pni/core/array.hpp>
+#include "type_id.hpp"
 
-using namespace pni::core;
 
-template<typename ATYPE> type_id_t type_id(const ATYPE &a)
+type_id_t type_id(const array &a)
 {
-    return ATYPE::type_id;
+    return a.type_id();
 }
-
-type_id_t type_id(const array &a);

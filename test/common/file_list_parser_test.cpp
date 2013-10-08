@@ -32,20 +32,20 @@ CPPUNIT_TEST_SUITE_REGISTRATION(file_list_parser_test);
 //-----------------------------------------------------------------------------
 void file_list_parser_test::setUp()
 {
-    name_list = std::vector<string>{"data/scan_mca_00001.fio",
-                                    "data/scan_mca_00002.fio",
-                                    "data/scan_mca_00003.fio",
-                                    "data/scan_mca_00004.fio",
-                                    "data/scan_mca_00005.fio",
-                                    "data/scan_mca_00006.fio",
-                                    "data/scan_mca_00007.fio",
-                                    "data/scan_mca_00008.fio"};
-    range_list = std::vector<string>{"data/scan_mca_%05i.fio:1:8"};
+    name_list = std::vector<string>{"data/fio/scan_mca_00001.fio",
+                                    "data/fio/scan_mca_00002.fio",
+                                    "data/fio/scan_mca_00003.fio",
+                                    "data/fio/scan_mca_00004.fio",
+                                    "data/fio/scan_mca_00005.fio",
+                                    "data/fio/scan_mca_00006.fio",
+                                    "data/fio/scan_mca_00007.fio",
+                                    "data/fio/scan_mca_00008.fio"};
+    range_list = std::vector<string>{"data/fio/scan_mca_%05i.fio:1:8"};
     mixed_list = std::vector<string>();
-    mixed_list.push_back("data/scan_mca_00001.fio");
-    mixed_list.push_back("data/scan_mca_00002.fio");
-    mixed_list.push_back("data/scan_mca_%05i.fio:3:7");
-    mixed_list.push_back("data/scan_mca_00008.fio");
+    mixed_list.push_back("data/fio/scan_mca_00001.fio");
+    mixed_list.push_back("data/fio/scan_mca_00002.fio");
+    mixed_list.push_back("data/fio/scan_mca_%05i.fio:3:7");
+    mixed_list.push_back("data/fio/scan_mca_00008.fio");
 }
 
 //-----------------------------------------------------------------------------

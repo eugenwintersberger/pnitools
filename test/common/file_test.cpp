@@ -32,7 +32,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(file_test);
 //-----------------------------------------------------------------------------
 void file_test::setUp()
 {
-    p1 = "./data/scan_mca_00001.fio";
+    p1 = "./data/fio/scan_mca_00001.fio";
     p2 = ".";
     p3 = "./nothing.txt";
 }
@@ -62,6 +62,6 @@ void file_test::test_inquery()
     file f(p1);
     CPPUNIT_ASSERT(f.name() == "scan_mca_00001.fio");
     CPPUNIT_ASSERT(f.extension() == ".fio");
-    CPPUNIT_ASSERT(f.path() == "./data/scan_mca_00001.fio");
-    CPPUNIT_ASSERT(f.base() == "./data");
+    CPPUNIT_ASSERT(f.path() == "./data/fio/scan_mca_00001.fio");
+    CPPUNIT_ASSERT(f.base() == "./data/fio");
 }
