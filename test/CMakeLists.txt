@@ -5,8 +5,10 @@ set(TEST_SOURCES pnitoolstest.cpp
                  common/column_test.cpp
                  mcaops/sum_operation_test.cpp
                  mcaops/max_operation_test.cpp
+                 mcaops/scale_operation_test.cpp
                  compare.cpp
                  ../src/mcaops/operation.cpp
+                 ../src/mcaops/scale_operation.cpp
                  type_id.cpp)
 
 file(COPY data DESTINATION .)

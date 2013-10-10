@@ -38,6 +38,7 @@ single number while the latter one preserves the spectrum character of the data
 @menu 
 * Program options:mcaops_options. command line options of @command{mcaops}
 * Examples:mcaops_examples. usage examples for @command{mcaops}
+* Details:mcaops_details. detailed explanation of the various commands
 @end menu
 
 
@@ -118,6 +119,7 @@ convenience a data file with the following content should be created
 9 1
 10 0
 @end example
+@noindent
 and named @file{test.dat}. Here the first column is the channel
 index while the second holds the channel data.  
 With 
@@ -126,7 +128,7 @@ $ GCMD="set xlabel \"channels\"; set xtics -2,1,12; plot '-' u 1:2 w boxes"
 $ cat test.dat | gnuplot -p -e "$GCMD" 
 @end example
 @noindent 
-gies
+gives
 @float
 @center @image{mcaops_testdata,,3in,,.png}
 @end float
@@ -203,3 +205,65 @@ Though @command{mcaops} currently not supports Nexus files, one can use it in
 connection with @command{ncat} by piping the output of @command{nxcat} as new
 input to @command{mcaops}. See @ref{nxcat} for more information.
 
+@node mcaops_details
+@subsection What the commands are really doing
+
+This section gives detailed information about the functionality of the different
+@command{mcaops} commands in particular about the @command{scale} and the
+@command{rebin} command. Before we can do this a bit of terminology is required. 
+MCAs usually produce histogram data as shown in this image
+@float
+@center @image{pics/mca_basics_1,,3in,,.pdf}
+@end float
+@noindent 
+Here, the MCA is counting events in different energy windows of equal size
+@math{\Delta E}. Every bin @math{b_i} has a center energy @math{c_i} given by 
+@math{c_i = E_i+{{\Delta E} \over {2}}}. To keep the documentation consistent
+some terms will be defined 
+@itemize @bullet
+@item
+@math{b_i} will denote the @math{i}-th bin of the histogram
+@item
+@math{\Delta b} denotes the width of the bins (it is assumed that all bins have
+the same size)
+@item
+@math{c_i} denotes the center value of the @math{i}-th bin
+@item
+@math{i} just denotes the index of the bins starting from @math{0}.
+@end itemize
+When a histogram is plotted the abscissa is typically showing the @math{c_i}
+while the ordinate shows the number of counts for each bin. If no bin center
+values are available typically the index of the bins is shown along the
+abscissa. 
+
+@subsubsection The @command{scale} command
+
+The @command{scale} command of @command{mcaops} assigns new values to the center
+values of the histogram bins with respect to a reference bin. 
+To compute the new center values from incoming
+data several parameters are required which must be either provided by the user
+or in some cases can be inferred automatically from the data.
+Those parameters are 
+@itemize @bullet 
+@item
+the index of the reference bin @math{i_{ref}} 
+@item 
+a center value for the reference bin  @math{c_{ref}}
+@item 
+and the new width of the binds @math{\Delta b}
+@end itemize
+@noindent
+The index of the reference bin can either be computed from the maximum position
+of the histogram or can be passed as a command line option by the user. With
+these parameters the new center values for the binds can be computed using the
+following linear function
+@tex
+$$
+c_i = c_{ref} + \Delta b (i-i_{ref})
+$$
+@end tex
+
+
+@math{\sin(x)dx_2}
+
+@subsubsection The @command{rebin} command

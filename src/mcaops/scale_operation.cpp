@@ -20,8 +20,55 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
+#include <sstream>
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif 
 #include "scale_operation.hpp"
 
+
+void scale_operation::check_channel_bounds(const array_type &channels,
+                                           const exception_record &rec) const
+{
+    std::stringstream ss;
+
+    //check if the reference bin is below the smallest channel number
+    if(_center < *(std::begin(channels)))
+    {
+        ss<<"Reference bin "<<_center<<" is below minimum bin of input data";
+        ss<<" "<<*std::begin(channels);
+        throw value_error(rec,ss.str());
+    }
+
+    //check if the reference bin is above the largest channel number
+    if(_center > *(std::end(channels)-1))
+    {
+        ss<<"Reference bin "<<_center<<" is above maximum bin of input data";
+        ss<<" "<<*(std::end(channels)-1);
+        throw value_error(rec,ss.str());
+    }
+}
+
+//-----------------------------------------------------------------------------
+void scale_operation::check_arrays(const array_type &channels,
+                                   const array_type &data,
+                                   const exception_record &rec) const
+{
+    std::stringstream ss;
+    if(channels.size() != data.size())
+    {
+        ss<<"Channel size ("<<channels.size()<<") and data size (";
+        ss<<data.size()<<") do not match!";
+        throw size_mismatch_error(rec,ss.str());
+    }
+
+    if(channels.rank() != 1)
+        throw shape_mismatch_error(rec,"Channel data is not of rank 1!");
+
+    if(data.rank() != 1)
+        throw shape_mismatch_error(rec,"Data is not of rank 1!");
+
+}
 
 //-----------------------------------------------------------------------------
 scale_operation::scale_operation():
@@ -33,13 +80,16 @@ scale_operation::scale_operation():
 { }
 
 //-----------------------------------------------------------------------------
-scale_operation::~scale_operation() 
-{}
+scale_operation::~scale_operation() {}
 
 //-----------------------------------------------------------------------------
 void scale_operation::operator()(const array_type &channels,
                                  const array_type &data)
 {
+    //perform some sanity checks
+    check_channel_bounds(channels,EXCEPTION_RECORD);
+    check_arrays(channels,data,EXCEPTION_RECORD);
+
     _channels = array_type(channels);
     _data = array_type(data);
 
@@ -47,66 +97,40 @@ void scale_operation::operator()(const array_type &channels,
         _center = pni::core::max_offset(data);
 
 #ifdef NOFOREACH
-    for(auto iter=_channels.begin();iter!=_channels.end();iter++)
-    {
-        float64 &v = *iter;
+    BOOST_FOREACH(float64 &v,_channels)
 #else
     for(float64 &v: _channels)
-    {
 #endif
-        v = _cvalue + _delta*(v - _center); 
-    }
+        v = _cvalue + _delta*(v - float64(_center)); 
     
 }
 
 //-----------------------------------------------------------------------------
-void scale_operation::use_data_maximum(bool v)
-{
-    _search_max = v;
-}
+void scale_operation::use_data_maximum(bool v) { _search_max = v; }
 
 //-----------------------------------------------------------------------------
-size_t scale_operation::center_bin() const
-{
-    return _center;
-}
+size_t scale_operation::center_bin() const { return _center; }
 
 //-----------------------------------------------------------------------------
-void scale_operation::center_bin(size_t v)
-{
-    _center = v;
-}
+void scale_operation::center_bin(size_t v) { _center = v; }
 
 //-----------------------------------------------------------------------------
-float64 scale_operation::center_value() const
-{
-    return _cvalue;
-}
+float64 scale_operation::center_value() const { return _cvalue; }
 
 //-----------------------------------------------------------------------------
-void scale_operation::center_value(float64 v) 
-{
-    _cvalue = v;
-}
+void scale_operation::center_value(float64 v) { _cvalue = v; }
 
 //-----------------------------------------------------------------------------
-float64 scale_operation::delta() const
-{
-    return _delta;
-}
+float64 scale_operation::delta() const { return _delta; }
 
 //-----------------------------------------------------------------------------
-void scale_operation::delta(float64 v) 
-{
-    _delta = v;
-}
+void scale_operation::delta(float64 v) { _delta = v; }
 
 //-----------------------------------------------------------------------------
 std::ostream &scale_operation::stream_result(std::ostream &o) const
 {
     for(size_t i=0;i<_channels.size();i++)
-    {
         o<<_channels[i]<<"\t"<<_data[i]<<std::endl;
-    }
+
     return o;
 }

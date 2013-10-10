@@ -33,32 +33,64 @@ using namespace pni::core;
 \brief scale operation implementation
 
 This class implements the scale operation. Scaling means that the center
-positions of the MCA bins are associated with time values. 
-In order to do this one has to provide a center bin and a time value associated
-with it. An additional temporal step size then determines the time values for
-all other bins. 
-There are currently two strategies how to determine the center bin of the input
-data
+positions of the MCA bins are associated axis values. These values may represent
+an energy or a time scale. 
+To perform this operation basically two parameters are required 
+
+\li a reference bin with an associated axis value
+\li and a step size along the axis 
+
+The reference bin will also be refered to as center bin throughout the
+documentation. There are currently two strategies how to determine the center
+bin
 
 \li automatically, using the bin with the maximum count value
 \li used defined, where the user passes the center bin manually
 
+When the operator is called several sanity checks are performed on the input
+data concerning the configuration of the class.
 */
 class scale_operation:public operation
 {
     private:
-        //! determine center search mode
-        bool _search_max; 
-        //! index of the center bin
-        size_t _center;  
-        //! step size from bin to bin
-        float64 _delta;  
-        //! center bin value
-        float64 _cvalue; 
-        //! output data bin values
-        array_type _channels;
-        //! output data values
-        array_type _data;
+        
+        bool _search_max;     //! determine center search mode
+        size_t _center;       //! index of the center bin
+        float64 _delta;       //! step size from bin to bin
+        float64 _cvalue;      //! center bin value
+        array_type _channels; //! output data bin values
+        array_type _data;     //! output data values
+
+        //---------------------------------------------------------------------
+        /*!
+        \brief check center bin value
+
+        Check if the center bin value is within the channel number bounds of the
+        input data. 
+
+        \throws value_error if the center bin value is not within the interval
+        \param channels the channel number array
+        \param rec the exception record of the location where the check was
+        performed
+        */
+        void check_channel_bounds(const array_type &channels,
+                                  const exception_record &rec) const;
+
+        //---------------------------------------------------------------------
+        /*!
+        \brief check the input arrays
+
+        \throws size_mismatch_error if array sizes do not match
+        \throws shape_mismatch_error in cases that the rank of one of the arrays
+        is not 1
+        \param channels array with channel data
+        \param data array with MCA counter data
+        \param rec the exception record of the function where this check
+        function was called
+        */
+        void check_arrays(const array_type &channels, 
+                          const array_type &data,const exception_record &rec)
+            const;
     public:
         //---------------------------------------------------------------------
         //! default constructor
@@ -77,6 +109,8 @@ class scale_operation:public operation
         \param v true or false
         */
         void use_data_maximum(bool v);
+
+        bool use_data_maximum() const { return _search_max; }
 
         //---------------------------------------------------------------------
         //! get center bin
@@ -109,6 +143,9 @@ class scale_operation:public operation
 
         Perform the rescale operation on the input data provided by the
         arguments. The result is stored internally.
+        \throws value_error if the center bin is out of the channel bounds
+        \throws size_mismatch_error if channels and data size do not match
+        \throws shape_mismatch_error if the rank of channels and size != 1
         \param channels input channels
         \param data input data
         */
