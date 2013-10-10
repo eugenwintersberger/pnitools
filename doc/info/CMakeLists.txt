@@ -1,7 +1,23 @@
 
-set(TEXI_SRC det2nx.texi detinfo.texi input_files.texi mcaops.texi
-             nexus_path.texi nx2xml.texi nxcat.texi nxls.texi rois.texi
-             xml2nx.texi mcaops_testdata.txt)
+set(TEXI_SRC det2nx.texi 
+             detinfo.texi 
+             input_files.texi 
+             mcaops.texi
+             nexus_path.texi 
+             nx2xml.texi 
+             nxcat.texi 
+             nxls.texi 
+             rois.texi
+             xml2nx.texi 
+             pics/mcaops_testdata.txt
+             pics/gnuplot.pdf
+             pics/mca_basics_1.pdf
+             pics/mcaops_rebin3.pdf
+             pics/mcaops_testdata.pdf
+             pics/nxcat_full.pdf
+             pics/nxcat_selection.pdf
+             )
+
 set(INFO_SRC pnitools.txi)
 
 add_custom_command(OUTPUT pnitools.info  
