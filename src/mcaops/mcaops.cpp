@@ -81,19 +81,17 @@ int main(int argc,char **argv)
     operation::array_type data,channels;
 
     if(config.has_option("input"))
-    {
         //read channel and mca data from a file
         read_from_file(config.value<string>("input"),channels,data,
                        config.value<string>("xcolumn"),
                        config.value<string>("ycolumn"));
-    }
     else
-    {
         //read channel and mca data from stdandard input
         read_from_stdin(channels,data);
-    }
 
-
+    //-------------------------------------------------------------------------
+    //Get the command
+    //-------------------------------------------------------------------------
     //need to choose an operation
     if(!config.has_option("command"))
     {
@@ -102,7 +100,9 @@ int main(int argc,char **argv)
         return 1;
     }
 
-
+    //-------------------------------------------------------------------------
+    //Configure and select the operation
+    //-------------------------------------------------------------------------
     op_ptr optr;
 
     if(config.value<string>("command") == "scale")
@@ -115,18 +115,44 @@ int main(int argc,char **argv)
         parse(rebin_config,cmd_args,true);
         optr = select_operator(config,rebin_config);
     }
-    else
+    else if(config.value<string>("command") == "sum" ||
+            config.value<string>("command") == "max")
+    {
         optr = select_operator(config,config);
+    }
+    else
+    {
+        std::cerr<<"Unknown command [";
+        std::cerr<<config.value<string>("command")<<"]!"<<std::endl;
+        return 1;
+    }
 
-    //run the operation
-    (*optr)(channels,data);
 
+    //-------------------------------------------------------------------------
+    //perform the operation
+    //-------------------------------------------------------------------------
+    try
+    {
+        (*optr)(channels,data);  //run the operation
+    }
+    catch(value_error &error)
+    {
+        std::cerr<<error<<std::endl; return 1;
+    }
+    catch(size_mismatch_error &error)
+    {
+        std::cerr<<error<<std::endl; return 1;
+    }
+    catch(shape_mismatch_error &error)
+    {
+        std::cerr<<error<<std::endl; return 1;
+    }
+    
     if(config.value<bool>("header"))
         std::cout<<"#chan data"<<std::endl;
 
     //output result data
     std::cout<<*optr<<std::endl;
-
     
     return 0;
 }

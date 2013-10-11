@@ -9,7 +9,10 @@ set(TEXI_SRC det2nx.texi
              nxls.texi 
              rois.texi
              xml2nx.texi 
-             pics/mcaops_testdata.txt
+             pics/mcaops_test_dat.txt
+             pics/mcaops_test1_dat.txt
+             pics/mcaops_test_dat.pdf
+             pics/mcaops_test1_dat.pdf
              pics/gnuplot.pdf
              pics/mca_basics_1.pdf
              pics/mcaops_rebin3.pdf

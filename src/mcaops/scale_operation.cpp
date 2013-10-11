@@ -87,14 +87,14 @@ void scale_operation::operator()(const array_type &channels,
                                  const array_type &data)
 {
     //perform some sanity checks
-    check_channel_bounds(channels,EXCEPTION_RECORD);
+    //check_channel_bounds(channels,EXCEPTION_RECORD);
     check_arrays(channels,data,EXCEPTION_RECORD);
 
     _channels = array_type(channels);
     _data = array_type(data);
 
     if(_search_max)
-        _center = pni::core::max_offset(data);
+        _center = channels(pni::core::max_offset(data));
 
 #ifdef NOFOREACH
     BOOST_FOREACH(float64 &v,_channels)
