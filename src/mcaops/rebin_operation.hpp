@@ -72,9 +72,16 @@ class rebin_operation:public operation
         void no_x_rebinning(bool v) { _noxrebin = v; }
 
         //---------------------------------------------------------------------
+        //! get no x-rebining flag
+        bool no_x_rebinning() const { return _noxrebin; } 
+
+        //---------------------------------------------------------------------
         //! perform normalization
         void normalization(bool v) { _norm = v; }
 
+        //---------------------------------------------------------------------
+        //! get normalization flag
+        bool normalization() const { return _norm; }
 
         //---------------------------------------------------------------------
         virtual void operator()(const array_type &channels,

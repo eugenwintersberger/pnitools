@@ -27,6 +27,7 @@ rebin_operation::rebin_operation():
         operation(),
         _bsize(0),
         _noxrebin(false),
+        _norm(false),
         _channels(),
         _data()
 {}
