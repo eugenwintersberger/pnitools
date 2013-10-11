@@ -77,20 +77,6 @@ int main(int argc,char **argv)
 
 
     //-------------------------------------------------------------------------
-    //here we will read data either from the standard in or from a file 
-    //-------------------------------------------------------------------------
-    operation::array_type data,channels;
-
-    if(config.has_option("input"))
-        //read channel and mca data from a file
-        read_from_file(config.value<string>("input"),channels,data,
-                       config.value<string>("xcolumn"),
-                       config.value<string>("ycolumn"));
-    else
-        //read channel and mca data from stdandard input
-        read_from_stdin(channels,data);
-
-    //-------------------------------------------------------------------------
     //Get the command
     //-------------------------------------------------------------------------
     //need to choose an operation
@@ -102,7 +88,10 @@ int main(int argc,char **argv)
     }
 
     //-------------------------------------------------------------------------
-    //Configure and select the operation
+    //Configure and select the operation - we have to do this before reading the
+    //input data. If no command is given but the name of a file the filename
+    //will be interpreted as a command which is obviously wrong. However, we can
+    //catch the situation here.
     //-------------------------------------------------------------------------
     op_ptr optr;
 
@@ -127,6 +116,38 @@ int main(int argc,char **argv)
         std::cerr<<config.value<string>("command")<<"]!"<<std::endl;
         return 1;
     }
+
+    //-------------------------------------------------------------------------
+    //here we will read data either from the standard in or from a file 
+    //-------------------------------------------------------------------------
+    operation::array_type data,channels;
+
+    if(config.has_option("input"))
+    {
+        //read channel and mca data from a file
+        try
+        {
+            read_from_file(config.value<string>("input"),channels,data,
+                           config.value<string>("xcolumn"),
+                           config.value<string>("ycolumn"));
+        }
+        catch(file_error &error)
+        {
+            std::cerr<<error<<std::endl;
+            return 1;
+        }
+    }
+    else
+    {
+        //read channel and mca data from stdandard input
+        read_from_stdin(channels,data);
+        if((channels.size() == 0) || (data.size() == 0))
+        {
+            std::cerr<<"No data read from standard input!";
+            return 1;
+        }
+    }
+
 
 
     //-------------------------------------------------------------------------

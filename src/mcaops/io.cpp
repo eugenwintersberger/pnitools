@@ -23,6 +23,7 @@
 #include "io.hpp"
 
 #include <sstream>
+#include "../common/file.hpp"
 #ifdef NOFOREACH
 #include <boost/foreach.hpp>
 #endif
@@ -70,6 +71,8 @@ operation::array_type read_column(const string &cname,fio_reader &reader)
         ss<<"Error reading data from column ["<<cname<<"]!"<<std::endl;;
         throw file_error(EXCEPTION_RECORD,ss.str());
     }
+    
+    return data;
 }
 
 
@@ -78,6 +81,11 @@ void read_from_file(const string &ifile,operation::array_type &channels,
                     operation::array_type &data,const string &xcol_name,
                     const string &ycol_name)
 {
+    //do here some checks with the file
+    file f(ifile);
+    if(!(f.extension() == ".fio"))
+        throw file_error(EXCEPTION_RECORD,"Not a FIO file!");
+
     fio_reader reader;
     //read data from a file
     try{
