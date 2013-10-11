@@ -48,16 +48,16 @@ class scale_operation_test : public CppUnit::TestFixture
         CPPUNIT_TEST_SUITE_END();
 
         typedef operation::array_type array_type;
-        typedef std::vector<array_type::value_type> vector_t;
-        array_type channels;
+        typedef array_type::value_type value_type;
+        array_type channels_1;
+        array_type channels_2;
         array_type data;
-
-        array_type generate_channel_data(size_t start,size_t stop);
+        static const size_t nchannels = 48;
+        shape_t shape;
 
         float64 compute_axis(float64 cv,size_t i,float64 d,size_t cb);
 
-        void load_data(const vector_t &c,const vector_t &d);
-        void get_result(operation &o,vector_t &axis);
+        void get_result(operation &o,array_type &axis);
     public:
         void setUp();
         void tearDown();

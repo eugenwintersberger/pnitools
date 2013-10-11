@@ -30,53 +30,51 @@
 #include <algorithm>
 #include <iomanip>
 #include <limits>
+#include "../test_utils.hpp"
 
 #include "scale_operation_test.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(scale_operation_test);
 
-float64 scale_operation_test::compute_axis(float64 cv,size_t i,float64 d,size_t cb)
+//-----------------------------------------------------------------------------
+float64 scale_operation_test::compute_axis(float64 cv,size_t i,float64 d,
+                                           size_t cb)
 {
     return cv + d*(float64(i)-float64(cb));
 }
 
-void scale_operation_test::load_data(const vector_t &c,const vector_t &d)
-{
-    channels = array_type(shape_t{c.size()});
-    data     = array_type(shape_t{d.size()});
-
-    std::copy(std::begin(c),std::end(c),std::begin(channels));
-    std::copy(std::begin(d),std::end(d),std::begin(data));
-}
-
 //-----------------------------------------------------------------------------
-void scale_operation_test::get_result(operation &op,vector_t &axis)
+void scale_operation_test::get_result(operation &op,array_type &axis)
 {
+    std::vector<value_type> data;
     std::stringstream ss;
     ss<<op;
-    double c,d;
+    value_type c,d;
    
-    axis = vector_t();
-    while(!ss.eof())
-    {
-        ss>>c>>d;
-        axis.push_back(c);
-    }
+    while(ss>>c>>d) data.push_back(c);
+
+    axis = array_type(shape_t{data.size()});
+    std::copy(std::begin(data),std::end(data),std::begin(axis));
 }
 
+
 //-----------------------------------------------------------------------------
-scale_operation_test::array_type
- scale_operation_test::generate_channel_data(size_t start,size_t stop)
-{
-    array_type v(shape_t{stop-start});
+void scale_operation_test::setUp() 
+{ 
+    shape = shape_t{nchannels};
 
-    for(size_t i=start;i<stop;++i) v[i] = i;
+    //---------------setup the different channel indices-----------------------
+    channels_1 = array_type(shape);
+    channels_2 = array_type(shape);
 
-    return v;
+    create_range(std::begin(channels_1),std::end(channels_1),0,1);
+    create_range(std::begin(channels_2),std::end(channels_2),3,1);
+
+    //---------------------setup the data array--------------------------------
+    data = array_type(shape);
+    std::fill(std::begin(data),std::end(data),0.0);
+
 }
-
-//-----------------------------------------------------------------------------
-void scale_operation_test::setUp() { }
 //-----------------------------------------------------------------------------
 void scale_operation_test::tearDown() {}
 
@@ -123,30 +121,38 @@ void scale_operation_test::test_exceptions()
     for(auto &c: c2) c = i++;
     CPPUNIT_ASSERT_THROW(op(c1,d2),shape_mismatch_error);
     CPPUNIT_ASSERT_THROW(op(c2,d1),shape_mismatch_error);
-
 }
 
 //-----------------------------------------------------------------------------
 void scale_operation_test::test_automax()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-   
-    vector_t axis;
-    channels = generate_channel_data(0,48);
-    data = array_type(channels.shape<shape_t>());
-    std::fill(std::begin(data),std::end(data),0);
+  
+    //set the data maximum to index 20 
     data[20] = 100;
 
+    //setup the scale operator
     scale_operation op;
-
     op.delta(0.5);
     op.center_value(1.34);
-    op(channels,data);
+
+    //test with 0-based channel indexes
+    op(channels_1,data);
     CPPUNIT_ASSERT(op.center_bin() == 20);
-    
+   
+    array_type axis;
     get_result(op,axis);
-    for(auto c: channels)
+    for(auto c: channels_1)
         CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c],compute_axis(1.34,c,0.5,20),1.e-8);
+
+    //test with 3 based channel indexes
+    op(channels_2,data);
+    CPPUNIT_ASSERT(op.center_bin() == 23);
+    get_result(op,axis);
+    for(auto c: channels_2)
+        //need to fix here the index c-3 as the index is not the correct array
+        //index
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c-3],compute_axis(1.34,c,0.5,23),1.e-8);
 
 }
 
@@ -154,23 +160,29 @@ void scale_operation_test::test_automax()
 void scale_operation_test::test_usermax()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-   
-    vector_t axis;
-    channels = generate_channel_data(0,48);
-    data = array_type(channels.shape<shape_t>());
-    std::fill(std::begin(data),std::end(data),0);
-
+  
+    //setup the scale operator
     scale_operation op;
-
     op.delta(0.5);
     op.center_value(1.34);
     op.center_bin(30);
     op.use_data_maximum(false); //switch of automatic maximum search
-    op(channels,data);
+
+    //test with 0-based channel indexes
+    op(channels_1,data);
     CPPUNIT_ASSERT(op.center_bin() == 30);
-    
+   
+    array_type axis;
     get_result(op,axis);
-    for(auto c: channels)
+    for(auto c: channels_1)
         CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c],compute_axis(1.34,c,0.5,30),1.e-8);
+
+    //test with 3-based channel indexes
+    op(channels_2,data);
+    CPPUNIT_ASSERT(op.center_bin() == 30);
+   
+    get_result(op,axis);
+    for(auto c: channels_2)
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c-3],compute_axis(1.34,c,0.5,30),1.e-8);
 
 }
