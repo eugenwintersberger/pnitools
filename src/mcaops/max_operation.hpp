@@ -60,8 +60,10 @@ class max_operation:public operation
         virtual void operator()(const array_type &channels, 
                                 const array_type &data)
         {
-            _max_pos = pni::core::max_offset(data);
-            _max_value = data[_max_pos];
+            size_t imax;
+            imax = pni::core::max_offset(data);
+            _max_pos = channels[imax];
+            _max_value = data[imax];
         }
 
         //---------------------------------------------------------------------

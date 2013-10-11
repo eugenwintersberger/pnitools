@@ -44,15 +44,16 @@ class max_operation_test : public CppUnit::TestFixture
         CPPUNIT_TEST(test_max_static);
         CPPUNIT_TEST_SUITE_END();
 
-        typedef operation::array_type array_type;
-        typedef std::vector<array_type::value_type> vector_t;
-        array_type channels;
-        array_type data;
-        vector_t ref_data_1;
-        vector_t ref_data_2;
-        vector_t ref_data_3;
+        typedef operation::array_type  array_type;
+        typedef array_type::value_type value_type;
+        array_type channel_1;
+        array_type data_1;
+        array_type channel_2;
+        array_type data_2;
+        array_type channel_3;
+        array_type data_3;
+        static const size_t nchannels = 4;
 
-        void load_data(const vector_t &c,const vector_t &d);
         void get_result(operation &o,size_t &pos,double &value);
     public:
         void setUp();

@@ -78,6 +78,7 @@ int main(int argc,char **argv)
 
     //-------------------------------------------------------------------------
     //here we will read data either from the standard in or from a file 
+    //-------------------------------------------------------------------------
     operation::array_type data,channels;
 
     if(config.has_option("input"))

@@ -28,19 +28,12 @@
 #include <list>
 #include <sstream>
 #include <algorithm>
+#include "../test_utils.hpp"
 
 #include "max_operation_test.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(max_operation_test);
 
-void max_operation_test::load_data(const vector_t &c,const vector_t &d)
-{
-    channels = array_type(shape_t{c.size()});
-    data     = array_type(shape_t{d.size()});
-
-    std::copy(std::begin(c),std::end(c),std::begin(channels));
-    std::copy(std::begin(d),std::end(d),std::begin(data));
-}
 
 //-----------------------------------------------------------------------------
 void max_operation_test::get_result(operation &op,size_t &pos,double &value)
@@ -53,9 +46,23 @@ void max_operation_test::get_result(operation &op,size_t &pos,double &value)
 //-----------------------------------------------------------------------------
 void max_operation_test::setUp() 
 {
-    ref_data_1 = {1., -5.39, 10.3948, 9.739 };
-    ref_data_2 = {1000.023, -234,4.20,1000.0};
-    ref_data_3 = {1000.2323,83,-23e-2,1000000};
+    //create channel data
+    channel_1 = array_type(shape_t{nchannels});
+    create_range(std::begin(channel_1),std::end(channel_1),0,1);
+    channel_2 = channel_1;
+    channel_3 = channel_1;
+
+    //create payload data
+    data_1 = array_type(shape_t{nchannels});
+    data_2 = array_type(shape_t{nchannels});
+    data_3 = array_type(shape_t{nchannels});
+
+    std::vector<value_type> data = {1., -5.39, 10.3948, 9.739 };
+    std::copy(std::begin(data),std::end(data),std::begin(data_1));
+    data =  {1000.023, -234,4.20,1000.0};
+    std::copy(std::begin(data),std::end(data),std::begin(data_2));
+    data = {1000.2323,83,-23e-2,1000000};
+    std::copy(std::begin(data),std::end(data),std::begin(data_3));
 }
 //-----------------------------------------------------------------------------
 void max_operation_test::tearDown() {}
@@ -68,20 +75,17 @@ void max_operation_test::test_max_static()
     double value = 0.0;
     size_t pos = 0;
     max_operation op;
-    load_data(ref_data_1,ref_data_1);
-    op(channels,data);
+    op(channel_1,data_1);
     get_result(op,pos,value);
     CPPUNIT_ASSERT(pos == 2);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(value,10.3948,1.e-8);
 
-    load_data(ref_data_2,ref_data_2);
-    op(channels,data);
+    op(channel_2,data_2);
     get_result(op,pos,value);
     CPPUNIT_ASSERT(pos == 0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(value,1000.023,1.e-8);
     
-    load_data(ref_data_3,ref_data_3);
-    op(channels,data);
+    op(channel_3,data_3);
     get_result(op,pos,value);
     CPPUNIT_ASSERT(pos == 3);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(value,1000000,1.e-8);

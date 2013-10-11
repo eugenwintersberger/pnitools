@@ -124,12 +124,6 @@ void scale_operation_test::test_exceptions()
     CPPUNIT_ASSERT_THROW(op(c1,d2),shape_mismatch_error);
     CPPUNIT_ASSERT_THROW(op(c2,d1),shape_mismatch_error);
 
-    //--------------check for value error--------------------------------------
-    i = 10;
-    for(auto &c: c1) c = i++;
-    CPPUNIT_ASSERT_THROW(op(c1,d1),value_error);
-    op.center_bin(100000);
-    CPPUNIT_ASSERT_THROW(op(c1,d1),value_error);
 }
 
 //-----------------------------------------------------------------------------

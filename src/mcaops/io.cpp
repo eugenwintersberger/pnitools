@@ -144,9 +144,10 @@ void read_from_stdin(operation::array_type &channels,operation::array_type &data
 {
     typedef operation::array_type array_type;
     typedef array_type::value_type value_type;
-    std::vector<value_type> chvec;
-    std::vector<value_type> dvec;
+    std::vector<value_type> chvec,dvec;
     value_type ch,d;
+
+    //need to figure out whether we have 
 
     while(std::cin>>ch>>d)
     {
@@ -155,9 +156,9 @@ void read_from_stdin(operation::array_type &channels,operation::array_type &data
     }
 
     channels = array_type(operation::shape_type{chvec.size()});
-    data = array_type(operation::shape_type{chvec.size()});
+    data     = array_type(operation::shape_type{chvec.size()});
     std::copy(chvec.begin(),chvec.end(),channels.begin());
-    std::copy(dvec.begin(),dvec.end(),data.begin());
+    std::copy(dvec.begin() ,dvec.end() ,data.begin());
 }
 
 //-----------------------------------------------------------------------------
