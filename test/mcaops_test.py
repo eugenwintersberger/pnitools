@@ -29,6 +29,9 @@ import unittest
 import os
 import pni.io.nx.h5 as nx
 import numpy
+import re
+
+float_expr = re.compile(r"(\d+\.\d+e[+-]\d+)")
 
 input_file_list = ["data/fio/scan_mca_00001.fio","data/fio/scan_mca_00002.fio",
                    "data/fio/scan_mca_00003.fio","data/fio/scan_mca_00004.fio",
@@ -62,6 +65,35 @@ input_file_list = ["data/fio/scan_mca_00001.fio","data/fio/scan_mca_00002.fio",
                    "data/fio/scan_mca_00090.fio","data/fio/scan_mca_00091.fio",
                    "data/fio/scan_mca_00092.fio","data/fio/scan_mca_00093.fio",
                    "data/fio/scan_mca_00094.fio","data/fio/scan_mca_00095.fio"]
+
+def exec_two_column_command(cmd):
+    """
+    exec_two_column_command(cmd):
+    Execute a two column command cmd which produces two columns of output on
+    standard out. The program parsers this output and returns the result.
+
+    arguments:
+    cmd ............ the command as a list
+
+    return:
+    (channels,data) the parsed result from the command
+    """
+
+    result =check_output(cmd)
+    c_list = []
+    d_list = []
+    for line in result.split("\n"):
+        try:
+            c,d = float_expr.findall(line)
+            c_list.append(float(c))
+            d_list.append(float(d))
+        except:
+            pass
+
+    c = numpy.array(c_list)
+    d = numpy.array(d_list)
+
+    return (c,d)
 
 class mcaops_test(unittest.TestCase):
     input_file = 'data/fio/scan_mca_00001.fio'
@@ -135,8 +167,96 @@ class mcaops_test(unittest.TestCase):
 
 
         
-    def test_rebin(self):
-        pass
+    def test_rebin_no_x_no_norm(self):
+        """
+        Test without rebinning and normalization
+        """
+        def test(fname):
+            cmd = ['mcaops','rebin','--noxrebin','-b10',fname]
+            c,d = exec_two_column_command(cmd)
+            
+            #read reference data
+            data = numpy.loadtxt(fname,skiprows=115)
+            l = []
+            for i in range(0,data.size,10):
+                l.append(numpy.sum(data[i:i+10]))
+
+            ref_d = numpy.array(l)
+            ref_c = numpy.arange(0,ref_d.size)
+
+            return (c,d,ref_c,ref_d)
+
+       
+        for fname in input_file_list:
+            channels,data,ref_channels,ref_data = test(fname)
+            for c,d,ref_c,ref_d in zip(channels,data,ref_channels,ref_data):
+                self.assertEqual(c,ref_c)
+                self.assertAlmostEqual(d,ref_d,8)
+        
+    def test_rebin_no_x_norm(self): 
+        """
+        test with normalization
+        """
+        def test(fname):
+            cmd = ['mcaops','rebin','--noxrebin','--normalize','-b10',fname]
+            c,d = exec_two_column_command(cmd)
+            
+            #read reference data
+            data = numpy.loadtxt(fname,skiprows=115)
+            l = []
+            for i in range(0,data.size,10):
+                l.append(numpy.sum(data[i:i+10]))
+
+            ref_d = numpy.array(l)
+            ref_c = numpy.arange(0,ref_d.size)
+
+            #need to normalize the data
+            ref_d[:-1] /= 10.
+            ref_d[-1]  /= float(data.shape[0]%10)
+
+            return (c,d,ref_c,ref_d)
+
+       
+        for fname in input_file_list:
+            channels,data,ref_channels,ref_data = test(fname)
+            for c,d,ref_c,ref_d in zip(channels,data,ref_channels,ref_data):
+                self.assertEqual(c,ref_c)
+                self.assertAlmostEqual(d,ref_d,8)
+
+
+    def test_rebin_x_norm(self):
+        """
+        test with normalization and x-rebinning
+        """
+        def test(fname):
+            cmd = ['mcaops','rebin','--normalize','-b10',fname]
+            c,d = exec_two_column_command(cmd)
+            
+            #read reference data
+            data = numpy.loadtxt(fname,skiprows=115)
+            channels = numpy.arange(0,data.size,dtype=numpy.float64)
+            l = []
+            lc = []
+            for i in range(0,data.size,10):
+                lc.append(numpy.sum(channels[i:i+10]))
+                l.append(numpy.sum(data[i:i+10]))
+
+            ref_d = numpy.array(l)
+            ref_c = numpy.array(lc)
+
+            #need to normalize the data
+            ref_d[:-1] /= 10.
+            ref_d[-1]  /= float(data.shape[0]%10)
+            ref_c[:-1] /= 10.
+            ref_c[-1]  /= float(data.shape[0]%10)
+
+            return (c,d,ref_c,ref_d)
+
+        for fname in input_file_list:
+            channels,data,ref_channels,ref_data = test(fname)
+            for c,d,ref_c,ref_d in zip(channels,data,ref_channels,ref_data):
+                self.assertEqual(c,ref_c)
+                self.assertAlmostEqual(d,ref_d,8)
 
     def test_scale(self):
         pass
