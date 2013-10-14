@@ -135,7 +135,7 @@ bool file_list_parser::_fill_from_num_range(const string &p,CTYPE &flist)
         flist.push_back(ss.str());
         index += stride;
 
-    }while(index<=stop);
+    }while(index<stop);
     
     return true;
 }

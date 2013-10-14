@@ -40,11 +40,11 @@ void file_list_parser_test::setUp()
                                     "data/fio/scan_mca_00006.fio",
                                     "data/fio/scan_mca_00007.fio",
                                     "data/fio/scan_mca_00008.fio"};
-    range_list = std::vector<string>{"data/fio/scan_mca_%05i.fio:1:8"};
+    range_list = std::vector<string>{"data/fio/scan_mca_%05i.fio:1:9"};
     mixed_list = std::vector<string>();
     mixed_list.push_back("data/fio/scan_mca_00001.fio");
     mixed_list.push_back("data/fio/scan_mca_00002.fio");
-    mixed_list.push_back("data/fio/scan_mca_%05i.fio:3:7");
+    mixed_list.push_back("data/fio/scan_mca_%05i.fio:3:8");
     mixed_list.push_back("data/fio/scan_mca_00008.fio");
 }
 

@@ -64,11 +64,11 @@ class detinfo_test(unittest.TestCase):
         self.assertEqual(result,1)
 
         #should be ok
-        result = int(self._call(args=['data/tif/detector_%03i.tif:9:15']))
+        result = int(self._call(args=['data/tif/detector_%03i.tif:9:16']))
         self.assertEqual(result,0)
 
         #last files do not exist
-        result = int(self._call(args=['data/tif/detector_%03i.fio:1:4']))
+        result = int(self._call(args=['data/tif/detector_%03i.fio:1:5']))
         self.assertEqual(result,1)
 
     def test_size(self):
@@ -99,7 +99,7 @@ class detinfo_test(unittest.TestCase):
 
     def test_list(self):
         #check the list output
-        arg = 'data/tif/detector_%03i.tif:9:15'
+        arg = 'data/tif/detector_%03i.tif:9:16'
         result = self._check_output(options=['-l'],args=[arg])
         # we have to remove the last element which holds only a blank
         result = result.split('\n')[:-1]
