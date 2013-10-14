@@ -336,7 +336,36 @@ c_i = c_{ref} + \Delta b (i-i_{ref})
 $$
 @end tex
 
-
-@math{\sin(x)dx_2}
-
 @subsubsection The @command{rebin} command
+The @command{rebin} command collates several bins into one. The critical
+parameters here is called @math{b} which is the number of bins that should be
+collated. @math{n} denots the number of bins of the original histogram. 
+The new number of bins can be computed with
+@tex
+$$
+\bar n = \biggm\lfloor {{n}\over{b}} \biggm\rfloor + (1)
+$$
+@end tex
+If @math{N} is not an integer multiple of @math{b} we have to add an extra bin
+which comes from the last term in the previous expression.
+Technically rebining is done by averaging the values stored in the original
+@math{b} bins and store the result in a single bin
+@tex
+$$
+\bar d_j = {{1}\over{\bar n}}\sum_{i=1}^{b}d_{jb+i}
+$$
+@end tex
+where @math{j=1,\ldots, n_r} and @math{r_j} denots the value of the @math{j}th
+bin in the rebinned histogram. Again we have to take care for the situation
+where the @math{n} is not a multiple interger of @math{b}. In this case the last
+bin value for the new histogram is computed with
+@tex
+$$
+\bar d_{\bar n} = {{1}\over{n \bmod b}}
+                  \sum_{i=n- n\bmod b}^n d_i.
+$$
+@end tex
+In some cases not only the data should be recomputed but also the center values
+of the bins. The procedure is actually the same as for the bin data shown above.
+However, instead of the @math{d_j} averaging is done over the @math{c_j}.
+

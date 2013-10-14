@@ -55,6 +55,17 @@ that may help to make the every day business at the beamline easier.
 @iftex
 @chapter Overview
 
+The @b{pnitools} distribution is a collection of programs (mainly for the
+command line) which should make life at PNI beamlines easier. They are intended
+to work with all kind of data files including Nexus files. Indeed providing
+tools for dealing with Nexus files was the original motivation to start with
+@b{pnitools} (see also the section below). @b{pnitools} is by far not the only
+collection of programs available for this purpose. However, one of the design
+goals of @b{pnitools} was to provide similar user interfaces and program
+behavior for all programs making it easy for scientists to learn how to use
+these tools. 
+
+@section A few words on Nexus
 There are a lot of tools available on Unix terminals like @command{grep},
 @command{cat}, or @command{awk} to manipulate and extract data from ASCII files. 
 Nexus, as a binary data format cannot make use of these tools. The @b{pnitools}
@@ -183,10 +194,15 @@ individual programs can deviate from the procedures presented here. However, if
 this is the case it will be explicitly mentioned in the programs documentation.
 
 @menu
+* Numeric ranges:: how to enter numeric ranges
 * Regions of interest:: how to specify regions of interests for detector data
 * Input file selection:: how to specify input files for programs
 * Addressing Nexus objects:: how to specify a Nexus object within a file
 @end menu
+
+@node Numeric ranges
+@section Numeric ranges
+@include numeric_ranges.texi
 
 @node Regions of interest
 @section Regions of interest
@@ -203,7 +219,9 @@ this is the case it will be explicitly mentioned in the programs documentation.
 @node Programms
 @chapter Programms 
 
+@ifinfo
 The following packages are currently provided by the pnitools distribution
+@end ifinfo
 @menu 
 * detinfo:: program to obtain information from a detector file
 * det2nx:: program to merge detector images in a Nexus file
