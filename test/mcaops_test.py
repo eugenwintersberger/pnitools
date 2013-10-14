@@ -31,7 +31,7 @@ import pni.io.nx.h5 as nx
 import numpy
 import re
 
-float_expr = re.compile(r"(\d+\.\d+e[+-]\d+)")
+float_expr = re.compile(r"([+-]?\d+\.\d+e[+-]\d+)")
 
 input_file_list = ["data/fio/scan_mca_00001.fio","data/fio/scan_mca_00002.fio",
                    "data/fio/scan_mca_00003.fio","data/fio/scan_mca_00004.fio",
@@ -258,8 +258,43 @@ class mcaops_test(unittest.TestCase):
                 self.assertEqual(c,ref_c)
                 self.assertAlmostEqual(d,ref_d,8)
 
-    def test_scale(self):
-        pass
+    def test_scale_autocenter(self):
+        def test(fname):
+            cmd = ['mcaops','scale','-d0.5','-x3.2',fname]
+            c,d = exec_two_column_command(cmd)
+            
+            #read reference data
+            ref_d = numpy.loadtxt(fname,skiprows=115)
+            channels = numpy.arange(0,ref_d.size,dtype=numpy.float64)
+            
+            ref_c = 3.2+0.5*(channels - numpy.argmax(ref_d))
+
+            return (c,d,ref_c,ref_d)
+
+        for fname in input_file_list:
+            channels,data,ref_channels,ref_data = test(fname)
+            for c,d,ref_c,ref_d in zip(channels,data,ref_channels,ref_data):
+                self.assertAlmostEqual(c,ref_c,8)
+                self.assertAlmostEqual(d,ref_d,8)
+
+    def test_scale_usercenter(self):
+        def test(fname):
+            cmd = ['mcaops','scale','-d0.5','-x3.2','-c512',fname]
+            c,d = exec_two_column_command(cmd)
+            
+            #read reference data
+            ref_d = numpy.loadtxt(fname,skiprows=115)
+            channels = numpy.arange(0,ref_d.size,dtype=numpy.float64)
+            
+            ref_c = 3.2+0.5*(channels - 512)
+
+            return (c,d,ref_c,ref_d)
+
+        for fname in input_file_list:
+            channels,data,ref_channels,ref_data = test(fname)
+            for c,d,ref_c,ref_d in zip(channels,data,ref_channels,ref_data):
+                self.assertAlmostEqual(c,ref_c,8)
+                self.assertAlmostEqual(d,ref_d,8)
 
 
 
