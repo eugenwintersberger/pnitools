@@ -57,7 +57,7 @@ operation::array_type read_column(const string &cname,fio_reader &reader)
         ss<<"The following columns are available in this file:"<<std::endl;
         std::vector<string> column_list = get_column_list(reader);
 #ifdef NOFOREACH
-        BOOST_FOREACH(auto c,reader)
+        BOOST_FOREACH(auto names,reader)
 #else
         for(auto names: column_list)
 #endif

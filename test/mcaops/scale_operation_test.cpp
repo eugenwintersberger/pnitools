@@ -31,6 +31,9 @@
 #include <iomanip>
 #include <limits>
 #include "../test_utils.hpp"
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
 
 #include "scale_operation_test.hpp"
 
@@ -54,7 +57,7 @@ void scale_operation_test::get_result(operation &op,array_type &axis)
     while(ss>>c>>d) data.push_back(c);
 
     axis = array_type(shape_t{data.size()});
-    std::copy(std::begin(data),std::end(data),std::begin(axis));
+    std::copy(data.begin(),data.end(),axis.begin());
 }
 
 
@@ -67,12 +70,12 @@ void scale_operation_test::setUp()
     channels_1 = array_type(shape);
     channels_2 = array_type(shape);
 
-    create_range(std::begin(channels_1),std::end(channels_1),0,1);
-    create_range(std::begin(channels_2),std::end(channels_2),3,1);
+    create_range(channels_1.begin(),channels_1.end(),0,1);
+    create_range(channels_2.begin(),channels_2.end(),3,1);
 
     //---------------------setup the data array--------------------------------
     data = array_type(shape);
-    std::fill(std::begin(data),std::end(data),0.0);
+    std::fill(data.begin(),data.end(),0.0);
 
 }
 //-----------------------------------------------------------------------------
@@ -106,19 +109,29 @@ void scale_operation_test::test_exceptions()
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
    
     //----------------check for size mismatch----------------------------------
-    array_type d1(shape_t{10});
-    array_type c1(shape_t{20});
+    array_type d1(shape_t({10}));
+    array_type c1(shape_t({20}));
     size_t i=0;
-    for(auto &c: c1) c=i++;
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto &c,c1)
+#else
+    for(auto &c: c1) 
+#endif
+        c=i++;
 
     scale_operation op;
     CPPUNIT_ASSERT_THROW(op(c1,d1),size_mismatch_error);
    
     //-------------------check for shape mismatch------------------------------
-    array_type d2 = array_type(shape_t{4,5});
-    array_type c2 = array_type(shape_t{2,5});
+    array_type d2 = array_type(shape_t({4,5}));
+    array_type c2 = array_type(shape_t({2,5}));
     i = 0;
-    for(auto &c: c2) c = i++;
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto &c,c2)
+#else
+    for(auto &c: c2) 
+#endif 
+        c = i++;
     CPPUNIT_ASSERT_THROW(op(c1,d2),shape_mismatch_error);
     CPPUNIT_ASSERT_THROW(op(c2,d1),shape_mismatch_error);
 }
@@ -142,14 +155,22 @@ void scale_operation_test::test_automax()
    
     array_type axis;
     get_result(op,axis);
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto c,channels_1)
+#else
     for(auto c: channels_1)
+#endif
         CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c],compute_axis(1.34,c,0.5,20),1.e-8);
 
     //test with 3 based channel indexes
     op(channels_2,data);
     CPPUNIT_ASSERT(op.center_bin() == 23);
     get_result(op,axis);
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto c,channels_2)
+#else
     for(auto c: channels_2)
+#endif
         //need to fix here the index c-3 as the index is not the correct array
         //index
         CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c-3],compute_axis(1.34,c,0.5,23),1.e-8);
@@ -174,7 +195,11 @@ void scale_operation_test::test_usermax()
    
     array_type axis;
     get_result(op,axis);
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto c,channels_1)
+#else
     for(auto c: channels_1)
+#endif
         CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c],compute_axis(1.34,c,0.5,30),1.e-8);
 
     //test with 3-based channel indexes
@@ -182,7 +207,11 @@ void scale_operation_test::test_usermax()
     CPPUNIT_ASSERT(op.center_bin() == 30);
    
     get_result(op,axis);
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto c,channels_2)
+#else
     for(auto c: channels_2)
+#endif
         CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c-3],compute_axis(1.34,c,0.5,30),1.e-8);
 
 }

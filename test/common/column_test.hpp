@@ -183,10 +183,11 @@ void column_test<STYPE>::test_move_creation()
 
     //construction from constructor
     auto c1 = create_column<STYPE>("hello","m",ref_list);
-    column_t c2 = std::move(c1);
+    column_t c2(std::move(c1));
     CPPUNIT_ASSERT(c2.name() == "hello");
     CPPUNIT_ASSERT(c2.unit() == "m");
     CPPUNIT_ASSERT(c2.size() == ref_list.size());
+    std::cout<<c1.name()<<std::endl;
     CPPUNIT_ASSERT(c1.name() == "");
     CPPUNIT_ASSERT(c1.unit() == "");
     CPPUNIT_ASSERT(c1.size() == 0);

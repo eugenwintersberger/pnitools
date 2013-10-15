@@ -48,7 +48,7 @@ void max_operation_test::setUp()
 {
     //create channel data
     channel_1 = array_type(shape_t{nchannels});
-    create_range(std::begin(channel_1),std::end(channel_1),0,1);
+    create_range(channel_1.begin(),channel_1.end(),0,1);
     channel_2 = channel_1;
     channel_3 = channel_1;
 
@@ -58,11 +58,11 @@ void max_operation_test::setUp()
     data_3 = array_type(shape_t{nchannels});
 
     std::vector<value_type> data = {1., -5.39, 10.3948, 9.739 };
-    std::copy(std::begin(data),std::end(data),std::begin(data_1));
+    std::copy(data.begin(),data.end(),data_1.begin());
     data =  {1000.023, -234,4.20,1000.0};
-    std::copy(std::begin(data),std::end(data),std::begin(data_2));
+    std::copy(data.begin(),data.end(),data_2.begin());
     data = {1000.2323,83,-23e-2,1000000};
-    std::copy(std::begin(data),std::end(data),std::begin(data_3));
+    std::copy(data.begin(),data.end(),data_3.begin());
 }
 //-----------------------------------------------------------------------------
 void max_operation_test::tearDown() {}

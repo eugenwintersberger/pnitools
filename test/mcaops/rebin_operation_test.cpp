@@ -55,8 +55,8 @@ void rebin_operation_test::get_result(operation &op,array_type &axis,
     axis = array_type(shape_t{c_v.size()});
     data = array_type(shape_t{d_v.size()});
 
-    std::copy(std::begin(c_v),std::end(c_v),std::begin(axis));
-    std::copy(std::begin(d_v),std::end(d_v),std::begin(data));
+    std::copy(c_v.begin(),c_v.end(),axis.begin());
+    std::copy(d_v.begin(),d_v.end(),data.begin());
 }
 
 
@@ -74,12 +74,12 @@ void rebin_operation_test::setUp()
     channels_1 = array_type(shape);
     channels_2 = array_type(shape);
 
-    create_range(std::begin(channels_1),std::end(channels_1),0,1);
-    create_range(std::begin(channels_2),std::end(channels_2),3,1);
+    create_range(channels_1.begin(),channels_1.end(),0,1);
+    create_range(channels_2.begin(),channels_2.end(),3,1);
 
     //---------------------setup the data array--------------------------------
     data = array_type(shape);
-    std::copy(std::begin(rdata),std::end(rdata),std::begin(data));
+    std::copy(rdata.begin(),rdata.end(),data.begin());
 
 }
 //-----------------------------------------------------------------------------

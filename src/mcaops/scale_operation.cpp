@@ -21,6 +21,7 @@
  */
 
 #include <sstream>
+#include <iterator>
 #ifdef NOFOREACH
 #include <boost/foreach.hpp>
 #endif 
@@ -33,18 +34,18 @@ void scale_operation::check_channel_bounds(const array_type &channels,
     std::stringstream ss;
 
     //check if the reference bin is below the smallest channel number
-    if(_center < *(std::begin(channels)))
+    if(_center < *(channels.begin()))
     {
         ss<<"Reference bin "<<_center<<" is below minimum bin of input data";
-        ss<<" "<<*std::begin(channels);
+        ss<<" "<<*channels.begin();
         throw value_error(rec,ss.str());
     }
 
     //check if the reference bin is above the largest channel number
-    if(_center > *(std::end(channels)-1))
+    if(_center > *(channels.end()-1))
     {
         ss<<"Reference bin "<<_center<<" is above maximum bin of input data";
-        ss<<" "<<*(std::end(channels)-1);
+        ss<<" "<<*(channels.end()-1);
         throw value_error(rec,ss.str());
     }
 }
