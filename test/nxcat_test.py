@@ -22,7 +22,11 @@
 #  Created on: Oct 07, 2013
 #      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 #
-from subprocess import check_output
+try:
+    from subprocess import check_output
+except:
+    from check_output import check_output
+
 from subprocess import STDOUT
 from subprocess import call
 import unittest

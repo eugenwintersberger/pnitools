@@ -22,7 +22,12 @@
 #  Created on: Sep 17, 2013
 #      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 #
-from subprocess import check_output
+
+try:
+    from subprocess import check_output
+except:
+    from check_output import check_output
+
 from subprocess import STDOUT
 from subprocess import call
 import unittest
@@ -30,7 +35,7 @@ import os
 import pni.io.nx.h5 as nx
 
 class det2nx_test(unittest.TestCase):
-    image_list = "data/tif/detector_%03i.tif:9:15"
+    image_list = "data/tif/detector_%03i.tif:9:16"
     image      = "data/tif/detector_050.tif"
 
     def setUp(self):
