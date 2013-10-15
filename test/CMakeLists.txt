@@ -13,10 +13,16 @@ set(TEST_SOURCES pnitoolstest.cpp
                  ../src/mcaops/rebin_operation.cpp
                  type_id.cpp)
 
-if("$CMAKE_FAMILIY_VERSION" STREQUAL "2.6")
+if("${CMAKE_FAMILY_VERSION}" STREQUAL "2.6")
     file(MAKE_DIRECTORY data)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/fio.tar.xz
-        ${CMAKE_CURRENT_BINARY_DIR}/data/fio.tar.xz)
+        ${CMAKE_CURRENT_BINARY_DIR}/data/fio.tar.xz COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/cbf.tar.xz
+        ${CMAKE_CURRENT_BINARY_DIR}/data/cbf.tar.xz COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/tif.tar.xz
+        ${CMAKE_CURRENT_BINARY_DIR}/data/tif.tar.xz COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/nexus.tar.xz
+        ${CMAKE_CURRENT_BINARY_DIR}/data/nexus.tar.xz COPYONLY)
 else()
     file(COPY data DESTINATION .)
 endif()
