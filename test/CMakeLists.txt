@@ -13,7 +13,14 @@ set(TEST_SOURCES pnitoolstest.cpp
                  ../src/mcaops/rebin_operation.cpp
                  type_id.cpp)
 
-file(COPY data DESTINATION .)
+if("$CMAKE_FAMILIY_VERSION" STREQUAL "2.6")
+    file(MAKE_DIRECTORY data)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/fio.tar.xz
+        ${CMAKE_CURRENT_BINARY_DIR}/data/fio.tar.xz)
+else()
+    file(COPY data DESTINATION .)
+endif()
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 add_executable(pnitoolstest ${TEST_SOURCES})
 target_link_libraries(pnitoolstest common_objects ${CPPUNIT_PKG_LIBRARIES} ${PNIIO_PKG_LIBRARIES})
