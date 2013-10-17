@@ -51,6 +51,16 @@ column_t read_column(const nxpath &source_path)
 
     //have to retrieve the object from the file
     auto object = get_object(root,source_path);
+
+    //============need to take care here about a particular bug ===============
+    //it seems that get_object does not return attributes attached to the root
+    //group. Need to take care about this
+    if((get_name(object) == "/")&&(!source_path.attribute().empty()))
+    {
+        object = get_attribute(object,source_path.attribute());
+    }
+
+    //==================end of workaround======================================
         
     //try to get a column type from the Nexus object
     column_t column = column_from_nexus_object(object);
