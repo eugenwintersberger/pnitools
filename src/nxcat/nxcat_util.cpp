@@ -34,9 +34,9 @@ configuration create_configuration()
     config.add_option(config_option<bool>("header","",
                       "show header with units",false));
     config.add_option(config_option<size_t>("start","s",
-                "start index for data",size_t(0)));
+                "first row in output",size_t(0)));
     config.add_option(config_option<size_t>("end","e",
-                "end index for data",size_t(0)));
+                "last row in output",size_t(0)));
     return config;
 }
 
