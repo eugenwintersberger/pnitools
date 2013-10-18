@@ -1,6 +1,6 @@
 .\" det2nx
 .\" Contact Eugen Wintersberger <eugen.wintersberger@desy.de> for typos and corrections
-.TH det2nx 1 "10.06.2013" "" "User commands"
+.TH det2nx 1 "10.06.2013" "@PROGRAM_VERSION@" "User commands"
 .SH NAME
 det2nx - add single image detector data to a Nexus file
 
@@ -48,7 +48,7 @@ change and redistribute it. There is no WARRENTY, to the extent permitted by
 law.
 
 .SH SEE ALSO
-.IP \fBinfo pnitools\fR 
+.IP \fBinfo det2nx\fR 
 
 
 

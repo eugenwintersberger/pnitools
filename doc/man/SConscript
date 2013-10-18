@@ -1,8 +1,0 @@
-import os
-
-Import("cli_env")
-
-man_pages = ["detinfo.1","mcaops.1","pni-tools.1","det2nx.1"]
-
-man_pages_install = cli_env.Install("$PREFIX/share/man/man1",man_pages)
-cli_env.Alias("install",man_pages_install)
