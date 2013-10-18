@@ -55,6 +55,10 @@ They can be found below test/ in the build directory.
 pnitoolstest - a unit test to check modules fo the individual programs
 run_cli_test.py - testing all programs delivered with the distribution
 
+Before you can run the tests you have to download the test data from the
+projects google drive. See the readme.txt file in the test/data directory for
+more details about how to do this.
+
 First run the unit tests. Enter the test directory and run
 
 $> ./pnitoolstest 

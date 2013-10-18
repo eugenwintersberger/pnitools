@@ -3,15 +3,15 @@ Testing data
 
 To download and unpack the test data go to this link 
 
-https://drive.google.com/folderview?id=0B3ylb_x4-XOgUkdQSUFQRUhsN0E&usp=sharing
+$> ./download.sh
 
-and download the pnitools-test-data.tar.xz to this folder. 
-Then unpack it with
+Which will download the pnitools-test-data.tar.xz into this folder.
+Unpack the archive with
 
 $> tar xJf pnitools-test-data.tar.xz
 
 You get several directories with data files that will be used by the test
-system. 
+system. Now go one level up and run the tests.
 
 Nexus files
 -----------
