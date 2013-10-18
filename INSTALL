@@ -46,5 +46,28 @@ PREFIX/share/doc/man/man1     - the man pages of the individual programs
 PREFIX/share/info             - will contain the texinfo documentation
 PREFIX/share/doc/pnitools-doc - with the PDF documentation
 
+Running tests
+=============
+
+There are two tests shipped with the code which are available after the build. 
+They can be found below test/ in the build directory. 
+
+pnitoolstest - a unit test to check modules fo the individual programs
+run_cli_test.py - testing all programs delivered with the distribution
+
+First run the unit tests. Enter the test directory and run
+
+$> ./pnitoolstest 
+
+This will create an XML file pnitoolstest.xml. Check the bottom of the file with
+the error summary. 
+After this run the program test
+
+$> ./run_cli_test.py 
+
+This may take a while. The script is based upon the python unittest module and
+runs all the programs with various input data and checks their output. After the
+script is finished you should get an OK message at the end of the output.
+
 
 

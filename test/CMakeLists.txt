@@ -13,45 +13,45 @@ set(TEST_SOURCES pnitoolstest.cpp
                  ../src/mcaops/rebin_operation.cpp
                  type_id.cpp)
 
+set(CLI_TEST_PY_FILES check_output.py 
+                      det2nx_test.py 
+                      detinfo_test.py
+                      mcaops_test.py 
+                      nxcat_test.py 
+                      nxls_test.py 
+                      xml2nx_test.py 
+                      run_cli_test.py)
+
+set(TEST_DATA_ARCHIVES data/fio.tar.xz
+                       data/cbf.tar.xz
+                       data/nexus.tar.xz
+                       data/tif.tar.xz)
+
+
 if("${CMAKE_FAMILY_VERSION}" STREQUAL "2.6")
     file(MAKE_DIRECTORY data)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/fio.tar.xz
-        ${CMAKE_CURRENT_BINARY_DIR}/data/fio.tar.xz COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/cbf.tar.xz
-        ${CMAKE_CURRENT_BINARY_DIR}/data/cbf.tar.xz COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/tif.tar.xz
-        ${CMAKE_CURRENT_BINARY_DIR}/data/tif.tar.xz COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/nexus.tar.xz
-        ${CMAKE_CURRENT_BINARY_DIR}/data/nexus.tar.xz COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/check_output.py
-        ${CMAKE_CURRENT_BINARY_DIR})
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/det2nx_test.py
-        ${CMAKE_CURRENT_BINARY_DIR})
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/detinfo_test.py
-        ${CMAKE_CURRENT_BINARY_DIR})
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mcaops_test.py
-        ${CMAKE_CURRENT_BINARY_DIR})
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/nxcat_test.py
-        ${CMAKE_CURRENT_BINARY_DIR})
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/nxls_test.py
-        ${CMAKE_CURRENT_BINARY_DIR})
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/xml2nx_test.py
-        ${CMAKE_CURRENT_BINARY_DIR})
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/run_cli_test.py
-        ${CMAKE_CURRENT_BINARY_DIR})
+    foreach(ARCHIVE TEST_DATA_ARCHIVES)
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${ARCHIVE}"
+            "${CMAKE_CURRENT_BINARY_DIR}/${ARCHIVE}" COPYONLY)
+    endforeach()
+
+    foreach(PYFILE CLI_TEST_FILES)
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PYFILE}"
+            ${CMAKE_CURRENT_BINARY_DIR})
+    endforeach()
 else()
     file(COPY data DESTINATION .)
-    file(COPY check_output.py DESTINATION .)
-    file(COPY det2nx_test.py DESTINATION .)
-    file(COPY detinfo_test.py DESTINATION .)
-    file(COPY mcaops_test.py DESTINATION .)
-    file(COPY nxcat_test.py DESTINATION .)
-    file(COPY nxls_test.py DESTINATION .)
-    file(COPY xml2nx_test.py DESTINATION .)
-    file(COPY run_cli_test.py DESTINATION .)
+    file(COPY ${CLI_TEST_PY_FILES} DESTINATION .)
 endif()
 
-#extract the data an prepear for testing
+#=======================extract the data an prepear for testing=================
+foreach(ARCHIVE TEST_DATA_ARCHIVES)
+    string(REPLACE ".tar.xz" "" DATA_DIR_NAME ${ARCHIVE})
+    string(REPLACE ".xz" "" DATA_TAR_NAME ${ARCHIVE})
+    add_custom_command(OUTPUT ${DATA_DIR_NAME} 
+        COMMAND unxz ${ARCHIVE}
+        COMMAND tar xf ${DATA_TAR_NAME})
+endforeach()
 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
