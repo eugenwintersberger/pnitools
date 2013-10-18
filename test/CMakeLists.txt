@@ -23,9 +23,36 @@ if("${CMAKE_FAMILY_VERSION}" STREQUAL "2.6")
         ${CMAKE_CURRENT_BINARY_DIR}/data/tif.tar.xz COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/nexus.tar.xz
         ${CMAKE_CURRENT_BINARY_DIR}/data/nexus.tar.xz COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/check_output.py
+        ${CMAKE_CURRENT_BINARY_DIR})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/det2nx_test.py
+        ${CMAKE_CURRENT_BINARY_DIR})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/detinfo_test.py
+        ${CMAKE_CURRENT_BINARY_DIR})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mcaops_test.py
+        ${CMAKE_CURRENT_BINARY_DIR})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/nxcat_test.py
+        ${CMAKE_CURRENT_BINARY_DIR})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/nxls_test.py
+        ${CMAKE_CURRENT_BINARY_DIR})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/xml2nx_test.py
+        ${CMAKE_CURRENT_BINARY_DIR})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/run_cli_test.py
+        ${CMAKE_CURRENT_BINARY_DIR})
 else()
     file(COPY data DESTINATION .)
+    file(COPY check_output.py DESTINATION .)
+    file(COPY det2nx_test.py DESTINATION .)
+    file(COPY detinfo_test.py DESTINATION .)
+    file(COPY mcaops_test.py DESTINATION .)
+    file(COPY nxcat_test.py DESTINATION .)
+    file(COPY nxls_test.py DESTINATION .)
+    file(COPY xml2nx_test.py DESTINATION .)
+    file(COPY run_cli_test.py DESTINATION .)
 endif()
+
+#extract the data an prepear for testing
+
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 add_executable(pnitoolstest ${TEST_SOURCES})
