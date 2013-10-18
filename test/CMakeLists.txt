@@ -45,28 +45,21 @@ if("${CMAKE_FAMILY_VERSION}" STREQUAL "2.6")
             ${CMAKE_CURRENT_BINARY_DIR}/${XML_FILE} COPYONLY)
     endforeach() 
 
-    #===================extract the data an prepear for testing=================
-    foreach(ARCHIVE ${TEST_DATA_ARCHIVES})
-        string(REPLACE ".tar.xz" "" DATA_DIR_NAME ${ARCHIVE})
-        string(REPLACE ".xz" "" DATA_TAR_NAME ${ARCHIVE})
-        execute_process(COMMAND unxz ${ARCHIVE}
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
-        execute_process(COMMAND tar xf ${DATA_TAR_NAME}
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
-    endforeach()
 else()
     file(COPY data DESTINATION .)
     file(COPY ${CLI_TEST_PY_FILES} DESTINATION .)
-    #=======================extract the data an prepear for testing=================
-    foreach(ARCHIVE TEST_DATA_ARCHIVES)
-        string(REPLACE ".tar.xz" "" DATA_DIR_NAME ${ARCHIVE})
-        string(REPLACE ".xz" "" DATA_TAR_NAME ${ARCHIVE})
-        add_custom_command(OUTPUT ${DATA_DIR_NAME} 
-            COMMAND unxz ${ARCHIVE}
-            COMMAND tar xf ${DATA_TAR_NAME})
-endforeach()
+    file(COPY ${XML_FILES} DESTINATION .)
 endif()
 
+#===================extract the data an prepear for testing=================
+foreach(ARCHIVE ${TEST_DATA_ARCHIVES})
+    string(REPLACE ".tar.xz" "" DATA_DIR_NAME ${ARCHIVE})
+    string(REPLACE ".xz" "" DATA_TAR_NAME ${ARCHIVE})
+    execute_process(COMMAND unxz ${ARCHIVE}
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
+    execute_process(COMMAND tar xf ${DATA_TAR_NAME}
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
+endforeach()
 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
