@@ -1,6 +1,18 @@
 Testing data
 ============
 
+To download and unpack the test data go to this link 
+
+https://drive.google.com/folderview?id=0B3ylb_x4-XOgUkdQSUFQRUhsN0E&usp=sharing
+
+and download the pnitools-test-data.tar.xz to this folder. 
+Then unpack it with
+
+$> tar xJf pnitools-test-data.tar.xz
+
+You get several directories with data files that will be used by the test
+system. 
+
 Nexus files
 -----------
 
