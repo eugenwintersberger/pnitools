@@ -22,18 +22,15 @@ set(CLI_TEST_PY_FILES check_output.py
                       xml2nx_test.py 
                       run_cli_test.py)
 
-set(TEST_DATA_ARCHIVES fio.tar.xz
-                       cbf.tar.xz
-                       nexus.tar.xz
-                       tif.tar.xz)
 set(XML_FILES basic.xml detector.xml)
 
 if("${CMAKE_FAMILY_VERSION}" STREQUAL "2.6")
     file(MAKE_DIRECTORY data)
-    foreach(ARCHIVE ${TEST_DATA_ARCHIVES})
-        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/${ARCHIVE}"
-            "${CMAKE_CURRENT_BINARY_DIR}/data/${ARCHIVE}" COPYONLY)
-    endforeach()
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/readme.txt
+        ${CMAKE_CURRENT_BINARY_DIR}/data/readme.txt COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/download.sh
+        ${CMAKE_CURRENT_BINARY_DIR}/data/download.sh COPYONLY)
 
     foreach(PYFILE ${CLI_TEST_PY_FILES})
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PYFILE}"
@@ -52,14 +49,6 @@ else()
 endif()
 
 #===================extract the data an prepear for testing=================
-foreach(ARCHIVE ${TEST_DATA_ARCHIVES})
-    string(REPLACE ".tar.xz" "" DATA_DIR_NAME ${ARCHIVE})
-    string(REPLACE ".xz" "" DATA_TAR_NAME ${ARCHIVE})
-    execute_process(COMMAND unxz ${ARCHIVE}
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
-    execute_process(COMMAND tar xf ${DATA_TAR_NAME}
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
-endforeach()
 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)

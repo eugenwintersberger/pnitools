@@ -49,6 +49,7 @@ PREFIX/share/doc/pnitools-doc - with the PDF documentation
 Running tests
 =============
 
+If you are planning to run the tests change to the test/ directory.
 There are two tests shipped with the code which are available after the build. 
 They can be found below test/ in the build directory. 
 
