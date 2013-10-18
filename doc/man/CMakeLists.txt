@@ -1,15 +1,18 @@
 
-configure_file(det2nx.1.cmake det2nx.1 @ONLY)
-configure_file(detinfo.1.cmake detinfo.1 @ONLY)
-configure_file(mcaops.1.cmake mcaops.1 @ONLY)
-configure_file(nxcat.1.cmake nxcat.1 @ONLY)
-configure_file(nxls.1.cmake nxls.1 @ONLY)
-configure_file(xml2nx.1.cmake xml2nx.1 @ONLY)
+set(MAN_SRC det2nx.1.cmake
+            detinfo.1.cmake
+            mcaops.1.cmake
+            nxcat.1.cmake
+            nxls.1.cmake
+            xml2nx.1.cmake
+            )
 
-set(MANPAGES ${CMAKE_CURRENT_BINARY_DIR}/det2nx.1 
-             ${CMAKE_CURRENT_BINARY_DIR}/detinfo.1 
-             ${CMAKE_CURRENT_BINARY_DIR}/mcaops.1 
-             ${CMAKE_CURRENT_BINARY_DIR}/nxcat.1 
-             ${CMAKE_CURRENT_BINARY_DIR}/nxls.1 
-             ${CMAKE_CURRENT_BINARY_DIR}/xml2nx.1)
+set(MANPAGES)
+
+foreach(SRC_FILE ${MAN_SRC})
+    string(REPLACE ".cmake" "" MAN_FILE ${SRC_FILE})
+    configure_file(${SRC_FILE} ${CMAKE_CURRENT_BINARY_DIR}/${MAN_FILE} @ONLY)
+    list(APPEND ${MANPAGES} "${CMAKE_CURRENT_BINARY_DIR}/${MAN_FILE}")
+endforeach()
+
 install(FILES ${MANPAGES} DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
