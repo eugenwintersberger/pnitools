@@ -22,36 +22,51 @@ set(CLI_TEST_PY_FILES check_output.py
                       xml2nx_test.py 
                       run_cli_test.py)
 
-set(TEST_DATA_ARCHIVES data/fio.tar.xz
-                       data/cbf.tar.xz
-                       data/nexus.tar.xz
-                       data/tif.tar.xz)
-
+set(TEST_DATA_ARCHIVES fio.tar.xz
+                       cbf.tar.xz
+                       nexus.tar.xz
+                       tif.tar.xz)
+set(XML_FILES basic.xml detector.xml)
 
 if("${CMAKE_FAMILY_VERSION}" STREQUAL "2.6")
     file(MAKE_DIRECTORY data)
-    foreach(ARCHIVE TEST_DATA_ARCHIVES)
-        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${ARCHIVE}"
-            "${CMAKE_CURRENT_BINARY_DIR}/${ARCHIVE}" COPYONLY)
+    foreach(ARCHIVE ${TEST_DATA_ARCHIVES})
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/${ARCHIVE}"
+            "${CMAKE_CURRENT_BINARY_DIR}/data/${ARCHIVE}" COPYONLY)
     endforeach()
 
-    foreach(PYFILE CLI_TEST_FILES)
+    foreach(PYFILE ${CLI_TEST_PY_FILES})
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PYFILE}"
-            ${CMAKE_CURRENT_BINARY_DIR})
+            ${CMAKE_CURRENT_BINARY_DIR}/${PYFILE} COPYONLY)
+    endforeach()
+
+    foreach(XML_FILE ${XML_FILES})
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${XML_FILE}
+            ${CMAKE_CURRENT_BINARY_DIR}/${XML_FILE} COPYONLY)
+    endforeach() 
+
+    #===================extract the data an prepear for testing=================
+    foreach(ARCHIVE ${TEST_DATA_ARCHIVES})
+        string(REPLACE ".tar.xz" "" DATA_DIR_NAME ${ARCHIVE})
+        string(REPLACE ".xz" "" DATA_TAR_NAME ${ARCHIVE})
+        execute_process(COMMAND unxz ${ARCHIVE}
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
+        execute_process(COMMAND tar xf ${DATA_TAR_NAME}
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
     endforeach()
 else()
     file(COPY data DESTINATION .)
     file(COPY ${CLI_TEST_PY_FILES} DESTINATION .)
+    #=======================extract the data an prepear for testing=================
+    foreach(ARCHIVE TEST_DATA_ARCHIVES)
+        string(REPLACE ".tar.xz" "" DATA_DIR_NAME ${ARCHIVE})
+        string(REPLACE ".xz" "" DATA_TAR_NAME ${ARCHIVE})
+        add_custom_command(OUTPUT ${DATA_DIR_NAME} 
+            COMMAND unxz ${ARCHIVE}
+            COMMAND tar xf ${DATA_TAR_NAME})
+endforeach()
 endif()
 
-#=======================extract the data an prepear for testing=================
-foreach(ARCHIVE TEST_DATA_ARCHIVES)
-    string(REPLACE ".tar.xz" "" DATA_DIR_NAME ${ARCHIVE})
-    string(REPLACE ".xz" "" DATA_TAR_NAME ${ARCHIVE})
-    add_custom_command(OUTPUT ${DATA_DIR_NAME} 
-        COMMAND unxz ${ARCHIVE}
-        COMMAND tar xf ${DATA_TAR_NAME})
-endforeach()
 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
