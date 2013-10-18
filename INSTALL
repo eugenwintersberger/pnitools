@@ -1,0 +1,50 @@
+pnitools build and installation procedure
+=========================================
+
+pnitools uses cmake for installation. The following software should be installed
+on your system before continuing with the build procedure
+
+.) libpnicore >= 0.9.4
+.) libpniio >= 0.9.4
+.) cmake >= 2.6
+.) texinfo 
+.) doxygen
+
+Along with this you need a recent C++ compiler (>=gcc4.4). 
+
+Building the pnitools
+=====================
+
+As CMAKE is used for the build an out of place build is strongly recommended.
+After unpacking the source archive create a new, empty build directory 
+
+$> tar xf pnitools-0.1.0.tar.gz 
+$> mkdir pnitools-build
+$> cd pnitools-build
+
+and run CMAKE in the build directory in order to configure the build
+
+$> cmake
+
+once CMAKE is finished with the configuration
+
+$> make
+$> make install
+
+will build and install the software. The default installation prefix is
+/usr/local. If you want to change this set the CMAKE_INSTALL_PREFIX variable
+during build configuration. 
+
+$> cmake -DCMAKE_INSTALL_PREFIX=/opt/pnitools
+
+This is currently the only option provided to take influence on the
+installation. After 'make install' you will find the following directory
+structure below PREFIX
+
+PREFIX/bin                    - with all the executable programs
+PREFIX/share/doc/man/man1     - the man pages of the individual programs
+PREFIX/share/info             - will contain the texinfo documentation
+PREFIX/share/doc/pnitools-doc - with the PDF documentation
+
+
+
