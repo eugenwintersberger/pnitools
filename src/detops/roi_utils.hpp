@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <pni/core/config/configuration.hpp>
 #include <pni/io/parsers/exceptions.hpp>
 #include <pni/io/parsers/slice_parser.hpp>
 #include "types.hpp"
@@ -38,6 +39,20 @@ Construct a ROI from a string passed by the use with the -r option.
 \return instance of roi_type
 */
 roi_type get_roi_from_string(const string &s);
+
+//-----------------------------------------------------------------------------
+/*!
+\brief get roi stack from configuration
+
+Construct a stack of ROIs from the program configuration.  If now ROIs are
+passed by the user an empty stack is returned.
+
+\throws parser_error in case of errors
+\param config current program configuration
+\return stack of rois
+*/
+roi_stack get_roi_stack(const configuration &config);
+
 
 //------------------------------------------------------------------------------
 /*!

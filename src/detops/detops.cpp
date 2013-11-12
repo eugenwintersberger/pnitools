@@ -48,25 +48,20 @@ int main(int argc, char **argv)
     //===============read darkfield and flatfield images========================
     try
     {
+        //read dark- and flatfield image
         image_type dark_image = get_darkfield(config);
         image_type flat_image = get_flatfield(config);
 
-        
         //setup rois (if there are any)
-        //roi_stack rois = get_roi_stack(config);
-        if(config.has_option("roi"))
-        {
-            roi_type roi = get_roi_from_string(config.value<string>("roi"));
-            std::cout<<roi.first<<std::endl;
-            std::cout<<roi.second<<std::endl;
-        }
-
-
-
-
+        roi_stack rois = get_roi_stack(config);
    
-        //=================now we read the fetch the input files===================
+        //generate the list of input files
         file_list input_files = get_input_files(config);
+
+        //now we can start with the construction of the operation
+
+        
+
 
 
     }

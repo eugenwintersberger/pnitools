@@ -48,3 +48,14 @@ roi_type get_roi_from_string(const string &s)
 
     return roi;
 }
+
+//-----------------------------------------------------------------------------
+roi_stack get_roi_stack(const configuration &config)
+{
+    roi_stack stack;
+    if(config.has_option("roi"))
+        stack.push_back(get_roi_from_string(config.value<string>("roi")));
+
+    return stack;
+
+}
