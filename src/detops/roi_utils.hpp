@@ -22,7 +22,22 @@
 
 #pragma once
 
+#include <pni/io/parsers/exceptions.hpp>
+#include <pni/io/parsers/slice_parser.hpp>
 #include "types.hpp"
+
+using namespace pni::io;
+
+/*!
+\brief get ROI from a string 
+
+Construct a ROI from a string passed by the use with the -r option. 
+
+\throws parser_error in case of errors
+\param s input string which should be parsed
+\return instance of roi_type
+*/
+roi_type get_roi_from_string(const string &s);
 
 //------------------------------------------------------------------------------
 /*!

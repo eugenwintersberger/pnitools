@@ -16,29 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
  *************************************************************************
- * Created on: Oct 28, 2013
+ * Created on: Nov 12, 2013
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#pragma once
+#include "roi_utils.hpp"
 
-#include <iostream>
-#include <typeinfo>
-#include <vector>
-#include <pni/core/exceptions.hpp>
-#include <pni/core/config/configuration.hpp>
-#include <pni/core/config/config_parser.hpp>
-#include "../common/config_utils.hpp"
+roi_type get_roi_from_string(const string &s)
+{
+    typedef string::const_iterator iterator_type;
+    typedef slice_parser<iterator_type> parser_type;
+    roi_type roi;
 
+    parser_type parser;
 
-using namespace pni::core;
+    auto sep_iter = std::find(s.begin(),s.end(),',');
+    if(sep_iter == s.end())
+        throw parser_error(EXCEPTION_RECORD,
+                "A ROI should use a ',' to separate dimensions!");
 
-/*!
-\brief create the program configuration
+    try
+    {
+        parse(s.begin(),sep_iter,parser,roi.first);
+        parse(++sep_iter,s.end(),parser,roi.second);
+    }
+    catch(...)
+    {
+        throw parser_error(EXCEPTION_RECORD,
+                "Error parsing ROI string ("+s+")!");
+    }
 
-This function creates the configuration for the program. 
-*/
-configuration create_config();
-
-
-
+    return roi;
+}

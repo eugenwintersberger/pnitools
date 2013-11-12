@@ -27,11 +27,18 @@
 #include <algorithm>
 #include <functional>
 #include <pni/io/cbf/cbf_reader.hpp>
+#include <pni/core/config/configuration.hpp>
 #include <pni/io/tiff/tiff_reader.hpp>
 #include "types.hpp"
 #include "../common/file.hpp"
+#include "../common/file_list_parser.hpp"
 
 using namespace pni::io;
+
+//list of file names
+typedef std::vector<string> file_name_list;
+//list of file objects
+typedef std::vector<file> file_list;
 
 /*!
 \brief unique pointer to reader 
@@ -66,6 +73,7 @@ reader is found an exception will be thrown.
 */
 reader_ptr reader_from_file(const file &infile);
 
+//-----------------------------------------------------------------------------
 /*!
 \brief read an image from a file
 
@@ -75,6 +83,48 @@ Function reading a single image from a file.
 \return instance of image_type with image data
 */
 image_type read_image(const file &f);
+
+//-----------------------------------------------------------------------------
+/*!
+\brief get the darkfield image 
+
+Reads the darkfield image if present in the current program configuration. 
+If no darkfield is requested by the use an empty image is returned. 
+
+\throws file_error if reading image data fails 
+\param config program configuration
+\return instance of image_type with darkfield image
+*/
+image_type get_darkfield(const configuration &config);
+
+//-----------------------------------------------------------------------------
+/*!
+\brief get the list of input files
+
+This function reads the list of input files from the command line configuration.
+If no input files are given an exception will be thrown. Additionally an
+exception is thrown if one of the files is not a regular file. 
+
+\throws cli_option_error if no input files are given
+\throws file_error at least one of the files is not a regular file
+\param config current program configuration
+\return instance of file_list with the input files
+*/
+file_list get_input_files(const configuration &config);
+
+//-----------------------------------------------------------------------------
+/*!
+\brief get flatfield image
+
+Reads the flatfield image if requested by the current program configuration. If
+no floatfield is requested by the user an empty image is returned. 
+
+\throws file_error in case of errors during reading the data
+\param config current program configuration
+\return instance of image_type with flatfield data
+*/
+image_type get_flatfield(const configuration &config);
+
 
 //-----------------------------------------------------------------------------
 /*!

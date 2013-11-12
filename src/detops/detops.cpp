@@ -22,77 +22,12 @@
 
 #include "detops.hpp"
 #include "io_utils.hpp"
+#include "roi_utils.hpp"
 
 
 
-//list of file names
-typedef std::vector<string> file_name_list;
-//list of file objects
-typedef std::vector<file> file_list;
-
-//-----------------------------------------------------------------------------
-image_type get_darkfield(const configuration &config)
-{
-    try
-    {
-        if(config.has_option("darkfield")) 
-            return read_image(config.value<string>("darkfield"));
-    }
-    catch(file_error &error)
-    {
-        std::cerr<<"Error reading dark field image!"<<std::endl;
-        error.append(EXCEPTION_RECORD);
-        throw error;
-    }
-
-    return image_type();
-}
-
-//-----------------------------------------------------------------------------
-image_type get_flatfield(const configuration &config)
-{
-    try
-    {
-        if(config.has_option("flatfield"))
-            return read_image(config.value<string>("flatfield"));
-    }
-    catch(file_error &error)
-    {
-        std::cerr<<"Error reading flatfield image!"<<std::endl;
-        error.append(EXCEPTION_RECORD);
-        throw error;
-    }
-
-    return image_type();
-}
-
-//-----------------------------------------------------------------------------
-file_list get_input_files(const configuration &config)
-{
-    try
-    {
-        //next we have to get the input files
-        return file_list_parser::parse<file_list>(
-                            config.value<file_name_list>("input-files"));
-    }
-    catch(cli_option_error &error)
-    {
-        std::cerr<<"Error reading input files from command line!"<<std::endl;
-        error.append(EXCEPTION_RECORD);
-        throw error;
-    }
-    catch(file_error &error)
-    {
-        std::cerr<<"One of the input files is not a regular file!"<<std::endl;
-        error.append(EXCEPTION_RECORD);
-        throw error;
-    }
-
-    return file_list(); //just to make the compiler happy
-}
 
 
-//-----------------------------------------------------------------------------
 int main(int argc, char **argv) 
 {
 
@@ -116,12 +51,18 @@ int main(int argc, char **argv)
         image_type dark_image = get_darkfield(config);
         image_type flat_image = get_flatfield(config);
 
-
+        
         //setup rois (if there are any)
+        //roi_stack rois = get_roi_stack(config);
         if(config.has_option("roi"))
         {
-            
+            roi_type roi = get_roi_from_string(config.value<string>("roi"));
+            std::cout<<roi.first<<std::endl;
+            std::cout<<roi.second<<std::endl;
         }
+
+
+
 
    
         //=================now we read the fetch the input files===================
@@ -131,13 +72,15 @@ int main(int argc, char **argv)
     }
     catch(cli_option_error &error)
     {
-        std::cerr<<error<<std::endl;
-        return 1;
+        std::cerr<<error<<std::endl; return 1;
     }
     catch(file_error &error)
     {
-        std::cerr<<error<<std::endl;
-        return 1;
+        std::cerr<<error<<std::endl; return 1;
+    }
+    catch(parser_error &error)
+    {
+        std::cerr<<error<<std::endl; return 1;
     }
     catch(...)
     {

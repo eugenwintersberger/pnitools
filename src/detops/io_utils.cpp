@@ -22,6 +22,66 @@
 
 #include "io_utils.hpp"
 
+//-----------------------------------------------------------------------------
+image_type get_darkfield(const configuration &config)
+{
+    try
+    {
+        if(config.has_option("darkfield")) 
+            return read_image(config.value<string>("darkfield"));
+    }
+    catch(file_error &error)
+    {
+        std::cerr<<"Error reading dark field image!"<<std::endl;
+        error.append(EXCEPTION_RECORD);
+        throw error;
+    }
+
+    return image_type();
+}
+
+//-----------------------------------------------------------------------------
+image_type get_flatfield(const configuration &config)
+{
+    try
+    {
+        if(config.has_option("flatfield"))
+            return read_image(config.value<string>("flatfield"));
+    }
+    catch(file_error &error)
+    {
+        std::cerr<<"Error reading flatfield image!"<<std::endl;
+        error.append(EXCEPTION_RECORD);
+        throw error;
+    }
+
+    return image_type();
+}
+
+//-----------------------------------------------------------------------------
+file_list get_input_files(const configuration &config)
+{
+    try
+    {
+        //next we have to get the input files
+        return file_list_parser::parse<file_list>(
+                            config.value<file_name_list>("input-files"));
+    }
+    catch(cli_option_error &error)
+    {
+        std::cerr<<"Error reading input files from command line!"<<std::endl;
+        error.append(EXCEPTION_RECORD);
+        throw error;
+    }
+    catch(file_error &error)
+    {
+        std::cerr<<"One of the input files is not a regular file!"<<std::endl;
+        error.append(EXCEPTION_RECORD);
+        throw error;
+    }
+
+    return file_list(); //just to make the compiler happy
+}
 
 //-----------------------------------------------------------------------------
 reader_ptr reader_from_file(const file &infile)
