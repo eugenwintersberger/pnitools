@@ -29,17 +29,18 @@ configuration create_config()
     config.add_option(config_option<bool>("help","h","show help",false));
     config.add_option(config_option<bool>("verbose","v",
                 "show verbose output",false));
-    config.add_option(config_option<bool>("print-files","f",
+    config.add_option(config_option<bool>("print-files","p",
                 "print filenames along with output",false));
     config.add_option(config_option<string>("command","c",
                 "which operation to perform"));
     config.add_option(config_option<string>("roi","r",
                 "set region of interest"));
+    config.add_option(config_option<string>("darkfield","d",
+                "name of the darkfield file"));
+    config.add_option(config_option<string>("flatfield","f",
+                "name of a flatfield file"));
     config.add_argument(config_argument<std::vector<string>>("input-files",-1));
-    config.add_option(config_option<string>("mask","m",
-                "name of mask file"));
-    config.add_option(config_option<string>("background","b",
-                "name of background file"));
+
 
 
     return config;

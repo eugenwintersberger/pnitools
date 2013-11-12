@@ -25,11 +25,16 @@
 #include <iostream>
 #include <typeinfo>
 #include <vector>
-#include <pni/core/types.hpp>
-#include <pni/core/arrays.hpp>
-#include <pni/core/slice.hpp>
+#include <pni/core/exceptions.hpp>
 #include <pni/core/config/configuration.hpp>
 #include <pni/core/config/config_parser.hpp>
+#include "../common/config_utils.hpp"
+#include "../common/file.hpp"
+#include "../common/file_list_parser.hpp"
+#include <pni/io/parsers/slice_parser.hpp>
+
+#include "types.hpp"
+#include "roi_utils.hpp"
 
 
 
@@ -45,3 +50,14 @@ using namespace pni::core;
 This function creates the configuration for the program. 
 */
 configuration create_config();
+
+/*!
+\brief process input file
+
+Process a single input file. 
+\throws file_error if input file is of unkown type or cannot be read
+\param infile input file
+*/
+void process_file(const file &infile);
+
+

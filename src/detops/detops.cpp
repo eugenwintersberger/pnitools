@@ -21,11 +21,8 @@
  */
 
 #include "detops.hpp"
+#include "io_utils.hpp"
 
-#include "../common/config_utils.hpp"
-#include "../common/file.hpp"
-#include "../common/file_list_parser.hpp"
-#include <pni/io/parsers/slice_parser.hpp>
 
 
 //list of file names
@@ -33,6 +30,69 @@ typedef std::vector<string> file_name_list;
 //list of file objects
 typedef std::vector<file> file_list;
 
+//-----------------------------------------------------------------------------
+image_type get_darkfield(const configuration &config)
+{
+    try
+    {
+        if(config.has_option("darkfield")) 
+            return read_image(config.value<string>("darkfield"));
+    }
+    catch(file_error &error)
+    {
+        std::cerr<<"Error reading dark field image!"<<std::endl;
+        error.append(EXCEPTION_RECORD);
+        throw error;
+    }
+
+    return image_type();
+}
+
+//-----------------------------------------------------------------------------
+image_type get_flatfield(const configuration &config)
+{
+    try
+    {
+        if(config.has_option("flatfield"))
+            return read_image(config.value<string>("flatfield"));
+    }
+    catch(file_error &error)
+    {
+        std::cerr<<"Error reading flatfield image!"<<std::endl;
+        error.append(EXCEPTION_RECORD);
+        throw error;
+    }
+
+    return image_type();
+}
+
+//-----------------------------------------------------------------------------
+file_list get_input_files(const configuration &config)
+{
+    try
+    {
+        //next we have to get the input files
+        return file_list_parser::parse<file_list>(
+                            config.value<file_name_list>("input-files"));
+    }
+    catch(cli_option_error &error)
+    {
+        std::cerr<<"Error reading input files from command line!"<<std::endl;
+        error.append(EXCEPTION_RECORD);
+        throw error;
+    }
+    catch(file_error &error)
+    {
+        std::cerr<<"One of the input files is not a regular file!"<<std::endl;
+        error.append(EXCEPTION_RECORD);
+        throw error;
+    }
+
+    return file_list(); //just to make the compiler happy
+}
+
+
+//-----------------------------------------------------------------------------
 int main(int argc, char **argv) 
 {
 
@@ -50,41 +110,41 @@ int main(int argc, char **argv)
 
     //select the command
     
-    //read the background file if requested     
-    array_t background_data;
-    if(config.has_option("background")) { }
-
-    //read the mask file if requested - before we check input files (see above)
-    if(config.has_option("mask")) { }
-
-    //setup rois (if there are any)
-   
-    //=================now we read the fetch the input files===================
-
-    //next we have to get the input files
-    auto input_files = file_list_parser::parse<file_list>(
-                        config.value<file_name_list>("input-files"));
-
-
+    //===============read darkfield and flatfield images========================
     try
     {
-        //now we have to iterate over all input files
-        for(auto infile: input_files)
+        image_type dark_image = get_darkfield(config);
+        image_type flat_image = get_flatfield(config);
+
+
+        //setup rois (if there are any)
+        if(config.has_option("roi"))
         {
-            //read the input file
-            array_t data = read_image(infile);
-
-            //process the data
-
-
+            
         }
+
+   
+        //=================now we read the fetch the input files===================
+        file_list input_files = get_input_files(config);
+
+
+    }
+    catch(cli_option_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
+    catch(file_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
     }
     catch(...)
     {
         std::cerr<<"Something went wrong!"<<std::endl;
+        return 1;
     }
 
 	return 0;
-
 }
 
