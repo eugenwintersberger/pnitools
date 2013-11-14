@@ -67,7 +67,7 @@ image.
 \return instance of image_type with the ROI data
 */
 template<typename ITYPE>
-image_type get_roi(const ITYPE &image,const roi_type &roi)
+image_type get_roi( ITYPE &image,const roi_type &roi)
 {
     return image_type(image(roi.first,roi.second));
 }
@@ -82,7 +82,7 @@ stack.
 \tparam ITYPE image type
 */
 template<typename ITYPE>
-image_stack image_stack_from_rois(const ITYPE &image,const roi_stack &rois)
+    image_stack image_stack_from_rois(ITYPE &image,const roi_stack &rois)
 {
     image_stack istack;
     for(auto roi: rois)

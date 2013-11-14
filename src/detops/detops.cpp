@@ -23,9 +23,8 @@
 #include "detops.hpp"
 #include "io_utils.hpp"
 #include "roi_utils.hpp"
-
-
-
+#include "image_processor.hpp"
+#include "integrate.hpp"
 
 
 int main(int argc, char **argv) 
@@ -44,13 +43,24 @@ int main(int argc, char **argv)
     //throw an exception due to some simple operation
 
     //select the command
+    image_processor proc;
     
     //===============read darkfield and flatfield images========================
     try
     {
         //read dark- and flatfield image
         image_type dark_image = get_darkfield(config);
+        /*
+        if(dark_image.size()) 
+            proc.push_back(image_processor::op_ptr_type(
+                           new subtract_image(dark_image)));
+        */
         image_type flat_image = get_flatfield(config);
+        /*
+        if(flat_image.size()) 
+            proc.push_back(image_processor::op_ptr_type(
+                           new multiply_image(flat_image)));
+                           */
 
         //setup rois (if there are any)
         roi_stack rois = get_roi_stack(config);
@@ -59,8 +69,21 @@ int main(int argc, char **argv)
         file_list input_files = get_input_files(config);
 
         //now we can start with the construction of the operation
+        for(auto f: input_files)
+        {
+           //read image from file
+           image_type image = read_image(f); 
+           //generate image stack from the image and rois
+           image_stack istack = image_stack_from_rois(image,rois);
 
-        
+           //apply operation on each image
+           for(auto i: istack) proc(i);
+
+           //show the result for the last operation
+           std::cout<<*proc.back()<<std::endl;
+        }
+
+         
 
 
 

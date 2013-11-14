@@ -16,42 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
  *************************************************************************
- * Created on: Oct 28, 2013
+ * Created on: Nov 14, 2013
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include <algorithm>
-#include "operations.hpp"
+#include "integrate.hpp"
+
+
+integrate::integrate():image_op_base(image_type(shape_t{1})) {}
 
 //-----------------------------------------------------------------------------
-void min_operation(const array_t &data)
+void integrate::execute(const image_type &image)
 {
-    
-}
-
-//-----------------------------------------------------------------------------
-void max_operation(const array_t &data)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-void average_operation(const array_t &data)
-{
-    array_t::value_type result=0.0;
-
-    result =  std::accumulate(data.begin(),data.end(),result);
-    result /= array_t::value_type(data.size());
-
-    //print result
-}
-
-//-----------------------------------------------------------------------------
-void sum_operation(const array_t &data)
-{
-    array_t::value_type result = 0.0;
-
-    result = std::accumulate(data.begin(),data.end(),result);
-
-    //print result
+    result()[0] = std::accumulate(image.begin(),image.end(),0);
 }
