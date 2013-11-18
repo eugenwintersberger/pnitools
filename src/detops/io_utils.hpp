@@ -135,13 +135,8 @@ template<typename RTYPE> image_type read_data(RTYPE &&reader)
     //get image information
     image_info info = reader.info(0);
 
-    //create the output image
-    shape_t shape{info.nx(),info.ny()};
+    return image_type(shape_t{info.nx(),info.ny()},
+                      reader.template image<storage_type>(0,0));
     
-    //read data from the file
-    auto data = reader.template image<storage_type>(0,0);
-
-    //return the output image
-    return image_type(std::move(shape),std::move(data));
 }
 
