@@ -32,7 +32,7 @@ configuration create_config()
     config.add_option(config_option<bool>("print-files","p",
                 "print filenames along with output",false));
     config.add_option(config_option<string>("command","c",
-                "which operation to perform"));
+                "which operation to perform","sum"));
     config.add_option(config_option<string>("roi","r",
                 "set region of interest"));
     config.add_option(config_option<string>("darkfield","d",

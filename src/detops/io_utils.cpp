@@ -83,8 +83,9 @@ file_list get_input_files(const configuration &config)
     return file_list(); //just to make the compiler happy
 }
 
-//-----------------------------------------------------------------------------
-reader_ptr reader_from_file(const file &infile)
+
+//------------------------------------------------------------------------------
+image_type read_image(const file &infile)
 {
     //determine the reader type from the file extension
     string type;
@@ -104,33 +105,14 @@ reader_ptr reader_from_file(const file &infile)
     try
     {
         if(type == "cbf")
-            return reader_ptr(new cbf_reader(infile.path()));
+            return read_data(cbf_reader(infile.path()));
         else if(type == "tif")
-            return reader_ptr(new tiff_reader(infile.path()));
+            return read_data(tiff_reader(infile.path()));
     }
     catch(...)
     {
         throw file_error(EXCEPTION_RECORD,
                 "Unable to construct reader for file "+infile.path()+"!");
     }
-
-}
-
-//------------------------------------------------------------------------------
-image_type read_image(const file &f)
-{
-    reader_ptr reader = reader_from_file(f);
-
-    //get image information
-    type_id_t tid = reader->info(0).get_channel(0).type_id();
-
-    if(tid == type_id_t::UINT8)       return read_data<uint8>  (reader);
-    else if(tid == type_id_t::INT8)   return read_data<int8>   (reader);
-    else if(tid == type_id_t::UINT16) return read_data<uint16> (reader);
-    else if(tid == type_id_t::INT16)  return read_data<int16>  (reader);
-    else if(tid == type_id_t::UINT32) return read_data<uint32> (reader);
-    else if(tid == type_id_t::INT32)  return read_data<int32>  (reader);
-    else if(tid == type_id_t::UINT64) return read_data<uint64> (reader);
-    else if(tid == type_id_t::INT64)  return read_data<int64>  (reader);
 }
 

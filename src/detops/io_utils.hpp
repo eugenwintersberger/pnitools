@@ -62,19 +62,6 @@ static std::map<string,string> type_extension_map =
 
 //-----------------------------------------------------------------------------
 /*!
-\brief create reader object from file
-
-Take a file object and return a unique pointer to the appropriate reader. If no
-reader is found an exception will be thrown. 
-
-\throws file_error if no appropriate reader is found 
-\param infile input file as an instance of file
-\return unique pointer to the reader instance
-*/
-reader_ptr reader_from_file(const file &infile);
-
-//-----------------------------------------------------------------------------
-/*!
 \brief read an image from a file
 
 Function reading a single image from a file. 
@@ -141,20 +128,20 @@ data cannot be allocated
 \param reader unique pointer to the reader object
 \return instance of image_type with image data
 */
-template<typename T> image_type read_data(const reader_ptr &reader)
+template<typename RTYPE> image_type read_data(RTYPE &&reader)
 {
-    typedef std::vector<T> buffer_type;
+    typedef image_type::storage_type storage_type;
 
     //get image information
-    image_info info = reader->info(0);
+    image_info info = reader.info(0);
 
     //create the output image
-    image_type image(shape_t{info.nx(),info.ny()});
+    shape_t shape{info.nx(),info.ny()};
     
     //read data from the file
-    auto data = reader->image<buffer_type>(0,0);
-    //copy data to the output image
-    std::copy(data.begin(),data.end(),image.begin());
+    auto data = reader.template image<storage_type>(0,0);
 
-    return image;
+    //return the output image
+    return image_type(std::move(shape),std::move(data));
 }
+

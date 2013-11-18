@@ -4,6 +4,8 @@ set(DETOPS_SOURCE detops.cpp
                   roi_utils.cpp
                   image_processor.cpp
                   integrate.cpp
+                  maximum.cpp
+                  minimum.cpp
                   image_op_base.cpp
                   )
 

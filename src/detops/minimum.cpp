@@ -20,12 +20,13 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include "image_op_base.hpp"
+#include "minimum.hpp"
 
-std::ostream &operator<<(std::ostream &stream,const image_op_base &op)
+
+minimum::minimum():image_op_base(image_type(shape_t{1})) {}
+
+//-----------------------------------------------------------------------------
+void minimum::execute(const image_type &image)
 {
-    const image_type &result = op.result();
-    for(auto r: result)
-        stream<<r;
-    return stream;
+    result()[0] = *std::min_element(image.begin(),image.end());
 }

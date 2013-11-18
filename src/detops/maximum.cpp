@@ -20,12 +20,13 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
-#include "image_op_base.hpp"
+#include "maximum.hpp"
 
-std::ostream &operator<<(std::ostream &stream,const image_op_base &op)
+
+maximum::maximum():image_op_base(image_type(shape_t{1})) {}
+
+//-----------------------------------------------------------------------------
+void maximum::execute(const image_type &image)
 {
-    const image_type &result = op.result();
-    for(auto r: result)
-        stream<<r;
-    return stream;
+    result()[0] = *std::max_element(image.begin(),image.end());
 }

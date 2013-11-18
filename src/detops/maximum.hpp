@@ -20,12 +20,15 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
+#pragma once
+
+#include <algorithm>
+#include "types.hpp"
 #include "image_op_base.hpp"
 
-std::ostream &operator<<(std::ostream &stream,const image_op_base &op)
+class maximum : public image_op_base
 {
-    const image_type &result = op.result();
-    for(auto r: result)
-        stream<<r;
-    return stream;
-}
+    public:
+        maximum();
+        virtual void execute(const image_type &image);
+};

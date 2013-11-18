@@ -25,7 +25,20 @@
 #include "roi_utils.hpp"
 #include "image_processor.hpp"
 #include "integrate.hpp"
+#include "minimum.hpp"
+#include "maximum.hpp"
 
+void assemble_process_chain(const configuration &config,image_processor &proc)
+{
+    auto cmd = config.value<string>("command");
+
+    if(cmd == "sum")
+        proc.push_back(image_processor::op_ptr_type(new integrate()));
+    else if(cmd == "max")
+        proc.push_back(image_processor::op_ptr_type(new maximum()));
+    else if(cmd == "min")
+        proc.push_back(image_processor::op_ptr_type(new minimum()));
+}
 
 int main(int argc, char **argv) 
 {
@@ -69,12 +82,18 @@ int main(int argc, char **argv)
         file_list input_files = get_input_files(config);
 
         //now we can start with the construction of the operation
+        assemble_process_chain(config,proc);
+          
         for(auto f: input_files)
         {
            //read image from file
            image_type image = read_image(f); 
            //generate image stack from the image and rois
-           image_stack istack = image_stack_from_rois(image,rois);
+           image_stack istack;
+           if(rois.empty())
+               istack.push_back(image);
+           else
+               istack= image_stack_from_rois(image,rois);
 
            //apply operation on each image
            for(auto i: istack) proc(i);

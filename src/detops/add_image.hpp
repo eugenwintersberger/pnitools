@@ -20,12 +20,18 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
+#include <algorithm.hpp>
+#include "types.hpp"
 #include "image_op_base.hpp"
 
-std::ostream &operator<<(std::ostream &stream,const image_op_base &op)
+class integrate : public image_op_base
 {
-    const image_type &result = op.result();
-    for(auto r: result)
-        stream<<r;
-    return stream;
-}
+    public:
+        virtual void execute(const image_type &image)
+        {
+            image_type r(shape_t{1});
+            r[0] = std::accumulate(image.begin(),image.end());
+
+            result(r);
+        }
+};
