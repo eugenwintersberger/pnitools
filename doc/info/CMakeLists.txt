@@ -8,6 +8,7 @@ set(TEXI_SRC det2nx.texi
              nxcat.texi 
              nxls.texi 
              rois.texi
+             detops.texi
              numeric_ranges.texi
              xml2nx.texi 
              pics/mcaops_test_dat.txt

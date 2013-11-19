@@ -62,18 +62,10 @@ int main(int argc, char **argv)
     try
     {
         //read dark- and flatfield image
+        /*
         image_type dark_image = get_darkfield(config);
-        /*
-        if(dark_image.size()) 
-            proc.push_back(image_processor::op_ptr_type(
-                           new subtract_image(dark_image)));
-        */
         image_type flat_image = get_flatfield(config);
-        /*
-        if(flat_image.size()) 
-            proc.push_back(image_processor::op_ptr_type(
-                           new multiply_image(flat_image)));
-                           */
+        */
 
         //setup rois (if there are any)
         roi_stack rois = get_roi_stack(config);
@@ -93,6 +85,8 @@ int main(int argc, char **argv)
            if(rois.empty())
                istack.push_back(image);
            else
+               //here we most probably have to pass the dark and flat field
+               //images - that would be the simplest approach
                istack= image_stack_from_rois(image,rois);
 
            //apply operation on each image
@@ -101,11 +95,6 @@ int main(int argc, char **argv)
            //show the result for the last operation
            std::cout<<*proc.back()<<std::endl;
         }
-
-         
-
-
-
     }
     catch(cli_option_error &error)
     {

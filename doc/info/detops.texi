@@ -1,0 +1,64 @@
+The @command{detops} program applies cumulative operations on one or several
+single image detector files. Currently the following file formats are supported
+@itemize @bullet
+@item 
+CBF - the CIF binary format written by DECTRIS detectors
+
+@item 
+TIFF - the tagged image file format
+@end itemize
+
+@noindent
+The region on which the operation is applied to can be restricted by setting a
+region of interest (ROI).
+The operations currently include 
+
+@itemize @bullet
+@item 
+compute the sum over all or selected pixel values
+@item 
+get maximum value of the image or selected region
+@item 
+get minimum value of the image or selected region
+@end itemize
+
+@noindent
+The invocation of @command{detops} is rather simple
+
+@example
+detops [OPTIONS] FILESPEC
+@end example
+
+@noindent
+where @var{FILESPEC} describes the list of files that should be read by
+@command{detops}. For more information about how to specify input files see
+@ref{Input file selection}.
+@command{detops} returns 0 in case of success and 1 otherwise. 
+
+@menu 
+* detops program options:: command line options taken by @command{detops}
+@end menu
+
+@node detops program options
+@subsection Program options
+
+The following options can be passed to @command{detops}
+
+@table @samp
+@item -h
+@itemx --help
+Print a short program help.
+
+@item -c
+@itemx --command
+This option determines the operation executed on the image. It can be either
+'sum','min', or 'max'.
+
+@item -r
+@itemx --roi
+Can be used to pass a ROI (currently only a single ROI can be used) to the
+program. So the operation determined by the @option{c} will only apply to the
+detector area specified by this ROI.
+
+@end table
+
