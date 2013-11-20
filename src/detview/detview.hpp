@@ -21,13 +21,18 @@
  */
 
 #include <pni/core/types.hpp>
+#include <pni/core/arrays.hpp>
 #include <pni/core/config/configuration.hpp>
 #include <pni/core/config/config_parser.hpp>
 
 using namespace pni::core;
+
+typedef darray<float32> image_type;
 
 /*!
 \brief create configuration 
 
 */
 configuration create_config();
+
+

@@ -21,10 +21,12 @@
  */
 
 #include "detview.hpp"
+#include "../common/io_utils.hpp"
 #include "../common/config_utils.hpp"
 
 
 static const string program_name = "detview";
+
 
 
 int main(int argc,char **argv)
@@ -36,14 +38,34 @@ int main(int argc,char **argv)
 
     if(check_help_request(config,"Program usage")) return 1;
 
+    try
+    {
+        //-------------------check if the user has passed an input file--------
+        if(!config.has_option("input-file"))
+        {
+            std::cerr<<"No input file passed - see detview -h for "
+                     <<"more information!"<<std::endl;
+            return 1;
+        }
+
+        //------------------read input image-----------------------------------
+        auto image = read_image<image_type>(config.value<string>("input-file"));        
 
 
-    //------------------read input image---------------------------------------
 
+        //-------------------show/output the image-----------------------------
 
+    }
+    catch(file_error &error)
+    {
+        std::cout<<error<<std::endl;
+        return 1;
+    }
+    catch(...)
+    {
+        std::cout<<"Something went wrong!"<<std::endl;
+        return 1;
+    }
 
-    //-------------------show/output the image---------------------------------
-
-
-
+    return 0;
 }
