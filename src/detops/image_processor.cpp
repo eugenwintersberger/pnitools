@@ -23,6 +23,10 @@
 
 #include "image_processor.hpp"
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 
 image_processor::image_processor():
     _op_stack()
@@ -31,11 +35,15 @@ image_processor::image_processor():
 //-----------------------------------------------------------------------------
 image_type image_processor::operator()(const image_type &input) 
 {
-    std::reference_wrapper<const image_type> image = input; //the initial image is user input
+    std::reference_wrapper<const image_type> image = std::cref(input); //the initial image is user input
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto &op,_op_stack)
+#else
     for(auto &op: _op_stack)
+#endif
     {
         op->execute(input);
-        image = op->result(); //set image to the result of the current 
+        image = std::cref(op->result()); //set image to the result of the current 
                              //operation
     }
 

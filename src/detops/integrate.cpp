@@ -20,6 +20,7 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
+#include <numeric>
 #include "integrate.hpp"
 
 

@@ -22,10 +22,19 @@
 
 #include "image_op_base.hpp"
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 std::ostream &operator<<(std::ostream &stream,const image_op_base &op)
 {
     const image_type &result = op.result();
+
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto r,result)
+#else
     for(auto r: result)
+#endif
         stream<<r;
     return stream;
 }

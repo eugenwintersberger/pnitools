@@ -27,6 +27,10 @@
 #include <pni/io/parsers/slice_parser.hpp>
 #include "types.hpp"
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 using namespace pni::io;
 
 /*!
@@ -85,7 +89,11 @@ template<typename ITYPE>
     image_stack image_stack_from_rois(ITYPE &image,const roi_stack &rois)
 {
     image_stack istack;
+#ifdef NOFOREACH
+    BOOST_FOREACH(auto roi,rois)
+#else
     for(auto roi: rois)
+#endif
         istack.push_back(get_roi(image,roi));
 
     return istack;

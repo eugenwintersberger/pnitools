@@ -28,6 +28,10 @@
 #include "minimum.hpp"
 #include "maximum.hpp"
 
+#ifdef NOFOREACH
+#include <boost/foreach.hpp>
+#endif
+
 void assemble_process_chain(const configuration &config,image_processor &proc)
 {
     auto cmd = config.value<string>("command");
@@ -75,8 +79,12 @@ int main(int argc, char **argv)
 
         //now we can start with the construction of the operation
         assemble_process_chain(config,proc);
-          
+     
+#ifdef NOFOREACH
+        BOOST_FOREACH(auto f,input_files)
+#else
         for(auto f: input_files)
+#endif
         {
            //read image from file
            image_type image = read_image(f); 
@@ -90,7 +98,12 @@ int main(int argc, char **argv)
                istack= image_stack_from_rois(image,rois);
 
            //apply operation on each image
-           for(auto i: istack) proc(i);
+#ifdef NOFOREACH
+           BOOST_FOREACH(auto i,istack)
+#else
+           for(auto i: istack) 
+#endif
+               proc(i);
 
            //show the result for the last operation
            std::cout<<*proc.back()<<std::endl;

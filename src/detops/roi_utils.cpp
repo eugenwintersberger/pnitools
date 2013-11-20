@@ -37,8 +37,10 @@ roi_type get_roi_from_string(const string &s)
 
     try
     {
-        parse(s.begin(),sep_iter,parser,roi.first);
-        parse(++sep_iter,s.end(),parser,roi.second);
+        auto first = s.begin();
+        auto last  = s.end();
+        boost::spirit::qi::parse(first,sep_iter,parser,roi.first);
+        boost::spirit::qi::parse(++sep_iter,last,parser,roi.second);
     }
     catch(...)
     {
