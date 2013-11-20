@@ -31,6 +31,7 @@ add_subdirectory("src/nxls")
 #add_subdirectory("src/nxsh")
 #add_subdirectory("src/nxtee")
 add_subdirectory("src/xml2nx")
+add_subdirectory("src/detview")
 
 add_subdirectory("test")
 
