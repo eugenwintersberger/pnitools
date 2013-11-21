@@ -68,6 +68,20 @@ int main(int argc,char **argv)
         std::cout<<min_value<<" "<<max_value<<std::endl;
         stream.scmap1n(100);
         image_buffer buffer = image_buffer_from_array(image);
+        stream.colorbar(PL_POSITION_RIGHT,PL_COLORBAR_IMAGE,
+                        0,0, //colobar offset from standard position
+                        100, //height
+                        100, //width
+                        3,   //background color
+                        3,   //bounding box color
+                        1,  //ticks
+                        1,  //subticks
+                        nullptr, //axis options
+                        "hello world",
+                        100,
+                        nullptr,
+                        nullptr
+                        );
         stream.image(buffer.data(),nx,ny,0,nx,0,ny,min_value,max_value,0,nx,0,ny);
     }
     catch(file_error &error)
