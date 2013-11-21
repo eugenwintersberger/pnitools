@@ -60,6 +60,7 @@ int draw_image::Draw(mglGraph *d)
 {
     d->NewFrame();
     d->Box();
+    d->SetFontSize(3);
     d->SetFunc("","","","lg(c)");
     d->SetTicks('c',0);
     d->SetRanges(0,_data.nx,0,_data.ny);
