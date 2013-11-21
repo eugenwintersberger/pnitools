@@ -42,28 +42,15 @@ class draw_image:public mglDraw
 {
     private:
         mglData _data;
-        mglData _cbar;
     public:
         template<typename ATYPE> draw_image(const ATYPE &a)
         {
-            typedef typename ATYPE::value_type value_type;
             auto shape = a.template shape<shape_t>(); 
             _data = mglData(shape[0],shape[1]);
-            _cbar = mglData(10);
-            value_type min_value=0,max_value=0;
             //copy data to the mglData structure
             for(size_t i=0;i<shape[0];i++)
                 for(size_t j=0;j<shape[1];j++)
-                {
-                    value_type value = a(i,j);
-                    if(value<min_value) min_value = value;
-                    else if(value>=max_value) max_value = value;
-
-                    _data.Put(value,i,j);
-                }
-
-            std::cout<<min_value<<" "<<max_value<<std::endl;
-            _cbar.Fill(min_value,max_value);
+                    _data.Put(a(i,j),i,j);
         }
 
         int Draw(mglGraph *d);
@@ -73,10 +60,10 @@ int draw_image::Draw(mglGraph *d)
 {
     d->NewFrame();
     d->Box();
-    d->SetRanges(0,_data.nx,0,_data.ny);
-    d->CRange(_data);
-    d->SetFunc("","","","lg(c+1)");
+    d->SetFunc("","","","lg(c)");
     d->SetTicks('c',0);
+    d->SetRanges(0,_data.nx,0,_data.ny);
+    d->CRange(1.,_data.Maximal());
     d->Dens(_data);
     d->Colorbar();
     d->EndFrame();
