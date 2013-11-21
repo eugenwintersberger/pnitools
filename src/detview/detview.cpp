@@ -23,6 +23,9 @@
 #include <numeric>
 #include <algorithm>
 
+#include <QtCore/QtCore>
+#include <QtGui/QtGui>
+
 #include <mgl/mgl.h>
 #include <mgl/mgl_qt.h>
 #include "detview.hpp"
@@ -35,9 +38,42 @@ static const string program_name = "detview";
 
 typedef image_type::value_type pixel_type;
 
+class draw_image:public mglDraw
+{
+    private:
+        mglData _data;
+    public:
+        template<typename ATYPE> draw_image(const ATYPE &a)
+        {
+            auto shape = a.template shape<shape_t>(); 
+            _data = mglData(shape[0],shape[1]);
+            //copy data to the mglData structure
+            for(size_t i=0;i<shape[0];i++)
+                for(size_t j=0;j<shape[1];j++)
+                    _data.Put(a(i,j),i,j);
+        }
+
+        int Draw(mglGraph *d);
+};
+
+int draw_image::Draw(mglGraph *d)
+{
+    //d->NewFrame();
+    d->Box();
+    //d->SetScheme("kw");
+    //d->SetFunc("","","","lg(c+1)");
+    //d->SetTicks('c',0);
+    d->Dens(_data);
+    d->Colorbar();
+    //d->EndFrame();
+
+    return d->GetNumFrame();
+}
+
 int main(int argc,char **argv)
 {
     configuration config = create_config();
+    QApplication app(argc,argv);
 
     //---------------parse program configuration-------------------------------
     if(parse_cli_opts(argc,argv,program_name,config)) return 1;
@@ -59,7 +95,25 @@ int main(int argc,char **argv)
         auto shape = image.shape<shape_t>();
 
         //-------------------show/output the image-----------------------------
-        mglData data;
+
+        //--------------setup the main application-----------------------------
+        QMainWindow *main_window = new QMainWindow();
+        main_window->resize(650,480);
+        main_window->setWindowTitle(string("detview"+config.value<string>("input-file")).c_str());
+
+        draw_image *draw = new draw_image(image);
+        QMathGL *qmgl = new QMathGL();
+        qmgl->autoResize =true;
+        qmgl->setDraw(draw);
+        qmgl->update();
+
+
+        main_window->setCentralWidget(qmgl);
+        main_window->show();
+        app.exec();
+
+
+
 
     }
     catch(file_error &error)
