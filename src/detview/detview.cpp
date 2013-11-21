@@ -20,7 +20,10 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
+#include <numeric>
+#include <algorithm>
 #include "detview.hpp"
+#include "plot.hpp"
 #include "../common/io_utils.hpp"
 #include "../common/config_utils.hpp"
 
@@ -28,6 +31,7 @@
 static const string program_name = "detview";
 
 
+typedef image_type::value_type pixel_type;
 
 int main(int argc,char **argv)
 {
@@ -50,11 +54,21 @@ int main(int argc,char **argv)
 
         //------------------read input image-----------------------------------
         auto image = read_image<image_type>(config.value<string>("input-file"));        
-
-
+        auto shape = image.shape<shape_t>();
 
         //-------------------show/output the image-----------------------------
 
+        plstream stream(1,1,"qtwidget",nullptr);
+        stream.init();
+        stream.env(0,shape[0],0,shape[1],0,0);
+        size_t nx = shape[0];
+        size_t ny = shape[1];
+        pixel_type min_value = *std::min_element(image.begin(),image.end());
+        pixel_type max_value = *std::max_element(image.begin(),image.end());
+        std::cout<<min_value<<" "<<max_value<<std::endl;
+        stream.scmap1n(100);
+        image_buffer buffer = image_buffer_from_array(image);
+        stream.image(buffer.data(),nx,ny,0,nx,0,ny,min_value,max_value,0,nx,0,ny);
     }
     catch(file_error &error)
     {
