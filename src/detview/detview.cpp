@@ -22,8 +22,10 @@
 
 #include <numeric>
 #include <algorithm>
+
+#include <mgl/mgl.h>
+#include <mgl/mgl_qt.h>
 #include "detview.hpp"
-#include "plot.hpp"
 #include "../common/io_utils.hpp"
 #include "../common/config_utils.hpp"
 
@@ -57,32 +59,8 @@ int main(int argc,char **argv)
         auto shape = image.shape<shape_t>();
 
         //-------------------show/output the image-----------------------------
+        mglData data;
 
-        plstream stream(1,1,"qtwidget",nullptr);
-        stream.init();
-        stream.env(0,shape[0],0,shape[1],0,0);
-        size_t nx = shape[0];
-        size_t ny = shape[1];
-        pixel_type min_value = *std::min_element(image.begin(),image.end());
-        pixel_type max_value = *std::max_element(image.begin(),image.end());
-        std::cout<<min_value<<" "<<max_value<<std::endl;
-        stream.scmap1n(100);
-        image_buffer buffer = image_buffer_from_array(image);
-        stream.colorbar(PL_POSITION_RIGHT,PL_COLORBAR_IMAGE,
-                        0,0, //colobar offset from standard position
-                        100, //height
-                        100, //width
-                        3,   //background color
-                        3,   //bounding box color
-                        1,  //ticks
-                        1,  //subticks
-                        nullptr, //axis options
-                        "hello world",
-                        100,
-                        nullptr,
-                        nullptr
-                        );
-        stream.image(buffer.data(),nx,ny,0,nx,0,ny,min_value,max_value,0,nx,0,ny);
     }
     catch(file_error &error)
     {
