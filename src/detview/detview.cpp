@@ -22,6 +22,7 @@
 
 #include <numeric>
 #include <algorithm>
+#include <chrono>
 
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>
@@ -34,6 +35,7 @@
 
 
 static const string program_name = "detview";
+
 
 
 typedef image_type::value_type pixel_type;
@@ -74,6 +76,7 @@ int draw_image::Draw(mglGraph *d)
 
 int main(int argc,char **argv)
 {
+    typedef std::chrono::milliseconds mseconds;
     configuration config = create_config();
     QApplication app(argc,argv);
 
@@ -93,7 +96,14 @@ int main(int argc,char **argv)
         }
 
         //------------------read input image-----------------------------------
+        auto start = std::chrono::high_resolution_clock::now();
         auto image = read_image<image_type>(config.value<string>("input-file"));        
+        auto end   = std::chrono::high_resolution_clock::now();
+        auto elapsed_time = end-start;
+        std::cout<<"Time to read: "
+                 <<std::chrono::duration_cast<mseconds>(elapsed_time).count()
+                 <<std::endl;
+            
         auto shape = image.shape<shape_t>();
 
         //-------------------show/output the image-----------------------------
