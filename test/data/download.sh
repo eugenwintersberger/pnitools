@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FILE_ID="0B3ylb_x4-XOgTnI5UW9sNzdjeTg"
+FILE_ID="0B3ylb_x4-XOgcWRDTlNZdmEyWnc"
 FILE_NAME="pnitools-test-data.tar.gz"
 HOST_URL="https://googledrive.com/host/"
 

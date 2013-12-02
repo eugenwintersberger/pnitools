@@ -121,11 +121,12 @@ int main(int argc, char **argv)
     {
         std::cerr<<error<<std::endl; return 1;
     }
+    /*
     catch(...)
     {
         std::cerr<<"Something went wrong!"<<std::endl;
         return 1;
-    }
+    }*/
 
 	return 0;
 }

@@ -102,17 +102,19 @@ image_type read_image(const file &infile)
                 "Unable to determine file type for file "+infile.path()+ "!");
     }
 
-    try
-    {
+//    try
+ //   {
         if(type == "cbf")
             return read_data(cbf_reader(infile.path()));
         else if(type == "tif")
             return read_data(tiff_reader(infile.path()));
-    }
-    catch(...)
-    {
+        /*
+  }
+  catch(...)
+  {
         throw file_error(EXCEPTION_RECORD,
                 "Unable to construct reader for file "+infile.path()+"!");
     }
+    */
 }
 
