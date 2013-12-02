@@ -29,5 +29,6 @@ integrate::integrate():image_op_base(image_type(shape_t{1})) {}
 //-----------------------------------------------------------------------------
 void integrate::execute(const image_type &image)
 {
-    result()[0] = std::accumulate(image.begin(),image.end(),0);
+    typedef image_type::value_type value_type;
+    result()[0] = std::accumulate(image.begin(),image.end(),value_type(0));
 }

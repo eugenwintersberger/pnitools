@@ -46,7 +46,6 @@ class detops_test(unittest.TestCase):
     def test_return(self):
         pass
 
-
     #test for MAR 165 data
     def test_mar165(self):
         file1 = "data/tif/mar165_agbeh_00001.tif"
@@ -90,6 +89,21 @@ class detops_test(unittest.TestCase):
         cmd = ['detops','-csum','-r50:2071,100:1151',file1]
         result = float(check_output(cmd))
         self.assertAlmostEqual(result,4528990412.,8)
+
+    def test_perk(self):
+        file1 = "data/tif/perk_Fe_noPM_2.5barsec-05000.raw.tif"
+
+        #check first file
+        cmd = ['detops','-csum',file1]
+        result = float(check_output(cmd))
+        print result
+        self.assertAlmostEqual(result,20958844636.,8)
+        cmd = ['detops','-csum','-r50:151,100:201',file1]
+        result = float(check_output(cmd))
+        self.assertAlmostEqual(result,50186602.,8)
+        cmd = ['detops','-csum','-r50:1844,100:1025',file1]
+        result = float(check_output(cmd))
+        self.assertAlmostEqual(result,8300631866.,8)
 
     def test_pilatus100k(self):
         file1 = "data/cbf/Pilatus100k_sample180_00001_00001.cbf"

@@ -21,6 +21,7 @@
  */
 
 #include <iomanip>
+#include <fstream>
 #include "detops.hpp"
 #include "io_utils.hpp"
 #include "roi_utils.hpp"
@@ -89,6 +90,11 @@ int main(int argc, char **argv)
         {
            //read image from file
            image_type image = read_image(f); 
+
+           /*
+           std::ofstream of("test.dat");
+           for(auto v: image) of<<v<<std::endl;
+           of.close();*/
            //generate image stack from the image and rois
            image_stack istack;
            if(rois.empty())
@@ -107,7 +113,7 @@ int main(int argc, char **argv)
                proc(i);
 
            //show the result for the last operation
-           std::cout<<std::setprecision(15)<<std::scientific;
+           std::cout<<std::setprecision(16)<<std::scientific;
            std::cout<<*proc.back()<<std::endl;
         }
     }
