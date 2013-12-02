@@ -20,6 +20,7 @@ set(CLI_TEST_PY_FILES check_output.py
                       nxcat_test.py 
                       nxls_test.py 
                       xml2nx_test.py 
+                      detops_test.py
                       run_cli_test.py)
 
 set(XML_FILES basic.xml detector.xml)

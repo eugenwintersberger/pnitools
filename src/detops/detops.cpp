@@ -20,6 +20,7 @@
  *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
  */
 
+#include <iomanip>
 #include "detops.hpp"
 #include "io_utils.hpp"
 #include "roi_utils.hpp"
@@ -106,6 +107,7 @@ int main(int argc, char **argv)
                proc(i);
 
            //show the result for the last operation
+           std::cout<<std::setprecision(15)<<std::scientific;
            std::cout<<*proc.back()<<std::endl;
         }
     }
