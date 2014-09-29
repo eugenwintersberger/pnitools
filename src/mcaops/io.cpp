@@ -1,41 +1,34 @@
-/*
- * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * libpniutils is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * libpniutils is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- * Created on: May 08,2013
- *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
+//
+// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// libpniutils is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// libpniutils is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
+// ===========================================================================
+// Created on: May 08,2013
+//     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 
 #include "io.hpp"
 
 #include <sstream>
 #include "../common/file.hpp"
-#ifdef NOFOREACH
-#include <boost/foreach.hpp>
-#endif
 
 std::vector<string> get_column_list(const fio_reader &reader)
 {
     std::vector<string> column_names;
-#ifdef NOFOREACH
-    BOOST_FOREACH(auto c, reader)
-#else
     for(auto c: reader)
-#endif
         column_names.push_back(c.name());
 
     return column_names;
@@ -47,7 +40,7 @@ operation::array_type read_column(const string &cname,fio_reader &reader)
     operation::array_type data;
     try
     {
-        data = operation::array_type(operation::shape_type{reader.nrecords()},
+        data = operation::array_type::create(operation::shape_type{{reader.nrecords()}},
                         reader.column<operation::array_type::storage_type>(cname));
     }
     catch(key_error &error)
@@ -56,11 +49,7 @@ operation::array_type read_column(const string &cname,fio_reader &reader)
         ss<<"Error reading column ["<<cname<<"] - column does not exist!"<<std::endl;
         ss<<"The following columns are available in this file:"<<std::endl;
         std::vector<string> column_list = get_column_list(reader);
-#ifdef NOFOREACH
-        BOOST_FOREACH(auto names,reader)
-#else
         for(auto names: column_list)
-#endif
             ss<<names<<std::endl;
         
         throw key_error(EXCEPTION_RECORD,ss.str());
@@ -163,8 +152,8 @@ void read_from_stdin(operation::array_type &channels,operation::array_type &data
         dvec.push_back(d);
     }
 
-    channels = array_type(operation::shape_type{chvec.size()});
-    data     = array_type(operation::shape_type{chvec.size()});
+    channels = array_type::create(operation::shape_type{{chvec.size()}});
+    data     = array_type::create(operation::shape_type{{chvec.size()}});
     std::copy(chvec.begin(),chvec.end(),channels.begin());
     std::copy(dvec.begin() ,dvec.end() ,data.begin());
 }
@@ -172,8 +161,8 @@ void read_from_stdin(operation::array_type &channels,operation::array_type &data
 //-----------------------------------------------------------------------------
 operation::array_type create_channel_data(size_t n)
 {
-    operation::array_type channels(operation::shape_type({n}));
-
+    auto channels=operation::array_type::create(operation::shape_type{{n}});
+    
     for(size_t i=0;i<n;i++) channels[i] = float64(i);
     return channels;
 }

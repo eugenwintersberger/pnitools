@@ -1,29 +1,30 @@
-/*
- * (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * pnitools is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * pnitools is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- * Created on: 30.06.2011
- *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
+//
+// (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// pnitools is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// pnitools is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
+// ===========================================================================
+// Created on: 30.06.2011
+//     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 
 #include "det2nx.hpp"
 #include "../common/config_utils.hpp"
 #include "../common/file_list_parser.hpp"
 #include "../common/file_utils.hpp"
+#include <pni/io/exceptions.hpp>
 
 static const string program_name = "det2nx";
 static const string help_header = "det2nx takes the following command line options";
@@ -75,7 +76,7 @@ int main(int argc,char **argv)
         check_input_files(infiles,reader,info);
        
         //--------------parse the nexus path to get target information----------
-        nxpath nexus_path = path_from_string(config.value<string>("target"));
+        nxpath nexus_path = nxpath::from_string(config.value<string>("target"));
         
         //need to check the validity of the path
         if(nexus_path.filename().empty())
@@ -90,9 +91,9 @@ int main(int argc,char **argv)
         std::cout<<"create/open output target ..."<<std::endl;
         h5::nxfile output_file = open_output_file(nexus_path.filename(),
                                  config.value<bool>("overwrite"));
-        nxobject_t root_group = h5::nxgroup(output_file["/"]);
-        nxobject_t field = get_field(root_group,info,nexus_path,
-                                      config.value<size_t>("deflate"));
+        h5::nxobject root_group = output_file.root();
+        h5::nxobject field = get_field(root_group,info,nexus_path,
+                                       config.value<size_t>("deflate"));
 
         //------------------append the data------------------------------------
         //finally we need to process the data
@@ -116,12 +117,7 @@ int main(int argc,char **argv)
         std::cerr<<error<<std::endl;
         return 1;
     }
-    catch(nxfield_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-    catch(nxfile_error &error)
+    catch(pni::io::io_error &error)
     {
         std::cerr<<error<<std::endl;
         return 1;
@@ -131,12 +127,12 @@ int main(int argc,char **argv)
         std::cerr<<error<<std::endl;
         return 1;
     }
-    catch(nxgroup_error &error)
+    catch(pni::io::object_error &error)
     {
         std::cerr<<error<<std::endl;
         return 1;
     }
-    catch(file_type_error &error)
+    catch(type_error &error)
     {
         std::cerr<<error<<std::endl;
         return 1;

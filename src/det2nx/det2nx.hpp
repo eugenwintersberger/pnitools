@@ -1,35 +1,33 @@
-/*
- * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * pnitools is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * pnitools is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- * Created on: Jun 5,2013
- *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
+//
+// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// pnitools is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// pnitools is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
+// ===========================================================================
+// Created on: Jun 5,2013
+//     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 
 #pragma once
 
 //include header files
 #include <iostream>
 #include <pni/core/types.hpp>
-#include <pni/core/config/configuration.hpp>
-#include <pni/core/config/config_parser.hpp>
+#include <pni/core/configuration.hpp>
 #include <pni/io/nx/nx.hpp>
 #include <pni/io/nx/nxpath.hpp>
-#include <pni/io/nx/nxvariant.hpp>
 #include <pni/io/image_reader.hpp>
 #include <pni/io/image_info.hpp>
 #include <pni/io/cbf/cbf_reader.hpp>
@@ -51,99 +49,102 @@ typedef std::vector<string> string_vector;
 typedef std::list<string> string_list;
 typedef std::list<file> file_list;
 typedef std::unique_ptr<pni::io::image_reader> reader_ptr;
-typedef nxvariant_traits<h5::nxfile>::object_types nxobject_t;
+//typedef nxvariant_traits<h5::nxfile>::object_types nxobject_t;
 
 //-----------------utility functions-------------------------------------------
-/*!
-\ingroup det2nx_devel
-\brief create configuration
- 
-Function creating the program configuration. 
-\return instance of config
-*/
+//!
+//! \ingroup det2nx_devel
+//! \brief create configuration
+//!  
+//! Function creating the program configuration. 
+//! \return instance of config
+//!
 configuration create_configuration();
 
 
 //-----------------------------------------------------------------------------
-/*!
-\ingroup det2nx_devel
-\brief open output file
-
-Opens the file wher the data should be stored. 
-\param fname name of the output file
-\return an instance of nxfile
-*/
+//!
+//! \ingroup det2nx_devel
+//! \brief open output file
+//! 
+//! Opens the file wher the data should be stored. 
+//! \param fname name of the output file
+//! \return an instance of nxfile
+//!
 h5::nxfile open_output_file(const string &fname,bool overwrite);
 
 //-----------------------------------------------------------------------------
-/*!
-\ingroup det2nx_devel
-\brief get reader
-
-Obtains the reader from the first image in the stack.
-\throws file_type_errror in case of an unsupported input file type
-\param flist list of input files
-\param cbf_exts list of extensions for CBF
-\param tiff_exts list of extensions for TIFF
-\return unique pointer to reader object
-*/
+//!
+//! \ingroup det2nx_devel
+//! \brief get reader
+//! 
+//! Obtains the reader from the first image in the stack.
+//! \throws file_type_errror in case of an unsupported input file type
+//! \param flist list of input files
+//! \param cbf_exts list of extensions for CBF
+//! \param tiff_exts list of extensions for TIFF
+//! \return unique pointer to reader object
+//!
 reader_ptr get_reader(const file_list &flist,const string_list &cbf_exts,
                       const string_list &tiff_exts);
 
 //-----------------------------------------------------------------------------
-/*!
-\ingroup det2nx_devel
-\brief retrieve image information
-
-Get the image information for a particular file and channel. By default the
-channel is 0 (the first image channel).
-\param reader pointer to the reader for the image
-\param path image file path
-\param image_nr image index in the file
-*/
+//!
+//! \ingroup det2nx_devel
+//! \brief retrieve image information
+//! 
+//! Get the image information for a particular file and channel. By default 
+//! the channel is 0 (the first image channel).
+//!
+//! \param reader pointer to the reader for the image
+//! \param path image file path
+//! \param image_nr image index in the file
+//!
 pni::io::image_info get_image_info(reader_ptr &reader,const string &path,
                                    size_t image_nr=0);
 
 
 //---------------------------------------------------------------------------
-/*!
-\ingroup det2nx_devel
-\brief check input files 
-
-All input files must be checked if they have the same shape and data type. 
-This should be done in advance before the processing starts in order to avoid
-accidental stops after a lot of images (and thus time). 
-\throws type_error in case of a type missmatch
-\throws shape_missmatch_error in case of a shape missmatch
-\param flist input file list
-\param reader unique pointer to the reader object
-\param ref_info reference image info that all other images must match
-\param image_nr index of the image in the file
-\param channel_nr channel within the image
-*/
+//!
+//! \ingroup det2nx_devel
+//! \brief check input files 
+//! 
+//! All input files must be checked if they have the same shape and data 
+//! type.  This should be done in advance before the processing starts in 
+//! order to avoid accidental stops after a lot of images (and thus time). 
+//! 
+//! \throws type_error in case of a type missmatch
+//! \throws shape_missmatch_error in case of a shape missmatch
+//! \param flist input file list
+//! \param reader unique pointer to the reader object
+//! \param ref_info reference image info that all other images must match
+//! \param image_nr index of the image in the file
+//! \param channel_nr channel within the image
+//!
 void check_input_files(const file_list &flist,reader_ptr &reader,
                        const pni::io::image_info &ref_info,
                        size_t image_nr=0,size_t channel_nr=0);
 
 //-----------------------------------------------------------------------------
-/*!
-\ingroup det2nx_devel
-\brief get the data field
-
-This function returns the field to which the image data should be added. 
-\param nxobject_t variant instance of the parent object
-\param info image information 
-\param path nexus path to the field
-\param deflate compression level for deflate filter
-\return field as variant type
-*/
-nxobject_t get_field(const nxobject_t &parent,const pni::io::image_info &info,
-                      const nxpath &path,size_t deflate); 
+//!
+//! \ingroup det2nx_devel
+//! config/\brief get the data field
+//! 
+//! This function returns the field to which the image data should be added. 
+//! \param nxobject_t variant instance of the parent object
+//! \param info image information 
+//! \param path nexus path to the field
+//! \param deflate compression level for deflate filter
+//! \return field as variant type
+//!
+h5::nxobject get_field(const h5::nxobject &parent,
+                       const pni::io::image_info &info,
+                       const nxpath &path,size_t deflate); 
 
 //-----------------------------------------------------------------------------
 template<typename RTYPE> 
 void append_data(RTYPE &&reader,const h5::nxfile &file,
-                 nxobject_t &field,const file_list &ifiles)
+                 h5::nxobject &field,const file_list &ifiles)
 {
     if(get_type(field) == type_id_t::UINT8)
         append_data<uint8>(reader,file,field,ifiles);
@@ -166,7 +167,7 @@ void append_data(RTYPE &&reader,const h5::nxfile &file,
 //-----------------------------------------------------------------------------
 template<typename T,typename RTYPE>
 void append_data(RTYPE &&reader,const h5::nxfile &file,
-                 nxobject_t &field,const file_list &ifiles)
+                 h5::nxobject &field,const file_list &ifiles)
 {
     //find the start index
     auto shape = get_shape<shape_t>(field);
@@ -175,14 +176,10 @@ void append_data(RTYPE &&reader,const h5::nxfile &file,
     size_t ny = shape[2];
 
     //create a buffer for the data
-    dbuffer<T> buffer(nx*ny);
+    auto buffer = dynamic_array<T>::create(shape);
 
     //iterate over all files
-#ifdef NOFOREACH
-    BOOST_FOREACH(auto f,ifiles)
-#else
     for(auto f: ifiles)
-#endif
     {
         if((frame_index % 100)  == 0)
             std::cout<<"storing frame "<<frame_index<<" ..."<<std::endl;

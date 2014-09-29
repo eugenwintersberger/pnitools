@@ -1,40 +1,39 @@
-/*
- * (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * libpniutils is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * libpniutils is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- * Created on: 03.06.2012
- *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
+//
+// (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// libpniutils is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// libpniutils is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
+// ===========================================================================
+// Created on: 03.06.2012
+//     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 #pragma once
 
 #include <pni/core/types.hpp>
-#include <pni/core/array_operations.hpp>
 
 #include "operation.hpp"
 
 using namespace pni::core;
 
 
-/*!
-\ingroup mcaops_devel
-\brief compute maximum
-
-Computes the maximum value along with its position in the input data. 
-*/
+//!
+//! \ingroup mcaops_devel
+//! \brief compute maximum
+//! 
+//! Computes the maximum value along with its position in the input data. 
+//!
 class max_operation:public operation
 {
     private:
@@ -61,9 +60,9 @@ class max_operation:public operation
                                 const array_type &data)
         {
             size_t imax;
-            imax = pni::core::max_offset(data);
-            _max_pos = channels[imax];
-            _max_value = data[imax];
+            auto iter = std::max_element(data.begin(),data.end());
+            _max_value = *iter;
+            _max_pos = channels[std::distance(data.begin(),iter)];
         }
 
         //---------------------------------------------------------------------

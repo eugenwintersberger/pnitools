@@ -1,30 +1,27 @@
-/*
- * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * libpniutils is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * libpniutils is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- * Created on: May 08,2013
- *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
+//
+// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// libpniutils is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// libpniutils is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
+// ===========================================================================
+// Created on: May 08,2013
+//     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 
 #include <sstream>
 #include <iterator>
-#ifdef NOFOREACH
-#include <boost/foreach.hpp>
-#endif 
 #include "scale_operation.hpp"
 
 
@@ -95,13 +92,12 @@ void scale_operation::operator()(const array_type &channels,
     _data = array_type(data);
 
     if(_search_max)
-        _center = channels(pni::core::max_offset(data));
+    {
+        size_t index = std::distance(data.begin(),std::max_element(data.begin(),data.end()));
+        _center = channels(index);
+    }
 
-#ifdef NOFOREACH
-    BOOST_FOREACH(float64 &v,_channels)
-#else
     for(float64 &v: _channels)
-#endif
         v = _cvalue + _delta*(v - float64(_center)); 
     
 }

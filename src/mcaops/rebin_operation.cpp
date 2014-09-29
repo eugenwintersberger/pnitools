@@ -1,24 +1,24 @@
-/*
- * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * libpniutils is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * libpniutils is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- * Created on: May 08,2013
- *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
+//
+// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// libpniutils is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// libpniutils is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
+// ===========================================================================
+// Created on: May 08,2013
+//     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 
 #include "rebin_operation.hpp"
        
@@ -44,8 +44,8 @@ void rebin_operation::operator()(const array_type &channels,
     if(channels.size()%_bsize != 0) size++;
    
     //create output data and initialize it with 0
-    _channels = array_type(shape_type{size});
-    _data = array_type(shape_type{size});
+    _channels = array_type::create(shape_type{{size}});
+    _data = array_type::create(shape_type{{size}});
     
     std::fill(_data.begin(),_data.end(),0);
     std::fill(_channels.begin(),_channels.end(),0);
