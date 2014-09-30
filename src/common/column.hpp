@@ -32,25 +32,25 @@
 
 using namespace pni::core;
 
-/*!
-\ingroup common_devel
-\brief column template
-
-This template class describes a single column in a table. A column can be
-considered as a container (the concrete type is determined by the container type
-CTYPE) and some metadata. This metadata includes: 
-
-\li the name of the column
-\li the data type of the elements
-\li the shape of an element 
-
-The container type is assumed to be one dimensional and supports the full STL
-interface. In particular push_back support must be provided. Thus array types as
-defined by libpnicore are not feasible as container types for this template.
-
-
-\tparam CTYPE container type for the column
-*/
+//!
+//! \ingroup common_devel
+//! \brief column template
+//! 
+//! This template class describes a single column in a table. A column can be
+//! considered as a container (the concrete type is determined by the 
+//! container type CTYPE) and some metadata. This metadata includes: 
+//!
+//! \li the name of the column
+//! \li the data type of the elements
+//! \li the shape of an element 
+//! 
+//! The container type is assumed to be one dimensional and supports the full 
+//! STL interface. In particular push_back support must be provided. Thus 
+//! array types as defined by libpnicore are not feasible as container types 
+//! for this template.
+//! 
+//! \tparam CTYPE container type for the column
+//!
 template<typename CTYPE> class column
 {
     public:
@@ -66,64 +66,7 @@ template<typename CTYPE> class column
         string _name;
         string _unit;
 
-        template<typename ATYPE> static type_id_t get_type_id(const ATYPE &a)
-        {
-            return ATYPE::type_id;
-        }
-
-        static type_id_t get_type_id(const array &a)
-        {
-            return a.type_id();
-        }
-
     public: 
-        //===================constructors and destructor========================
-        //! default constructor
-        column():
-            _container(),
-            _name(),
-            _unit()
-        {}
-
-        //---------------------------------------------------------------------
-        //! copy constructor
-        column(const column<CTYPE> &c):
-            _container(c._container),
-            _name(c._name),
-            _unit(c._unit)
-        {}
-
-        //---------------------------------------------------------------------
-        //! move constructor
-        column(column<CTYPE> &&c):
-            _container(std::move(c._container)),
-            _name(std::move(c._name)),
-            _unit(std::move(c._unit))
-        {}
-
-
-
-        //===================assignment operators==============================
-        //! copy assignment
-        column<CTYPE> &operator=(const column<CTYPE> &c)
-        {
-            if(this == &c) return *this;
-            *this = column<CTYPE>(c);
-
-            return *this;
-        }
-
-        //---------------------------------------------------------------------
-        //! move assignment
-        column<CTYPE> &operator=(column<CTYPE> &&c)
-        {
-            if(this == &c) return *this;
-            this->_container = std::move(c._container);
-            this->_unit = std::move(c._unit);
-            this->_name = std::move(c._name);
-            return *this;
-        }
-
         //======================public methods=================================
         //! return column name
         string name() const { return _name; }
@@ -141,13 +84,15 @@ template<typename CTYPE> class column
         void unit(const string &u) { _unit = u; }
 
         //---------------------------------------------------------------------
-        /*!
-        \brief get shape
-
-        Returns the shape of the objects stored in each cell of the column.
-        \tparam STYPE container for shape
-        \return instance of STYPE with the shape
-        */
+        //!
+        //! \brief get shape
+        //!
+        //! Returns the shape of the objects stored in each cell of the 
+        //! column.
+        //! \tparam STYPE container for shape
+        //!
+        //! \return instance of STYPE with the shape
+        //!
         template<typename STYPE> STYPE shape() const
         {
             return _container.front().template shape<STYPE>();
@@ -157,7 +102,7 @@ template<typename CTYPE> class column
         //! get element type ID
         type_id_t type_id() const 
         {
-            return get_type_id(_container.front());
+            return pni::core::type_id(_container.front());
         }
 
         //---------------------------------------------------------------------
@@ -167,13 +112,13 @@ template<typename CTYPE> class column
         }
 
         //---------------------------------------------------------------------
-        /*!
-        \brief number of elements
-        
-        Return the number of elements stored in the column. This is the number
-        of cells.
-        \return number of elements
-        */
+        //!
+        //! \brief number of elements
+        //! 
+        //! Return the number of elements stored in the column. This is the 
+        //! number of cells.
+        //! \return number of elements
+        //!
         size_t size() const { return _container.size(); }
 
         //---------------------------------------------------------------------
@@ -208,18 +153,19 @@ template<typename CTYPE> class column
 };
         
 //========================= creation functions==================================
-/*!
-\ingroup common_devel
-\brief create column
-
-Create an empty column for a particular container type. This function could have
-been made a static method  of the class however, this would still cause some
-coupling of the class.
-\tparam CTYPE container type for the column
-\param n name of the column
-\param u unit of the stored data
-\return instance of column
-*/
+//!
+//! \ingroup common_devel
+//! \brief create column
+//! 
+//! Create an empty column for a particular container type. This function 
+//! could have been made a static method  of the class however, this would 
+//! still cause some coupling of the class.
+//!
+//! \tparam CTYPE container type for the column
+//! \param n name of the column
+//! \param u unit of the stored data
+//! \return instance of column
+//!
 template<typename CTYPE>
 column<CTYPE> create_column(const string &n,const string &u)
 {
@@ -230,32 +176,32 @@ column<CTYPE> create_column(const string &n,const string &u)
 }
 
 //-----------------------------------------------------------------------------
-/*!
-\ingroup common_devel
-\brief create column
-
-Create a column with initial data. The container can be anything that
-supports full STL iterator interface.
-\tparam CTYPE container type for the column
-\tparam UC container type for initial data container
-\param n name of the column
-\param u unit of data
-\param c container from which to copy data
-\return instance of column
-*/
-template<typename CTYPE,typename UC>
+//!
+//! \ingroup common_devel
+//! \brief create column
+//! 
+//! Create a column with initial data. The container can be anything that
+//! supports full STL iterator interface.
+//!
+//! \tparam CTYPE container type for the column
+//! \tparam UC container type for initial data container
+//!
+//! \param n name of the column
+//! \param u unit of data
+//! \param c container from which to copy data
+//! \return instance of column
+//!
+template<
+         typename CTYPE,
+         typename UC
+        >
 column<CTYPE> create_column(const string &n,const string &u,const UC &c)
 {
     column<CTYPE> col;
     col.name(n);
     col.unit(u);
 
-#ifdef NOFOREACH
-    BOOST_FOREACH(auto v,c)
-#else
-    for(auto v: c)
-#endif
-        col.push_back(v);
+    for(auto v: c) col.push_back(v);
 
     return col;
 }

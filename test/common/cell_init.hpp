@@ -40,9 +40,11 @@ using namespace pni::core;
 //! \param cell reference to the cell
 //!
 template<typename T>
-void init_cell(const shape_t &s, T init_value, scalar<T> &cell)
+void init_cell(const shape_t &s, 
+               typename scalar<T>::value_type init_value, 
+               scalar<T> &cell)
 {
-    cell = T(init_value); 
+    cell = init_value; 
 }
 
 //---------------------------------------------------------------------

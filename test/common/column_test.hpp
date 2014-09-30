@@ -45,12 +45,12 @@ class column_test : public CppUnit::TestFixture
         CPPUNIT_TEST_SUITE_END();
 
         //the cell type
-        typedef typename STYPE::value_type cell_t;
+        typedef typename STYPE::value_type cell_type;
         //the column type
-        typedef column<STYPE> column_t;
+        typedef column<STYPE> column_type;
 
         shape_t cell_shape;
-        std::vector<cell_t> ref_list;
+        std::vector<cell_type> ref_list;
         //-----------------------------------------------------------------------------
         template<typename A> 
         static shape_t init_shape(const A &a)
@@ -78,11 +78,11 @@ class column_test : public CppUnit::TestFixture
 //-----------------------------------------------------------------------------
 template<typename STYPE> void column_test<STYPE>::setUp() 
 { 
-    cell_shape = init_shape(cell_t());
+    cell_shape = init_shape(cell_type());
     
     for(size_t i=0;i<10;i++)
     {
-        cell_t s;
+        cell_type s;
         init_cell(cell_shape,i,s);
         ref_list.push_back(s);
     }
@@ -99,7 +99,7 @@ void column_test<STYPE>::test_creation()
     std::cerr<<BOOST_CURRENT_FUNCTION<<std::endl;
 
     //construction from constructor
-    column_t col1;
+    column_type col1;
     CPPUNIT_ASSERT(col1.name() == "");
     CPPUNIT_ASSERT(col1.unit() == "");
     CPPUNIT_ASSERT(col1.size() == 0);
@@ -126,7 +126,7 @@ void column_test<STYPE>::test_copy_creation()
 
     //construction from constructor
     auto c1 = create_column<STYPE>("hello","m",ref_list);
-    column_t c2(c1);
+    column_type c2(c1);
     CPPUNIT_ASSERT(c2.name() == c1.name());
     CPPUNIT_ASSERT(c2.unit() == c1.unit());
     CPPUNIT_ASSERT(c2.size() == c1.size());
@@ -141,7 +141,7 @@ void column_test<STYPE>::test_move_creation()
 
     //construction from constructor
     auto c1 = create_column<STYPE>("hello","m",ref_list);
-    column_t c2(std::move(c1));
+    column_type c2(std::move(c1));
     CPPUNIT_ASSERT(c2.name() == "hello");
     CPPUNIT_ASSERT(c2.unit() == "m");
     CPPUNIT_ASSERT(c2.size() == ref_list.size());
@@ -178,8 +178,10 @@ void column_test<STYPE>::test_access()
     auto citer = c1.begin();
     for(; citer != c1.end(); ++riter,++citer)
     {
+        //iterate over the cell
         auto iter1 = riter->begin();
         auto iter2 = citer->begin();
-        for(;iter1!=riter->end();++iter1,++iter2) compare(*iter1,*iter2);
+        for(;iter1!=riter->end();++iter1,++iter2) 
+            compare(*iter1,*iter2);
     }
 }
