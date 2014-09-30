@@ -1,25 +1,24 @@
-/*
- * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of libpnicore.
- *
- * pnitools is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * pnitools is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- *
- *  Created on: Sep 12, 2013
- *      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
+//
+// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of libpnicore.
+//
+// pnitools is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// pnitools is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
+// ============================================================================
+//  Created on: Sep 12, 2013
+//      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 #pragma once
 #include <iostream>
 #include <memory>
@@ -29,62 +28,11 @@
 
 #include "common/column.hpp"
 #include "../compare.hpp"
-#include "../type_id.hpp"
-#include <pni/core/types.hpp>
-#include <pni/core/arrays.hpp>
-#include <pni/core/scalar.hpp>
-#include <pni/core/array.hpp>
-
-#ifdef NODEBUG
-#include <boost/foreach.hpp>
-#endif
+#include "cell_init.hpp"
 
 using namespace pni::core;
-//---------------------------------------------------------------------
-template<typename IT,typename T>
-void init_cell(const shape_t &s, IT init_value, scalar<T> &cell)
-{
-    cell = T(init_value); 
-}
-/*
-    typename = typename std::enable_if<
-    !std::is_same<CT,scalar<typename CT::value_type> >::value 
-    >::type
-    */
-//---------------------------------------------------------------------
-template<typename T,typename CT >
-void init_cell(const shape_t &s,
-               T init_value, 
-               CT &cell)
-{
-    typedef typename CT::value_type value_type;
-    cell = CT(s);
-    std::fill(cell.begin(),cell.end(),value_type(init_value));
-}
 
-//---------------------------------------------------------------------
-template<typename T>
-void init_cell(const shape_t &s,T init_value,array &cell)
-{
-    typedef darray<T> array_t;
 
-    array_t a(s);
-    std::fill(a.begin(),a.end(),init_value);
-    cell = array(a);
-}
-
-//-----------------------------------------------------------------------------
-template<typename A> shape_t init_shape(const A &a)
-{
-    return shape_t({3,4});
-}
-
-template<typename T> shape_t init_shape(const scalar<T> &a)
-{
-    return shape_t();
-}
-
-//-----------------------------------------------------------------------------
 template<typename STYPE>
 class column_test : public CppUnit::TestFixture
 {
@@ -92,8 +40,6 @@ class column_test : public CppUnit::TestFixture
         CPPUNIT_TEST(test_creation);
         CPPUNIT_TEST(test_move_creation);
         CPPUNIT_TEST(test_copy_creation);
-/*        CPPUNIT_TEST(test_copy_assignment);
-        CPPUNIT_TEST(test_move_assignment);*/
         CPPUNIT_TEST(test_inquery);
         CPPUNIT_TEST(test_access);
         CPPUNIT_TEST_SUITE_END();
@@ -105,6 +51,18 @@ class column_test : public CppUnit::TestFixture
 
         shape_t cell_shape;
         std::vector<cell_t> ref_list;
+        //-----------------------------------------------------------------------------
+        template<typename A> 
+        static shape_t init_shape(const A &a)
+        {
+            return shape_t({3,4});
+        }
+
+        template<typename T> 
+        static shape_t init_shape(const scalar<T> &a)
+        {
+            return shape_t();
+        }
         
     public:
         void setUp();
@@ -138,7 +96,7 @@ template<typename STYPE> void column_test<STYPE>::tearDown() { }
 template<typename STYPE> 
 void column_test<STYPE>::test_creation()
 {
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    std::cerr<<BOOST_CURRENT_FUNCTION<<std::endl;
 
     //construction from constructor
     column_t col1;
@@ -164,7 +122,7 @@ void column_test<STYPE>::test_creation()
 template<typename STYPE> 
 void column_test<STYPE>::test_copy_creation()
 {
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    std::cerr<<BOOST_CURRENT_FUNCTION<<std::endl;
 
     //construction from constructor
     auto c1 = create_column<STYPE>("hello","m",ref_list);
@@ -179,7 +137,7 @@ void column_test<STYPE>::test_copy_creation()
 template<typename STYPE> 
 void column_test<STYPE>::test_move_creation()
 {
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    std::cerr<<BOOST_CURRENT_FUNCTION<<std::endl;
 
     //construction from constructor
     auto c1 = create_column<STYPE>("hello","m",ref_list);
@@ -197,7 +155,7 @@ void column_test<STYPE>::test_move_creation()
 template<typename STYPE> 
 void column_test<STYPE>::test_inquery()
 {
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    std::cerr<<BOOST_CURRENT_FUNCTION<<std::endl;
     
     auto c1 = create_column<STYPE>("hello","m",ref_list);
     CPPUNIT_ASSERT(c1.type_id() == type_id(*(ref_list.begin())));
@@ -211,7 +169,7 @@ void column_test<STYPE>::test_inquery()
 template<typename STYPE>
 void column_test<STYPE>::test_access()
 {
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    std::cerr<<BOOST_CURRENT_FUNCTION<<std::endl;
 
     auto c1 = create_column<STYPE>("hello","m",ref_list);
     size_t i=0;

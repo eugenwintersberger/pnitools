@@ -122,8 +122,6 @@ template<typename READT,
          typename = typename std::enable_if<
             std::is_same<nxfield,typename std::remove_reference<READT>::type>::value
             ||
-            std::is_same<nxselection,typename std::remove_reference<READT>::type>::value
-            ||
             std::is_same<nxattribute,typename std::remove_reference<READT>::type>::value
          >::type
         > 
@@ -138,8 +136,6 @@ std::ostream &operator<<(std::ostream &stream,const READT &readable)
 template<typename WRITET,
          typename = typename std::enable_if<
             std::is_same<nxfield,typename std::remove_reference<WRITET>::type>::value
-            ||
-            std::is_same<nxselection,typename std::remove_reference<WRITET>::type>::value
             ||
             std::is_same<nxattribute,typename std::remove_reference<WRITET>::type>::value
          >::type

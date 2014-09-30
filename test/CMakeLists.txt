@@ -11,7 +11,7 @@ set(TEST_SOURCES pnitoolstest.cpp
                  ../src/mcaops/operation.cpp
                  ../src/mcaops/scale_operation.cpp
                  ../src/mcaops/rebin_operation.cpp
-                 type_id.cpp)
+                 )
 
 set(CLI_TEST_PY_FILES check_output.py 
                       det2nx_test.py 

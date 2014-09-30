@@ -1,25 +1,24 @@
-/*
- * (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * pnitools is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * pnitools is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- * Created on: Oct 17, 2012
- *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
-
+//
+// (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// pnitools is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// pnitools is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
+// ===========================================================================
+// Created on: Oct 17, 2012
+//     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 #pragma once
 #include<sstream>
 #include<pni/core/types.hpp>
@@ -61,62 +60,23 @@ Create a shape container from the dimensions tag in the XML file.
 shape_t dimensions2shape(const tree::ptree &dims);
 
 //-----------------------------------------------------------------------------
-/*!
-\ingroup xml2nx_devel
-\brief create a field from xml data
-
-Create a field from the information provided by the XML file. 
-\tparam PTYPE parent type
-\param parent instance of PTYPE - the parent of the field
-\param name the fields name
-\param tc type code 
-\param s shape of the field
-\return instance of NXField
-*/
+//!
+//! \ingroup xml2nx_devel
+//! \brief create a field from xml data
+//! 
+//! Create a field from the information provided by the XML file. 
+//! \tparam PTYPE parent type
+//! \param parent instance of PTYPE - the parent of the field
+//! \param name the fields name
+//! \param tc type code 
+//! \param s shape of the field
+//! \return instance of NXField
+//!
 template<typename PTYPE>
 h5::nxfield create_field(const PTYPE &parent,const string &name,
                      const string &tc,const shape_t &s)
 {
-    if(tc == "uint8")
-        return parent.template create_field<uint8>(name,s);
-    if(tc == "int8")
-        return parent.template create_field<int8>(name,s);
-    if(tc == "uint16")
-        return parent.template create_field<uint16>(name,s);
-    if(tc == "int16")
-        return parent.template create_field<int16>(name,s);
-    if(tc == "uint32")
-        return parent.template create_field<uint32>(name,s);
-    if(tc == "int32")
-        return parent.template create_field<int32>(name,s);
-    if(tc == "uint64")
-        return parent.template create_field<uint64>(name,s);
-    if(tc == "int64")
-        return parent.template create_field<int64>(name,s);
-    if(tc == "float32")
-        return parent.template create_field<float32>(name,s);
-    if(tc == "float64")
-        return parent.template create_field<float64>(name,s);
-    if(tc == "float128")
-        return parent.template create_field<float128>(name,s);
-    if(tc == "complex32")
-        return parent.template create_field<complex32>(name,s);
-    if(tc == "complex64")
-        return parent.template create_field<complex64>(name,s);
-    if(tc == "complex128")
-        return parent.template create_field<complex128>(name,s);
-    if(tc == "bool")
-        return parent.template create_field<bool>(name,s);
-    if(tc == "binary")
-        return parent.template create_field<binary>(name,s);
-    if(tc == "string")
-        return parent.template create_field<string>(name,s);
-
-    std::stringstream ss;
-    ss<<"Error creating field - type code "<<tc<<" is not supported!";
-    throw nxfield_error(EXCEPTION_RECORD,ss.str());
-
-    return h5::nxfield(); //just to make the compiler happy
+    return create_field(parent,type_id_from_str(tc),name,s);
 }
 
 //-----------------------------------------------------------------------------
@@ -182,7 +142,7 @@ void create_objects(const PTYPE &parent,tree::ptree &t)
             try
             {
                 auto units = child.second.template get<string>("<xmlattr>.units");
-                f.attr<string>("units").write(units);
+                f.attributes.create<string>("units").write(units);
             }
             catch(...)
             {}
@@ -191,7 +151,7 @@ void create_objects(const PTYPE &parent,tree::ptree &t)
             try
             {
                 auto lname = child.second.template get<string>("<xmlattr>.long_name");
-                f.attr<string>("long_name").write(lname);
+                f.attributes.create<string>("long_name").write(lname);
             }
             catch(...)
             {}

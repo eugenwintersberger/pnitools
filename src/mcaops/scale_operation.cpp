@@ -93,7 +93,8 @@ void scale_operation::operator()(const array_type &channels,
 
     if(_search_max)
     {
-        size_t index = std::distance(data.begin(),std::max_element(data.begin(),data.end()));
+        auto max_iter = std::max_element(data.begin(),data.end());
+        size_t index = std::distance(data.begin(),max_iter);
         _center = channels(index);
     }
 

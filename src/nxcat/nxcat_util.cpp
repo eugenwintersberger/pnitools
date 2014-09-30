@@ -1,30 +1,26 @@
-/*
- * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * pnitools is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * pnitools is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- * Created on: Jun 11,2013
- *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
+//
+// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// pnitools is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// pnitools is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
+// ============================================================================
+// Created on: Jun 11,2013
+//     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 
 #include "nxcat.hpp"
-
-#ifdef NOFOREACH
-#include <boost/foreach.hpp>
-#endif
 
 configuration create_configuration()
 {
@@ -44,10 +40,9 @@ configuration create_configuration()
 //-----------------------------------------------------------------------------
 column_t read_column(const nxpath &source_path)
 {
-    typedef nxvariant_traits<h5::nxfile>::object_types object_types;
     //open file in read only mode - the file must obviously exist
     h5::nxfile file = h5::nxfile::open_file(source_path.filename(),true);
-    object_types root = h5::nxgroup(file["/"]);
+    h5::nxobject root = file.root();
 
     //have to retrieve the object from the file
     auto object = get_object(root,source_path);
@@ -79,11 +74,7 @@ column_t read_column(const nxpath &source_path)
         {
             //if the original object is not scalar we have to extend the
             //selection by the array shape - otherwise we can leave it as it is
-#ifdef NOFOREACH
-            BOOST_FOREACH(auto d,array_shape)
-#else
             for(auto d: array_shape)
-#endif
                 selection.push_back(slice(0,d));
         }
 
@@ -107,14 +98,7 @@ column_t read_column(const nxpath &source_path)
 table_t  read_table(const sources_list &sources)
 {
     table_t t;
-#ifdef NOFOREACH
-    BOOST_FOREACH(auto source,sources)
-#else
-    for(auto source: sources)
-#endif
-    {
-        t.push_back(read_column(source));
-    }
+    for(auto source: sources) t.push_back(read_column(source));
 
     return t;
 }

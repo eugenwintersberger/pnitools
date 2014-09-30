@@ -1,25 +1,24 @@
-/*
- * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * pnitools is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * pnitools is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- *
- *  Created on: Oct 11, 2013
- *      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
+//
+// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// pnitools is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// pnitools is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
+// ===========================================================================
+//  Created on: Oct 11, 2013
+//      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 
 #include <boost/current_function.hpp>
 #include<cppunit/extensions/HelperMacros.h>
@@ -52,8 +51,8 @@ void rebin_operation_test::get_result(operation &op,array_type &axis,
         d_v.push_back(d);
     }
 
-    axis = array_type(shape_t{c_v.size()});
-    data = array_type(shape_t{d_v.size()});
+    axis = array_type::create(shape_t({c_v.size()}));
+    data = array_type::create(shape_t({d_v.size()}));
 
     std::copy(c_v.begin(),c_v.end(),axis.begin());
     std::copy(d_v.begin(),d_v.end(),data.begin());
@@ -71,14 +70,14 @@ void rebin_operation_test::setUp()
                                      57, 38, 30, 90, 31, 75, 17, 63};
 
     //---------------setup the different channel indices-----------------------
-    channels_1 = array_type(shape);
-    channels_2 = array_type(shape);
+    channels_1 = array_type::create(shape);
+    channels_2 = array_type::create(shape);
 
     create_range(channels_1.begin(),channels_1.end(),0,1);
     create_range(channels_2.begin(),channels_2.end(),3,1);
 
     //---------------------setup the data array--------------------------------
-    data = array_type(shape);
+    data = array_type::create(shape);
     std::copy(rdata.begin(),rdata.end(),data.begin());
 
 }

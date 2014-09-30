@@ -1,24 +1,24 @@
-/*
- * (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * pnitools is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * pnitools is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- * Created on: Oct 17, 2012
- *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
+//
+// (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// pnitools is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// pnitools is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
+// ===========================================================================
+// Created on: Oct 17, 2012
+//     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 
 #include <iostream>
 #include "xml2nx.hpp"
@@ -79,11 +79,11 @@ int main(int argc,char **argv)
         //---------------------------- open the nexus file --------------------
 
         //get parent path
-        nxpath path = path_from_string(conf.value<string>("parent"));
+        nxpath path = nxpath::from_string(conf.value<string>("parent"));
 
         //obtain the file for the parent
         h5::nxfile file = open_nexus_file(path,conf.value<bool>("overwrite"));
-        nxobject_t parent_group = h5::nxgroup(file["/"]);
+        h5::nxobject parent_group = file.root();
 
         if(path.size()!=0) 
             //get the group where to append XML data
@@ -106,17 +106,7 @@ int main(int argc,char **argv)
         std::cerr<<error<<std::endl;
         return 1;
     }
-    catch(nxfile_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
     catch(file_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-    catch(nxgroup_error &error)
     {
         std::cerr<<error<<std::endl;
         return 1;
