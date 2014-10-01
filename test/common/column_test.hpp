@@ -181,7 +181,6 @@ void column_test<STYPE>::test_access()
         //iterate over the cell
         auto iter1 = riter->begin();
         auto iter2 = citer->begin();
-        for(;iter1!=riter->end();++iter1,++iter2) 
-            compare(*iter1,*iter2);
+        CPPUNIT_ASSERT(*iter1==*iter2);
     }
 }
