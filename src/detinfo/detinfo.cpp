@@ -33,7 +33,6 @@
 #include "../common/config_utils.hpp"
 #include "../common/file_utils.hpp"
 
-
 typedef std::vector<string> strlist;
 typedef std::list<file> file_list;
 typedef std::unique_ptr<pni::io::image_reader> reader_ptr;
@@ -42,22 +41,15 @@ const static string help_header = "detinfo takes the following command line opti
 const static string prog_name = "detinfo";
 const static strlist cbf_exts = {".cbf",".CBF"};
 const static strlist tif_exts = {".tif",".tiff",".TIF",".TIFF"};
+const static strlist nx_exts = {".nxs",".nx"};
 
-int main(int argc,char **argv)
+enum class file_type { CBF,TIFF,NEXUS};
+
+configuration create_configuration()
 {
     configuration config;
-    bool verbose = false;
-
-    if(argc <= 1)
-    {
-        std::cerr<<"Insufficient number of command line arguments!"<<std::endl;
-        std::cerr<<"Use detinfo -h for help  ..."<<std::endl;
-        return 1;
-    }
-
-    //---------------------setup program configuration-------------------------
     config.add_option(config_option<bool>("help","h","show help",false));
-    config.add_option(config_option<bool>("verbose","v","be verbose",&verbose));
+    config.add_option(config_option<bool>("verbose","v","be verbose",false));
     config.add_option(config_option<bool>("full-path","",
                 "show the full path on output",false));
     config.add_option(config_option<bool>("nx","x",
@@ -70,7 +62,23 @@ int main(int argc,char **argv)
                 "show the data type",false));
     config.add_option(config_option<bool>("list-files","l",
                 "just list the files found",false));
+    config.add_option(config_option<bool>("frames","f",
+                "number of frames in the file",false));
     config.add_argument(config_argument<strlist>("input-files",-1,strlist{"-"}));
+
+    return config;
+}
+
+int main(int argc,char **argv)
+{
+    configuration config = create_configuration();
+
+    if(argc <= 1)
+    {
+        std::cerr<<"Insufficient number of command line arguments!"<<std::endl;
+        std::cerr<<"Use detinfo -h for help  ..."<<std::endl;
+        return 1;
+    }
 
     //------------------managing command line parsing--------------------------
     if(parse_cli_opts(argc,argv,prog_name,config)) return 1;
@@ -83,8 +91,11 @@ int main(int argc,char **argv)
     try
     {
         //-------------------obtain input files------------------------------------
-        if(verbose) std::cout<<"Checking input files ..."<<std::endl;
-        auto infiles = file_list_parser::parse<file_list>(config.value<strlist>("input-files"));
+        if(config.value<bool>("verbose")) 
+            std::cout<<"Checking input files ..."<<std::endl;
+
+        auto file_list = config.values<strlist>("input_files");
+        auto infiles = file_list_parser::parse<file_list>(file_list);
 
         //-------------------processing input files--------------------------------
         reader_ptr reader;
