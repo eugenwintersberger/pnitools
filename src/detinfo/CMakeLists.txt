@@ -1,4 +1,8 @@
-set(DETINFO_SOURCE detinfo.cpp)
+set(DETINFO_SOURCE detinfo.cpp config.cpp utils.cpp 
+                   detector_info.cpp
+                   cbf_info_reader.cpp
+                   tiff_info_reader.cpp
+                   nexus_info_reader.cpp)
 
 add_executable(detinfo ${DETINFO_SOURCE})
 target_link_libraries(detinfo common_objects ${PNIIO_PKG_LIBRARIES})

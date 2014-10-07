@@ -27,47 +27,21 @@
 #include <pni/io/tiff/tiff_reader.hpp>
 
 #include <pni/core/configuration.hpp>
-#include "../common/file.hpp"
 #include "../common/file_list_parser.hpp"
 #include "../common/exceptions.hpp"
 #include "../common/config_utils.hpp"
 #include "../common/file_utils.hpp"
 
-typedef std::vector<string> strlist;
-typedef std::list<file> file_list;
+#include "types.hpp"
+#include "config.hpp"
+#include "utils.hpp"
+#include "detector_info.hpp"
+
 typedef std::unique_ptr<pni::io::image_reader> reader_ptr;
 
 const static string help_header = "detinfo takes the following command line options";
 const static string prog_name = "detinfo";
-const static strlist cbf_exts = {".cbf",".CBF"};
-const static strlist tif_exts = {".tif",".tiff",".TIF",".TIFF"};
-const static strlist nx_exts = {".nxs",".nx"};
 
-enum class file_type { CBF,TIFF,NEXUS};
-
-configuration create_configuration()
-{
-    configuration config;
-    config.add_option(config_option<bool>("help","h","show help",false));
-    config.add_option(config_option<bool>("verbose","v","be verbose",false));
-    config.add_option(config_option<bool>("full-path","",
-                "show the full path on output",false));
-    config.add_option(config_option<bool>("nx","x",
-                "show number of points along the first dimension",false));
-    config.add_option(config_option<bool>("ny","y",
-                "show number of points along the second dimension",false));
-    config.add_option(config_option<bool>("ntot","n",
-                "show the total number of points",false));
-    config.add_option(config_option<bool>("dtype","d",
-                "show the data type",false));
-    config.add_option(config_option<bool>("list-files","l",
-                "just list the files found",false));
-    config.add_option(config_option<bool>("frames","f",
-                "number of frames in the file",false));
-    config.add_argument(config_argument<strlist>("input-files",-1,strlist{"-"}));
-
-    return config;
-}
 
 int main(int argc,char **argv)
 {
@@ -94,8 +68,8 @@ int main(int argc,char **argv)
         if(config.value<bool>("verbose")) 
             std::cout<<"Checking input files ..."<<std::endl;
 
-        auto file_list = config.values<strlist>("input_files");
-        auto infiles = file_list_parser::parse<file_list>(file_list);
+        auto name_list = config.value<string_list>("input_files");
+        auto infiles = file_list_parser::parse<file_list>(name_list);
 
         //-------------------processing input files--------------------------------
         reader_ptr reader;
@@ -108,20 +82,9 @@ int main(int argc,char **argv)
 
         for(auto file: infiles)
         {
-            if(has_extension(file,cbf_exts)) 
-                reader = reader_ptr(new pni::io::cbf_reader(file.path()));
-            else if(has_extension(file,tif_exts))
-                reader = reader_ptr(new pni::io::tiff_reader(file.path()));
-            else
-            {
-                std::cerr<<"File ["<<file.path()<<"] is of unknown type!";
-                std::cerr<<std::endl;
-                return 1;
-            }
-           
-            //obtain image information
-            info = reader->info(0);
-
+            detector_info_list info = get_info(file);
+          
+            /*
             if(print_nx) std::cout<<info.nx()<<std::endl;
             else if(print_ny) std::cout<<info.ny()<<std::endl;
             else if(print_ntot) std::cout<<info.npixels()<<std::endl;
@@ -139,6 +102,7 @@ int main(int argc,char **argv)
                 std::cout<<" ("<<info.nx()<<" x "<<info.ny()<<") ntot = "<<info.npixels();
                 std::cout<<" type = "<<info.get_channel(0).type_id()<<std::endl;
             }
+            */
 
         }
     }

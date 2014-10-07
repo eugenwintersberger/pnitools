@@ -3,6 +3,7 @@ set(TEST_SOURCES pnitoolstest.cpp
                  common/file_list_parser_test.cpp 
                  common/file_test.cpp
                  common/column_test.cpp
+                 common/string_utils_test.cpp
                  mcaops/sum_operation_test.cpp
                  mcaops/max_operation_test.cpp
                  mcaops/scale_operation_test.cpp
