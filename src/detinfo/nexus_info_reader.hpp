@@ -22,9 +22,42 @@
 #pragma once
 
 #include "detector_info_reader.hpp"
+#include <pni/io/nx/nx.hpp>
+#include <pni/io/nx/flat_group.hpp>
+
+using namespace pni::io::nx;
 
 class nexus_info_reader : public detector_info_reader
 {
     public:
+        typedef std::vector<h5::nxgroup> detector_list;
+    private:
+
+        //--------------------------------------------------------------------
+        template<typename PTYPE>
+        static detector_list get_detectors(const PTYPE &parent);
+
+        //--------------------------------------------------------------------
+        static detector_info info_from_nxdetector(const h5::nxgroup &d);
+
+    public:
         virtual detector_info_list operator()(const file &f) const;
 };
+
+//----------------------------------------------------------------------------
+template<typename PTYPE>
+nexus_info_reader::detector_list 
+nexus_info_reader::get_detectors(const PTYPE &parent)
+{
+    detector_list detectors;
+    std::copy_if(parent.begin(),parent.end(),
+                 std::back_inserter(detectors),
+                 [](const h5::nxobject &o) 
+                 { 
+                    return is_group(o) && is_class(o,"NXdetector");
+                 }
+                );
+
+    return detectors;
+}
+

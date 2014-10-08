@@ -29,7 +29,7 @@
 
 const static string_list cbf_exts = {".cbf"};
 const static string_list tif_exts = {".tif",".tiff"};
-const static string_list nx_exts = {".nxs",".nx"};
+const static string_list nx_exts = {".nxs",".nx",".h5"};
 
 //----------------------------------------------------------------------------
 file_type get_file_type(const file &f)
@@ -59,7 +59,7 @@ detector_info_list get_info(const file &f)
     else if(type == file_type::TIFF)
         reader = reader_pointer(new tiff_info_reader());
     else if(type == file_type::NEXUS)
-        reader == reader_pointer(new nexus_info_reader());
+        reader = reader_pointer(new nexus_info_reader());
 
     return (*reader)(f);
 }

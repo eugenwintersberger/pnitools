@@ -42,10 +42,8 @@ typedef std::unique_ptr<pni::io::image_reader> reader_ptr;
 const static string help_header = "detinfo takes the following command line options";
 const static string prog_name = "detinfo";
 
-
 int main(int argc,char **argv)
 {
-    configuration config = create_configuration();
 
     if(argc <= 1)
     {
@@ -54,59 +52,73 @@ int main(int argc,char **argv)
         return 1;
     }
 
-    //------------------managing command line parsing--------------------------
-    if(parse_cli_opts(argc,argv,prog_name,config)) return 1;
+    configuration config = create_configuration();
+    try
+    {
+        //------------------managing command line parsing----------------------
+        if(parse_cli_opts(argc,argv,prog_name,config)) return 1;
 
-    //check for help request by the user
-    if(check_help_request(config,help_header)) return 1;
+        //check for help request by the user
+        if(check_help_request(config,help_header)) return 1;
+    }
+    catch(cli_option_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
 
 
     //-----------------------here comes the real business----------------------
     try
     {
+        //retrieve list of input files passed by the user
+        auto name_list = config.value<string_list>("input-files");
+
         //-------------------obtain input files------------------------------------
         if(config.value<bool>("verbose")) 
             std::cout<<"Checking input files ..."<<std::endl;
 
-        auto name_list = config.value<string_list>("input_files");
         auto infiles = file_list_parser::parse<file_list>(name_list);
 
         //-------------------processing input files--------------------------------
-        reader_ptr reader;
-        pni::io::image_info info;
-
         bool print_nx = config.value<bool>("nx");
         bool print_ny = config.value<bool>("ny");
-        bool print_ntot = config.value<bool>("ntot");
         bool print_type = config.value<bool>("dtype");
 
         for(auto file: infiles)
         {
-            detector_info_list info = get_info(file);
-          
-            /*
-            if(print_nx) std::cout<<info.nx()<<std::endl;
-            else if(print_ny) std::cout<<info.ny()<<std::endl;
-            else if(print_ntot) std::cout<<info.npixels()<<std::endl;
-            else if(print_type)
-                std::cout<<info.get_channel(0).type_id()<<std::endl;
-            else if(config.value<bool>("list-files"))
-                std::cout<<file.path()<<std::endl;
-            else
-            {
+            detector_info_list infos = get_info(file);
+            if(infos.empty()) continue;
 
-                if(config.value<bool>("full-path"))
-                    std::cout<<file.path();
+            for(auto info: infos) 
+            { 
+                if(print_nx) std::cout<<info.nx()<<std::endl;
+                else if(print_ny) std::cout<<info.ny()<<std::endl;
+                else if(print_type)
+                    std::cout<<info.type_id()<<std::endl;
+                else if(config.value<bool>("list-files"))
+                    std::cout<<info.path()<<std::endl;
                 else
-                    std::cout<<file.name();
-                std::cout<<" ("<<info.nx()<<" x "<<info.ny()<<") ntot = "<<info.npixels();
-                std::cout<<" type = "<<info.get_channel(0).type_id()<<std::endl;
+                {
+
+                    if(config.value<bool>("full-path"))
+                        std::cout<<info.path();
+                    else
+                        std::cout<<info.path();
+                    std::cout<<" ("<<info.nx()<<" x "<<info.ny()<<") ";
+                    std::cout<<" type = "<<info.type_id();
+                    std::cout<<" nframes = "<<info.nframes()<<std::endl;
+                }
             }
-            */
 
         }
     }
     catch(file_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
+    catch(cli_option_error &error)
     {
         std::cerr<<error<<std::endl;
         return 1;

@@ -34,8 +34,6 @@ configuration create_configuration()
                 "show number of points along the first dimension",false));
     config.add_option(config_option<bool>("ny","y",
                 "show number of points along the second dimension",false));
-    config.add_option(config_option<bool>("ntot","n",
-                "show the total number of points",false));
     config.add_option(config_option<bool>("dtype","d",
                 "show the data type",false));
     config.add_option(config_option<bool>("list-files","l",
@@ -43,7 +41,7 @@ configuration create_configuration()
     config.add_option(config_option<bool>("frames","f",
                 "number of frames in the file",false));
     config.add_argument(config_argument<string_list>("input-files",-1,
-                        string_list{"-"}));
+                        string_list({"-"})));
 
     return config;
 }

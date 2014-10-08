@@ -22,14 +22,48 @@
 
 
 #include "nexus_info_reader.hpp"
-#include <pni/io/nx/nx.hpp>
 #include "../common/file.hpp"
+#include "../common/string_utils.hpp"
 
-using namespace pni::io::nx;
 
 detector_info_list nexus_info_reader::operator()(const file &f) const
 {
     detector_info_list list; 
+
+    //select all detecotor instances
+    h5::nxfile input = h5::nxfile::open_file(f.path());
+
+    detector_list detectors = get_detectors(make_flat(input.root()));
+
+    for(auto detector: detectors)
+        list.push_back(info_from_nxdetector(detector));
     
     return list;
+}
+
+//----------------------------------------------------------------------------
+detector_info nexus_info_reader::info_from_nxdetector(const h5::nxgroup &d)
+{
+    h5::nxfield data = d["data"];
+
+    auto shape = data.shape<shape_t>();
+
+    string layout;
+    h5::nxfield(d["layout"]).read(layout);
+    layout = trim(layout);
+
+    if(layout == "point")
+        return detector_info(0,0,data.type_id(),
+                             get_path(data),
+                             shape[0]);
+    else if(layout == "linear")
+        return detector_info(shape[1],0,data.type_id(),
+                             get_path(data),
+                             shape[0]);
+    else if(layout == "area")
+        return detector_info(shape[1],shape[2],data.type_id(),
+                             get_path(data),
+                             shape[0]);
+    else
+        throw type_error(EXCEPTION_RECORD,"Unknown detector layout!");
 }
