@@ -53,17 +53,21 @@ detector_info nexus_info_reader::info_from_nxdetector(const h5::nxgroup &d)
     layout = trim(layout);
 
     if(layout == "point")
-        return detector_info(0,0,data.type_id(),
+        return detector_info(shape_t(),data.type_id(),
                              get_path(data),
-                             shape[0]);
+                             shape[0],
+                             layout_from_string(layout));
     else if(layout == "linear")
-        return detector_info(shape[1],0,data.type_id(),
+        return detector_info(shape_t({shape[1]}),
+                             data.type_id(),
                              get_path(data),
-                             shape[0]);
+                             shape[0],
+                             layout_from_string(layout));
     else if(layout == "area")
-        return detector_info(shape[1],shape[2],data.type_id(),
+        return detector_info(shape_t{shape[1],shape[2]},data.type_id(),
                              get_path(data),
-                             shape[0]);
+                             shape[0],
+                             layout_from_string(layout));
     else
         throw type_error(EXCEPTION_RECORD,"Unknown detector layout!");
 }

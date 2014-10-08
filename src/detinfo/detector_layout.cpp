@@ -16,51 +16,51 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Oct 7,2014
+// Created on: Oct 8,2014
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "detector_info.hpp"
+#include "detector_layout.hpp"
 
-
-detector_info::detector_info(const shape_t &frame_shape,
-                             type_id_t pixel_type,
-                             const string &file_path,
-                             size_t nframes,
-                             detector_layout layout):
-    _frame_shape(frame_shape),
-    _tid(pixel_type),
-    _file_path(file_path),
-    _nframes(nframes),
-    _layout(layout)
-{}
-
-//----------------------------------------------------------------------------
-shape_t detector_info::frame_shape() const
+detector_layout layout_from_string(const string &s)
 {
-    return _frame_shape;
+    if(s=="point")
+        return detector_layout::POINT;
+    else if(s=="linear")
+        return detector_layout::LINEAR;
+    else if(s=="area")
+        return detector_layout::AREA;
+    else
+        throw value_error(EXCEPTION_RECORD,
+                "String does not encode a detector layout!");
 }
 
 //----------------------------------------------------------------------------
-size_t detector_info::nframes() const
+string string_from_layout(const detector_layout &layout)
 {
-    return _nframes;
+    if(layout == detector_layout::POINT)
+        return "point";
+    else if(layout == detector_layout::LINEAR)
+        return "linear";
+    else if(layout == detector_layout::AREA)
+        return "area";
+    else
+        throw value_error(EXCEPTION_RECORD,
+                "The detector layout does not have a string representation!");
 }
 
 //----------------------------------------------------------------------------
-string detector_info::path() const
+std::ostream &operator<<(std::ostream &stream,const detector_layout &layout)
 {
-    return _file_path;
+    stream<<string_from_layout(layout);
+    return stream;
 }
 
 //----------------------------------------------------------------------------
-type_id_t detector_info::type_id() const
+std::istream &operator<<(std::istream &stream,detector_layout &layout)
 {
-    return _tid;
-}
-
-//----------------------------------------------------------------------------
-detector_layout detector_info::layout() const
-{
-    return _layout;
+    string input;
+    stream>>input;
+    layout = layout_from_string(input);
+    return stream;
 }

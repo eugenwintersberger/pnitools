@@ -36,8 +36,7 @@
 #include "config.hpp"
 #include "utils.hpp"
 #include "detector_info.hpp"
-
-typedef std::unique_ptr<pni::io::image_reader> reader_ptr;
+#include "text_output_formatter.hpp"
 
 const static string help_header = "detinfo takes the following command line options";
 const static string prog_name = "detinfo";
@@ -84,7 +83,8 @@ int main(int argc,char **argv)
         bool print_nx = config.value<bool>("nx");
         bool print_ny = config.value<bool>("ny");
         bool print_type = config.value<bool>("dtype");
-
+        
+        text_output_formatter formatter;
         for(auto file: infiles)
         {
             detector_info_list infos = get_info(file);
@@ -92,23 +92,8 @@ int main(int argc,char **argv)
 
             for(auto info: infos) 
             { 
-                if(print_nx) std::cout<<info.nx()<<std::endl;
-                else if(print_ny) std::cout<<info.ny()<<std::endl;
-                else if(print_type)
-                    std::cout<<info.type_id()<<std::endl;
-                else if(config.value<bool>("list-files"))
-                    std::cout<<info.path()<<std::endl;
-                else
-                {
-
-                    if(config.value<bool>("full-path"))
-                        std::cout<<info.path();
-                    else
-                        std::cout<<info.path();
-                    std::cout<<" ("<<info.nx()<<" x "<<info.ny()<<") ";
-                    std::cout<<" type = "<<info.type_id();
-                    std::cout<<" nframes = "<<info.nframes()<<std::endl;
-                }
+                formatter.write(std::cout,info);
+                std::cout<<std::endl;
             }
 
         }

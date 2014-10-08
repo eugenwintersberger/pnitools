@@ -24,7 +24,10 @@
 #include <vector>
 #include <pni/core/types.hpp>
 
+#include "detector_layout.hpp"
+
 using namespace pni::core;
+
 
 //!
 //! \brief class with single detector information
@@ -34,30 +37,33 @@ using namespace pni::core;
 class detector_info
 {
     private:
-        //! number of pixels in first dimension
-        size_t _nx;
-        //! number of pixels in second dimension
-        size_t _ny;
         //! typ ID for the pixel
         type_id_t _tid;
         //! path to the detector file
         string _file_path;
         //! number of frames stored in the file
         size_t _nframes;
+        //! shape of a single frame
+        shape_t _frame_shape;
+        //! the layout of the detector
+        detector_layout _layout;
+        
     public:
-        explicit detector_info(size_t nx,size_t ny,type_id_t tid,
+        explicit detector_info(const shape_t &frame_shape,
+                               type_id_t pixel_type,
                                const string &file_path,
-                               size_t nframes);
-
-        size_t nx() const;
-
-        size_t ny() const;
+                               size_t nframes,
+                               detector_layout layout);
+    
+        shape_t frame_shape() const;
 
         size_t nframes() const;
 
         string path() const;
 
         type_id_t type_id() const;
+
+        detector_layout layout() const;
 };
 
 typedef std::vector<detector_info> detector_info_list;

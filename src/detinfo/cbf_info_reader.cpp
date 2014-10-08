@@ -34,10 +34,10 @@ detector_info_list cbf_info_reader::operator()(const file &f) const
     cbf_reader reader(f.path());
 
     image_info info = reader.info(0);
-    list.push_back(detector_info(info.nx(),
-                                 info.ny(),
+    list.push_back(detector_info(shape_t({info.nx(),info.ny()}),
                                  info.get_channel(0).type_id(),
                                  f.path(),
-                                 reader.nimages()));
+                                 reader.nimages(),
+                                 detector_layout::AREA));
     return list;
 }

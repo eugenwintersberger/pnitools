@@ -16,27 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Oct 7,2014
+// Created on: Oct 8,2014
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#pragma once
 
+#include <iostream>
+#include "detector_info.hpp"
 
-#include "tiff_info_reader.hpp"
-#include <pni/io/tiff/tiff_reader.hpp>
-#include "../common/file.hpp"
-
-using namespace pni::io;
-detector_info_list tiff_info_reader::operator()(const file &f) const
+class output_formatter
 {
-    detector_info_list list; 
-    
-    tiff_reader reader(f.path());
+    public:
+        virtual void write(std::ostream &stream,const detector_info &info) = 0;
+};
 
-    image_info info = reader.info(0);
-    list.push_back(detector_info(shape_t{info.nx(),info.ny()},
-                                info.get_channel(0).type_id(),
-                                f.path(),
-                                reader.nimages(),
-                                detector_layout::AREA));
-    return list;
-}

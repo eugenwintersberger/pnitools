@@ -16,27 +16,37 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Oct 7,2014
+// Created on: Oct 8,2014
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
+#include "text_output_formatter.hpp"
+#include "detector_layout.hpp"
 
-#include "tiff_info_reader.hpp"
-#include <pni/io/tiff/tiff_reader.hpp>
-#include "../common/file.hpp"
-
-using namespace pni::io;
-detector_info_list tiff_info_reader::operator()(const file &f) const
+std::ostream &operator<<(std::ostream &stream,const shape_t &shape)
 {
-    detector_info_list list; 
-    
-    tiff_reader reader(f.path());
+    if(shape.empty())
+        return stream;
+   
+    stream<<"(";
+    for(auto iter = shape.begin();iter!=shape.end();++iter)
+    {
+        stream<<*iter;
+        if(iter!=shape.end()-1) stream<<",";
+    }
 
-    image_info info = reader.info(0);
-    list.push_back(detector_info(shape_t{info.nx(),info.ny()},
-                                info.get_channel(0).type_id(),
-                                f.path(),
-                                reader.nimages(),
-                                detector_layout::AREA));
-    return list;
+    stream<<")";
+    return stream;
+}
+
+//----------------------------------------------------------------------------
+void text_output_formatter::write(std::ostream &stream,
+                                  const detector_info &info)
+{
+    stream<<info.path()<<"  ";
+    stream<<"type = "<<string_from_layout(info.layout())<<"  ";
+    stream<<"pixel type = "<<info.type_id()<<"  ";
+
+    if(info.layout() != detector_layout::POINT)
+        stream<<"frame shape = "<<info.frame_shape();
 }
