@@ -16,22 +16,16 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Oct 7,2014
+// Created on: Oct 9,2014
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#pragma once
 
-#include "types.hpp"
-#include "config.hpp"
+#include "output_formatter.hpp"
 
-configuration create_configuration()
+class formatter_factory
 {
-    configuration config;
-    config.add_option(config_option<bool>("help","h","show help",false));
-    config.add_option(config_option<bool>("verbose","v","be verbose",false));
-    config.add_option(config_option<string>("format","f","output format",
-                                            "simple"));
-    config.add_argument(config_argument<string_list>("input-files",-1,
-                        string_list({"-"})));
-
-    return config;
-}
+    
+    public:
+        static output_formatter *output(const string &name);
+};

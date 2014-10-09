@@ -16,38 +16,36 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Oct 8,2014
+// Created on: Oct 9,2014
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "text_output_formatter.hpp"
-#include "detector_layout.hpp"
+#include "key_value_output_formatter.hpp"
 
-
-//----------------------------------------------------------------------------
-void text_output_formatter::header(std::ostream &stream)
+void key_value_output_formatter::header(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
-void text_output_formatter::footer(std::ostream &stream)
+void key_value_output_formatter::footer(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
-void text_output_formatter::file_header(std::ostream &stream)
+void key_value_output_formatter::file_header(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
-void text_output_formatter::file_footer(std::ostream &stream)
-{}
-
-//----------------------------------------------------------------------------
-void text_output_formatter::write(std::ostream &stream,
-                                  const detector_info &info)
+void key_value_output_formatter::file_footer(std::ostream &stream)
 {
-    stream<<info.path()<<"  ";
-    stream<<"type = "<<string_from_layout(info.layout())<<"  ";
-    stream<<"pixel type = "<<info.type_id()<<"  ";
+    stream<<std::endl;
+}
 
-    if(info.layout() != detector_layout::POINT)
-        stream<<"frame shape = "<<info.frame_shape();
+//----------------------------------------------------------------------------
+void key_value_output_formatter::write(std::ostream &stream,
+                                       const detector_info &info)
+{
+    stream<<"source      = "<<info.path()<<std::endl;
+    stream<<"type        = "<<string_from_layout(info.layout())<<std::endl;
+    stream<<"pixel type  = "<<info.type_id()<<std::endl;
+    stream<<"frame shape = "<<info.frame_shape()<<std::endl;
+
 }

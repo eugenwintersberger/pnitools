@@ -36,7 +36,9 @@
 #include "config.hpp"
 #include "utils.hpp"
 #include "detector_info.hpp"
-#include "text_output_formatter.hpp"
+#include "formatter_factory.hpp"
+
+typedef std::unique_ptr<output_formatter> formatter_ptr;
 
 const static string help_header = "detinfo takes the following command line options";
 const static string prog_name = "detinfo";
@@ -66,37 +68,33 @@ int main(int argc,char **argv)
         return 1;
     }
 
+    auto format = config.value<string>("format");
+    formatter_ptr formatter(formatter_factory::output(format));
 
     //-----------------------here comes the real business----------------------
     try
     {
         //retrieve list of input files passed by the user
         auto name_list = config.value<string_list>("input-files");
-
-        //-------------------obtain input files------------------------------------
-        if(config.value<bool>("verbose")) 
-            std::cout<<"Checking input files ..."<<std::endl;
-
         auto infiles = file_list_parser::parse<file_list>(name_list);
 
+        formatter->header(std::cout);
         //-------------------processing input files--------------------------------
-        bool print_nx = config.value<bool>("nx");
-        bool print_ny = config.value<bool>("ny");
-        bool print_type = config.value<bool>("dtype");
-        
-        text_output_formatter formatter;
         for(auto file: infiles)
         {
             detector_info_list infos = get_info(file);
             if(infos.empty()) continue;
 
+            formatter->file_header(std::cout);
             for(auto info: infos) 
             { 
-                formatter.write(std::cout,info);
+                formatter->write(std::cout,info);
                 std::cout<<std::endl;
             }
+            formatter->file_footer(std::cout);
 
         }
+        formatter->footer(std::cout);
     }
     catch(file_error &error)
     {

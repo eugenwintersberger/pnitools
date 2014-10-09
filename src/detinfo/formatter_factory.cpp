@@ -16,22 +16,25 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Oct 7,2014
+// Created on: Oct 9,2014
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "types.hpp"
-#include "config.hpp"
+#include "formatter_factory.hpp"
+#include "text_output_formatter.hpp"
+#include "key_value_output_formatter.hpp"
 
-configuration create_configuration()
+output_formatter *formatter_factory::output(const string &name)
 {
-    configuration config;
-    config.add_option(config_option<bool>("help","h","show help",false));
-    config.add_option(config_option<bool>("verbose","v","be verbose",false));
-    config.add_option(config_option<string>("format","f","output format",
-                                            "simple"));
-    config.add_argument(config_argument<string_list>("input-files",-1,
-                        string_list({"-"})));
-
-    return config;
+    if(name == "simple")
+        return new text_output_formatter();
+    else if(name == "tabular")
+        return new text_output_formatter();
+    else if(name == "keyvalue")
+        return new key_value_output_formatter();
+    else if(name == "xml")
+        return new text_output_formatter();
+    else
+        throw value_error(EXCEPTION_RECORD,
+                "Unknown output formatter!");
 }

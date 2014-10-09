@@ -16,22 +16,20 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Oct 7,2014
+// Created on: Oct 9,2014
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#pragma once
 
-#include "types.hpp"
-#include "config.hpp"
+#include "output_formatter.hpp"
 
-configuration create_configuration()
+class key_value_output_formatter : public output_formatter
 {
-    configuration config;
-    config.add_option(config_option<bool>("help","h","show help",false));
-    config.add_option(config_option<bool>("verbose","v","be verbose",false));
-    config.add_option(config_option<string>("format","f","output format",
-                                            "simple"));
-    config.add_argument(config_argument<string_list>("input-files",-1,
-                        string_list({"-"})));
+    public:
+        virtual void header(std::ostream &stream);
+        virtual void footer(std::ostream &stream);
+        virtual void file_header(std::ostream &stream);
+        virtual void file_footer(std::ostream &stream);
+        virtual void write(std::ostream &stream,const detector_info &info);
+};
 
-    return config;
-}
