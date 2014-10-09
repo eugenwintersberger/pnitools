@@ -20,8 +20,14 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
+#include <cstdlib>
 #include "types.hpp"
 #include "config.hpp"
+#include "../common/config_utils.hpp"
+
+const static string help_header = "detinfo takes the following command line options";
+const static string prog_name = "detinfo";
+
 
 configuration create_configuration()
 {
@@ -32,6 +38,33 @@ configuration create_configuration()
                                             "simple"));
     config.add_argument(config_argument<string_list>("input-files",-1,
                         string_list({"-"})));
+
+    return config;
+}
+
+configuration parse_configuration(int argc,char **argv)
+{
+    configuration config = create_configuration();
+    if(argc <= 1)
+    {
+        std::cerr<<"Insufficient number of command line arguments!"<<std::endl;
+        std::cerr<<"Use detinfo -h for help  ..."<<std::endl;
+        std::exit(1);
+    }
+
+    try
+    {
+        //------------------managing command line parsing----------------------
+        if(parse_cli_opts(argc,argv,prog_name,config)) std::exit(1);
+
+        //check for help request by the user
+        if(check_help_request(config,help_header)) std::exit(1);
+    }
+    catch(cli_option_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        std::exit(1);
+    }
 
     return config;
 }

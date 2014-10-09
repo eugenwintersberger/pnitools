@@ -25,4 +25,19 @@
 
 using namespace pni::core;
 
-configuration create_configuration();
+
+//----------------------------------------------------------------------------
+//! 
+//! \brief parse command line configuration
+//! 
+//! This function parsers the command line options provided by the user and
+//! returns the resulting configuration. 
+//! In case of an error the function aborts the entire program using 
+//! std::exit(1) and returns 1 to the calling shell.
+//! 
+//! \param argc number of command line arguments and options
+//! \param argv arguments and options
+//! \return instance of configuration
+//! 
+configuration parse_configuration(int argc,char **argv);
+

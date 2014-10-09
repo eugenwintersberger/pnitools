@@ -23,13 +23,8 @@
 #include<iostream>
 #include<vector>
 
-#include <pni/io/cbf/cbf_reader.hpp>
-#include <pni/io/tiff/tiff_reader.hpp>
-
-#include <pni/core/configuration.hpp>
 #include "../common/file_list_parser.hpp"
 #include "../common/exceptions.hpp"
-#include "../common/config_utils.hpp"
 #include "../common/file_utils.hpp"
 
 #include "types.hpp"
@@ -40,33 +35,10 @@
 
 typedef std::unique_ptr<output_formatter> formatter_ptr;
 
-const static string help_header = "detinfo takes the following command line options";
-const static string prog_name = "detinfo";
-
 int main(int argc,char **argv)
 {
 
-    if(argc <= 1)
-    {
-        std::cerr<<"Insufficient number of command line arguments!"<<std::endl;
-        std::cerr<<"Use detinfo -h for help  ..."<<std::endl;
-        return 1;
-    }
-
-    configuration config = create_configuration();
-    try
-    {
-        //------------------managing command line parsing----------------------
-        if(parse_cli_opts(argc,argv,prog_name,config)) return 1;
-
-        //check for help request by the user
-        if(check_help_request(config,help_header)) return 1;
-    }
-    catch(cli_option_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
+    configuration config = parse_configuration(argc,argv);
 
     auto format = config.value<string>("format");
     formatter_ptr formatter(formatter_factory::output(format));
