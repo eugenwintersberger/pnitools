@@ -71,6 +71,8 @@ int main(int argc,char **argv)
     auto format = config.value<string>("format");
     formatter_ptr formatter(formatter_factory::output(format));
 
+    std::ostream &output_stream = std::cout;
+
     //-----------------------here comes the real business----------------------
     try
     {
@@ -78,23 +80,22 @@ int main(int argc,char **argv)
         auto name_list = config.value<string_list>("input-files");
         auto infiles = file_list_parser::parse<file_list>(name_list);
 
-        formatter->header(std::cout);
+        formatter->header(output_stream);
         //-------------------processing input files--------------------------------
         for(auto file: infiles)
         {
             detector_info_list infos = get_info(file);
             if(infos.empty()) continue;
 
-            formatter->file_header(std::cout);
             for(auto info: infos) 
-            { 
-                formatter->write(std::cout,info);
-                std::cout<<std::endl;
+            {
+                formatter->detector_header(output_stream);
+                formatter->write(output_stream,info);
+                formatter->detector_footer(output_stream);
             }
-            formatter->file_footer(std::cout);
 
         }
-        formatter->footer(std::cout);
+        formatter->footer(output_stream);
     }
     catch(file_error &error)
     {

@@ -33,11 +33,11 @@ void text_output_formatter::footer(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
-void text_output_formatter::file_header(std::ostream &stream)
+void text_output_formatter::detector_header(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
-void text_output_formatter::file_footer(std::ostream &stream)
+void text_output_formatter::detector_footer(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
@@ -50,4 +50,6 @@ void text_output_formatter::write(std::ostream &stream,
 
     if(info.layout() != detector_layout::POINT)
         stream<<"frame shape = "<<info.frame_shape();
+
+    stream<<std::endl;
 }

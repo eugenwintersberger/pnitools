@@ -28,8 +28,8 @@ class key_value_output_formatter : public output_formatter
     public:
         virtual void header(std::ostream &stream);
         virtual void footer(std::ostream &stream);
-        virtual void file_header(std::ostream &stream);
-        virtual void file_footer(std::ostream &stream);
+        virtual void detector_header(std::ostream &stream);
+        virtual void detector_footer(std::ostream &stream);
         virtual void write(std::ostream &stream,const detector_info &info);
 };
 

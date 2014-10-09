@@ -30,11 +30,11 @@ void key_value_output_formatter::footer(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
-void key_value_output_formatter::file_header(std::ostream &stream)
+void key_value_output_formatter::detector_header(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
-void key_value_output_formatter::file_footer(std::ostream &stream)
+void key_value_output_formatter::detector_footer(std::ostream &stream)
 {
     stream<<std::endl;
 }

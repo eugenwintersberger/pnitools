@@ -29,8 +29,8 @@ class output_formatter
     public:
         virtual void header(std::ostream &stream) = 0;
         virtual void footer(std::ostream &stream) = 0;
-        virtual void file_header(std::ostream &stream) = 0;
-        virtual void file_footer(std::ostream &stream) = 0;
+        virtual void detector_header(std::ostream &stream) = 0;
+        virtual void detector_footer(std::ostream &stream) = 0;
         virtual void write(std::ostream &stream,const detector_info &info) = 0;
 };
 
