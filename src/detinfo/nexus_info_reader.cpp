@@ -23,7 +23,6 @@
 
 #include "nexus_info_reader.hpp"
 #include "../common/file.hpp"
-#include "../common/string_utils.hpp"
 
 
 detector_info_list nexus_info_reader::operator()(const file &f) const
@@ -48,26 +47,17 @@ detector_info nexus_info_reader::info_from_nxdetector(const h5::nxgroup &d)
 
     auto shape = data.shape<shape_t>();
 
-    string layout;
-    h5::nxfield(d["layout"]).read(layout);
-    layout = trim(layout);
+    detector_layout layout = get_detector_layout(d); 
+    string path = get_detector_path(data);
 
-    if(layout == "point")
-        return detector_info(shape_t(),data.type_id(),
-                             get_path(data),
-                             shape[0],
-                             layout_from_string(layout));
-    else if(layout == "linear")
+    if(layout == detector_layout::POINT)
+        return detector_info(shape_t(),data.type_id(),path,shape[0],layout);
+    else if(layout == detector_layout::LINEAR)
         return detector_info(shape_t({shape[1]}),
-                             data.type_id(),
-                             get_path(data),
-                             shape[0],
-                             layout_from_string(layout));
-    else if(layout == "area")
+                             data.type_id(),path,shape[0],layout);
+    else if(layout == detector_layout::AREA)
         return detector_info(shape_t{shape[1],shape[2]},data.type_id(),
-                             get_path(data),
-                             shape[0],
-                             layout_from_string(layout));
+                             path,shape[0],layout);
     else
         throw type_error(EXCEPTION_RECORD,"Unknown detector layout!");
 }

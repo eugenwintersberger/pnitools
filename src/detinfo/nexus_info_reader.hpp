@@ -24,6 +24,7 @@
 #include "detector_info_reader.hpp"
 #include <pni/io/nx/nx.hpp>
 #include <pni/io/nx/flat_group.hpp>
+#include "../common/string_utils.hpp"
 
 using namespace pni::io::nx;
 
@@ -38,7 +39,28 @@ class nexus_info_reader : public detector_info_reader
         static detector_list get_detectors(const PTYPE &parent);
 
         //--------------------------------------------------------------------
+        //!
+        //! \brief get info from NXdetector
+        //!
+        //! Construct an detector_info object form an instance of NXdetector. 
+        //!
+        //! \throws key_error if a required field does not exist
+        //!
+        //! \param d group instance of type NXdetector
+        //! \return detector_info instance
+        //!
         static detector_info info_from_nxdetector(const h5::nxgroup &d);
+
+        //--------------------------------------------------------------------
+        //!
+        //! \brief get path of object
+        //! 
+        //! Return the path to the data holding object. 
+        template<typename OTYPE>
+        static string get_detector_path(const OTYPE &o);
+
+        template<typename OTYPE>
+        static detector_layout get_detector_layout(const OTYPE &o);
 
     public:
         virtual detector_info_list operator()(const file &f) const;
@@ -59,5 +81,26 @@ nexus_info_reader::get_detectors(const PTYPE &parent)
                 );
 
     return detectors;
+}
+
+//----------------------------------------------------------------------------
+template<typename OTYPE>
+string nexus_info_reader::get_detector_path(const OTYPE &o)
+{
+    nxpath path = nxpath::from_string(get_path(o));
+    path.filename(o.filename());
+
+    return nxpath::to_string(path);
+}
+
+//----------------------------------------------------------------------------
+template<typename OTYPE>
+detector_layout nexus_info_reader::get_detector_layout(const OTYPE &o)
+{
+    string layout;
+    h5::nxfield(o["layout"]).read(layout);
+    layout = trim(layout);
+
+    return layout_from_string(layout);
 }
 
