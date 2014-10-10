@@ -27,7 +27,8 @@ const string csv_output_formatter::separator = " ; ";
 void csv_output_formatter::header(std::ostream &stream)
 {
     stream<<"source"<<separator<<"type"<<separator;
-    stream<<"pixel type"<<separator<<"frame shape"<<std::endl;
+    stream<<"pixel type"<<separator<<"number of frames"<<separator;
+    stream<<"frame shape"<<std::endl;
 }
 
 //----------------------------------------------------------------------------
@@ -49,5 +50,6 @@ void csv_output_formatter::write(std::ostream &stream,
     stream<<info.path()<<separator;
     stream<<string_from_layout(info.layout())<<separator;
     stream<<info.type_id()<<separator;
+    stream<<info.nframes()<<separator;
     stream<<info.frame_shape()<<std::endl;
 }

@@ -43,9 +43,11 @@ void key_value_output_formatter::detector_footer(std::ostream &stream)
 void key_value_output_formatter::write(std::ostream &stream,
                                        const detector_info &info)
 {
-    stream<<"source      = "<<info.path()<<std::endl;
-    stream<<"type        = "<<string_from_layout(info.layout())<<std::endl;
-    stream<<"pixel type  = "<<info.type_id()<<std::endl;
-    stream<<"frame shape = "<<info.frame_shape()<<std::endl;
+    stream<<"source           = "<<info.path()<<std::endl;
+    stream<<"type             = "<<string_from_layout(info.layout());
+    stream<<std::endl;
+    stream<<"pixel type       = "<<info.type_id()<<std::endl;
+    stream<<"number of frames = "<<info.nframes()<<std::endl;
+    stream<<"frame shape      = "<<info.frame_shape()<<std::endl;
 
 }

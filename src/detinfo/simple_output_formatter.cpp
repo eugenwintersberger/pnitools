@@ -47,6 +47,7 @@ void simple_output_formatter::write(std::ostream &stream,
     stream<<info.path()<<"  ";
     stream<<"type = "<<string_from_layout(info.layout())<<"  ";
     stream<<"pixel type = "<<info.type_id()<<"  ";
+    stream<<"frames = "<<info.nframes()<<" ";
 
     if(info.layout() != detector_layout::POINT)
         stream<<"frame shape = "<<info.frame_shape();

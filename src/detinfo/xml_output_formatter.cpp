@@ -64,6 +64,8 @@ void xml_output_formatter::write(std::ostream &stream,
 
     stream<<data_indent<<"<pixeltype>"<<info.type_id()<<"</pixel>"<<std::endl;
 
+    stream<<data_indent<<"<frames>"<<info.nframes()<<"</frames>"<<std::endl;
+
     stream<<data_indent<<"<frameshape>";
     stream<<info.frame_shape()<<"</frameshape>"<<std::endl;
 }
