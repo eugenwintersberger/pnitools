@@ -7,9 +7,10 @@ set(DETINFO_SOURCE detinfo.cpp
                    nexus_info_reader.cpp
                    detector_layout.cpp
                    output_formatter.cpp
-                   text_output_formatter.cpp
+                   simple_output_formatter.cpp
                    key_value_output_formatter.cpp
                    xml_output_formatter.cpp
+                   csv_output_formatter.cpp
                    formatter_factory.cpp )
 
 add_executable(detinfo ${DETINFO_SOURCE})

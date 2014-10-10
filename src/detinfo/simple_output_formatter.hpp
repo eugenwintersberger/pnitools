@@ -23,7 +23,14 @@
 
 #include "output_formatter.hpp"
 
-class text_output_formatter : public output_formatter
+//!
+//! \brief write simple output
+//! 
+//! This implementation of output formatter generats simple ASCII output 
+//! on the output stream which is compact and easy to read for humans. 
+//! Thus it should be used in case of interactive usage of detinfo.
+//!
+class simple_output_formatter : public output_formatter
 {
     public:
         virtual void header(std::ostream &stream);

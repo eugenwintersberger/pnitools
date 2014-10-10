@@ -20,28 +20,28 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "text_output_formatter.hpp"
+#include "simple_output_formatter.hpp"
 #include "detector_layout.hpp"
 
 
 //----------------------------------------------------------------------------
-void text_output_formatter::header(std::ostream &stream)
+void simple_output_formatter::header(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
-void text_output_formatter::footer(std::ostream &stream)
+void simple_output_formatter::footer(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
-void text_output_formatter::detector_header(std::ostream &stream)
+void simple_output_formatter::detector_header(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
-void text_output_formatter::detector_footer(std::ostream &stream)
+void simple_output_formatter::detector_footer(std::ostream &stream)
 {}
 
 //----------------------------------------------------------------------------
-void text_output_formatter::write(std::ostream &stream,
+void simple_output_formatter::write(std::ostream &stream,
                                   const detector_info &info)
 {
     stream<<info.path()<<"  ";

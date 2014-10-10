@@ -24,13 +24,70 @@
 #include <iostream>
 #include "detector_info.hpp"
 
+//!
+//! \brief output formatting
+//! 
+//! This abstract class defines the interface for output formatters. 
+//! Those classes are used to represent the output of detinfo in various 
+//! formats.
+//! 
 class output_formatter
 {
     public:
+        //!
+        //! \brief global header
+        //! 
+        //! This function is called once at the begining of the processing
+        //! sequence. 
+        //! 
+        //! \param stream the output stream
+        //! \sa footer
+        //!
         virtual void header(std::ostream &stream) = 0;
+
+        //--------------------------------------------------------------------
+        //! 
+        //! \brief global footer
+        //! 
+        //! This function is called once at the end of the processing sequence. 
+        //! 
+        //! \param stream the output stream
+        //! \sa header
+        //!
         virtual void footer(std::ostream &stream) = 0;
+
+        //--------------------------------------------------------------------
+        //!
+        //! \brief detector header
+        //! 
+        //! This function is called right before detector data is written. 
+        //! 
+        //! \param stream output stream
+        //! \sa detector_footer
+        //!
         virtual void detector_header(std::ostream &stream) = 0;
+
+        //--------------------------------------------------------------------
+        //!
+        //! \brief detector footer
+        //!
+        //! This function is called after detector data is written.
+        //!
+        //! \param stream output stream
+        //! \sa detector_header
+        //!
         virtual void detector_footer(std::ostream &stream) = 0;
+        
+        //---------------------------------------------------------------------
+        //!
+        //! \breif write detector information
+        //!
+        //! This function writes the detector information in the 
+        //! desired format. 
+        //!
+        //! \param stream output stream
+        //! \param info detector information object
+        //! 
         virtual void write(std::ostream &stream,const detector_info &info) = 0;
 };
 

@@ -21,16 +21,17 @@
 //
 
 #include "formatter_factory.hpp"
-#include "text_output_formatter.hpp"
+#include "simple_output_formatter.hpp"
 #include "key_value_output_formatter.hpp"
 #include "xml_output_formatter.hpp"
+#include "csv_output_formatter.hpp"
 
 output_formatter *formatter_factory::output(const string &name)
 {
     if(name == "simple")
-        return new text_output_formatter();
-    else if(name == "tabular")
-        return new text_output_formatter();
+        return new simple_output_formatter();
+    else if(name == "csv")
+        return new csv_output_formatter();
     else if(name == "keyvalue")
         return new key_value_output_formatter();
     else if(name == "xml")
