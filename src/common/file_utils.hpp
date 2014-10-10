@@ -22,6 +22,7 @@
 
 #include <pni/io/image_info.hpp>
 
+#include "file.hpp"
 #include "string_utils.hpp"
 
 //!

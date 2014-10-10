@@ -16,26 +16,22 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Oct 9,2014
+// Created on: Oct 10,2014
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#pragma once
 
-#include "formatter_factory.hpp"
-#include "text_output_formatter.hpp"
-#include "key_value_output_formatter.hpp"
-#include "xml_output_formatter.hpp"
+#include "output_formatter.hpp"
 
-output_formatter *formatter_factory::output(const string &name)
+class xml_output_formatter : public output_formatter
 {
-    if(name == "simple")
-        return new text_output_formatter();
-    else if(name == "tabular")
-        return new text_output_formatter();
-    else if(name == "keyvalue")
-        return new key_value_output_formatter();
-    else if(name == "xml")
-        return new xml_output_formatter();
-    else
-        throw value_error(EXCEPTION_RECORD,
-                "Unknown output formatter!");
-}
+    static const string detector_indent;
+    static const string data_indent;
+    public:
+        virtual void header(std::ostream &stream);
+        virtual void footer(std::ostream &stream);
+        virtual void detector_header(std::ostream &stream);
+        virtual void detector_footer(std::ostream &stream);
+        virtual void write(std::ostream &stream,const detector_info &info);
+};
+    

@@ -23,38 +23,36 @@
 #include<iostream>
 #include<vector>
 
-#include "../common/file_list_parser.hpp"
 #include "../common/exceptions.hpp"
-#include "../common/file_utils.hpp"
 
 #include "types.hpp"
 #include "config.hpp"
 #include "utils.hpp"
 #include "detector_info.hpp"
-#include "formatter_factory.hpp"
 
 typedef std::unique_ptr<output_formatter> formatter_ptr;
 
 int main(int argc,char **argv)
 {
 
+    //get programm configuration - abort if this fails
     configuration config = parse_configuration(argc,argv);
 
-    auto format = config.value<string>("format");
-    formatter_ptr formatter(formatter_factory::output(format));
+    //get output format - abort if this fails
+    auto formatter = formatter_ptr(get_output_formatter(config));
 
+    //select the output stream
     std::ostream &output_stream = std::cout;
+
+    //get input files - abort if there is a problem here
+    file_list input_files = get_input_files(config);
 
     //-----------------------here comes the real business----------------------
     try
     {
-        //retrieve list of input files passed by the user
-        auto name_list = config.value<string_list>("input-files");
-        auto infiles = file_list_parser::parse<file_list>(name_list);
-
         formatter->header(output_stream);
         //-------------------processing input files--------------------------------
-        for(auto file: infiles)
+        for(auto file: input_files)
         {
             detector_info_list infos = get_info(file);
             if(infos.empty()) continue;
@@ -74,9 +72,10 @@ int main(int argc,char **argv)
         std::cerr<<error<<std::endl;
         return 1;
     }
-    catch(cli_option_error &error)
+    catch(...)
     {
-        std::cerr<<error<<std::endl;
+        std::cerr<<"An unknown exception occured during file processing!";
+        std::cerr<<std::endl;
         return 1;
     }
     return 0;

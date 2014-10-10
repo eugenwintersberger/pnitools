@@ -21,11 +21,13 @@
 //
 
 #include "utils.hpp"
-#include "../common/file_utils.hpp"
 
 #include "cbf_info_reader.hpp"
 #include "tiff_info_reader.hpp"
 #include "nexus_info_reader.hpp"
+#include "formatter_factory.hpp"
+#include "../common/file_utils.hpp"
+#include "../common/file_list_parser.hpp"
 
 const static string_list cbf_exts = {".cbf"};
 const static string_list tif_exts = {".tif",".tiff"};
@@ -62,4 +64,46 @@ detector_info_list get_info(const file &f)
         reader = reader_pointer(new nexus_info_reader());
 
     return (*reader)(f);
+}
+
+//----------------------------------------------------------------------------
+output_formatter *get_output_formatter(const configuration &config)
+{
+    try
+    {
+        auto format = config.value<string>("format");
+        return formatter_factory::output(format);
+    }
+    catch(value_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        std::exit(1);
+    }
+    catch(...)
+    {
+        std::cerr<<"Unknown error during output formatter creation!";
+        std::cerr<<std::endl;
+        std::exit(1);
+    }
+}
+
+//---------------------------------------------------------------------------
+file_list get_input_files(const configuration &config)
+{
+    //retrieve list of input files passed by the user
+    try
+    {
+        auto name_list = config.value<string_list>("input-files");
+        return file_list_parser::parse<file_list>(name_list);
+    }
+    catch(cli_option_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        std::exit(1);
+    }
+    catch(...)
+    {
+        std::cerr<<"Error while creating input file list!"<<std::endl;
+        std::exit(1);
+    }
 }

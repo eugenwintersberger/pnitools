@@ -9,6 +9,7 @@ set(DETINFO_SOURCE detinfo.cpp
                    output_formatter.cpp
                    text_output_formatter.cpp
                    key_value_output_formatter.cpp
+                   xml_output_formatter.cpp
                    formatter_factory.cpp )
 
 add_executable(detinfo ${DETINFO_SOURCE})

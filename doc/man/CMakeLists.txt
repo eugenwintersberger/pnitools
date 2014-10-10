@@ -12,7 +12,7 @@ set(MANPAGES)
 foreach(SRC_FILE ${MAN_SRC})
     string(REPLACE ".cmake" "" MAN_FILE ${SRC_FILE})
     configure_file(${SRC_FILE} ${CMAKE_CURRENT_BINARY_DIR}/${MAN_FILE} @ONLY)
-    list(APPEND ${MANPAGES} "${CMAKE_CURRENT_BINARY_DIR}/${MAN_FILE}")
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MAN_FILE}
+            DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
 endforeach()
 
-install(FILES ${MANPAGES} DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")

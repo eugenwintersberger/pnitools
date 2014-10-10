@@ -21,8 +21,12 @@
 //
 #pragma once
 
+#include <pni/core/configuration.hpp>
 #include "types.hpp"
 #include "detector_info.hpp"
+#include "output_formatter.hpp"
+
+using namespace pni::core;
 
 enum class file_type { CBF,TIFF,NEXUS};
 
@@ -52,4 +56,30 @@ file_type get_file_type(const file &f);
 //! 
 detector_info_list get_info(const file &f);
 
+//----------------------------------------------------------------------------
+//!
+//! \brief get output formatter
+//!
+//! This function returns the output formatter according to the user 
+//! configuration. If no appropriate output formatter is found an exception
+//! is thrown and the program is aborted using std::exit with return value 1.
+//!
+//! \param config reference to the user configuration
+//! \return pointer to the formatter instance
+//!
+output_formatter *get_output_formatter(const configuration &config);
+
+//----------------------------------------------------------------------------
+//!
+//! \brief get input files
+//!
+//! This function creates the list of input files from the user provided 
+//! configuration. 
+//! If this operation fails the program is terminated with std::exit and a
+//! return value of 1. 
+//!
+//! \param config user configuration
+//! \return list of input files
+//!
+file_list get_input_files(const configuration &config);
 
