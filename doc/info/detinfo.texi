@@ -1,34 +1,40 @@
-The @command{detinfo} program tries to retrieve basic information about the data
-stored in a detector file. A typical application would be to determine detector
-parameters to create a Nexus file template into which existing existing data
-should be merged. Currently the following file formats are supported
+The @command{detinfo} program reveals basic information about the data
+stored in a detector file. This information incldues
+@itemize @bullet
+@item 
+the data source -- for CBF files or TIF this is the filename, for Nexus file it
+is the path to the data field in the corresponding NXdetector instance
+@item
+the number of pixels along each of the detectors dimensions
+@item 
+the data type for an individual pixel
+@item
+the detector type, which is currently either:  @emph{point}, 
+@emph{linear}, or @emph{area}
+@end itemize
+@noindent
+The detector type @emph{point} denotes a @math{0}D point detector while 
+@emph{linear} and @emph{area} denote @math{1}D strip and @math{2}D area 
+detectors respectively.
+The current version of @command{detinfo} can obtain this information 
+for detector data stores in one of the following file formats
 @itemize @bullet
 @item 
 CBF - the CIF binary format written by DECTRIS detectors
-
 @item 
 TIFF - the tagged image file format
+@item 
+Nexus - with HDF5 as physical file format
 @end itemize
+@noindent
+In the case of CBF or TIF files the program assumes that each files belongs to a
+single detector. As a Nexus file can store several detectors in a single file 
+the information is shown for every instance of NXdetector in the file.
+A typical application for @command{detinfo} would be to determine detector
+parameters from individual files and use this information to merge the detector
+data into a Nexus file.
 
-Nexus is currently not supported but will be in a future release. The program
-output provides the following information
-
-@itemize @bullet
-@item 
-the name of the file
-@item
-the resolution of the image in the format width times height
-@item 
-the total number of pixels stored 
-@item 
-the data type used for storing the data
-@item
-it can list all found detector file
-@end itemize
-
-This information can be retrieved either collectively or individually.
-The invocation of detinfo is rather straight forward. 
-
+The invocation of @command{detinfo} is rather straight forward
 @example
 detinfo [OPTIONS] FILESPEC
 @end example
@@ -39,46 +45,89 @@ detinfo [OPTIONS] FILESPEC
 @ref{Input file selection}.
 @command{detinfo} returns 0 in case of success and 1 otherwise. 
 
+@c ===========================================================================
+@c describe command line options here
+@c ===========================================================================
 @menu 
 * Program options:: command line options taken by @command{detinfo}
+* Examples:: example of how to use @command{detinfo}
 @end menu
 
 @node Program options
 @subsection Program options
 
-The following options can be passed to @command{detinfo}
+@command{detinfo}s behavior can be controlled with the following command 
+line options
 
 @table @samp
 @item -h
 @itemx --help
 show a brief help text 
 
-@item -v
-@itemx --verbose
-provide verbose output
-
-@item --full-path
-show the full path to the detector file  (by default only the filename is shown)
-
-@item -x
-@itemx --nx
-print only number of pixels in x-direction 
-
-@item -y
-@itemx --ny
-print only number of pixels in y-direction
-
-@item -n
-@itemx --ntot
-print total number of pixels stored in the image
-
-@item -d
-@itemx --dtype
-print only the data type used in the image file 
-
-@item -l
-@item --list-file
-list the detector files found by the program.
-
+@item -f
+@itemx --format
+this option determines the format in which the output is presented. For this
+version of @command{detinfo} this option can take the values: simple (which is
+the default), keyvalue, csv, or xml
 @end table
+
+@c ===========================================================================
+@c show examples of how detinfo works
+@c ===========================================================================
+@node Examples
+@subsection Examples
+
+Consider we have a directory with TIF files produced by a detector. A very
+simple call to @command{detinfo} could look like this
+@smallexample
+$ detinfo detector_%03i.tif:9:16
+detector_009.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+detector_010.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+detector_011.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+detector_012.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+detector_013.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+detector_014.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+detector_015.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+@end smallexample
+@noindent
+Output as a CSV table could be achieved with
+@smallexample
+$ detinfo -fcsv detector_%03i.tif:9:16
+source ; type ; pixel type ; number of frames ; frame shape
+detector_009.tif ; area ; UINT32 ; 1 ; (2300,2300)
+detector_010.tif ; area ; UINT32 ; 1 ; (2300,2300)
+detector_011.tif ; area ; UINT32 ; 1 ; (2300,2300)
+detector_012.tif ; area ; UINT32 ; 1 ; (2300,2300)
+detector_013.tif ; area ; UINT32 ; 1 ; (2300,2300)
+detector_014.tif ; area ; UINT32 ; 1 ; (2300,2300)
+detector_015.tif ; area ; UINT32 ; 1 ; (2300,2300)
+@end smallexample
+
+A Nexus file can store the data of several detectors and the full path to the
+data field of every detector is used as the source 
+@smallexample
+$ detinfo  tstfile_00012.h5
+tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data\
+type = point  pixel type = UINT64  frames = 2001 
+tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data\
+type = point  pixel type = UINT64  frames = 2001 
+tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data\
+type = point  pixel type = UINT64  frames = 2001 
+tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data\
+type = point  pixel type = UINT64  frames = 2001 
+tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data\
+type = point  pixel type = UINT64  frames = 2001 
+tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data\
+type = point  pixel type = UINT64  frames = 2001 
+tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data\
+type = point  pixel type = UINT64  frames = 2001 
+tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data\
+type = point  pixel type = UINT64  frames = 2001 
+tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data\
+type = point  pixel type = UINT64  frames = 2001 
+tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data\
+type = point  pixel type = UINT64  frames = 2001
+@end smallexample
+@noindent
+Not that in the case of a point detector no frame shape is shown.
 
