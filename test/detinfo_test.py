@@ -31,6 +31,321 @@ from subprocess import STDOUT
 from subprocess import call
 import unittest
 
+nexus_simple_output ="""
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
+"""
+
+nexus_kv_output="""
+source           = data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data
+type             = point
+pixel type       = UINT64
+number of frames = 2001
+frame shape      = 
+
+source           = data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data
+type             = point
+pixel type       = UINT64
+number of frames = 2001
+frame shape      = 
+
+source           = data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data
+type             = point
+pixel type       = UINT64
+number of frames = 2001
+frame shape      = 
+
+source           = data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data
+type             = point
+pixel type       = UINT64
+number of frames = 2001
+frame shape      = 
+
+source           = data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data
+type             = point
+pixel type       = UINT64
+number of frames = 2001
+frame shape      = 
+
+source           = data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data
+type             = point
+pixel type       = UINT64
+number of frames = 2001
+frame shape      = 
+
+source           = data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data
+type             = point
+pixel type       = UINT64
+number of frames = 2001
+frame shape      = 
+
+source           = data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data
+type             = point
+pixel type       = UINT64
+number of frames = 2001
+frame shape      = 
+
+source           = data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data
+type             = point
+pixel type       = UINT64
+number of frames = 2001
+frame shape      = 
+
+source           = data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data
+type             = point
+pixel type       = UINT64
+number of frames = 2001
+frame shape      = 
+"""
+
+nexus_csv_output="""
+source ; type ; pixel type ; number of frames ; frame shape
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data ; point ; UINT64 ; 2001 ; 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data ; point ; UINT64 ; 2001 ; 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data ; point ; UINT64 ; 2001 ; 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data ; point ; UINT64 ; 2001 ; 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data ; point ; UINT64 ; 2001 ; 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data ; point ; UINT64 ; 2001 ; 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data ; point ; UINT64 ; 2001 ; 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data ; point ; UINT64 ; 2001 ; 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data ; point ; UINT64 ; 2001 ; 
+data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data ; point ; UINT64 ; 2001 ;
+"""
+
+nexus_xml_output="""
+<?xml version="1.0"?>
+<detinfo>
+	<detector>
+		<source>data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data</source>
+		<type>point</type>
+		<pixeltype>UINT64</pixel>
+		<frames>2001</frames>
+		<frameshape></frameshape>
+	</detector>
+	<detector>
+		<source>data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data</source>
+		<type>point</type>
+		<pixeltype>UINT64</pixel>
+		<frames>2001</frames>
+		<frameshape></frameshape>
+	</detector>
+	<detector>
+		<source>data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data</source>
+		<type>point</type>
+		<pixeltype>UINT64</pixel>
+		<frames>2001</frames>
+		<frameshape></frameshape>
+	</detector>
+	<detector>
+		<source>data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data</source>
+		<type>point</type>
+		<pixeltype>UINT64</pixel>
+		<frames>2001</frames>
+		<frameshape></frameshape>
+	</detector>
+	<detector>
+		<source>data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data</source>
+		<type>point</type>
+		<pixeltype>UINT64</pixel>
+		<frames>2001</frames>
+		<frameshape></frameshape>
+	</detector>
+	<detector>
+		<source>data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data</source>
+		<type>point</type>
+		<pixeltype>UINT64</pixel>
+		<frames>2001</frames>
+		<frameshape></frameshape>
+	</detector>
+	<detector>
+		<source>data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data</source>
+		<type>point</type>
+		<pixeltype>UINT64</pixel>
+		<frames>2001</frames>
+		<frameshape></frameshape>
+	</detector>
+	<detector>
+		<source>data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data</source>
+		<type>point</type>
+		<pixeltype>UINT64</pixel>
+		<frames>2001</frames>
+		<frameshape></frameshape>
+	</detector>
+	<detector>
+		<source>data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data</source>
+		<type>point</type>
+		<pixeltype>UINT64</pixel>
+		<frames>2001</frames>
+		<frameshape></frameshape>
+	</detector>
+	<detector>
+		<source>data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data</source>
+		<type>point</type>
+		<pixeltype>UINT64</pixel>
+		<frames>2001</frames>
+		<frameshape></frameshape>
+	</detector>
+</detinfo>
+"""
+
+tif_simple_output="""
+data/tif/detector_009.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+data/tif/detector_010.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+data/tif/detector_011.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+data/tif/detector_012.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+data/tif/detector_013.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+data/tif/detector_014.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+data/tif/detector_015.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
+"""
+
+tif_kv_output="""
+source           = data/tif/detector_009.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = data/tif/detector_010.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = data/tif/detector_011.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = data/tif/detector_012.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = data/tif/detector_013.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = data/tif/detector_014.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = data/tif/detector_015.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+"""
+
+tif_csv_output="""
+source ; type ; pixel type ; number of frames ; frame shape
+data/tif/detector_009.tif ; area ; UINT32 ; 1 ; (2300,2300)
+data/tif/detector_010.tif ; area ; UINT32 ; 1 ; (2300,2300)
+data/tif/detector_011.tif ; area ; UINT32 ; 1 ; (2300,2300)
+data/tif/detector_012.tif ; area ; UINT32 ; 1 ; (2300,2300)
+data/tif/detector_013.tif ; area ; UINT32 ; 1 ; (2300,2300)
+data/tif/detector_014.tif ; area ; UINT32 ; 1 ; (2300,2300)
+data/tif/detector_015.tif ; area ; UINT32 ; 1 ; (2300,2300)
+"""
+
+tif_xml_output="""
+<?xml version="1.0"?>
+<detinfo>
+	<detector>
+		<source>data/tif/detector_009.tif</source>
+		<type>area</type>
+		<pixeltype>UINT32</pixel>
+		<frames>1</frames>
+		<frameshape>(2300,2300)</frameshape>
+	</detector>
+	<detector>
+		<source>data/tif/detector_010.tif</source>
+		<type>area</type>
+		<pixeltype>UINT32</pixel>
+		<frames>1</frames>
+		<frameshape>(2300,2300)</frameshape>
+	</detector>
+	<detector>
+		<source>data/tif/detector_011.tif</source>
+		<type>area</type>
+		<pixeltype>UINT32</pixel>
+		<frames>1</frames>
+		<frameshape>(2300,2300)</frameshape>
+	</detector>
+	<detector>
+		<source>data/tif/detector_012.tif</source>
+		<type>area</type>
+		<pixeltype>UINT32</pixel>
+		<frames>1</frames>
+		<frameshape>(2300,2300)</frameshape>
+	</detector>
+	<detector>
+		<source>data/tif/detector_013.tif</source>
+		<type>area</type>
+		<pixeltype>UINT32</pixel>
+		<frames>1</frames>
+		<frameshape>(2300,2300)</frameshape>
+	</detector>
+	<detector>
+		<source>data/tif/detector_014.tif</source>
+		<type>area</type>
+		<pixeltype>UINT32</pixel>
+		<frames>1</frames>
+		<frameshape>(2300,2300)</frameshape>
+	</detector>
+	<detector>
+		<source>data/tif/detector_015.tif</source>
+		<type>area</type>
+		<pixeltype>UINT32</pixel>
+		<frames>1</frames>
+		<frameshape>(2300,2300)</frameshape>
+	</detector>
+</detinfo>
+"""
+
+cbf_simple_output="""
+data/cbf/LAOS3_05461.cbf  type = area  pixel type = INT32  frames = 1 frame shape = (195,487)
+"""
+
+cbf_kv_output="""
+source           = data/cbf/LAOS3_05461.cbf
+type             = area
+pixel type       = INT32
+number of frames = 1
+frame shape      = (195,487)
+"""
+
+cbf_csv_output="""
+source ; type ; pixel type ; number of frames ; frame shape
+data/cbf/LAOS3_05461.cbf ; area ; INT32 ; 1 ; (195,487)
+"""
+
+cbf_xml_output="""
+<?xml version="1.0"?>
+<detinfo>
+        <detector>
+                <source>data/cbf/LAOS3_05461.cbf</source>
+                <type>area</type>
+                <pixeltype>INT32</pixel>
+                <frames>1</frames>
+                <frameshape>(195,487)</frameshape>
+        </detector>
+</detinfo>
+"""
+
 class detinfo_test(unittest.TestCase):
 
     tif_file = 'data/tif/detector_009.tif'
@@ -49,10 +364,6 @@ class detinfo_test(unittest.TestCase):
 
     def _check_output(self,options=[],args=[]):
         return check_output(self._get_cmd(options=options,args=args))
-
-    def _check_size(self,filename,option,size):
-        result = int(self._check_output(options=[option],args=[filename]))
-        self.assertEqual(result,size)
 
     def test_return(self):
         # possible problems that might occur
@@ -75,39 +386,77 @@ class detinfo_test(unittest.TestCase):
         result = int(self._call(args=['data/tif/detector_%03i.fio:1:5']))
         self.assertEqual(result,1)
 
-    def test_size(self):
-        #test the total size of images
-        self._check_size(self.tif_file,"-n",2300*2300)
-        self._check_size(self.tif_file,"--ntot",2300*2300)
-        self._check_size(self.cbf_file,"-n",195*487)
-        self._check_size(self.cbf_file,"--ntot",195*487)
+        #check for single nexus file
+        result = int(self._call(args=["data/nexus/tstfile_00012.h5"]))
+        self.assertEqual(result,0)
+      
+    #-------------------------------------------------------------------------
+    def test_simple(self):
+        print "test simple output ..."
+        result = self._check_output(options=["-fsimple"],
+                                    args = [self.cbf_file])
 
-    def test_x_resolution(self):
-        self._check_size(self.tif_file,"-x",2300)
-        self._check_size(self.tif_file,"--nx",2300)
-        self._check_size(self.cbf_file,"-x",195)
-        self._check_size(self.cbf_file,"--nx",195)
+        self.assertEqual(result.strip(),cbf_simple_output.strip())
+        
+        result = self._check_output(options=["-fsimple"],
+                                    args = ["data/nexus/tstfile_00012.h5"])
+        print result
+        print nexus_simple_output
+        self.assertEqual(result.strip(),nexus_simple_output.strip())        
+        
+        result = self._check_output(options=["-fsimple"],
+                                    args = ["data/tif/detector_%03i.tif:9:16"])
+        self.assertEqual(result.strip(),tif_simple_output.strip())
 
-    def test_y_resolution(self):
-        self._check_size(self.tif_file,"-y",2300)
-        self._check_size(self.tif_file,"--ny",2300)
-        self._check_size(self.cbf_file,"-y",487)
-        self._check_size(self.cbf_file,"--ny",487)
+    #-------------------------------------------------------------------------
+    def test_kv(self):
+        result = self._check_output(options=["-fkeyvalue"],
+                                    args = [self.cbf_file])
 
-    def test_type(self):
-        result = self._check_output(options=['-d'],args=[self.tif_file])
-        self.assertEqual(result.strip(),'UINT32')
+        self.assertEqual(result.strip(),cbf_kv_output.strip())
+        
+        result = self._check_output(options=["-fkeyvalue"],
+                                    args = ["data/nexus/tstfile_00012.h5"])
+        self.assertEqual(result.strip(),nexus_kv_output.strip())        
 
-        result = self._check_output(options=['-d'],args=[self.cbf_file])
-        self.assertEqual(result.strip(),"INT32")
+        result = self._check_output(options=["-fkeyvalue"],
+                                    args = ["data/tif/detector_%03i.tif:9:16"])
+        self.assertEqual(result.strip(),tif_kv_output.strip())
 
-    def test_list(self):
-        #check the list output
-        arg = 'data/tif/detector_%03i.tif:9:16'
-        result = self._check_output(options=['-l'],args=[arg])
-        # we have to remove the last element which holds only a blank
-        result = result.split('\n')[:-1]
-        self.assertEqual(len(result),7)
+    #-------------------------------------------------------------------------
+    def test_csv(self):
+        result = self._check_output(options=["-fcsv"],
+                                    args = ["data/nexus/tstfile_00012.h5"])
+        self.assertEqual(result.strip(),nexus_csv_output.strip())        
+
+        result = self._check_output(options=["-fcsv"],
+                                    args = ["data/tif/detector_%03i.tif:9:16"])
+        self.assertEqual(result.strip(),tif_csv_output.strip())
+        
+        result = self._check_output(options=["-fcsv"],
+                                    args = [self.cbf_file])
+
+        self.assertEqual(result.strip(),cbf_csv_output.strip())
+
+    #-------------------------------------------------------------------------
+    def test_xml(self):
+        replace = "        ";
+        result = self._check_output(options=["-fxml"],
+                                    args = [self.cbf_file])
+    
+        result = result.strip().replace("\t",replace)
+        self.assertEqual(result,cbf_xml_output.strip())
+        
+        result = self._check_output(options=["-fxml"],
+                                    args = ["data/nexus/tstfile_00012.h5"])
+        self.assertEqual(result.strip(),nexus_xml_output.strip())        
+
+        result = self._check_output(options=["-fxml"],
+                                    args = ["data/tif/detector_%03i.tif:9:16"])
+        self.assertEqual(result.strip(),tif_xml_output.strip())
+
+
+
 
          
 if __name__ == "__main__":
