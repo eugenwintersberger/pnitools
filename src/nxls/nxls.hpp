@@ -32,5 +32,3 @@
 using namespace pni::io::nx;
 using namespace pni::core;
 
-
-void show_group_content(const h5::nxobject &o);

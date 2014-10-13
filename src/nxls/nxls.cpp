@@ -18,11 +18,19 @@
 // ===========================================================================
 // Created on: 30.06.2011
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
-///
+//
 
-#include "nxls.hpp"
 #include "config.hpp"
+#include "utils.hpp"
+#include <iostream>
+#include <pni/core/types.hpp>
+#include <pni/core/configuration.hpp>
+#include <pni/io/nx/nx.hpp>
+#include <pni/io/nx/nxpath.hpp>
 #include <pni/io/nx/flat_group.hpp>
+
+using namespace pni::core;
+using namespace pni::io::nx;
 
 template<typename OTYPE>
 void attribute_output(const OTYPE &parent)
@@ -54,16 +62,14 @@ int main(int argc,char **argv)
     //create configuration
     configuration config = get_config(argc,argv);
 
+    nxpath path = get_path(config);
+
+    h5::nxfile file = get_file(path);
+
+    h5::nxobject root = get_root(file,path);
+
     try
     {
-        nxpath path = nxpath::from_string(config.value<string>("nxpath"));
-        h5::nxfile file = h5::nxfile::open_file(path.filename(),true);
-        h5::nxobject root = file.root();
-
-        //get the root object from where to start
-        if(path.size())
-            root = get_object(root,path);
-
         if(config.value<bool>("recursive"))
             output(make_flat(root),config.value<bool>("show-attributes"));
         else
