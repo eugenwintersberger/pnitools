@@ -38,6 +38,10 @@ configuration create_config()
                 "traverse the Nexus tree recursively",false));
     config.add_option(config_option<bool>("show-attributes","a",
                 "show attributes",false));
+    config.add_option(config_option<bool>("long","l",
+                "show detailed information",false));
+    config.add_option(config_option<bool>("full-path","f",
+                "show full path",false));
     config.add_argument(config_argument<string>("nxpath",-1));
 
     return config;

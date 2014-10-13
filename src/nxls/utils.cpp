@@ -84,3 +84,18 @@ h5::nxobject get_root(const h5::nxfile &file,const nxpath &path)
         std::exit(1);
     }
 }
+
+//----------------------------------------------------------------------------
+output_config make_output_config(const configuration &config)
+{
+    size_t trim_level= 0;
+    if(!config.value<bool>("full-path"))
+    {
+        nxpath path = get_path(config); 
+        trim_level = path.size();
+    }
+
+    return output_config(config.value<bool>("long"),
+                         config.value<bool>("show-attributes"),
+                         trim_level);
+}

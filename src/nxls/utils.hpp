@@ -27,6 +27,8 @@
 using namespace pni::io::nx;
 using namespace pni::core;
 
+#include "output_config.hpp"
+
 //!
 //! \brief get object path
 //!
@@ -57,3 +59,14 @@ h5::nxfile get_file(const nxpath &path);
 //! 
 //! 
 h5::nxobject get_root(const h5::nxfile &file,const nxpath &path);
+
+//----------------------------------------------------------------------------
+//!
+//! \brief construct output configuration
+//! 
+//! Construct the output configuration from command line options. 
+//! 
+//! \param path path to the root object
+//! \return instance of output_config
+//!
+output_config make_output_config(const configuration &config);
