@@ -1,4 +1,4 @@
-set(NXLS_SOURCE nxls.cpp)
+set(NXLS_SOURCE nxls.cpp config.cpp)
 
 add_executable(nxls ${NXLS_SOURCE})
 target_link_libraries(nxls common_objects ${PNIIO_PKG_LIBRARIES})

@@ -21,38 +21,38 @@
 ///
 
 #include "nxls.hpp"
-#include "../common/config_utils.hpp"
-#include "nexus_tree_aggregation.hpp"
+#include "config.hpp"
+#include <pni/io/nx/flat_group.hpp>
 
-static const string program_name = "nxls";
-static const string help_header = "nxls takes the following command line options";
+template<typename OTYPE>
+void attribute_output(const OTYPE &parent)
+{
+    for(auto attribute: parent.attributes)
+        std::cout<<get_path(attribute)<<std::endl;
+}
+
+template<typename OTYPE> 
+void output(const OTYPE &parent,bool with_attributes)
+{
+    for(auto child: parent) 
+    {
+        std::cout<<get_path(child)<<std::endl;
+        if(with_attributes)
+        {
+            if(is_group(child))
+                attribute_output(as_group(child));
+            else if(is_field(child))
+                attribute_output(as_field(child));
+        }
+
+    }
+}
+
 
 int main(int argc,char **argv)
 {
     //create configuration
-    configuration config;
-    config.add_option(config_option<bool>("help","h",
-                "show help text",false));
-    config.add_option(config_option<bool>("recursive","r",
-                "traverse the Nexus tree recursively",false));
-    config.add_option(config_option<bool>("show-attributes","a",
-                "show attributes",false));
-    config.add_argument(config_argument<string>("nxpath",-1));
-
-    if(argc<2)
-    {
-        std::cerr<<"insufficient number of command line arguments!"<<std::endl;
-        std::cerr<<"Use nxls -h for help"<<std::endl;
-        return 1;
-    }
-
-  
-    //parse command line options and arguments
-    if(parse_cli_opts(argc,argv,program_name,config)) return 1;
-
-    //check if the user requested help 
-    if(check_help_request(config,help_header)) return 1;
-
+    configuration config = get_config(argc,argv);
 
     try
     {
@@ -61,30 +61,14 @@ int main(int argc,char **argv)
         h5::nxobject root = file.root();
 
         //get the root object from where to start
-        root = get_object(root,path);
-        
-        std::vector<string> path_v;
-        aggregate_nexus_path(root,path_v,
-                  config.value<bool>("recursive"),
-                  config.value<bool>("show-attributes"));
+        if(path.size())
+            root = get_object(root,path);
 
-#ifdef NOFOREACH
-        BOOST_FOREACH(auto p,path_v)
-#else
-        for(auto p: path_v)
-#endif
-            std::cout<<p<<std::endl;
+        if(config.value<bool>("recursive"))
+            output(make_flat(root),config.value<bool>("show-attributes"));
+        else
+            output(h5::nxgroup(root),config.value<bool>("show-attributes"));
 
-    }
-   catch(cli_option_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-    catch(file_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
     }
     catch(pni::core::index_error &error)
     {

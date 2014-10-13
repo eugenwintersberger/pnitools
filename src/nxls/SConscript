@@ -1,9 +1,0 @@
-Import("cli_env")
-
-nxls_objects =[cli_env.Object(["nxls.cpp"])]
-nxls_objects.extend(SConscript("../common/SConscript"))
-nxls = cli_env.Program(target="nxls",source=nxls_objects)
-nxls_install = cli_env.Install("$PREFIX/bin",nxls)
-
-cli_env.Alias("all",[nxls])
-cli_env.Alias("install",[nxls_install])
