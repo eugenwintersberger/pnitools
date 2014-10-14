@@ -48,12 +48,6 @@ detinfo [OPTIONS] FILESPEC
 @c ===========================================================================
 @c describe command line options here
 @c ===========================================================================
-@menu 
-* Program options:: command line options taken by @command{detinfo}
-* Examples:: example of how to use @command{detinfo}
-@end menu
-
-@node Program options
 @subsection Program options
 
 @command{detinfo}s behavior can be controlled with the following command 
@@ -74,7 +68,6 @@ the default), keyvalue, csv, or xml
 @c ===========================================================================
 @c show examples of how detinfo works
 @c ===========================================================================
-@node Examples
 @subsection Examples
 
 Consider we have a directory with TIF files produced by a detector. A very

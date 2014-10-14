@@ -58,8 +58,8 @@ string get_data_metadata(const h5::nxobject &o)
     std::stringstream ss;
 
     auto shape = get_shape<shape_t>(o);
-
-    //if(shape.empty()) shape = shape_t{{1}};
+    if(shape.empty())
+        shape = shape_t{{1}};
 
     ss<<get_type(o)<<'\t'<<shape<<'\t';
     return ss.str();
