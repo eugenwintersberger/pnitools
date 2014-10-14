@@ -36,7 +36,9 @@ add_custom_command(OUTPUT pnitools.pdf
                    DEPENDS ${TEXI_SRC} ${INFO_SRC}
                    )
 add_custom_target(pnitool_info ALL SOURCES "pnitools.info" "pnitools.pdf" "html/index.html")
-install(FILES pnitools.info 
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pnitools.info 
         DESTINATION ${CMAKE_INSTALL_INFODIR})
-install(FILES pnitools.pdf
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pnitools.pdf 
+        DESTINATION "${CMAKE_INSTALL_DOCDIR}/pnitools-doc")
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html 
         DESTINATION "${CMAKE_INSTALL_DOCDIR}/pnitools-doc")
