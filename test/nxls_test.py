@@ -64,19 +64,16 @@ class nxls_test(unittest.TestCase):
         self.assertEqual(result,1)
 
     def test_simple_list(self):
-        output = ['entry:NXentry']
         #just produce a simple output list
-        cmd = ['nxls',self.input_file]
+        cmd = ['nxls',self.input_file+"://"]
         result = check_output(cmd)
-        self.assertEqual(result.strip(),'/entry:NXentry')
+        self.assertEqual(result.strip(),'entry:NXentry')
 
         #check more lines
-        output = ['/entry:NXentry/instrument:NXinstrument',
-                '/entry:NXentry/sample:NXsample','/entry:NXentry/control:NXmonitor',
-                '/entry:NXentry/data:NXdata',
-                '/entry:NXentry/title','/entry:NXentry/experiment_description',
-                '/entry:NXentry/start_time','/entry:NXentry/end_time',
-                '/entry:NXentry/program_name']
+        output = ['instrument:NXinstrument','sample:NXsample',
+                  'control:NXmonitor','data:NXdata','title',
+                  'experiment_description','start_time',
+                  'end_time','program_name']
         result = check_output(['nxls',self.input_file+'://:NXentry'])
         result = result.split('\n')
         result.remove('')
@@ -87,30 +84,30 @@ class nxls_test(unittest.TestCase):
         
     def test_recursive_list(self):
         #check more lines
-        output = ['/entry:NXentry',
-                '/entry:NXentry/title',
-                '/entry:NXentry/experiment_description',
-                '/entry:NXentry/start_time',
-                '/entry:NXentry/end_time',
-                '/entry:NXentry/program_name',
-                '/entry:NXentry/sample:NXsample',
-                '/entry:NXentry/control:NXmonitor',
-                '/entry:NXentry/data:NXdata',
-                '/entry:NXentry/instrument:NXinstrument',
-                '/entry:NXentry/instrument:NXinstrument/name',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/data',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/layout',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/description',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/distance',
-                '/entry:NXentry/instrument:NXinstrument/source:NXsource',
-                '/entry:NXentry/instrument:NXinstrument/source:NXsource/name',
-                '/entry:NXentry/instrument:NXinstrument/source:NXsource/type',
-                '/entry:NXentry/instrument:NXinstrument/source:NXsource/probe'
+        output = ['entry:NXentry',
+                  'entry:NXentry/title',
+                  'entry:NXentry/experiment_description',
+                  'entry:NXentry/start_time',
+                  'entry:NXentry/end_time',
+                  'entry:NXentry/program_name',
+                  'entry:NXentry/sample:NXsample',
+                  'entry:NXentry/control:NXmonitor',
+                  'entry:NXentry/data:NXdata',
+                  'entry:NXentry/instrument:NXinstrument',
+                  'entry:NXentry/instrument:NXinstrument/name',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/data',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/layout',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/description',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/distance',
+                  'entry:NXentry/instrument:NXinstrument/source:NXsource',
+                  'entry:NXentry/instrument:NXinstrument/source:NXsource/name',
+                  'entry:NXentry/instrument:NXinstrument/source:NXsource/type',
+                  'entry:NXentry/instrument:NXinstrument/source:NXsource/probe'
                 ]
-        result = check_output(['nxls','-r',self.input_file])
+        result = check_output(['nxls','-r',self.input_file+"://"])
         result = result.split('\n')
         result.remove('')
         self.assertEqual(len(result),len(output))
@@ -119,45 +116,45 @@ class nxls_test(unittest.TestCase):
             self.assertEqual(output.count(r.strip()),1)
 
     def test_attribute_list(self):
-        output = ['/entry:NXentry',
-                '/entry:NXentry@NX_class',
-                '/entry:NXentry/title',
-                '/entry:NXentry/experiment_description',
-                '/entry:NXentry/start_time',
-                '/entry:NXentry/end_time',
-                '/entry:NXentry/program_name',
-                '/entry:NXentry/program_name@version',
-                '/entry:NXentry/program_name@configuration',
-                '/entry:NXentry/sample:NXsample',
-                '/entry:NXentry/sample:NXsample@NX_class',
-                '/entry:NXentry/control:NXmonitor',
-                '/entry:NXentry/control:NXmonitor@NX_class',
-                '/entry:NXentry/data:NXdata',
-                '/entry:NXentry/data:NXdata@NX_class',
-                '/entry:NXentry/instrument:NXinstrument',
-                '/entry:NXentry/instrument:NXinstrument@NX_class',
-                '/entry:NXentry/instrument:NXinstrument/name',
-                '/entry:NXentry/instrument:NXinstrument/name@short_name',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector@NX_class',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/data',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/data@units',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size@units',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size@units',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/layout',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/description',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/distance',
-                '/entry:NXentry/instrument:NXinstrument/detector:NXdetector/distance@units',
-                '/entry:NXentry/instrument:NXinstrument/source:NXsource',
-                '/entry:NXentry/instrument:NXinstrument/source:NXsource@NX_class',
-                '/entry:NXentry/instrument:NXinstrument/source:NXsource/name',
-                '/entry:NXentry/instrument:NXinstrument/source:NXsource/name@short_name',
-                '/entry:NXentry/instrument:NXinstrument/source:NXsource/type',
-                '/entry:NXentry/instrument:NXinstrument/source:NXsource/probe'
+        output = ['entry:NXentry',
+                  'entry:NXentry@NX_class',
+                  'entry:NXentry/title',
+                  'entry:NXentry/experiment_description',
+                  'entry:NXentry/start_time',
+                  'entry:NXentry/end_time',
+                  'entry:NXentry/program_name',
+                  'entry:NXentry/program_name@version',
+                  'entry:NXentry/program_name@configuration',
+                  'entry:NXentry/sample:NXsample',
+                  'entry:NXentry/sample:NXsample@NX_class',
+                  'entry:NXentry/control:NXmonitor',
+                  'entry:NXentry/control:NXmonitor@NX_class',
+                  'entry:NXentry/data:NXdata',
+                  'entry:NXentry/data:NXdata@NX_class',
+                  'entry:NXentry/instrument:NXinstrument',
+                  'entry:NXentry/instrument:NXinstrument@NX_class',
+                  'entry:NXentry/instrument:NXinstrument/name',
+                  'entry:NXentry/instrument:NXinstrument/name@short_name',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector@NX_class',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/data',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/data@units',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size@units',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size@units',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/layout',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/description',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/distance',
+                  'entry:NXentry/instrument:NXinstrument/detector:NXdetector/distance@units',
+                  'entry:NXentry/instrument:NXinstrument/source:NXsource',
+                  'entry:NXentry/instrument:NXinstrument/source:NXsource@NX_class',
+                  'entry:NXentry/instrument:NXinstrument/source:NXsource/name',
+                  'entry:NXentry/instrument:NXinstrument/source:NXsource/name@short_name',
+                  'entry:NXentry/instrument:NXinstrument/source:NXsource/type',
+                  'entry:NXentry/instrument:NXinstrument/source:NXsource/probe'
                 ]
-        result = check_output(['nxls','-ra',self.input_file])
+        result = check_output(['nxls','-ra',self.input_file+"://"])
         result = result.split('\n')
         result.remove('')
         for x in result: print x
