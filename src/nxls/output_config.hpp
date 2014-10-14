@@ -24,6 +24,7 @@
 #include <cstdlib>
 
 //!
+//! \ingroup nxls_devel
 //! \brief output configuration
 //! 
 //! Output configuration for nxls. This assembled from the configuation 

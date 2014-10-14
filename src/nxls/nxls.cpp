@@ -36,6 +36,12 @@ using namespace pni::core;
 using namespace pni::io::nx;
 
 
+//!
+//! \ingroup nxls_devel
+//! \brief main program
+//! 
+//! The main program sequence of nxls.
+//!
 int main(int argc,char **argv)
 {
     //create configuration

@@ -27,9 +27,14 @@ using namespace pni::core;
 
 
 //!
+//! \ingroup nxls_devel
 //! \brief get configuration
 //!
-//! Function returns the program configuration or aborts the program
+//! Function returns the program configuration or aborts the program. 
+//!
+//! \param argc number of command line arguments
+//! \param argv pointer to the arguments
+//! \return instance of configuration
 //!
 configuration get_config(int argc,char **argv);
 

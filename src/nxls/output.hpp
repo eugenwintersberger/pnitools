@@ -29,35 +29,137 @@
 using namespace pni::core;
 using namespace pni::io::nx;
 
+//!
+//! \ingroup nxls_devel
+//! \brief return metadata
+//! 
+//! Return a string with metadata for an object. 
+//! 
+//! \param o reference to the object
+//! \return string with metadata
+//! 
+string get_metadata(const h5::nxobject &o);
+
+//----------------------------------------------------------------------------
+//! 
+//! \ingroup nxls_devel
+//! \brief get field metadata
+//! 
+//! Return a string with metadata for a field. 
+//! 
+//! \param o field instance
+//! \return string with metadata
+//!
+string get_field_metadata(const h5::nxobject &o);
+
+//----------------------------------------------------------------------------
+//!
+//! \ingroup nxls_devel
+//! \brief get group metadata 
+//!
+//! Return a string with metadata for a group. 
+//!
+//! \param o group instance
+//! \return string with metadata
+//!
+string get_group_metadata(const h5::nxobject &o);
+
+//----------------------------------------------------------------------------
+//!
+//! \ingroup nxls_devel
+//! \brief get attribute metadata
+//!
+//! Return a string with metadata for an attribute.
+//!
+//! \param o attribute instance
+//! \return string with metadata
+//!
+string get_attribute_metadata(const h5::nxobject &o);
+
+//----------------------------------------------------------------------------
+//!
+//! \ingroup nxls_devel
+//! \brief get content metadata 
+//!
+//! This function returns a string with metadata for data holding objects. 
+//! These are attributes and fields. It is used by get_field_metadata and 
+//! get_attribute_metadata to obtain the datatype and the shape of the 
+//! field or attribute.
+//!
+//! \param o attribute or field instance
+//! \return string with metadata
+//!
+string get_data_metadata(const h5::nxobject &o);
+
+//----------------------------------------------------------------------------
+//!
+//! \ingroup nxls_devel
+//! \brief producing nxls output
+//! 
+//! This class produces the output of nxls. 
+//!
 class output
 {
     private:
+        //! output stream for nxls
         std::ostream &_stream;
+        //! the output configuration
         output_config _config;
 
-        template<typename OTYPE>
-        void attribute_output(const OTYPE &parent);
+        //--------------------------------------------------------------------
+        //!
+        //! \brief produce attribute output
+        //! 
+        //! This is function template writes attribute data to the output 
+        //! stream. 
+        //! 
+        //! \tparam OTYPE object type
+        //! \param parent instance of OTYPE with attributes
+        //! 
+        template<typename OTYPE> void attribute_output(const OTYPE &parent);
 
+        //--------------------------------------------------------------------
+        //!
+        //! \brief get path
+        //!
+        //! This function returns the string representation of the path of 
+        //! an object. Besides this it also removes the root part of the 
+        //! path unless the -l option is set. 
+        //!
+        //! \param o nexus object
+        //! \return string representation of the objects path
+        //!
         string get_path(const h5::nxobject &o) const;
 
     public:
+        //!
+        //! \brief constructor
+        //!
+        //! \param stream the desired output stream
+        //! \param config configuration instance 
+        //!
         explicit output(std::ostream &stream,
                         const output_config &config);
-    
-        template<typename OTYPE>
-        void operator()(const OTYPE &parent);
+   
+        //--------------------------------------------------------------------
+        //!
+        //! \brief perform output operation
+        //!
+        //! The () operator of this class finally writes the desired output to 
+        //! a stream. 
+        //! 
+        //! \tparam OTYPE parent object type
+        //! \param parent the root object over which to iterate
+        //! 
+        template<typename OTYPE> void operator()(const OTYPE &parent);
 };
 
-string get_metadata(const h5::nxobject &o);
-string get_field_metadata(const h5::nxobject &o);
-string get_group_metadata(const h5::nxobject &o);
-string get_attribute_metadata(const h5::nxobject &o);
-string get_data_metadata(const h5::nxobject &o);
 
 //----------------------------------------------------------------------------
 template<typename OTYPE>
 void output::attribute_output(const OTYPE &parent)
 {
+    //iterate over all attributes
     for(auto attribute: parent.attributes)
     {
         if(_config.long_output()) 
@@ -71,13 +173,22 @@ void output::attribute_output(const OTYPE &parent)
 template<typename OTYPE>
 void output::operator()(const OTYPE &parent)
 {
+    // iterate over all children of the parent object
     for(auto child: parent) 
     {
+        //fetch metdata if requested and write it to the stream
         if(_config.long_output()) _stream<<get_metadata(child);
 
-        _stream<<get_path(child)<<std::endl;
+        //write default output to the stream
+        _stream<<get_path(child)<<std::endl; 
+
+        //handle attributes
         if(_config.with_attributes())
         {
+            //The attribute_manager attribute is only visible for instances 
+            //of nxfield and nxgroup. We thus have to convert the child 
+            //object to either a field or a group. This is also the reason 
+            //why attribute_output is a function template.
             if(is_group(child))
                 attribute_output(as_group(child));
             else if(is_field(child))

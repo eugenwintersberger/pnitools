@@ -30,16 +30,19 @@ using namespace pni::core;
 #include "output_config.hpp"
 
 //!
+//! \ingroup nxls_devel
 //! \brief get object path
 //!
 //! Return the path to the root object for nxls. If retrieving the path fails 
 //! this function will abort the program.
 //!
 //! \param config configuration object
+//!
 nxpath get_path(const configuration &config);
 
 //-----------------------------------------------------------------------------
 //!
+//! \ingroup nxls_devel
 //! \brief get file
 //!
 //! Return the requested file. If anything goes wrong during opening the 
@@ -52,16 +55,21 @@ h5::nxfile get_file(const nxpath &path);
 
 //----------------------------------------------------------------------------
 //!
+//! \ingroup nxls_devel
 //! \brief get root object
 //!
 //! Returns the root object requested by the user from which the output 
 //! should start. If this object cannot be found the program is aborted.
 //! 
-//! 
+//! \param file the input file 
+//! \param path the path refering to the root object
+//! \return root object form which to start the interation
+//!
 h5::nxobject get_root(const h5::nxfile &file,const nxpath &path);
 
 //----------------------------------------------------------------------------
 //!
+//! \ingroup nxls_devel
 //! \brief construct output configuration
 //! 
 //! Construct the output configuration from command line options. 

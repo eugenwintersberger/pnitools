@@ -40,6 +40,8 @@ std::ostream &operator<<(std::ostream &stream,const shape_t &shape)
 }
 
 //----------------------------------------------------------------------------
+//     Implementation of independent functions used in the output class
+//----------------------------------------------------------------------------
 nxpath trim_path(const nxpath &path,size_t trim_level)
 {
     nxpath opath(path);
@@ -100,6 +102,8 @@ string get_metadata(const h5::nxobject &o)
 
 }
 
+//----------------------------------------------------------------------------
+//            Implementation of methods for class output
 //----------------------------------------------------------------------------
 output::output(std::ostream &stream,const output_config &config):
     _stream(stream),
