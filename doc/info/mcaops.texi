@@ -131,7 +131,12 @@ $ cat test1.dat | gnuplot -p -e "$GCMD"
 @noindent 
 gives
 @float Figure,fig:mcaops_test
+@ifhtml
+@center @image{pics/mcaops_test_dat,,3in,,.jpg}
+@end ifhtml
+@iftex
 @center @image{pics/mcaops_test_dat,,3in,,.pdf}
+@end iftex
 @caption{The content of @file{examples/mcaops/test.dat} as shown by Gnuplot.} 
 @end float
 @float Figure,fig:mcaops_test1

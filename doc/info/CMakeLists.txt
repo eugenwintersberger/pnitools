@@ -30,13 +30,17 @@ add_custom_command(OUTPUT pnitools.info
                   DEPENDS ${TEXI_SRC} ${INFO_SRC}
                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
                   )
+add_custom_command(OUTPUT html
+                   COMMAND makeinfo --force --html -o${CMAKE_CURRENT_BINARY_DIR}/html ${INFO_SRC}
+                   DEPENDS ${TEXI_SRC} ${INFO_SRC}
+                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 add_custom_command(OUTPUT pnitools.pdf 
                    COMMAND pdftex --output-directory=${CMAKE_CURRENT_BINARY_DIR} ${INFO_SRC}
                    COMMAND pdftex --output-directory=${CMAKE_CURRENT_BINARY_DIR} ${INFO_SRC}
                    DEPENDS ${TEXI_SRC} ${INFO_SRC}
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                    )
-add_custom_target(pnitool_info ALL SOURCES "pnitools.info" "pnitools.pdf")
+add_custom_target(pnitool_info ALL SOURCES "pnitools.info" "pnitools.pdf" "html")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pnitools.info 
         DESTINATION ${CMAKE_INSTALL_INFODIR})
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pnitools.pdf

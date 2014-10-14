@@ -2,6 +2,7 @@ set(NXLS_SOURCE nxls.cpp
                 config.cpp 
                 utils.cpp
                 output_config.cpp 
+                output.cpp
                 )
 
 add_executable(nxls ${NXLS_SOURCE})
