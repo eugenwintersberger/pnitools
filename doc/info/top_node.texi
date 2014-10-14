@@ -1,0 +1,11 @@
+@node Top
+@top
+
+pnitools is a collection of command-line programs to manage and access data
+stored in Nexus files. Besides this more general purpose programs are provided
+that may help to make the every day business at the beamline easier.
+
+@menu
+* Common concepts:: concepts common to all programs
+* Programms:: detailed description of the individual programs
+@end menu

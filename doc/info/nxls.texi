@@ -25,6 +25,14 @@ show the content of all subgroups of a given Nexus group
 @item -a
 @itemx --show-attributes
 shows attributes in addition to groups and field.
+
+@item -f
+@itemx --full-path
+shows the full path of every object
+
+@item -l
+@itemx --long
+shows additional information for each object
 @end table
 
 @subsection Examples

@@ -46,7 +46,7 @@ $ nxcat $CHAN5/polar_angle $CHAN5/data | gnuplot -p -e "$GCMD2"
 @noindent
 yielding 
 @float
-@center @image{pics/nxcat_full,,3in,.pdf}
+@center @image{pics/nxcat_full,,3in,}
 @end float
 @noindent
 The plotting range can easily be reduced by only reading a section of the data
@@ -55,7 +55,7 @@ which can be specified by the @option{-s} and @option{-e} option
 $ nxcat -s200 -e400 $CHAN5/polar_angle $CHAN5/data | gnuplot -p -e "$GCMD2"
 @end example
 @float
-@center @image{pics/nxcat_selection,,3in,.pdf}
+@center @image{pics/nxcat_selection,,3in,}
 @end float
 
 By default @command{nxcat} just prints the data to standard out as shown in this

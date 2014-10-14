@@ -132,15 +132,15 @@ $ cat test1.dat | gnuplot -p -e "$GCMD"
 gives
 @float Figure,fig:mcaops_test
 @ifhtml
-@center @image{pics/mcaops_test_dat,,3in,,.jpg}
+@center @image{pics/mcaops_test_dat,,3in,,}
 @end ifhtml
 @iftex
-@center @image{pics/mcaops_test_dat,,3in,,.pdf}
+@center @image{pics/mcaops_test_dat,,3in,,}
 @end iftex
 @caption{The content of @file{examples/mcaops/test.dat} as shown by Gnuplot.} 
 @end float
 @float Figure,fig:mcaops_test1
-@center @image{pics/mcaops_test1_dat,,3in,,.pdf}
+@center @image{pics/mcaops_test1_dat,,3in,,}
 @caption{The content of @file{examples/mcaops/test1.dat} as shown by Gnuplot.}
 @end float
 
@@ -259,7 +259,7 @@ $ cat test.dat | mcaops rebin --noxrebin -b3
 $ cat test.dat | mcaops rebin --noxrebin -b3 | gnuplot -p -e "$GCMD"
 @end example
 @float
-@center @image{pics/mcaops_rebin3,,3in,,.pdf}
+@center @image{pics/mcaops_rebin3,,3in,,}
 @end float
 @noindent
 @command{mcaops} does not normalize the re-binned data by default. To normalize
@@ -291,7 +291,7 @@ This section gives detailed information about the functionality of the different
 @command{rebin} command. Before we can do this a bit of terminology is required. 
 MCAs usually produce histogram data as shown in this image
 @float
-@center @image{pics/mca_basics_1,,3in,,.pdf}
+@center @image{pics/mca_basics_1,,3in,,}
 @end float
 @noindent 
 Here, the MCA is counting events in different energy windows of equal size
