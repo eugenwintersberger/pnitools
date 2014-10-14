@@ -76,4 +76,14 @@ class output_config
         //! \return number of path elements to remove
         //! 
         size_t trim_level() const;
+
+        //--------------------------------------------------------------------
+        //!
+        //! \brief set trim level
+        //!
+        //! Set the trim level for the output path.
+        //!
+        //! \param l the new trim level
+        //!
+        void trim_level(size_t l);
 };

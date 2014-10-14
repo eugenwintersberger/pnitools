@@ -131,6 +131,8 @@ class output
         //!
         string get_path(const h5::nxobject &o) const;
 
+        
+
     public:
         //!
         //! \brief constructor
@@ -152,6 +154,11 @@ class output
         //! \param parent the root object over which to iterate
         //! 
         template<typename OTYPE> void operator()(const OTYPE &parent);
+
+        void write_object(const h5::nxobject &o);
+
+            
+
 };
 
 
@@ -162,10 +169,7 @@ void output::attribute_output(const OTYPE &parent)
     //iterate over all attributes
     for(auto attribute: parent.attributes)
     {
-        if(_config.long_output()) 
-            _stream<<get_metadata(h5::nxobject(attribute));
-
-        _stream<<get_path(attribute)<<std::endl;
+        write_object(attribute);
     }
 }
 
@@ -174,26 +178,5 @@ template<typename OTYPE>
 void output::operator()(const OTYPE &parent)
 {
     // iterate over all children of the parent object
-    for(auto child: parent) 
-    {
-        //fetch metdata if requested and write it to the stream
-        if(_config.long_output()) _stream<<get_metadata(child);
-
-        //write default output to the stream
-        _stream<<get_path(child)<<std::endl; 
-
-        //handle attributes
-        if(_config.with_attributes())
-        {
-            //The attribute_manager attribute is only visible for instances 
-            //of nxfield and nxgroup. We thus have to convert the child 
-            //object to either a field or a group. This is also the reason 
-            //why attribute_output is a function template.
-            if(is_group(child))
-                attribute_output(as_group(child));
-            else if(is_field(child))
-                attribute_output(as_field(child));
-        }
-
-    }
+    for(auto child: parent) write_object(child);
 }

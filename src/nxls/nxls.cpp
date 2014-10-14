@@ -53,17 +53,34 @@ int main(int argc,char **argv)
 
     h5::nxobject root = get_root(file,path);
 
-    output o(std::cout,make_output_config(config));
+    //generate output configuraiton
+    output_config out_config = make_output_config(config);
+
+    //in the case that the root object is a single field or attribute
+    //we have to adjust the trim level - but only if it is not 0.
+    if(is_field(root) || is_attribute(root))
+    {
+        if(out_config.trim_level()) 
+            out_config.trim_level(out_config.trim_level()-1);
+    }
+
+    //generat output class
+    output o(std::cout,out_config);
 
     try
     {
-        if(config.value<bool>("recursive"))
-            o(make_flat(root));
+        if(is_field(root) || is_attribute(root))
+            o.write_object(root);
         else
-            o(h5::nxgroup(root));
+        {
+            if(config.value<bool>("recursive"))
+                o(make_flat(root));
+            else
+                o(h5::nxgroup(root));
+        }
 
     }
-    catch(pni::core::index_error &error)
+    catch(pni::core::type_error &error)
     {
         std::cerr<<error<<std::endl;
         return 1;
@@ -77,4 +94,3 @@ int main(int argc,char **argv)
 
 	return 0;
 }
-

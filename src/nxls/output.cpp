@@ -111,6 +111,27 @@ output::output(std::ostream &stream,const output_config &config):
 {}
 
 //----------------------------------------------------------------------------
+void output::write_object(const h5::nxobject &o)
+{
+    if(_config.long_output()) _stream<<get_metadata(o);
+
+    _stream<<get_path(o)<<std::endl;
+        
+    //handle attributes
+    if(_config.with_attributes())
+    {
+        //The attribute_manager attribute is only visible for instances 
+        //of nxfield and nxgroup. We thus have to convert the child 
+        //object to either a field or a group. This is also the reason 
+        //why attribute_output is a function template.
+        if(is_group(o))
+            attribute_output(as_group(o));
+        else if(is_field(o))
+            attribute_output(as_field(o));
+    }
+}
+
+//----------------------------------------------------------------------------
 string output::get_path(const h5::nxobject &o) const
 {
     nxpath p = nxpath::from_string(pni::io::nx::get_path(o));

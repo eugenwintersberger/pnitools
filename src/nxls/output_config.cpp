@@ -46,3 +46,9 @@ size_t output_config::trim_level() const
 {
     return _trim_level;
 }
+
+//---------------------------------------------------------------------------
+void output_config::trim_level(size_t l)
+{
+    _trim_level = l;
+}
