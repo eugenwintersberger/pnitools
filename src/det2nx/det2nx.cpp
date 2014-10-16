@@ -21,77 +21,58 @@
 //
 
 #include "det2nx.hpp"
-#include "../common/config_utils.hpp"
+#include "config.hpp"
+#include "utils.hpp"
 #include "../common/file_list_parser.hpp"
 #include "../common/file_utils.hpp"
 #include <pni/io/exceptions.hpp>
 
-static const string program_name = "det2nx";
-static const string help_header = "det2nx takes the following command line options";
 
 static const string_list cbf_exts = {".cbf",".CBF"};
 static const string_list tif_exts = {".tif",".TIF",".tiff",".TIFF"};
 
 int main(int argc,char **argv)
 {
-    //create configuration
-    configuration config = create_configuration();
-
-    if(argc<2)
-    {
-        std::cerr<<"det2nx called with to less arguments!"<<std::endl;
-        std::cerr<<std::endl<<"Use det2nx -h for more information"<<std::endl;
-        return 1;
-    }
-  
-    //parse command line options and arguments
-    if(parse_cli_opts(argc,argv,program_name,config)) return 1;
-
-    //check if the user requested help 
-    if(check_help_request(config,help_header)) return 1;
+    //get user configuration - if this fails the program is aborted
+    configuration config = get_user_config(argc,argv);
 
     bool verbose = config.value<bool>("verbose");
+
+    //obtain input files - if this step fails abort the program
+    file_list input_files = get_input_files(config);
+
+    //optain the path to the detector group - if this fails abort program
+    nxpath detector_path = get_detector_path(config);
+
+    //------------------------------------------------------------------------
+    //obtain the target file - if this operation fails the program will 
+    //abort
+    if(config.value<bool>("verbose"))
+        std::cout<<"Open output file "<<detector_path.filename()<<" ... ";
+
+    h5::nxfile detector_file = open_detector_file(detector_path);
+
+    if(config.value<bool>("verbose")) std::cout<<"success!"<<std::endl;
+
+    //------------------------------------------------------------------------
+    //open the detector group - if this operation fails the program will 
+    //be aborted
+    if(config.value<bool>("verbose")) std::cout<<"Open detector group ... ";
+
+    h5::nxgroup detector_group = get_detector_group(detector_file,
+                                                    detector_path);
+
+    if(config.value<bool>("verbose")) std::cout<<"success!"<<std::endl;
+
+
+    //append the data to the target
 
     //-------------------------generating the input file list------------------
     try
     {
-        //------------------dealing with input data----------------------------
-        //create the input file list - this will throw a file_error exception if
-        //one of the input files does not exist
-        auto infiles = file_list_parser::parse<file_list>(
-                config.value<string_vector>("input-files"));
-        if(verbose)
-            std::cout<<"processing "<<infiles.size()<<" files ..."<<std::endl;
-
-        //the first image in the stack determines the file type and all other
-        //image paramters (like data type and shape)
-
-        //at first we need to obtain the appropriate reader
-        reader_ptr reader = get_reader(infiles,cbf_exts,tif_exts);
-
-        //get thre reference image information object
-        pni::io::image_info info = get_image_info(reader,infiles.begin()->path());
-
-        //need to check all the input files
-        check_input_files(infiles,reader,info);
-       
-        //--------------parse the nexus path to get target information----------
-        nxpath nexus_path = nxpath::from_string(config.value<string>("target"));
-        
-        //need to check the validity of the path
-        if(nexus_path.filename().empty())
-            throw file_error(EXCEPTION_RECORD,"No output file given!");
-
-        if(!nexus_path.attribute().empty())
-            throw file_error(EXCEPTION_RECORD,
-                    "Nexus target must not be an attribute!");
-
         //------------------------opening the output file-----------------------
         //have to create the file name of the output file
-        std::cout<<"create/open output target ..."<<std::endl;
-        h5::nxfile output_file = open_output_file(nexus_path.filename(),
-                                 config.value<bool>("overwrite"));
-        h5::nxobject root_group = output_file.root();
+        /*
         h5::nxobject field = get_field(root_group,info,nexus_path,
                                        config.value<size_t>("deflate"));
 
@@ -104,7 +85,8 @@ int main(int argc,char **argv)
         
         //close the file 
         close(field);
-        output_file.close();
+        */
+        detector_file.close();
 
     }
     catch(file_error &error)

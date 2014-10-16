@@ -34,9 +34,18 @@ configuration create_configuration()
     configuration config;
     config.add_option(config_option<bool>("help","h",
                 "show short help text",false));
-    config.add_option(config_option<string>("target","t",
-                "Nexus target where to store data",
-                "output.nx:///:NXinstrument/:NXinstrument/:NXdetector/data"));
+    config.add_option(config_option<string>("group","g",
+                "the detector group to store the data",
+                "/:NXentry/:NXinstrument/:NXdetector"));
+    config.add_option(config_option<string>("data","d",
+                "the data field where to store data",
+                "data"));
+
+    //we do not add a default value here - the user has to pass 
+    //this option
+    config.add_option(config_option<string>("file","f",
+                "the name of the nexus file"));
+
     config.add_option(config_option<bool>("verbose","v",
                 "print verbose output",false));
     config.add_argument(config_argument<string_vector>("input-files",-1,
