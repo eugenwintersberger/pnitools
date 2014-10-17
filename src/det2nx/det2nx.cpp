@@ -20,7 +20,7 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "det2nx.hpp"
+//#include "det2nx.hpp"
 #include "config.hpp"
 #include "utils.hpp"
 #include "../common/file_list_parser.hpp"
@@ -28,19 +28,23 @@
 #include <pni/io/exceptions.hpp>
 
 
-static const string_list cbf_exts = {".cbf",".CBF"};
-static const string_list tif_exts = {".tif",".TIF",".tiff",".TIFF"};
 
 int main(int argc,char **argv)
 {
     //get user configuration - if this fails the program is aborted
     configuration config = get_user_config(argc,argv);
 
-    bool verbose = config.value<bool>("verbose");
-
+    //------------------------------------------------------------------------
     //obtain input files - if this step fails abort the program
+
+    if(config.value<bool>("verbose")) 
+        std::cout<<"Obtain list of input files ...";
+
     file_list input_files = get_input_files(config);
 
+    if(config.value<bool>("verbose")) std::cout<<"success!"<<std::endl;
+
+    //------------------------------------------------------------------------
     //optain the path to the detector group - if this fails abort program
     nxpath detector_path = get_detector_path(config);
 
@@ -64,8 +68,8 @@ int main(int argc,char **argv)
 
     if(config.value<bool>("verbose")) std::cout<<"success!"<<std::endl;
 
-
     //append the data to the target
+                                                    
 
     //-------------------------generating the input file list------------------
     try

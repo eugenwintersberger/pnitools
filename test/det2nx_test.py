@@ -50,29 +50,29 @@ class det2nx_test(unittest.TestCase):
             pass
 
     def test_return(self):
-
+        print "Test program return values ..."
         #should give a useage message and return 1
         cmd = ['det2nx'] 
         result = int(call(cmd))
         self.assertEqual(result,1)
 
         #should return 1 as the group does not exist in the file
-        cmd = ['det2nx','-tdet2nx1.nx:///:NXentry',self.image_list]
+        cmd = ['det2nx','-tdet2nx1.nx://:NXentry',self.image_list]
         result = int(call(cmd))
         self.assertEqual(result,1)
 
         #input files do not exist
-        cmd = ['det2nx','-tdet2nx1.nx:///data','bla.dat']
+        cmd = ['det2nx','-tdet2nx1.nx://data','bla.dat']
         result = int(call(cmd))
         self.assertEqual(result,1)
 
-        #input file is not supported
-        cmd = ['det2nx','-tdet2nx1.nx:///data','det2nx_test.py']
+        #input file is not supporte
+        cmd = ['det2nx','-tdet2nx1.nx://data','det2nx_test.py']
         result = int(call(cmd))
         self.assertEqual(result,1)
 
         #this should work
-        cmd = ['det2nx','-tdet2nx1.nx:///data',self.image_list]
+        cmd = ['det2nx','-tdet2nx1.nx://data',self.image_list]
         result = int(call(cmd))
         self.assertEqual(result,0)
 
@@ -81,7 +81,8 @@ class det2nx_test(unittest.TestCase):
     #take care about the fact that det2nx assumes all paths within the file to
     #exist. Only the target field will be created automatically.
     def test_create(self):
-        cmd = ['det2nx','-tdet2nx1.nx:///data',self.image_list]
+        print "test file creation ..."
+        cmd = ['det2nx','-tdet2nx1.nx://data',self.image_list]
         result = int(call(cmd))
         self.assertEqual(result,0)
 
@@ -98,7 +99,7 @@ class det2nx_test(unittest.TestCase):
     def test_append(self):
         self.test_create()
 
-        cmd = ['det2nx','-tdet2nx1.nx:///data','data/tif/detector_050.tif']
+        cmd = ['det2nx','-tdet2nx1.nx://data','data/tif/detector_050.tif']
         result = int(call(cmd))
         self.assertEqual(result,0)
 
@@ -114,7 +115,7 @@ class det2nx_test(unittest.TestCase):
     def test_overwrite(self):
         self.test_append()
 
-        cmd = ['det2nx','--overwrite','-tdet2nx1.nx:///data',
+        cmd = ['det2nx','--overwrite','-tdet2nx1.nx://data',
                'data/tif/detector_050.tif']
         result = int(call(cmd))
         self.assertEqual(result,0)

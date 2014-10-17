@@ -19,12 +19,42 @@
 // Created on: Jun 5, 2013
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
-
+#pragma once
 #include <pni/io/image_info.hpp>
 
 #include "file.hpp"
 #include "string_utils.hpp"
 
+//!
+//! \ingroup common_devel
+//! \brief file type enumeration
+//!
+//! This enumeration provides a value for each file type supported 
+//! by the pnitools program suite. 
+//!
+enum class file_type { CBF,    //!< denotes DECTRIS CBF files
+                       TIF,    //!< TIF files
+                       NEXUS,  //!< Nexus/HDF5 files
+                       FIO,    //!< DESY FIO files
+                       SPEC,   //!< SPEC files
+                       SPE     //!< SPE files
+                      };
+
+//----------------------------------------------------------------------------
+//!
+//! \ingroup common_devel
+//! \brief get file type
+//! 
+//! This funciton returns the type of a file. Currently the file type is 
+//! determined only by the extension of the file. However, future 
+//! implementations may also make use of magic numbers or other mechanisms. 
+//!
+//! \param input_file the file to determine the type for
+//! return instance of file_type
+//!
+file_type get_file_type(const file &input_file);
+
+//----------------------------------------------------------------------------
 //!
 //! \ingroup common_devel 
 //! \brief checks file extension
@@ -64,15 +94,15 @@ template<typename CTYPE> bool has_extension(const file &f,const CTYPE &exts)
 }
 
 //-----------------------------------------------------------------------------
-/*!
-\ingroup common_devel
-\brief get image information
-
-Returns the image information from a reader type. 
-\tparam RTYPE reader type
-\param r reader instance of type RTYPE
-\param image_nr index of the image in the file 
-*/
+//!
+//! \ingroup common_devel
+//! \brief get image information
+//! 
+//! Returns the image information from a reader type. 
+//! \tparam RTYPE reader type
+//! \param r reader instance of type RTYPE
+//! \param image_nr index of the image in the file 
+//!
 template<typename RTYPE> 
 pni::io::image_info get_image_info(const RTYPE &r,size_t image_nr=0)
 {

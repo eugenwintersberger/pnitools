@@ -24,7 +24,7 @@ set(CLI_TEST_PY_FILES check_output.py
                       detops_test.py
                       run_cli_test.py)
 
-set(XML_FILES basic.xml detector.xml)
+set(XML_FILES basic.xml detector.xml det2nx.xml)
 
 if("${CMAKE_FAMILY_VERSION}" STREQUAL "2.6")
     file(MAKE_DIRECTORY data)

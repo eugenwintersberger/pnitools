@@ -20,37 +20,31 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "file.hpp"
+#include "image_utils.hpp"
 #include "file_utils.hpp"
 #include "exceptions.hpp"
 
-typedef std::vector<string> string_vector;
-
-static const string_vector cbf_extensions = {".cbf"};
-static const string_vector tif_extensions = {".tif",".tiff"};
-static const string_vector nxs_extensions = {".h5",".nxs",".nx"};
-static const string_vector fio_extensions = {".fio"};
-static const string_vector spec_extensions = {".spec"};
-static const string_vector spe_extensions = {".spe"};
+#include <pni/io/cbf/cbf_reader.hpp>
+#include <pni/io/tiff/tiff_reader.hpp>
 
 //----------------------------------------------------------------------------
-file_type get_file_type(const file &input_file)
+image_reader_ptr get_image_reader(const file &image_file)
 {
-    if(has_extension(input_file,cbf_extensions))
-        return file_type::CBF;
-    else if(has_extension(input_file,tif_extensions))
-        return file_type::TIF;
-    else if(has_extension(input_file,nxs_extensions))
-        return file_type::NEXUS;
-    else if(has_extension(input_file,fio_extensions))
-        return file_type::FIO;
-    else if(has_extension(input_file,spec_extensions))
-        return file_type::SPEC;
-    else if(has_extension(input_file,spe_extensions))
-        return file_type::SPE;
+    file_type type = get_file_type(image_file);
+
+    if(type == file_type::CBF)
+        return image_reader_ptr(new cbf_reader(image_file.path()));
+    else if(type == file_type::TIF)
+        return image_reader_ptr(new tiff_reader(image_file.path()));
     else
         throw file_type_error(EXCEPTION_RECORD,
-                "Unkown file type!");
-
+                "Unkown image format!");
 }
 
+//----------------------------------------------------------------------------
+image_info get_image_info(const file &image_file)
+{
+    image_reader_ptr reader(get_image_reader(image_file));
+
+    return reader->info(0);
+}

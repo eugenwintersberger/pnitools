@@ -28,25 +28,6 @@
 
 using namespace pni::core;
 
-enum class file_type { CBF,TIFF,NEXUS};
-
-//!
-//! \brief get file type
-//! 
-//! Determines the type of the file requested by the user. Currently the 
-//! following file types are supported 
-//! \li CBF (DECTRIS flavor)
-//! \li TIFF 
-//! \li Nexus (with HDF5 storage backend)
-//!
-//! An exception is thrown if the file type cannot be determined. The file type 
-//! is actually determined by the extension. 
-//! 
-//! \throws file_error in case of an unkown file type
-//! \param f file for which the type should be determined 
-//! \return file type enum
-//!
-file_type get_file_type(const file &f);
 
 //----------------------------------------------------------------------------
 //!

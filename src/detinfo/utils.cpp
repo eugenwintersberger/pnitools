@@ -29,24 +29,6 @@
 #include "../common/file_utils.hpp"
 #include "../common/file_list_parser.hpp"
 
-const static string_list cbf_exts = {".cbf"};
-const static string_list tif_exts = {".tif",".tiff"};
-const static string_list nx_exts = {".nxs",".nx",".h5"};
-
-//----------------------------------------------------------------------------
-file_type get_file_type(const file &f)
-{
-    if(has_extension(f,cbf_exts))
-        return file_type::CBF;
-    else if(has_extension(f,tif_exts))
-        return file_type::TIFF;
-    else if(has_extension(f,nx_exts))
-        return file_type::NEXUS;
-    else
-        throw file_error(EXCEPTION_RECORD,
-                "Unknown input file type!");
-
-}
 
 //----------------------------------------------------------------------------
 detector_info_list get_info(const file &f)
@@ -58,7 +40,7 @@ detector_info_list get_info(const file &f)
     reader_pointer reader;
     if(type == file_type::CBF)
         reader = reader_pointer(new cbf_info_reader());
-    else if(type == file_type::TIFF)
+    else if(type == file_type::TIF)
         reader = reader_pointer(new tiff_info_reader());
     else if(type == file_type::NEXUS)
         reader = reader_pointer(new nexus_info_reader());

@@ -79,3 +79,4 @@ h5::nxfile open_detector_file(const nxpath &detector_path);
 //!
 h5::nxgroup get_detector_group(const h5::nxfile &detector_file,
                                const nxpath &detector_path);
+

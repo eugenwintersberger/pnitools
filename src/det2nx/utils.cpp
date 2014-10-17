@@ -43,6 +43,11 @@ file_list get_input_files(const configuration &config)
         std::cerr<<error<<std::endl;
         std::exit(1);
     }
+    catch(cli_option_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        std::exit(1);
+    }
     catch(...)
     {
         std::cerr<<"Unknown error while parsing input file list!"<<std::endl;
@@ -133,3 +138,4 @@ h5::nxgroup get_detector_group(const h5::nxfile &detector_file,
         std::exit(1);
     }
 }
+
