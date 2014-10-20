@@ -34,8 +34,8 @@ using namespace pni::io::nx;
 //! \brief get input files
 //!
 //! Extracts a list of input files from the program configuration.
-//! If this function fails the program will be aborted.
 //!
+//! \throws program_error in case of an error
 //! \param config program configuration
 //! \return list with input files
 //!
@@ -44,11 +44,22 @@ file_list get_input_files(const configuration &config);
 //-----------------------------------------------------------------------------
 //!
 //! \ingroup det2nx_devel
+//! \brief get image information
+//!
+//! Retrieves the image information from the first file in the input file list.
+//!
+//! \throws program_error in case of an error
+image_info get_image_info(const file_list &input_files);
+
+//-----------------------------------------------------------------------------
+//!
+//! \ingroup det2nx_devel
 //! \brief get detector path
 //!
 //! This function returns the path to the detector group where the data should 
-//! be stored. If this operation fails the program will be aborted.
-//! 
+//! be stored. 
+//!
+//! \throws program_error in case of an error
 //! \param config program configuration
 //! \return Nexus path object
 //! 
@@ -59,9 +70,9 @@ nxpath get_detector_path(const configuration &config);
 //! \ingroup det2nx_devel
 //! \brief open output file
 //! 
-//! Open the detector file. If this operation fails the program will be 
-//! aborted.
+//! Open the detector file. 
 //!
+//! \throws program_error in case of an error
 //! \param detector_path path to the detector group
 //! \return an instance of nxfile
 //!
@@ -73,8 +84,8 @@ h5::nxfile open_detector_file(const nxpath &detector_path);
 //! \brief open detector group
 //!
 //! The program assumes that the detector group exists and tries to open it.
-//! If this operation fails the program will be aborted. 
 //!
+//! \throws program_error in the case of errors
 //! \param detector_file the file holding the detector
 //! \param detector_path path to the detector group
 //! \return group instance

@@ -26,6 +26,14 @@ using namespace pni::core;
 
 //!
 //! \ingroup det2nx_devel
+//! \brief create default configuration
+//!
+//! This function generates the default configuration for det2nx. 
+//!
+configuration create_default_configuration();
+
+//!
+//! \ingroup det2nx_devel
 //! \brief get user configuration
 //! 
 //! Parse command line options and arguments and return the user configuration.
@@ -35,4 +43,4 @@ using namespace pni::core;
 //! \params argv pointer to arguments
 //! \return program configuration
 //! 
-configuration get_user_config(int argc,char **argv);
+int get_cli_config(int argc,char **argv,configuration &config);

@@ -29,7 +29,7 @@ static const string program_name = "det2nx";
 static const string help_header = "det2nx takes the following command line options";
 
 //------------------------------------------------------------------------
-configuration create_configuration()
+configuration create_default_configuration()
 {
     configuration config;
     config.add_option(config_option<bool>("help","h",
@@ -59,22 +59,18 @@ configuration create_configuration()
 }
 
 //----------------------------------------------------------------------------
-configuration get_user_config(int argc,char **argv)
+int get_cli_config(int argc,char **argv,configuration &config)
 {
-    configuration config = create_configuration();
-
     if(argc<2)
     {
         std::cerr<<"det2nx called with to less arguments!"<<std::endl;
         std::cerr<<std::endl<<"Use det2nx -h for more information"<<std::endl;
-        std::exit(1);
+        return 1;
     }
   
     //parse command line options and arguments
-    if(parse_cli_opts(argc,argv,program_name,config)) std::exit(1);
+    if(parse_cli_opts(argc,argv,program_name,config)) return 1;
 
     //check if the user requested help 
-    if(check_help_request(config,help_header)) std::exit(1);
-
-    return config;
+    if(check_help_request(config,help_header)) return 1;
 }

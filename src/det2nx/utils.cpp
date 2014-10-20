@@ -28,6 +28,7 @@ namespace fs = boost::filesystem;
 
 #include "../common/file_list_parser.hpp"
 #include "../common/file_utils.hpp"
+#include "../common/exceptions.hpp"
 #include "utils.hpp"
 
 #include "../common/image_utils.hpp"
@@ -37,6 +38,9 @@ file_list get_input_files(const configuration &config)
 {
     file_list input_files;
 
+    if(config.value<bool>("verbose"))
+        std::cout<<"Generating input file list ... ";
+
     try
     {
         auto file_names = config.value<string_vector>("input-files");
@@ -44,23 +48,55 @@ file_list get_input_files(const configuration &config)
         if(config.value<bool>("verbose"))
             std::cout<<"processing "<<input_files.size()<<" files ..."<<std::endl;
     }
-    catch(parser_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        std::exit(1);
-    }
     catch(cli_option_error &error)
     {
-        std::cerr<<error<<std::endl;
-        std::exit(1);
+        throw program_error(EXCEPTION_RECORD,
+                "Error in input file argument(s)!");
+    }
+    catch(parser_error &error)
+    {
+        throw program_error(EXCEPTION_RECORD,
+                "Error parsing the input file list - files maybe not exist!");
     }
     catch(...)
     {
-        std::cerr<<"Unknown error while parsing input file list!"<<std::endl;
-        std::exit(1);
+        throw program_error(EXCEPTION_RECORD,
+                "Unknown error while generating input file list!");
+    }
+
+    if(config.value<bool>("verbose"))
+    {
+        std::cout<<"success!"<<std::endl;
+        std::cout<<"Need to process "<<input_files.size()<<" files";
+        std::cout<<std::endl;
     }
 
     return input_files;
+
+}
+
+//----------------------------------------------------------------------------
+image_info get_image_info(const file_list &input_files)
+{
+    image_info info;
+    try
+    {
+        info = get_image_info(input_files.front());
+    }
+    catch(file_type_error &error)
+    {
+        throw program_error(EXCEPTION_RECORD,
+            "Error while reading image information from the first file - "
+            "unkown image file format!");
+    }
+    catch(...)
+    {
+        throw program_error(EXCEPTION_RECORD,
+                "Unkown error while reading image information from the"
+                " first file!");
+    }
+
+    return info;
 
 }
 
@@ -77,14 +113,13 @@ nxpath get_detector_path(const configuration &config)
     }
     catch(parser_error &error)
     {
-        std::cerr<<error<<std::endl;
-        std::exit(1);
+        throw program_error(EXCEPTION_RECORD,
+                "Error parsing the detector group path!");
     }
     catch(...)
     {
-        std::cerr<<"Unkown error while parsing detector group  path!";
-        std::cerr<<std::endl;
-        std::exit(1);
+        throw program_error(EXCEPTION_RECORD,
+                "Unknown error while parsing the detector group path!");
     }
    
     //if the group path does not include the filename we check 
@@ -93,17 +128,18 @@ nxpath get_detector_path(const configuration &config)
         detector_path.filename(config.value<string>("file"));
     else
     {
-        std::cerr<<"The target path does not contain a filename!"<<std::endl;
-        std::exit(1);
+        throw program_error(EXCEPTION_RECORD,
+                "No output file name has been provided: this can be done "
+                "either as a part of the group path or by using the "
+                "--file command line option!");
     }
     
     //finally we have to check if the group path does not refer to an 
     //attribute
     if(!detector_path.attribute().empty())
     {
-        std::cerr<<"The target must be a field - an attribute was given!";
-        std::cerr<<std::endl;
-        std::exit(1);
+        throw program_error(EXCEPTION_RECORD,
+                "The target must be a field - a group has been passed!");
     }
 
     return detector_path;
@@ -115,8 +151,8 @@ h5::nxfile open_detector_file(const nxpath &detector_path)
 	fs::path output_file_path(detector_path.filename());
 	if((!fs::exists(output_file_path)))
     {
-        std::cerr<<"File does not exist!"<<std::endl;
-        std::exit(1);
+        throw program_error(EXCEPTION_RECORD,
+                "Requested output file does not exist!");
     }
     else
         //open an existing output file
@@ -134,14 +170,14 @@ h5::nxgroup get_detector_group(const h5::nxfile &detector_file,
     }
     catch(key_error &error)
     {
-        std::cerr<<error<<std::endl;
-        std::exit(1);
+        throw program_error(EXCEPTION_RECORD,
+                "Requested detector group does not exist in the "
+                "output file!");
     }
     catch(...)
     {
-        std::cerr<<"Unkown error while opening the detector group!";
-        std::cerr<<std::endl;
-        std::exit(1);
+        throw program_error(EXCEPTION_RECORD,
+                "Unknown error while retrieving the detector group!");
     }
 }
 
@@ -169,6 +205,7 @@ void check_field(const h5::nxfield &detector_field,
                 "Frame shapes do not match!");
 }
 
+//-----------------------------------------------------------------------------
 h5::nxfield create_field(const h5::nxgroup &detector_group,
                          const string &field_name,
                          const pni::io::image_info &info)
@@ -230,10 +267,20 @@ void append_data(h5::nxfile &file, h5::nxfield &field,
         field.close();
         file.close();
     }
+    catch(type_error &error)
+    {
+        throw program_error(EXCEPTION_RECORD,
+                "Image and Nexus field data type do not match!");
+    }
+    catch(shape_mismatch_error &error)
+    {
+        throw program_error(EXCEPTION_RECORD,
+                "Image and Nexus field shape do not match!");
+    }
     catch(...)
     {
-        std::cerr<<"Unkown error during appending data!"<<std::endl;
-        std::exit(1);
+        throw program_error(EXCEPTION_RECORD,
+                "Unkown error during writing data!");
     }
 }
 
