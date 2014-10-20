@@ -26,3 +26,9 @@ std::ostream &operator<<(std::ostream &o,const file_type_error &e)
 {
     return e.print(o);
 }
+
+//-----------------------------------------------------------------------------
+std::ostream &operator<<(std::ostream &stream,const program_error &error)
+{
+    return error.print(stream);
+}

@@ -57,3 +57,37 @@ class file_type_error:public exception
         //! output operator
         friend std::ostream &operator<<(std::ostream &o,const file_type_error &e);
 };
+
+//!
+//! \brief program error
+//!
+//! This exception is thrown in all situations which would cause a program 
+//! to quit. 
+//!
+class program_error : public exception
+{
+    public:
+        //--------------------------------------------------------------------
+        //! default constructor
+        program_error():exception("program_error") {}
+
+        //--------------------------------------------------------------------
+        //!
+        //! \brief constructor
+        //!
+        //! \param r exception record
+        //! \param d description
+        //!
+        program_error(const exception_record &r,const string &d):
+            exception("program_error",r,d)
+        {}
+
+        //--------------------------------------------------------------------
+        //! destructor
+        ~program_error() throw() {}
+
+        //--------------------------------------------------------------------
+        //! output operator
+        friend std::ostream &operator<<(std::ostream &stream,
+                                        const program_error &error);
+};
