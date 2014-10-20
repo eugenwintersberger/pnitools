@@ -23,9 +23,11 @@
 
 #include "types.hpp"
 #include <pni/core/configuration.hpp>
+#include <pni/io/image_info.hpp>
 #include <pni/io/nx/nx.hpp>
 
 using namespace pni::io::nx;
+
 
 //!
 //! \ingroup det2nx_devel
@@ -80,3 +82,95 @@ h5::nxfile open_detector_file(const nxpath &detector_path);
 h5::nxgroup get_detector_group(const h5::nxfile &detector_file,
                                const nxpath &detector_path);
 
+//---------------------------------------------------------------------------
+//!
+//! \ingroup det2nx_devel
+//! \brief get detector field
+//!
+//! This is an essential function in this program.  It retrieves the detector
+//! field from the detector group. There are three possibilities how
+//! this is done
+//! \li the field does not exist - a new one will be created according to 
+//!     the image information
+//! \li the field exists and its shape and data type match the image 
+//!     information - in this case the data will be appended
+//! \li the field exists and shape and datatype doe not match
+//!     in this case we check the size of the field. If the field is 
+//!     empty (size=0) it will be removed and a new one with appropriate
+//!     shape and data type is created. If the field has a finite size 
+//!     the program will be aborted.
+//! 
+//! 
+h5::nxfield get_detector_field(const h5::nxgroup &detector_group, 
+                               const pni::io::image_info &info,
+                               const configuration &config);
+
+//----------------------------------------------------------------------------
+//!
+//! \ingroup det2nx_devel
+//! \brief append data to the field
+//!
+//! This function implementes the infrastructure sequence for appending 
+//! data to the field. If the operation fails the program will be 
+//! aborted.
+//!
+//! \params file the output file
+//! \params field the field where to store the data
+//! \params files input files
+//! 
+void append_data(h5::nxfile &file, h5::nxfield &field,
+                 const file_list &files);
+
+//-----------------------------------------------------------------------------
+template<typename RTYPE> 
+void append_data(RTYPE &&reader,const h5::nxfile &file,
+                 h5::nxfield &field,const file_list &ifiles)
+{
+    if(get_type(field) == type_id_t::UINT8)
+        append_data<uint8>(reader,file,field,ifiles);
+    else if(get_type(field) == type_id_t::INT8)
+        append_data<int8>(reader,file,field,ifiles);
+    else if(get_type(field) == type_id_t::UINT16)
+        append_data<uint16>(reader,file,field,ifiles);
+    else if(get_type(field) == type_id_t::INT16)
+        append_data<int16>(reader,file,field,ifiles);
+    else if(get_type(field) == type_id_t::UINT32)
+        append_data<uint32>(reader,file,field,ifiles);
+    else if(get_type(field) == type_id_t::INT32)
+        append_data<int32>(reader,file,field,ifiles);
+    else if(get_type(field) == type_id_t::UINT64)
+        append_data<uint64>(reader,file,field,ifiles);
+    else if(get_type(field) == type_id_t::INT64)
+        append_data<int64>(reader,file,field,ifiles);
+}
+
+//-----------------------------------------------------------------------------
+template<typename T,typename RTYPE>
+void append_data(RTYPE &&reader,const h5::nxfile &file,
+                 h5::nxfield &field,const file_list &ifiles)
+{
+    //find the start index
+    auto shape = field.shape<shape_t>();
+    size_t frame_index = shape[0];
+    size_t nx = shape[1];
+    size_t ny = shape[2];
+
+    //create a buffer for the data
+    auto buffer = dynamic_array<T>::create(shape);
+
+    //iterate over all files
+    for(auto f: ifiles)
+    {
+        if((frame_index % 100)  == 0)
+            std::cout<<"storing frame "<<frame_index<<" ..."<<std::endl;
+
+        reader.filename(f.path());
+        reader.open();
+        reader.image(buffer,0,0);
+      
+        field.grow(0);
+        field(frame_index++,slice(0,nx),slice(0,ny)).write(buffer);
+        file.flush();
+        reader.close();
+    }
+}

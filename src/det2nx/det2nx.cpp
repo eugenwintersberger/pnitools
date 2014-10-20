@@ -25,7 +25,9 @@
 #include "utils.hpp"
 #include "../common/file_list_parser.hpp"
 #include "../common/file_utils.hpp"
+#include "../common/image_utils.hpp"
 #include <pni/io/exceptions.hpp>
+#include "../common/exceptions.hpp"
 
 
 
@@ -34,96 +36,81 @@ int main(int argc,char **argv)
     //get user configuration - if this fails the program is aborted
     configuration config = get_user_config(argc,argv);
 
+    bool verbose = config.value<bool>("verbose");
+
     //------------------------------------------------------------------------
     //obtain input files - if this step fails abort the program
 
-    if(config.value<bool>("verbose")) 
-        std::cout<<"Obtain list of input files ...";
+    if(verbose) std::cout<<"Obtain list of input files ...";
 
     file_list input_files = get_input_files(config);
 
-    if(config.value<bool>("verbose")) std::cout<<"success!"<<std::endl;
+    if(verbose) std::cout<<"success!"<<std::endl;
+
+    //------------------------------------------------------------------------
+    //obtain the basic image information - program is aborted if this fails
+    if(verbose) std::cout<<"Read metadata of first frame ... ";
+
+    image_info info;
+    try
+    {
+        info = get_image_info(input_files.front());
+    }
+    catch(file_type_error &error)
+    {
+        std::cerr<<"Unsupported file format!"<<std::endl;
+        return 1;
+    }
+    catch(...)
+    {
+        std::cerr<<"Unkown error while reading image information!"<<std::endl;
+        return 1;
+    }
+
+    if(verbose) std::cout<<" success!"<<std::endl;
 
     //------------------------------------------------------------------------
     //optain the path to the detector group - if this fails abort program
+    if(verbose) std::cout<<"Obtain detector path ... ";
+
     nxpath detector_path = get_detector_path(config);
+
+    if(verbose) std::cout<<"success!"<<std::endl;
 
     //------------------------------------------------------------------------
     //obtain the target file - if this operation fails the program will 
     //abort
-    if(config.value<bool>("verbose"))
+    if(verbose)
         std::cout<<"Open output file "<<detector_path.filename()<<" ... ";
 
     h5::nxfile detector_file = open_detector_file(detector_path);
 
-    if(config.value<bool>("verbose")) std::cout<<"success!"<<std::endl;
+    if(verbose) std::cout<<"success!"<<std::endl;
 
     //------------------------------------------------------------------------
     //open the detector group - if this operation fails the program will 
     //be aborted
-    if(config.value<bool>("verbose")) std::cout<<"Open detector group ... ";
+    if(verbose) std::cout<<"Open detector group ... ";
 
     h5::nxgroup detector_group = get_detector_group(detector_file,
                                                     detector_path);
 
-    if(config.value<bool>("verbose")) std::cout<<"success!"<<std::endl;
+    if(verbose) std::cout<<"success!"<<std::endl;
 
+    //-----------------------------------------------------------------------
     //append the data to the target
-                                                    
+    if(verbose) std::cout<<"Open data field ... ";
+    h5::nxfield detector_field = get_detector_field(detector_group,
+                                                    info,
+                                                    config);
+
+    if(verbose) std::cout<<" success!"<<std::endl;
+
+    //-------------------------------------------------------------------------
+    //append data to the field
+    append_data(detector_file,detector_field,input_files);
 
     //-------------------------generating the input file list------------------
-    try
-    {
-        //------------------------opening the output file-----------------------
-        //have to create the file name of the output file
-        /*
-        h5::nxobject field = get_field(root_group,info,nexus_path,
-                                       config.value<size_t>("deflate"));
-
-        //------------------append the data------------------------------------
-        //finally we need to process the data
-        if(has_extension(*infiles.begin(),cbf_exts))
-            append_data(pni::io::cbf_reader(),output_file,field,infiles);
-        else if(has_extension(*infiles.begin(),tif_exts))
-            append_data(pni::io::tiff_reader(),output_file,field,infiles);
-        
-        //close the file 
-        close(field);
-        */
-        detector_file.close();
-
-    }
-    catch(file_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-    catch(cli_option_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-    catch(pni::io::io_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-    catch(pni::core::index_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-    catch(pni::io::object_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-    catch(type_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-
 
 	return 0;
 }
