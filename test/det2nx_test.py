@@ -57,22 +57,22 @@ class det2nx_test(unittest.TestCase):
         self.assertEqual(result,1)
 
         #should return 1 as the group does not exist in the file
-        cmd = ['det2nx','-tdet2nx1.nx://:NXentry',self.image_list]
+        cmd = ['det2nx','-gdet2nx1.nx://:NXentry',self.image_list]
         result = int(call(cmd))
         self.assertEqual(result,1)
 
         #input files do not exist
-        cmd = ['det2nx','-tdet2nx1.nx://data','bla.dat']
+        cmd = ['det2nx','-gdet2nx1.nx://data','bla.dat']
         result = int(call(cmd))
         self.assertEqual(result,1)
 
         #input file is not supporte
-        cmd = ['det2nx','-tdet2nx1.nx://data','det2nx_test.py']
+        cmd = ['det2nx','-gdet2nx1.nx://data','det2nx_test.py']
         result = int(call(cmd))
         self.assertEqual(result,1)
 
         #this should work
-        cmd = ['det2nx','-tdet2nx1.nx://data',self.image_list]
+        cmd = ['det2nx','-gdet2nx1.nx://data',self.image_list]
         result = int(call(cmd))
         self.assertEqual(result,0)
 
@@ -82,7 +82,7 @@ class det2nx_test(unittest.TestCase):
     #exist. Only the target field will be created automatically.
     def test_create(self):
         print "test file creation ..."
-        cmd = ['det2nx','-tdet2nx1.nx://data',self.image_list]
+        cmd = ['det2nx','-gdet2nx1.nx://data',self.image_list]
         result = int(call(cmd))
         self.assertEqual(result,0)
 

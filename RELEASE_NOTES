@@ -1,0 +1,23 @@
+Release notes for version 0.3.0
+===============================
+
+detinfo
+-------
+  * program output has been changed
+  * several output formats including CSV and XML have been added
+  * added support for Nexus files (fixes issue 2)
+
+nxls
+----
+  * by default only short output is shown (fixes issue 3)
+  * added additional information with the long option (fixes issue 6)
+
+det2nx
+------
+  * removed sanity check of input files - this operation is too expensive
+  * det2nx cannot create the basic file structure anymore
+    this should avoid incomplete Nexus files. Create the file where your 
+    detector data should be dumped before for instance with xml2nx. 
+    However, the field where the data shall be stored can still be 
+    created by det2nx. See the info pages for a detailed description 
+    of the new behavior of the program.
