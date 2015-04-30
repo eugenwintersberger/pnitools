@@ -1,31 +1,31 @@
-/*
- * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * pnitools is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * pnitools is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- * Created on: Nov 12, 2013
- *     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
+//
+// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// pnitools is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// pnitools is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
+// ===========================================================================
+// Created on: Nov 12, 2013
+//     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
 
 #include "roi_utils.hpp"
 
 roi_type get_roi_from_string(const string &s)
 {
     typedef string::const_iterator iterator_type;
-    typedef slice_parser<iterator_type> parser_type;
+    typedef parser<iterator_type,slice> parser_type;
     roi_type roi;
 
     parser_type parser;
@@ -39,8 +39,8 @@ roi_type get_roi_from_string(const string &s)
     {
         auto first = s.begin();
         auto last  = s.end();
-        boost::spirit::qi::parse(first,sep_iter,parser,roi.first);
-        boost::spirit::qi::parse(++sep_iter,last,parser,roi.second);
+        roi.first = parser(string(first,sep_iter));
+        roi.second = parser(string(++sep_iter,last));
     }
     catch(...)
     {
