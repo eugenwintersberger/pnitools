@@ -1,5 +1,4 @@
 set(TEST_SOURCES pnitoolstest.cpp 
-                 common/array_utils_test.cpp 
                  common/file_list_parser_test.cpp 
                  common/file_test.cpp
                  common/column_test.cpp
@@ -26,29 +25,23 @@ set(CLI_TEST_PY_FILES check_output.py
 
 set(XML_FILES basic.xml detector.xml det2nx.xml)
 
-if("${CMAKE_FAMILY_VERSION}" STREQUAL "2.6")
     file(MAKE_DIRECTORY data)
 
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/readme.txt
-        ${CMAKE_CURRENT_BINARY_DIR}/data/readme.txt COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/download.sh
-        ${CMAKE_CURRENT_BINARY_DIR}/data/download.sh COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/readme.txt
+    ${CMAKE_CURRENT_BINARY_DIR}/data/readme.txt COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/download.sh
+    ${CMAKE_CURRENT_BINARY_DIR}/data/download.sh COPYONLY)
 
-    foreach(PYFILE ${CLI_TEST_PY_FILES})
-        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PYFILE}"
-            ${CMAKE_CURRENT_BINARY_DIR}/${PYFILE} COPYONLY)
-    endforeach()
+foreach(PYFILE ${CLI_TEST_PY_FILES})
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PYFILE}"
+        ${CMAKE_CURRENT_BINARY_DIR}/${PYFILE} COPYONLY)
+endforeach()
 
-    foreach(XML_FILE ${XML_FILES})
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${XML_FILE}
-            ${CMAKE_CURRENT_BINARY_DIR}/${XML_FILE} COPYONLY)
-    endforeach() 
+foreach(XML_FILE ${XML_FILES})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${XML_FILE}
+        ${CMAKE_CURRENT_BINARY_DIR}/${XML_FILE} COPYONLY)
+endforeach() 
 
-else()
-    file(COPY data DESTINATION .)
-    file(COPY ${CLI_TEST_PY_FILES} DESTINATION .)
-    file(COPY ${XML_FILES} DESTINATION .)
-endif()
 
 #===================extract the data an prepear for testing=================
 

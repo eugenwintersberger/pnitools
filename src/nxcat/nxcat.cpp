@@ -57,7 +57,11 @@ int main(int argc,char **argv)
         //table with data
         table_t data_tab = read_table(sources);
 
+        //obtain the list of column names
         auto keys = data_tab.keys<string_list>();
+
+        //print the colunm names (the table headers) if requested by the 
+        //user
         if(conf.value<bool>("header"))
         {
             for(auto key: keys)
@@ -72,6 +76,7 @@ int main(int argc,char **argv)
                              conf.value<size_t>("end");
 
         //loop over all rows
+        formatter_type f;
         for(size_t row_index=start_index;row_index<end_index;++row_index)
         {
             //loop over all columns - this is currently not very nice 
@@ -81,7 +86,7 @@ int main(int argc,char **argv)
 
                 column_t::iterator iter = data_tab[key].begin();
                 std::advance(iter,row_index);
-                std::cout<<*iter<<"\t";
+                std::cout<<f(*iter)<<"\t";
             }
 
             std::cout<<std::endl;

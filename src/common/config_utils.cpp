@@ -18,7 +18,7 @@
 // ===========================================================================
 // Created on: Jun 5,2013
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
-///
+//
 
 #include "config_utils.hpp"
 

@@ -64,7 +64,7 @@ int main(int argc,char **argv)
 
         //create the XML tree
         xml::node root_node;
-        xml::nexus2xml(root_group,root_node);
+        xml::nexus_to_xml(root_group,root_node);
         
         //close the Nexus file
         file.close();

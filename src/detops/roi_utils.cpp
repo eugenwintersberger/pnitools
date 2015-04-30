@@ -25,30 +25,15 @@
 roi_type get_roi_from_string(const string &s)
 {
     typedef string::const_iterator iterator_type;
-    typedef parser<iterator_type,slice> parser_type;
+    typedef std::vector<slice> slice_vector;
+    typedef parser<string::const_iterator,slice_vector> parser_type;
     roi_type roi;
 
-    parser_type parser;
+    parser_type p(',');
 
-    auto sep_iter = std::find(s.begin(),s.end(),',');
-    if(sep_iter == s.end())
-        throw parser_error(EXCEPTION_RECORD,
-                "A ROI should use a ',' to separate dimensions!");
+    auto rois = p(s);
 
-    try
-    {
-        auto first = s.begin();
-        auto last  = s.end();
-        roi.first = parser(string(first,sep_iter));
-        roi.second = parser(string(++sep_iter,last));
-    }
-    catch(...)
-    {
-        throw parser_error(EXCEPTION_RECORD,
-                "Error parsing ROI string ("+s+")!");
-    }
-
-    return roi;
+    return roi_type{rois[0],rois[1]};
 }
 
 //-----------------------------------------------------------------------------

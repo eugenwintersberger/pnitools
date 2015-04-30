@@ -89,6 +89,7 @@ class nxcat_test(unittest.TestCase):
         path += '://:NXentry/:NXinstrument/:NXdetector/x_pixel_size'
         cmd = ['nxcat',path]
         result = check_output(cmd)
+        print "Print the result ", result
         self.assertAlmostEqual(float(result),12.45,1.e-4)
 
     #read scalar field data array

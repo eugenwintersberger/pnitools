@@ -29,13 +29,12 @@
 #include<pni/core/types.hpp>
 #include<pni/io/nx/nx.hpp>
 #include<pni/io/nx/nxpath.hpp>
+#include<pni/io/formatters.hpp>
 
 #include <pni/core/configuration.hpp>
-#include "../common/field_io.hpp"
 
 #include "../common/column.hpp"
 #include "../common/table.hpp"
-#include "../common/array_utils.hpp"
 
 
 using namespace pni::core;
@@ -48,6 +47,8 @@ typedef std::list<nxpath> sources_list;
 typedef std::list<array> column_storage_t;
 typedef column<column_storage_t> column_t;
 typedef table<column_t> table_t;
+
+typedef pni::io::formatter<array> formatter_type;
 
 /*!
 \ingroup nxcat_devel
