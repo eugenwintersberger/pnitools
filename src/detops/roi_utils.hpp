@@ -24,7 +24,7 @@
 
 #include <pni/core/configuration.hpp>
 #include <pni/io/exceptions.hpp>
-#include <pni/io/parsers/slice_parser.hpp>
+#include <pni/io/parsers.hpp>
 #include "types.hpp"
 
 

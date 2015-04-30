@@ -91,7 +91,7 @@ int main(int argc,char **argv)
 
 
         //create the objects below the target group
-        xml::create_objects(parent_group,root_node);
+        xml::xml_to_nexus(root_node,parent_group);
 
 
         file.close();

@@ -60,34 +60,30 @@ column_t read_column(const nxpath &source_path)
     //try to get a column type from the Nexus object
     column_t column = column_from_nexus_object(object);
 
-    //need to create an array from the data
-    array data = array_from_nexus_object(object);
-
-    if(is_field(object))
+    //get the shape fo the data on the file
+    auto file_shape = get_shape<shape_t>(object);
+    if(is_attribute(object) && file_shape.size()==0)
     {
-        std::vector<slice> selection;
-        selection.push_back(slice(0));
-        auto array_shape = data.shape<shape_t>();
-        auto field_shape = get_shape<shape_t>(object);
+        file_shape = shape_t{1}; //in case of a scalar attribute
+    }                             
 
-        if(get_rank(object)>1)
-        {
-            //if the original object is not scalar we have to extend the
-            //selection by the array shape - otherwise we can leave it as it is
-            for(auto d: array_shape)
-                selection.push_back(slice(0,d));
-        }
+    //construct the shape of a single cell entry - this is typically 
+    //an array whose original rank is reduced by 1 dimension
+    auto data_shape = file_shape.size() >1 ?
+                      shape_t(++file_shape.begin(),file_shape.end()): 
+                      shape_t{1} ;
 
-        for(size_t i=0;i<field_shape[0];++i)
-        {
-            selection[0] = slice(i);
-            read(object,data,selection);
-            column.push_back(data);
-        }
-    }
-    else if(is_attribute(object))
+    //create the data array
+    array data = make_array(get_type(object),data_shape);
+
+    //create a selection in order to read data from the file
+    std::vector<slice> selection(file_shape.begin(),file_shape.end());
+    selection[0] = slice(0);
+
+    for(size_t i=0;i<file_shape[0];++i)
     {
-        read(object,data);
+        selection[0] = slice(i);
+        read(object,data,selection);
         column.push_back(data);
     }
 
