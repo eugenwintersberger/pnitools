@@ -49,46 +49,50 @@ class xml2nx_test(unittest.TestCase):
     def __check_basic(self):
         #this should have created a Nexus file - need to check the content
         f = nx.open_file(self.out_file)
-        self.assertEqual(f['entry'].attr('NX_class').value,'NXentry')
-        self.assertEqual(f['entry/title'].read().strip(),"Default entry")
-        self.assertEqual(f['entry/experiment_description'].read().strip(),
+        r = f.root()
+        e = r["entry"]
+        self.assertEqual(e.attributes['NX_class'].value,'NXentry')
+        self.assertEqual(e['title'].read()[0].strip(),"Default entry")
+        self.assertEqual(e['experiment_description'].read()[0].strip(),
         "This is a plain template which contains"
         " the standard field and groups")
-        self.assertEqual(f['entry/start_time'].read().strip(),'123')
-        self.assertEqual(f['entry/end_time'].read().strip(),'124')
-        self.assertEqual(f['entry/program_name'].read().strip(),'xml2nx')
-        self.assertEqual(f['entry/program_name'].attr('version').value.strip(),
-                '0.1.0');
-        self.assertEqual(f['entry/program_name'].attr('configuration').value.strip(),
-                'none');
-        self.assertEqual(f['entry/instrument/name'].read().strip(),
+        self.assertEqual(e['start_time'].read()[0].strip(),'123')
+        self.assertEqual(e['end_time'].read()[0].strip(),'124')
+        self.assertEqual(e['program_name'].read()[0].strip(),'xml2nx')
+        self.assertEqual(e['program_name'].\
+                attributes['version'].value[0].strip(),'0.1.0');
+        self.assertEqual(e['program_name'].\
+                attributes['configuration'].value[0].strip(),'none');
+        self.assertEqual(e['instrument']['name'].read()[0].strip(),
                 'High resolution beamline')
-        self.assertEqual(f['entry/instrument/name'].attr('short_name').value.strip(),
-                'P08')
-        self.assertEqual(f['entry/instrument/source/name'].read().strip(),
+        self.assertEqual(e['instrument']['name'].\
+                attributes['short_name'].value[0].strip(),'P08')
+        self.assertEqual(e['instrument']['source']['name'].read()[0].strip(),
                 'Positron-Elektron Tandem Ring Anlage III')
-        self.assertEqual(f['entry/instrument/source/name'].attr('short_name').value.strip(),
-                "PETRA III")
-        self.assertEqual(f['entry/instrument/source/type'].read().strip(),
+        self.assertEqual(e['instrument']['source']['name']\
+                .attributes['short_name'].value[0].strip(),"PETRA III")
+        self.assertEqual(e['instrument']['source']['type'].read()[0].strip(),
                 "Synchrotron X-ray Source")
-        self.assertEqual(f['entry/instrument/source/probe'].read().strip(),
+        self.assertEqual(e['instrument']['source']['probe'].read()[0].strip(),
                 'x-ray')
 
         #for the other groups we just can check the existence
-        self.assertEqual(f['entry/sample'].attr('NX_class').value.strip(),'NXsample')
-        self.assertEqual(f['entry/control'].attr('NX_class').value.strip(),'NXmonitor')
-        self.assertEqual(f['entry/data'].attr('NX_class').value.strip(),'NXdata')
+        self.assertEqual(e['sample'].attributes['NX_class'].value[0].strip(),'NXsample')
+        self.assertEqual(e['control'].attributes['NX_class'].value[0].strip(),'NXmonitor')
+        self.assertEqual(e['data'].attributes['NX_class'].value[0].strip(),'NXdata')
         f.close()
 
     def __check_detector(self):
         rpath = 'entry/instrument/detector/'
         
         f = nx.open_file(self.out_file)
+        r = f.root()
+        d = r['entry']['instrument']['detector']
 
-        self.assertAlmostEqual(f[rpath+'x_pixel_size'].read(),12.45,places=5)
-        self.assertAlmostEqual(f[rpath+'y_pixel_size'].read(),13.45,places=5)
+        self.assertAlmostEqual(d['x_pixel_size'].read(),12.45,places=5)
+        self.assertAlmostEqual(d['y_pixel_size'].read(),13.45,places=5)
 
-        data = f[rpath+'data']
+        data = d['data']
         print data.shape
         print data.dtype
         self.assertEqual(len(data.shape),2)
@@ -96,9 +100,9 @@ class xml2nx_test(unittest.TestCase):
         self.assertEqual(data.shape[1],2048)
         self.assertEqual(data.dtype,'uint32')
         
-        self.assertEqual(f[rpath+'layout'].read().strip(),'linear')
-        self.assertEqual(f[rpath+'description'].read().strip(),'PSD')
-        self.assertAlmostEqual(f[rpath+'distance'].read(),0.8,places=5)
+        self.assertEqual(d['layout'].read()[0].strip(),'linear')
+        self.assertEqual(d['description'].read()[0].strip(),'PSD')
+        self.assertAlmostEqual(d['distance'].read(),0.8,places=5)
 
 
         f.close()
@@ -111,7 +115,7 @@ class xml2nx_test(unittest.TestCase):
         self.assertEqual(result,1)
 
         #this should everything is there
-        cmd = ['xml2nx','-p'+self.out_file,'basic.xml']
+        cmd = ['xml2nx','-p'+self.out_file+"://",'basic.xml']
         result = int(call(cmd))
         self.assertEqual(result,0)
 
@@ -120,7 +124,7 @@ class xml2nx_test(unittest.TestCase):
         self.assertEqual(result,1)
 
         #this however yes
-        cmd = ['xml2nx','-o','-p'+self.out_file,'basic.xml']
+        cmd = ['xml2nx','-o','-p'+self.out_file+"://",'basic.xml']
         result = int(call(cmd))
         self.assertEqual(result,0)
 
@@ -131,7 +135,7 @@ class xml2nx_test(unittest.TestCase):
 
     #check file creation
     def test_create_file(self):
-        cmd = ['xml2nx','-p'+self.out_file,'basic.xml']
+        cmd = ['xml2nx','-p'+self.out_file+"://",'basic.xml']
         result = int(call(cmd))
         self.assertEqual(result,0)
 
@@ -142,7 +146,7 @@ class xml2nx_test(unittest.TestCase):
 
     #check appending content
     def test_append_file(self):
-        cmd = ['xml2nx','-p'+self.out_file,'basic.xml']
+        cmd = ['xml2nx','-p'+self.out_file+"://",'basic.xml']
         result = int(call(cmd))
         self.assertEqual(result,0)
         cmd = ['xml2nx',

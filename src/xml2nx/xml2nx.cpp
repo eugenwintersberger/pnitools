@@ -28,6 +28,24 @@ static const string program_name = "xml2nx";
 static const string help_header = 
 "Program usage:\n  xml2nx [OPTIONS] INPUT FILES";
 
+class write_predicates
+{
+    public:
+        virtual bool operator()(const h5::nxobject &o) const = 0;
+};
+
+struct write_scalars : public write_predicates
+{
+    public:
+        virtual bool operator()(const h5::nxobject &o) const
+        {
+            if(is_attribute(o) || is_field(o))
+                return get_size(o) == 1;
+
+            return false;
+        }
+};
+
 int main(int argc,char **argv)
 {
     configuration conf = create_config();
@@ -91,7 +109,7 @@ int main(int argc,char **argv)
 
 
         //create the objects below the target group
-        xml::xml_to_nexus(root_node,parent_group);
+        xml::xml_to_nexus(root_node,parent_group,write_scalars());
 
 
         file.close();
@@ -109,6 +127,11 @@ int main(int argc,char **argv)
     catch(file_error &error)
     {
         std::cerr<<error<<std::endl;
+        return 1;
+    }
+    catch(...)
+    {
+        std::cerr<<"Unkown error!"<<std::endl;
         return 1;
     }
     return 0;
