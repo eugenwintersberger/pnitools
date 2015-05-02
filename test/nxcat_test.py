@@ -108,7 +108,7 @@ class nxcat_test(unittest.TestCase):
 
         #check data
         for x,y in zip(pa_nx,pos):
-            self.assertAlmostEqual(x,y,7)
+            self.assertAlmostEqual(x,y,4)
         
 
 
