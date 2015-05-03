@@ -1,0 +1,4 @@
+# PNI Tools #
+The PNI tools project provides a couple of command line and GUI tools for working with data recorded during an experiment. These programs should be considered primarily as utilities to make life easier. Most of the programs can handle Nexus data as well as some other, non-standardized, data formats. In addition, programs are included to convert data from custom file formats to Nexus. All code is licensed under the GPL and thus can be used and modified by everyone under the terms of the GPL.
+
+For more information see the projects documentation (man, info, and pdf) shipped with the source distribution.
