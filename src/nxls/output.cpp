@@ -20,6 +20,11 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
+#include <pni/io/nx/algorithms/get_type.hpp>
+#include <pni/io/nx/algorithms/get_shape.hpp>
+#include <pni/io/nx/algorithms/is_field.hpp>
+#include <pni/io/nx/algorithms/is_group.hpp>
+#include <pni/io/nx/algorithms/is_attribute.hpp>
 #include "output.hpp"
 
 

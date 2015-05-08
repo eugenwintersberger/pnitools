@@ -25,6 +25,8 @@
 #include <pni/io/nx/nx.hpp>
 #include <pni/io/nx/flat_group.hpp>
 #include "../common/string_utils.hpp"
+#include <pni/io/nx/algorithms/is_group.hpp>
+#include <pni/io/nx/algorithms/is_class.hpp>
 
 using namespace pni::io::nx;
 

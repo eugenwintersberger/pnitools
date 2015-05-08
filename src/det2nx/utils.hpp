@@ -25,6 +25,7 @@
 #include <pni/core/configuration.hpp>
 #include <pni/io/image_info.hpp>
 #include <pni/io/nx/nx.hpp>
+#include <pni/io/nx/algorithms/get_type.hpp>
 
 using namespace pni::io::nx;
 

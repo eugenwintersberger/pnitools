@@ -20,6 +20,12 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
+#include <pni/io/nx/algorithms/get_object.hpp>
+#include <pni/io/nx/algorithms/get_unit.hpp>
+#include <pni/io/nx/algorithms/is_attribute.hpp>
+#include <pni/io/nx/algorithms/get_type.hpp>
+#include <pni/io/nx/algorithms/read.hpp>
+
 #include "nxcat.hpp"
 
 configuration create_configuration()

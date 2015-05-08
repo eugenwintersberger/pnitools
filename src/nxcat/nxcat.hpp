@@ -21,15 +21,16 @@
 //
 #pragma once
 
-#include<iostream>
-#include<fstream>
-#include<list>
-#include<vector>
+#include <iostream>
+#include <fstream>
+#include <list>
+#include <vector>
 
-#include<pni/core/types.hpp>
-#include<pni/io/nx/nx.hpp>
-#include<pni/io/nx/nxpath.hpp>
-#include<pni/io/formatters.hpp>
+#include <pni/core/types.hpp>
+#include <pni/io/nx/nx.hpp>
+#include <pni/io/nx/nxpath.hpp>
+#include <pni/io/nx/algorithms/get_shape.hpp>
+#include <pni/io/formatters.hpp>
 
 #include <pni/core/configuration.hpp>
 

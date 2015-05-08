@@ -31,6 +31,9 @@
 #include <pni/io/nx/nx.hpp>
 #include <pni/io/nx/nxpath.hpp>
 #include <pni/io/nx/flat_group.hpp>
+#include <pni/io/nx/algorithms/is_field.hpp>
+#include <pni/io/nx/algorithms/is_attribute.hpp>
+
 
 using namespace pni::core;
 using namespace pni::io::nx;

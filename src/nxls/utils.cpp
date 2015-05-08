@@ -21,6 +21,7 @@
 //
 
 #include <pni/io/exceptions.hpp>
+#include <pni/io/nx/algorithms/get_object.hpp>
 #include "utils.hpp"
 
 nxpath get_path(const configuration &config)
