@@ -1,55 +1,58 @@
 
-The internal structure of a Nexus files resembles that of a file system. Fields
-are organized in groups and can be addressed by an Unix like path. And this is
-what every program supporting the Nexus file format supports
+The internal structure of a NeXuS file resembles loosely that of a Unix file
+system. Fields (which are the primary objects for storing numerical data in
+NeXuS) are organized in groups and can be addressed by an Unix like path like
+this
 
 @example
-$ prog file:///path/to/object
+$ prog file://path/to/object
 @end example
 
 @noindent
-In addition to groups and fields the Nexus path syntax allows also to address
-attributes
+The filename is separated from the object path by @command{://} everything
+afterwards refers to objects within the file. The In addition to groups and
+fields the Nexus path syntax allows also to address attributes
 
 @example
-$ prog file:///path/to/object@@attribute
+$ prog file://path/to/object@@attribute
 @end example
 
 @noindent
-However, while on a Unix filesystem all directories are basically the same, this
-is not true for Nexus groups. A Nexus group can also have a special type which
-provides information about the data stored in a particular group. 
-This can be used to refine the search for a specific object. 
+The name of the attribute is indicated by the @command{@@} symbol after the path
+to the object to which it is attached to.i
+
+Unlik on a Unix filesystem where all directories are basically the same NeXuX
+adds some additional semantic information to a group by giving it a type.
+A groups type indicates what kind of data is stored in this group. A group of
+type @command{NXdetector}, for instance, stores detector related data. The types
+correspond to NeXuS base classes which can be found in the NeXuS reference
+manual.A base class defines a set of fields along with their names and physical
+meaning. If we stay with the above example of the @command{NXdetector} type, the
+@command{NXdetector} specification defines a field @command{data} within an 
+instance of @command{NXdetector} which is intended to store the data recorded
+by a detector.
+With group types (base classes) at hand one can refine a path so that each
+element must not only be of a particular name but also of a particular type as
+in the next example 
+
 @example 
-$ prog file:///path:class_1/to:class_2/object:class_3
+$ prog file://path:class_1/to:class_2/object:class_3
 @end example
 
 @noindent
-This path can only be expanded to its last object if not only the names of the
-groups match but also their class.
-
-This gives us an additional degree of freedom. 
-in every group a particular type of group appears only once we do not need to
-know the names of the groups in order to specify a path. We canIf we would like to access an object in a file
-we can use the following syntax
-
-@noindent
-This syntax works when you know the exact path to a particular object. Aside
-from object names Nexus introduces the concept of base classes. Each object in
-a Nexus file belongs to one of these base classes. One can thus refine the path
-to an object to
-
-
-@noindent
-In this case no only the names of the different objects must match but also
-they must belong to a particular base class. 
-Finally, if we do not know the exact path but only the classes we can write the
-path only in terms of base classes
+Each element of the path (except for the filename) has the form
+@command{name:class}. The group types add an additional degree of freedom when
+writing a path. Consider the case where an instance of a particular type appears
+only once within its parent. In this case we can omit the names entirely and
+write the above path like this
 
 @example
-$ prog file:///:class_1/:class_2/:class_3
+$ prog file://:class_1/:class_2/:class_3
 @end example
 
 @noindent
-In this case the different types must be unique. In case of ambiguities the
-program will abort with an error message.
+Such a path is generic as we do not have to know the exact names of the
+particular elements. If data files are designed carefully according to the NeXuS
+standard we can use this generic path on any file without caring about the
+names of objects.
+
