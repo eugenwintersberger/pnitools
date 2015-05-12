@@ -72,7 +72,7 @@ int main(int argc,char **argv)
         std::cerr<<std::endl<<"Options for the rebin command:"<<std::endl;
         std::cerr<<rebin_config<<std::endl;
         std::cerr<<"See 'man mcaops' for more information!"<<std::endl;
-        return -1;
+        return 1;
     }
 
 

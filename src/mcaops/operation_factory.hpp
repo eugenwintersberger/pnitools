@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2015 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 // This file is part of pnitools.
 //
@@ -16,21 +16,26 @@
 // You should have received a copy of the GNU General Public License
 // along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: May 10,2013
+// Created on: May 12, 2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#pragma once
 
-#include <limits>
-#include <ios>
-#include <iomanip>
 #include "operation.hpp"
 
+//!
+//! \brief factory creating different operations
+//! 
+//! This class provides a single static method 'create' which is used to 
+//! create an instance of a particular operator.
+//!
+class operation_factory
+{
+    public:
+        static operation::pointer_type create(
+};
 
 //-----------------------------------------------------------------------------
-std::ostream &operator<<(std::ostream &o,const operation &op)
-{
-    typedef operation::array_type::value_type value_type;
-    o<<std::setprecision(std::numeric_limits<value_type>::digits10)
-     <<std::scientific;
-    return op.stream_result(o);
-}
+//! write operation to output stream
+std::ostream &operator<<(std::ostream &o,const operation &op);
+

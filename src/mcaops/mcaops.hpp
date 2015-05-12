@@ -41,51 +41,49 @@
 using namespace pni::core;
 using namespace pni::io;
 
-/*!
-\ingroup mcaops_devel
-\brief setup global configuration
-
-Function sets up the global command line options for mcaops
-\return configuration instance
-*/
+//!
+//! \ingroup mcaops_devel
+//! \brief setup global configuration
+//! 
+//! Function sets up the global command line options for mcaops
+//! \return configuration instance
+//!
 configuration create_global_config();
 
 //-----------------------------------------------------------------------------
-/*!
-\ingroup mcaops_devel
-\brief setup rebin configuration
-
-Function sets up the command line options configuration for the rebin command.
-\return configuration instance
-*/
+//!
+//! \ingroup mcaops_devel
+//! \brief setup rebin configuration
+//! 
+//! Function sets up the command line options configuration for the rebin
+//! command.
+//! \return configuration instance
+//!
 configuration create_rebin_config();
 
 //-----------------------------------------------------------------------------
-/*!
-\ingroup mcaops_devel
-\brief setup scale configuration
-
-Function sets up the command line options configuration for the scale command.
-\return configuration instance
-*/
+//!
+//! \ingroup mcaops_devel
+//! \brief setup scale configuration
+//! 
+//! Function sets up the command line options configuration for the scale
+//! command.
+//! 
+//! \return configuration instance
+//!
 configuration create_scale_config();
 
-/*!
-\ingroup mcaops_devel
-\brief  pointer type for operations
-*/
-typedef std::unique_ptr<operation> op_ptr;
-
-/*!
-\ingroup mcaops_devel
-\brief select and configure operator
-
-This function selects the proper operator and configures it according to the
-command line options passed by the user. 
-\param config global configuration options
-\param scale_config configuration options for the scale operator
-\param rebin_config configuration options for the rebin operator
-*/
+//!
+//! \ingroup mcaops_devel
+//! \brief select and configure operator
+//! 
+//! This function selects the proper operator and configures it according to 
+//! the command line options passed by the user. 
+//! 
+//! \param config global configuration options
+//! \param scale_config configuration options for the scale operator
+//! \param rebin_config configuration options for the rebin operator
+//!
 op_ptr select_operator(const configuration &config,
                        const configuration &cmd_config);
 

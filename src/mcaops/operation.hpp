@@ -18,21 +18,19 @@
 // ===========================================================================
 // Created on: 03.06.2012
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
-///
+//
 #pragma once
 
 #include <iostream>
 #include <pni/core/types.hpp>
 #include <pni/core/arrays.hpp>
 
-using namespace pni::core;
-
-/*!
-\brief base class for operations
-
-This class provides the basic interface for all operations (commands) that can
-be performed with mcaops.
-*/
+//!
+//! \brief base class for operations
+//! 
+//! This class provides the basic interface for all operations (commands) that
+//! can be performed with mcaops.
+//!
 class operation
 {
     private:
@@ -40,9 +38,11 @@ class operation
     public:
         //=================public types========================================
         //! general array type
-        typedef dynamic_array<float64> array_type;
+        typedef pni::core::dynamic_array<float64> array_type;
         //! shape type
-        typedef shape_t shape_type;
+        typedef pni::core::shape_t shape_type;
+        //! pointer type
+        typedef std::unique_ptr<operation> pointer_type;
         //---------------------------------------------------------------------
         operation():_verbose(false){}
 
