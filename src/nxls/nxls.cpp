@@ -88,6 +88,16 @@ int main(int argc,char **argv)
         std::cerr<<error<<std::endl;
         return 1;
     }
+    catch(pni::io::parser_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
+    catch(pni::core::size_mismatch_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
     catch(pni::io::object_error &error)
     {
         std::cerr<<error<<std::endl;

@@ -49,15 +49,19 @@ detector_info nexus_info_reader::info_from_nxdetector(const h5::nxgroup &d)
 
     detector_layout layout = get_detector_layout(d); 
     string path = get_detector_path(data);
-
-    if(layout == detector_layout::POINT)
-        return detector_info(shape_t(),data.type_id(),path,shape[0],layout);
-    else if(layout == detector_layout::LINEAR)
-        return detector_info(shape_t({shape[1]}),
-                             data.type_id(),path,shape[0],layout);
-    else if(layout == detector_layout::AREA)
-        return detector_info(shape_t{shape[1],shape[2]},data.type_id(),
-                             path,shape[0],layout);
-    else
-        throw type_error(EXCEPTION_RECORD,"Unknown detector layout!");
+    
+    switch(get_detector_layout(d))
+    {
+        case detector_layout::POINT: 
+            return detector_info(shape_t(),data.type_id(),path,shape[0],
+                                 layout);
+        case detector_layout::LINEAR:
+            return detector_info(shape_t({shape[1]}),
+                                 data.type_id(),path,shape[0],layout);
+        case detector_layout::AREA:
+            return detector_info(shape_t{shape[1],shape[2]},
+                                 data.type_id(),path,shape[0],layout);
+        default: 
+            throw type_error(EXCEPTION_RECORD,"Unknown detector layout!");
+    }
 }
