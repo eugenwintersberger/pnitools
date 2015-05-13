@@ -29,12 +29,7 @@
 #include<pni/core/configuration.hpp>
 #include<pni/io/fio/fio_reader.hpp>
 
-#include "operation.hpp"
-#include "max_operation.hpp"
-#include "sum_operation.hpp" 
-#include "rebin_operation.hpp"
-#include "scale_operation.hpp"
-#include "dump_operation.hpp"
+#include "command.hpp"
 #include "io.hpp"
 
 

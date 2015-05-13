@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2015 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 // This file is part of pnitools.
 //
@@ -16,20 +16,20 @@
 // You should have received a copy of the GNU General Public License
 // along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: May 10,2013
+// Created on: May 12,2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
 #include <limits>
 #include <ios>
 #include <iomanip>
-#include "operation.hpp"
+#include "command.hpp"
 
 
 //-----------------------------------------------------------------------------
-std::ostream &operator<<(std::ostream &o,const operation &op)
+std::ostream &operator<<(std::ostream &o,const command &op)
 {
-    typedef operation::array_type::value_type value_type;
+    typedef command::array_type::value_type value_type;
     o<<std::setprecision(std::numeric_limits<value_type>::digits10)
      <<std::scientific;
     return op.stream_result(o);

@@ -19,7 +19,13 @@
 // Created on: 03.06.2012
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
-#include "mcaops.hpp"
+
+#include <pni/core/types.hpp>
+#include <pni/core/configuration.hpp>
+#include "command.hpp"
+#include "command_factory.hpp"
+
+using namespace pni::core;
 
 
 //=============================================================================
@@ -59,8 +65,11 @@ int main(int argc,char **argv)
 
     //-------------------parse and store program options-----------------------
     std::vector<string> args = cliargs2vector(argc,argv);
-    std::vector<string> cmd_args;
+    std::vector<string> cmd_args; 
     cmd_args = parse(config,args,true);
+
+    //cmd_args are those arguments not consumed by the global parser but 
+    //are rather used for the configuration of the different commands
 
     if(config.value<bool>("help"))
     {
@@ -93,8 +102,10 @@ int main(int argc,char **argv)
     //will be interpreted as a command which is obviously wrong. However, we can
     //catch the situation here.
     //-------------------------------------------------------------------------
-    op_ptr optr;
+    command::pointer_type command_ptr;
 
+    /*
+    This code should go away to the command builder
     if(config.value<string>("command") == "scale")
     {
         parse(scale_config,cmd_args,true);
@@ -116,12 +127,17 @@ int main(int argc,char **argv)
         std::cerr<<config.value<string>("command")<<"]!"<<std::endl;
         return 1;
     }
+    */
 
     //-------------------------------------------------------------------------
     //here we will read data either from the standard in or from a file 
     //-------------------------------------------------------------------------
-    operation::array_type data,channels;
 
+    data_provider::pointer_type provider_ptr; 
+
+
+    /*
+    This code should go away
     if(config.has_option("input"))
     {
         //read channel and mca data from a file
@@ -147,34 +163,38 @@ int main(int argc,char **argv)
             return 1;
         }
     }
+    */
 
 
 
     //-------------------------------------------------------------------------
     //perform the operation
     //-------------------------------------------------------------------------
-    try
-    {
-        (*optr)(channels,data);  //run the operation
-    }
-    catch(value_error &error)
-    {
-        std::cerr<<error<<std::endl; return 1;
-    }
-    catch(size_mismatch_error &error)
-    {
-        std::cerr<<error<<std::endl; return 1;
-    }
-    catch(shape_mismatch_error &error)
-    {
-        std::cerr<<error<<std::endl; return 1;
-    }
-    
     if(config.value<bool>("header"))
         std::cout<<"#chan data"<<std::endl;
 
-    //output result data
-    std::cout<<*optr<<std::endl;
+    for(auto data: *data_provider)
+    {
+        try
+        {
+            (*command_ptr)(data);  //run the operation
+        }
+        catch(value_error &error)
+        {
+            std::cerr<<error<<std::endl; return 1;
+        }
+        catch(size_mismatch_error &error)
+        {
+            std::cerr<<error<<std::endl; return 1;
+        }
+        catch(shape_mismatch_error &error)
+        {
+            std::cerr<<error<<std::endl; return 1;
+        }
+    
+        //output result data
+        std::cout<<*optr<<std::endl;
+    }
     
     return 0;
 }

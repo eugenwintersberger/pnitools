@@ -1,29 +1,167 @@
-@command{mcaops} is a program acting on MCA data. 
+@command{mcaops} applies certain mathematical operations onto
+MCA data. These operations include summation, finding minimum and maximum in the
+data, channel-rebinning, and the like.  The overall structure of a typical
+@command{mcaops} command line looks like this 
 
 @example
-mcaops [COMMAND] [OPTIONS] [INPUT FILE| - ]
+mcaops [GENERAL OPTIONS] [OPS] [OPS OPTIONS] [INPUT FILE,...]
 @end example
 
 @noindent
-@command{mcaops} is a utility program applying certain operations on MCA data.
-The MCA data can be either read from a file or from standard input. In the
-latter case the program expects two column data where the first column contians
-the bin index (starting from 0) or the bin center values and the second column
-is the MCA data is. When data is read from a FIO file (currently the only
-supported format) a single column with the MCA data is sufficient (the bin index
-values are then generated automatically). 
+where
+@table @samp
+@item GENERAL OPTIONS
+are options valid for all commands available for @command{mcaops}
+@item OPS
+determines the operation which to apply to the input data
+@item OPS OPTIONS
+are options which are specific for the operation selected 
+@item INPUT FILE
+determines the source from which to obtain the data to process.
+@end table
 
-All results are written to standard output. This allows several @command{mcaops}
-commands to be chained using the pipe operator. 
+@c ---------------------------------------------------------------------------
+@subsection Obtaining input
 
+Every command expects as its input arguemnts two arrays whose size is equal to
+the MCAs number of channels. The first array provides the channel indexes while
+the second one the actual MCA data. If the channel indexes or or bin center
+values are not provided, @command{mcaops} generates a set of channel indexes by
+itself starting from with an index value provided by the 
+@option{--auto-index-offset}. The default value of this option is @math{0}.
+
+@command{mcaops} can read MCA data from three sources
+@itemize @bullet
+@item standard input
+@item a single or multiple ASCII files 
+@item a single or multiple NeXuS files
+@end itemize
+The way how @command{mcaops} treats the data depends on the particular data
+source used to obtain the MCA data.
+
+@subsubsection Reading data from standard input
+
+By default, when reading data from standard input, @command{mcaops} assumes that
+the entire data it collects until the end of the stream belongs to a single MCA
+spectrum. 
+
+@example 
+$> cat mca.dat | mcaops sum 
+10234452.0
+@end example
+
+@noindent
+If the number of channels @math{n} is provided by the
+@option{--mca-size}/@option{-s} option in the general options section, every block of
+@math{n} input values from the stream is treated as an individual MCA spectrum. 
+
+@example
+$> cat mca.dat | mcaops -s128 sum
+1234.0
+8445.0
+2391.0
+@end example
+
+@subsubsection Reading data from ASCII files
+
+Currently the only ASCII format supported are @file{.fio} files as produced by
+the @command{online} data acquisition system used at some beamlines at DESY.
+In general @command{mcaops} assumes that every ASCII file contains a single
+spectrum. @command{mcaops} assumes that ASCII files can contain several, named
+columns of data. It is thus necessary to tell the program from which column to
+read the channel/bin center and the MCA data. The general option @option{-m}
+determines the name of the column storing the MCA data.
+
+@example
+$> mcaops -mmca_data sum testdata.fio
+@end example 
+
+@noindent
+The @option{-m} is thus mandatory. If the file also contains columns with the
+channel index or bin center data one can use the @option{-c} or @option{-b}
+respectively to inform @command{mcaops} where to find this information
+
+@example
+$> mcaops -benergy -mmca_data sum testdata.fio
+@end example
+
+@noindent
+Unlike the @option{-m}, @option{-b} and @option{-c} are optional as an channel
+index array will be generated automatically if not provided by the user.
+
+@subsubsection Reading data from NeXuS files
+
+Besides ASCII files, @command{mcaops} can also read data from one or several
+NeXuS files. As for ASCII files the @option{-m} must be used to determine the
+location of the MCA data. However, unlike for ASCII files, the @option{-m} does
+not provide a column name but the path to a particular NeXuS object that stores
+the MCA data. 
+
+@example 
+$> mcaops -m/:NXentry/:NXinstrument/:NXdetector/data sum mca_data.nxs
+@end example
+
+@noindent
+The data field can be either a one or a two dimensional field. In the former
+case the field is considered to store a single spectrum while in the latter one
+the field is assumed to store several spectra where the first dimension runs
+over the number of spectra and the second dimension represents the MCA channels. 
+
+To reduce the writting effort one can use the general option @option{--base} 
+to set a base path. The previous example would then look like this 
+
+@example 
+$> BASE=/:NXentry/:NXinstrument/:NXdetector
+$> mcaops --base=$BASE -mdata sum mca_data.nxs
+@end example
+
+@noindent
+Like for ASCII files we can also use the @option{-c} and @option{-b} to tell
+@command{mcaops} where to find channel index or bin center information
+respectively. With these two options the benefits of @option{--base} become even
+more obvious 
+
+@example 
+$> BASE=/:NXentry/:NXinstrument/:NXdetector
+$> mcaops --base=$BASE -mdata -benergy sum mca_data.nxs
+@end example 
+
+@noindent
+Multiple NeXuS files can be processed provided that the MCA data and possible
+channel index or bin center data can be reference by the same path
+
+@example 
+$> BASE=/:NXentry/:NXinstrument/:NXdetector
+$> mcaops --base=$BASE -mdata -benergy sum mca_1.nxs mca_2.nxs
+@end example
+
+@noindent
+If the MCA files store several MCA spectra (data is a 2D field) first all the
+spectra of the first file are processed, followed by the spectra of the second
+file, and so on.
+
+@c ---------------------------------------------------------------------------
+@subsection Writing output
+Currently, @command{mcaops} supports output only to standard output. In the
+future more options to write the results may become available. 
+
+@c ---------------------------------------------------------------------------
+@subsection Available operations
 The behavior of @command{mcaops} is controlled via the command string which is
-passed as the first argument to the program.  Currently the following commands
-are available:
+passed to the program after the general options. The operations currently
 @table @samp
 @item max     
-find the value and its position in the spectrum
+find the maximum value in the MCA data
+@item maxpos 
+find the position of the maximum value
+@item min
+find the mininum value in the MCA data
+@item minpos
+find the minimum location in the MCA data
 @item sum
 add all value in the spectrum
+@item average
+compute the average from the entire MCA data
 @item rebin   
 rebin the spectrum to new bin sizes
 @item scale
@@ -32,25 +170,104 @@ scale the bin centers of the spectrum
 dump channel and mca data unchanged to standard out
 @end table
 @noindent
-These operations can roughly devided into two groups: accumulating and
-non-accumulating operations. The former one reduces the entire MCA data to a
-single number while the latter one preserves the spectrum character of the data
-(though rebining maybe alters the number of bins). 
+One can roughly distinguish two kinds of operations: accumulating and
+non-accumulating operations. The former ones reduce the input data typically to
+one number while the latter ones do not.  Most of the available operations can
+be easily classified into one of the two kinds. The only exception is the 
+@command{rebin} operation though it reduces the number of bins in most cases it
+does not go that far to virtually sum all data into a single bin.
+
+@subsubsection MCA terminology 
+
+Before discussing the individual operations in more detail some terms have to be
+defined. 
+
+@table @asis
+@item @math{i} 
+denotes the channel index
+@item @math{b_{i}} 
+the MCA value at channel @math{i}
+@item @math{\Delta}
+the width of the MCA channels. It is assumed that all channels have the same
+width.
+@item @math{c_{i}}
+the bin center value of channel @math{i}
+@item @math{N}
+the total number of channels in the MCA
+@end table
+@noindent 
+Furthermore there are some definitions for a region of interest (ROI)
+@table @asis
+@item @math{r_{{\rm start}}}
+start index of the ROI
+@end table
+
+@subsubsection The @command{min}, @command{max}, @command{minpos}, @command{maxpos} operation
+
+None of these operations require an additional argument and do what their names
+imply. 
+
+@subsubsection The @command{sum} operation
+
+In the simplest case this operation simply sums up all the bin values of the MCA
+spectrum
+@tex
+$$
+ s = \sum_{i=0}^{N-1} b_{i}
+$$
+@end tex
+@noindent
+where @math{i} is the channel index, @math{N} the number of channels, and
+@math{b_{i}} the data value at the @math{i}-th channel. @math{s} is the result
+written to standard output. 
+
+If a ROI is set the sum runs from 
+@tex
+$$
+s = \sum_{i=r_{start}}^{r_{stop}} b_{i}
+$$
+@end tex
+
+@subsubsection The @command{average} operation
+
+@subsubsection The @command{rebin} operation
+
+@subsubsection The @command{scale} operation
+
+@subsubsection The @command{dump} operation
+
+This operation does virtually nothing. It only adds the channel index data and
+writes it along with the MCA data to standard out. 
+
+@example 
+$ cat mca.dat | mcaops dump 
+0 120.
+1 3434.
+2 948.
+4 9991023.
+....
+...
+..
+@end example 
 
 
+
+@c ---------------------------------------------------------------------------
 @menu 
 * Program options:mcaops_options. command line options of @command{mcaops}
 * Examples:mcaops_examples. usage examples for @command{mcaops}
-* Details:mcaops_details. detailed explanation of the various commands
 @end menu
 
 
+@c ---------------------------------------------------------------------------
 @node mcaops_options
 @subsection Program options
 
-In general effect a particular option passed to @command{mcaops} has on the input data
-depends on the operation that should be carried out. However, there are some
-global options which always have the same effect on the behavior of the program
+In general effect a particular option passed to @command{mcaops} has on the
+input data depends on the operation that should be carried out. H
+
+@subsubsection General program options
+These options apply to all operations
 @table @samp
 @item -h
 @itemx --help
@@ -65,17 +282,35 @@ payload data to an other program while still watching debugging output.
 Suppress all unnecessary output (the counterpart of @option{-v})
 @item --header
 print a header before dumping the output to standard out
-@item --xolumn=@var{COLNAME}
-specify the name of the column to choose from the input to use as bin-center or
--index values. This option is only useful when used in connection with FIO
-files.
-@item --ycolumn=@var{COLNAME}
-specify the name of the column to use for MCA data. This option is only useful
-with a FIO file. 
+@item -c
+@itemx --channels=@var{COLNAME}
+specifies the name of the data object storing the channel index or bin center
+data. For @file{FIO} files this is the name of a column within the file and
+for @file{NeXuS} files this is the path to a one dimensional field.
+@item -b
+@itemx --bins
+the same as channels
+@item -m
+@itemx --mca=@var{COLNAME}
+specifies the name of the data objects storing the @file{MCA} data which
+should be processed. For @file{FIO} files this is the name of a column in
+the file and for @file{NeXuS} files it is the path to a one or two
+dimensional field.
+@item --auto-index-offset=@var{INDEX-OFFSET}
+if no bin center or channel index array is provided by the user,
+@command{mcaops} is generating channel index data automatically starting from an
+index value determined by this option. The default value is @math{0}.
+@item -r 
+@item --roi 
+a region of interest (ROI) to which the operation can be restricted. The value
+of this option is a numeric range (@pxref{Numeric ranges}).
+@item -s
+@itemx --mca-size
+this option provides the total number of channels of the input data. It only
+takes effect when data is read from standard input.
 @end table
 
-@noindent
-Options for the @command{rebin} operation
+@subsubsection Options for the @command{rebin} operation
 @table @samp
 @item -b
 @itemx --binsize=@var{NBINS}
@@ -86,8 +321,7 @@ do not rebin the x-axis. Instead use indices for the output.
 normalize the rebinned data.
 @end table
 
-@noindent
-Options for the  @command{scale} operation:
+@subsubsection Options for the  @command{scale} operation:
 @table @samp
 @item -c
 @itemx --center=@var{CENTER}
@@ -283,7 +517,6 @@ Though @command{mcaops} currently not supports Nexus files, one can use it in
 connection with @command{ncat} by piping the output of @command{nxcat} as new
 input to @command{mcaops}. See @ref{nxcat} for more information.
 
-@node mcaops_details
 @subsection What the commands are really doing
 
 This section gives detailed information about the functionality of the different
