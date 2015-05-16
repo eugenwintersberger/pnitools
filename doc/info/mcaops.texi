@@ -20,7 +20,7 @@ are options which are specific for the operation selected
 determines the source from which to obtain the data to process.
 @end table
 
-@c ---------------------------------------------------------------------------
+@c ===========================================================================
 @subsection Obtaining input
 
 Every command expects as its input arguemnts two arrays whose size is equal to
@@ -39,6 +39,7 @@ itself starting from with an index value provided by the
 The way how @command{mcaops} treats the data depends on the particular data
 source used to obtain the MCA data.
 
+@c ---------------------------------------------------------------------------
 @subsubsection Reading data from standard input
 
 By default, when reading data from standard input, @command{mcaops} assumes that
@@ -62,6 +63,7 @@ $> cat mca.dat | mcaops -s128 sum
 2391.0
 @end example
 
+@c ---------------------------------------------------------------------------
 @subsubsection Reading data from ASCII files
 
 Currently the only ASCII format supported are @file{.fio} files as produced by
@@ -89,6 +91,7 @@ $> mcaops -benergy -mmca_data sum testdata.fio
 Unlike the @option{-m}, @option{-b} and @option{-c} are optional as an channel
 index array will be generated automatically if not provided by the user.
 
+@c ----------------------------------------------------------------------------
 @subsubsection Reading data from NeXuS files
 
 Besides ASCII files, @command{mcaops} can also read data from one or several
@@ -140,7 +143,7 @@ If the MCA files store several MCA spectra (data is a 2D field) first all the
 spectra of the first file are processed, followed by the spectra of the second
 file, and so on.
 
-@c ---------------------------------------------------------------------------
+@c ===========================================================================
 @subsection Writing output
 Currently, @command{mcaops} supports output only to standard output. In the
 future more options to write the results may become available. 
@@ -177,10 +180,11 @@ be easily classified into one of the two kinds. The only exception is the
 @command{rebin} operation though it reduces the number of bins in most cases it
 does not go that far to virtually sum all data into a single bin.
 
+@c ---------------------------------------------------------------------------
 @subsubsection MCA terminology 
 
-Before discussing the individual operations in more detail some terms have to be
-defined. 
+Before discussing the individual operations in more detail some terms have 
+to be defined. 
 
 @table @asis
 @item @math{i} 
@@ -198,15 +202,21 @@ the total number of channels in the MCA
 @noindent 
 Furthermore there are some definitions for a region of interest (ROI)
 @table @asis
-@item @math{r_{{\rm start}}}
+@item @math{r_{start}}
 start index of the ROI
+@item @math{r_{stop}}
+stop index of the ROI. The stop index resembles Python slices so it does not
+point to the index of the last channel but to the index of the channel right after
+the last.
 @end table
 
+@c ---------------------------------------------------------------------------
 @subsubsection The @command{min}, @command{max}, @command{minpos}, @command{maxpos} operation
 
 None of these operations require an additional argument and do what their names
 imply. 
 
+@c ---------------------------------------------------------------------------
 @subsubsection The @command{sum} operation
 
 In the simplest case this operation simply sums up all the bin values of the MCA
@@ -224,15 +234,80 @@ written to standard output.
 If a ROI is set the sum runs from 
 @tex
 $$
-s = \sum_{i=r_{start}}^{r_{stop}} b_{i}
+s = \sum_{i=r_{start}}^{r_{stop}-1} b_{i}
 $$
 @end tex
 
 @subsubsection The @command{average} operation
 
+Computes the average over all bins in the MCAs histogram
+@tex
+$$
+ a = 
+$$
+@end tex
+
 @subsubsection The @command{rebin} operation
 
+The @command{rebin} command collates several bins into one. The critical
+parameters here is called @math{b} which is the number of bins that should be
+collated. @math{n} denots the number of bins of the original histogram. 
+The new number of bins can be computed with
+@tex
+$$
+\bar n = \biggm\lfloor {{n}\over{b}} \biggm\rfloor + (1)
+$$
+@end tex
+If @math{N} is not an integer multiple of @math{b} we have to add an extra bin
+which comes from the last term in the previous expression.
+Technically rebining is done by averaging the values stored in the original
+@math{b} bins and store the result in a single bin
+@tex
+$$
+\bar d_j = {{1}\over{\bar n}}\sum_{i=1}^{b}d_{jb+i}
+$$
+@end tex
+where @math{j=1,\ldots, n_r} and @math{r_j} denots the value of the @math{j}th
+bin in the rebinned histogram. Again we have to take care for the situation
+where the @math{n} is not a multiple interger of @math{b}. In this case the last
+bin value for the new histogram is computed with
+@tex
+$$
+\bar d_{\bar n} = {{1}\over{n \bmod b}}
+                  \sum_{i=n- n\bmod b}^n d_i.
+$$
+@end tex
+In some cases not only the data should be recomputed but also the center values
+of the bins. The procedure is actually the same as for the bin data shown above.
+However, instead of the @math{d_j} averaging is done over the @math{c_j}.
+
+
 @subsubsection The @command{scale} operation
+
+The @command{scale} command of @command{mcaops} assigns new values to the center
+values of the histogram bins with respect to a reference bin. 
+To compute the new center values from incoming
+data several parameters are required which must be either provided by the user
+or in some cases can be inferred automatically from the data.
+Those parameters are 
+@itemize @bullet 
+@item
+the index of the reference bin @math{i_{ref}} 
+@item 
+a center value for the reference bin  @math{c_{ref}}
+@item 
+and the new width of the binds @math{\Delta b}
+@end itemize
+@noindent
+The index of the reference bin can either be computed from the maximum position
+of the histogram or can be passed as a command line option by the user. With
+these parameters the new center values for the binds can be computed using the
+following linear function
+@tex
+$$
+c_i = c_{ref} + \Delta b (i-i_{ref})
+$$
+@end tex
 
 @subsubsection The @command{dump} operation
 
@@ -546,64 +621,4 @@ When a histogram is plotted the abscissa is typically showing the @math{c_i}
 while the ordinate shows the number of counts for each bin. If no bin center
 values are available typically the index of the bins is shown along the
 abscissa. 
-
-@subsubsection The @command{scale} command
-
-The @command{scale} command of @command{mcaops} assigns new values to the center
-values of the histogram bins with respect to a reference bin. 
-To compute the new center values from incoming
-data several parameters are required which must be either provided by the user
-or in some cases can be inferred automatically from the data.
-Those parameters are 
-@itemize @bullet 
-@item
-the index of the reference bin @math{i_{ref}} 
-@item 
-a center value for the reference bin  @math{c_{ref}}
-@item 
-and the new width of the binds @math{\Delta b}
-@end itemize
-@noindent
-The index of the reference bin can either be computed from the maximum position
-of the histogram or can be passed as a command line option by the user. With
-these parameters the new center values for the binds can be computed using the
-following linear function
-@tex
-$$
-c_i = c_{ref} + \Delta b (i-i_{ref})
-$$
-@end tex
-
-@subsubsection The @command{rebin} command
-The @command{rebin} command collates several bins into one. The critical
-parameters here is called @math{b} which is the number of bins that should be
-collated. @math{n} denots the number of bins of the original histogram. 
-The new number of bins can be computed with
-@tex
-$$
-\bar n = \biggm\lfloor {{n}\over{b}} \biggm\rfloor + (1)
-$$
-@end tex
-If @math{N} is not an integer multiple of @math{b} we have to add an extra bin
-which comes from the last term in the previous expression.
-Technically rebining is done by averaging the values stored in the original
-@math{b} bins and store the result in a single bin
-@tex
-$$
-\bar d_j = {{1}\over{\bar n}}\sum_{i=1}^{b}d_{jb+i}
-$$
-@end tex
-where @math{j=1,\ldots, n_r} and @math{r_j} denots the value of the @math{j}th
-bin in the rebinned histogram. Again we have to take care for the situation
-where the @math{n} is not a multiple interger of @math{b}. In this case the last
-bin value for the new histogram is computed with
-@tex
-$$
-\bar d_{\bar n} = {{1}\over{n \bmod b}}
-                  \sum_{i=n- n\bmod b}^n d_i.
-$$
-@end tex
-In some cases not only the data should be recomputed but also the center values
-of the bins. The procedure is actually the same as for the bin data shown above.
-However, instead of the @math{d_j} averaging is done over the @math{c_j}.
 
