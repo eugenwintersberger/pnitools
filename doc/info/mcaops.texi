@@ -186,29 +186,34 @@ does not go that far to virtually sum all data into a single bin.
 Before discussing the individual operations in more detail some terms have 
 to be defined. 
 
-@table @asis
+@multitable @columnfractions 0.05 0.95
 @item @math{i} 
-denotes the channel index
+@tab denotes the channel index
+
 @item @math{b_{i}} 
-the MCA value at channel @math{i}
+@tab the MCA value at channel @math{i}
+
 @item @math{\Delta}
-the width of the MCA channels. It is assumed that all channels have the same
-width.
+@tab the width of the MCA channels. It is assumed that all channels have the same
+width. 
+
 @item @math{c_{i}}
-the bin center value of channel @math{i}
+@tab the bin center value of channel @math{i}
+
 @item @math{N}
-the total number of channels in the MCA
-@end table
+@tab the total number of channels in the MCA
+@end multitable
 @noindent 
 Furthermore there are some definitions for a region of interest (ROI)
-@table @asis
-@item @math{r_{start}}
-start index of the ROI
-@item @math{r_{stop}}
-stop index of the ROI. The stop index resembles Python slices so it does not
+@multitable @columnfractions 0.1 0.9
+@item @math{r_{\rm start}}
+@tab start index of the ROI
+
+@item @math{r_{\rm stop}}
+@tab stop index of the ROI. The stop index resembles Python slices so it does not
 point to the index of the last channel but to the index of the channel right after
 the last.
-@end table
+@end multitable
 
 @c ---------------------------------------------------------------------------
 @subsubsection The @command{min}, @command{max}, @command{minpos}, @command{maxpos} operation
@@ -243,9 +248,19 @@ $$
 Computes the average over all bins in the MCAs histogram
 @tex
 $$
- a = 
+ a = {{1}\over{N}}\sum_{i=0}^{N-1}b_{i}
 $$
 @end tex
+@noindent
+and in the presence of a ROI
+@tex
+$$
+ a = {{1}\over{r_{\rm stop}-r_{\rm start}}}
+     \sum_{i=r_{\rm start}}^{r_{\rm stop}-1}b_{i}
+$$
+@end tex
+@noindent
+where in both expressions @math{a} denotes the average.
 
 @subsubsection The @command{rebin} operation
 
@@ -264,7 +279,8 @@ Technically rebining is done by averaging the values stored in the original
 @math{b} bins and store the result in a single bin
 @tex
 $$
-\bar d_j = {{1}\over{\bar n}}\sum_{i=1}^{b}d_{jb+i}
+\bar d_j = {{1}\over{\bar n}}
+           \sum_{i=r_{\rm start}}^{r_{\rm stop}}d_{jb+i}
 $$
 @end tex
 where @math{j=1,\ldots, n_r} and @math{r_j} denots the value of the @math{j}th
