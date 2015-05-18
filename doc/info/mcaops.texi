@@ -186,6 +186,8 @@ does not go that far to virtually sum all data into a single bin.
 Before discussing the individual operations in more detail some terms have 
 to be defined. 
 
+@center @image{pics/mca_basics_1,,3in,,}
+
 @multitable @columnfractions 0.05 0.95
 @item @math{i} 
 @tab denotes the channel index
@@ -234,9 +236,7 @@ $$
 @noindent
 where @math{i} is the channel index, @math{N} the number of channels, and
 @math{b_{i}} the data value at the @math{i}-th channel. @math{s} is the result
-written to standard output. 
-
-If a ROI is set the sum runs from 
+written to standard output.  If a ROI is set the sum runs from 
 @tex
 $$
 s = \sum_{i=r_{start}}^{r_{stop}-1} b_{i}
