@@ -183,6 +183,7 @@ does not go that far to virtually sum all data into a single bin.
 @c ---------------------------------------------------------------------------
 @subsubsection MCA terminology 
 
+An MCA basically collects a histogram of events.
 Before discussing the individual operations in more detail some terms have 
 to be defined. 
 
