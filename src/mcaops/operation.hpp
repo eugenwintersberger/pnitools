@@ -31,14 +31,14 @@
 //! This class provides the basic interface for all operations (commands) that
 //! can be performed with mcaops.
 //!
-class command
+class operation
 {
     private:
         bool _verbose;
     public:
         //=================public types========================================
         //! general array type
-        typedef pni::core::dynamic_array<float64> array_type;
+        typedef pni::core::dynamic_array<pni::core::float64> array_type;
         //! input data object - channel:data pair
         typedef std::pair<array_type,array_type>  argument_type;
         //! shape type
@@ -66,5 +66,7 @@ class command
 
 //-----------------------------------------------------------------------------
 //! write operation to output stream
-std::ostream &operator<<(std::ostream &o,const command &op);
+std::ostream &operator<<(std::ostream &o,const operation &op);
+
+std::ostream &operator<<(std::ostream &o,const operation::argument_type &a);
 

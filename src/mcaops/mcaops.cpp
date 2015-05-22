@@ -22,10 +22,44 @@
 
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
-#include "command.hpp"
-#include "command_factory.hpp"
+#include "operation.hpp"
+#include "io/data_provider.hpp"
+#include "io/data_provider_factory.hpp"
 
 using namespace pni::core;
+
+//-----------------------------------------------------------------------------
+configuration create_global_config()
+{
+    configuration config;
+
+    //----------------setting up the program options---------------------------
+    //these options do not show up in the help text
+    config.add_argument(config_argument<string>("command",1));
+    config.add_argument(config_argument<string>("input",2));
+
+    //-------------------------------------------------------------------------
+    //global options valid for all commands
+    config.add_option(config_option<bool>("help","h","show help text",false));
+    config.add_option(config_option<bool>("verbose","v","show verbose output",
+                                          false));
+    config.add_option(config_option<bool>(
+                "header","","write headers before output",false));
+
+    config.add_option(config_option<string>("channels","c",
+                "name of the column with bin center values"));
+    config.add_option(config_option<string>("bins","b",
+                "name of the column with the center values"));
+    config.add_option(config_option<string>("mca","m",
+                "name of the MCA columns"));
+    config.add_option(config_option<size_t>("auto-index-offset","",
+                "offset for automatic channel index",size_t(0)));
+    
+    config.add_option(config_option<size_t>("mca-size","s",
+                "number of channels of a single MCA spectrum",size_t(0)));
+
+    return config;
+}
 
 
 //=============================================================================
@@ -57,11 +91,11 @@ int main(int argc,char **argv)
    
     //-------------------------------------------------------------------------
     //options for the rebin command
-    configuration rebin_config = create_rebin_config();
+    //configuration rebin_config = create_rebin_config();
 
     //-------------------------------------------------------------------------
     //options for the scale command
-    configuration scale_config = create_scale_config();
+    //configuration scale_config = create_scale_config();
 
     //-------------------parse and store program options-----------------------
     std::vector<string> args = cliargs2vector(argc,argv);
@@ -76,11 +110,6 @@ int main(int argc,char **argv)
         std::cerr<<usage_string<<std::endl<<std::endl;
         std::cerr<<command_string<<std::endl;
         std::cerr<<config<<std::endl;
-        std::cerr<<std::endl<<"Options for the scale command:"<<std::endl;
-        std::cerr<<scale_config<<std::endl;
-        std::cerr<<std::endl<<"Options for the rebin command:"<<std::endl;
-        std::cerr<<rebin_config<<std::endl;
-        std::cerr<<"See 'man mcaops' for more information!"<<std::endl;
         return 1;
     }
 
@@ -97,12 +126,18 @@ int main(int argc,char **argv)
     }
 
     //-------------------------------------------------------------------------
+    // constructing the provider for input data
+    //-------------------------------------------------------------------------
+    data_provider::pointer_type provider =
+        data_provider_factory::create(config);
+
+    //-------------------------------------------------------------------------
     //Configure and select the operation - we have to do this before reading the
     //input data. If no command is given but the name of a file the filename
     //will be interpreted as a command which is obviously wrong. However, we can
     //catch the situation here.
     //-------------------------------------------------------------------------
-    command::pointer_type command_ptr;
+    //operation::pointer_type ops_ptr;
 
     /*
     This code should go away to the command builder
@@ -133,9 +168,6 @@ int main(int argc,char **argv)
     //here we will read data either from the standard in or from a file 
     //-------------------------------------------------------------------------
 
-    data_provider::pointer_type provider_ptr; 
-
-
     /*
     This code should go away
     if(config.has_option("input"))
@@ -164,20 +196,19 @@ int main(int argc,char **argv)
         }
     }
     */
-
-
-
+    
     //-------------------------------------------------------------------------
     //perform the operation
     //-------------------------------------------------------------------------
     if(config.value<bool>("header"))
         std::cout<<"#chan data"<<std::endl;
 
-    for(auto data: *data_provider)
+    while(!provider->finished())
     {
         try
         {
-            (*command_ptr)(data);  //run the operation
+            std::cout<<provider->next()<<std::endl;
+            //(*ops_ptr)(provider_ptr->next());  //run the operation
         }
         catch(value_error &error)
         {
@@ -193,7 +224,7 @@ int main(int argc,char **argv)
         }
     
         //output result data
-        std::cout<<*optr<<std::endl;
+        //std::cout<<*ops_ptr<<std::endl;
     }
     
     return 0;

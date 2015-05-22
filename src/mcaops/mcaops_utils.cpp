@@ -22,30 +22,6 @@
 
 #include "mcaops.hpp"
 
-//-----------------------------------------------------------------------------
-configuration create_global_config()
-{
-    configuration config;
-
-    //----------------setting up the program options---------------------------
-    //these options do not show up in the help text
-    config.add_argument(config_argument<string>("command",1));
-    config.add_argument(config_argument<string>("input",2));
-
-    //-------------------------------------------------------------------------
-    //global options valid for all commands
-    config.add_option(config_option<bool>("help","h","show help text",false));
-    config.add_option(config_option<bool>("verbose","v","show verbose output",
-                                          false));
-    config.add_option(config_option<bool>(
-                "header","","write headers before output",false));
-    config.add_option(config_option<string>("xcolumn","",
-                "name of the column with bin center values",""));
-    config.add_option(config_option<string>("ycolumn","",
-                "name of the column with actual MCA data",""));
-
-    return config;
-}
 
 //-----------------------------------------------------------------------------
 configuration create_rebin_config()

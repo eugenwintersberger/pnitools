@@ -16,21 +16,27 @@
 // You should have received a copy of the GNU General Public License
 // along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: May 12,2015
+// Created on: May 21, 2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include <limits>
-#include <ios>
-#include <iomanip>
-#include "command.hpp"
+#include "data_provider.hpp"
 
+data_provider::data_provider():
+    _index_gen()
+{}
 
-//-----------------------------------------------------------------------------
-std::ostream &operator<<(std::ostream &o,const command &op)
+//----------------------------------------------------------------------------
+data_provider::data_provider(const index_generator &g):
+    _index_gen(g)
+{}
+
+//----------------------------------------------------------------------------
+data_provider :: ~data_provider()
+{ }
+
+//----------------------------------------------------------------------------
+index_generator data_provider::create_generator() const
 {
-    typedef command::array_type::value_type value_type;
-    o<<std::setprecision(std::numeric_limits<value_type>::digits10)
-     <<std::scientific;
-    return op.stream_result(o);
+    return _index_gen;
 }
