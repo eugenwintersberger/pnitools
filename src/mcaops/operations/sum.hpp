@@ -18,38 +18,35 @@
 // ===========================================================================
 // Created on: 03.06.2012
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
-//
+///
 #pragma once
 
 #include <pni/core/types.hpp>
 
 #include "operation.hpp"
 
-using namespace pni::core;
-
-
 //!
 //! \ingroup mcaops_devel
-//! \brief compute maximum
+//! \brief compute summ of input data
 //! 
-//! Computes the maximum value along with its position in the input data. 
+//! Compute the sum of the input data and output the result.
 //!
-class max_operation:public operation
+class sum:public operation
 {
     private:
-        //! maximum value
-        pni::core::float64 _value;
+        //!sum
+        pni::core::float64 _sum;
     public:
         //---------------------------------------------------------------------
         //! default constructor
-        max_operation();
+        sum();
 
         //---------------------------------------------------------------------
         //! destructor
-        ~max_operation();
+        ~sum();
 
         //---------------------------------------------------------------------
-        //!execute operation
+        //! execute operation
         virtual void operator()(const argument_type &data);
 
         //---------------------------------------------------------------------

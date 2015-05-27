@@ -20,27 +20,27 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "dump_operation.hpp"
+#include "dump.hpp"
 
 //----------------------------------------------------------------------------
-dump_operation::dump_operation():operation()
+dump::dump():operation()
 {}
 
 //---------------------------------------------------------------------
 //! destructor
-dump_operation::~dump_operation()
+dump::~dump()
 {}
 
 //---------------------------------------------------------------------
 //! execute operation
-void dump_operation::operator()(const argument_type &data)
+void dump::operator()(const argument_type &data)
 {
     _data = data;
 }
 
 //---------------------------------------------------------------------
 //! write result to output stream
-std::ostream &dump_operation::stream_result(std::ostream &o) const
+std::ostream &dump::stream_result(std::ostream &o) const
 {
     auto citer = _data.first.begin();
     auto diter = _data.second.begin();

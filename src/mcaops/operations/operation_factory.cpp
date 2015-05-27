@@ -25,9 +25,9 @@
 #include <iomanip>
 #include "operation_factory.hpp"
 
-#include "sum_operation.hpp"
-#include "dump_operation.hpp"
-#include "max_operation.hpp"
+#include "sum.hpp"
+#include "dump.hpp"
+#include "max.hpp"
 
 
 
@@ -44,11 +44,11 @@ operation::pointer_type operation_factory::create(const configuration &config)
 
     auto command = config.value<string>("command");
     if(command == "sum")
-        return pointer_type(new sum_operation());
+        return pointer_type(new sum());
     else if(command == "dump")
-        return pointer_type(new dump_operation());
+        return pointer_type(new dump());
     else if(command == "max")
-        return pointer_type(new max_operation());
+        return pointer_type(new max());
     else
         throw key_error(EXCEPTION_RECORD,"Unknown operation ["+command+"]!");
 }

@@ -20,19 +20,19 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "sum_operation.hpp"
+#include "sum.hpp"
 
 using namespace pni::core;
 
 //----------------------------------------------------------------------------
-sum_operation::sum_operation():operation(),_sum(0)
+sum::sum():operation(),_sum(0)
 {}
 
 //----------------------------------------------------------------------------
-sum_operation::~sum_operation(){}
+sum::~sum(){}
 
 //----------------------------------------------------------------------------
-void sum_operation::operator()(const argument_type &data)
+void sum::operator()(const argument_type &data)
 {
     _sum = 0;
     _sum = std::accumulate(data.second.begin(),
@@ -41,7 +41,7 @@ void sum_operation::operator()(const argument_type &data)
 
 
 //----------------------------------------------------------------------------
- std::ostream &sum_operation::stream_result(std::ostream &o) const
+ std::ostream &sum::stream_result(std::ostream &o) const
 {
     o<<_sum;
     return o;

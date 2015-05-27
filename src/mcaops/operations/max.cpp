@@ -20,24 +20,24 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "max_operation.hpp"
+#include "max.hpp"
 
 //----------------------------------------------------------------------------
-max_operation::max_operation(): operation(),_value(0)
+max::max(): operation(),_value(0)
 {}
 
 //----------------------------------------------------------------------------
-max_operation::~max_operation(){}
+max::~max(){}
 
 //----------------------------------------------------------------------------
-void max_operation::operator()(const argument_type &data)
+void max::operator()(const argument_type &data)
 {
     auto iter = std::max_element(data.second.begin(),data.second.end());
     _value = *iter;
 }
 
 //----------------------------------------------------------------------------
-std::ostream &max_operation::stream_result(std::ostream &o) const
+std::ostream &max::stream_result(std::ostream &o) const
 {
     o<< _value;
     return o;

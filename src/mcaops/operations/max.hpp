@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 // This file is part of pnitools.
 //
@@ -16,38 +16,41 @@
 // You should have received a copy of the GNU General Public License
 // along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: May 14,2013
+// Created on: 03.06.2012
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 #pragma once
 
+#include <pni/core/types.hpp>
+
 #include "operation.hpp"
+
+using namespace pni::core;
+
 
 //!
 //! \ingroup mcaops_devel
-//! \brief pass through 
+//! \brief compute maximum
 //! 
-//! The dump operation takes the input and passes it through without 
-//! modification.  One application would be to read data from standard input 
-//! or a file and print it to stdandard out.
+//! Computes the maximum value along with its position in the input data. 
 //!
-class dump_operation:public operation
+class max:public operation
 {
     private:
-        argument_type _data;
+        //! maximum value
+        pni::core::float64 _value;
     public:
         //---------------------------------------------------------------------
         //! default constructor
-        dump_operation();
+        max();
 
         //---------------------------------------------------------------------
         //! destructor
-        ~dump_operation();
+        ~max();
 
         //---------------------------------------------------------------------
-        //! execute operation
+        //!execute operation
         virtual void operator()(const argument_type &data);
-
 
         //---------------------------------------------------------------------
         //! write result to output stream

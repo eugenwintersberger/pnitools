@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 // This file is part of pnitools.
 //
@@ -16,38 +16,38 @@
 // You should have received a copy of the GNU General Public License
 // along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: 03.06.2012
+// Created on: May 14,2013
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
-///
+//
 #pragma once
-
-#include <pni/core/types.hpp>
 
 #include "operation.hpp"
 
 //!
 //! \ingroup mcaops_devel
-//! \brief compute summ of input data
+//! \brief pass through 
 //! 
-//! Compute the sum of the input data and output the result.
+//! The dump operation takes the input and passes it through without 
+//! modification.  One application would be to read data from standard input 
+//! or a file and print it to stdandard out.
 //!
-class sum_operation:public operation
+class dump:public operation
 {
     private:
-        //!sum
-        pni::core::float64 _sum;
+        argument_type _data;
     public:
         //---------------------------------------------------------------------
         //! default constructor
-        sum_operation();
+        dump();
 
         //---------------------------------------------------------------------
         //! destructor
-        ~sum_operation();
+        ~dump();
 
         //---------------------------------------------------------------------
         //! execute operation
         virtual void operator()(const argument_type &data);
+
 
         //---------------------------------------------------------------------
         //! write result to output stream
