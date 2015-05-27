@@ -31,7 +31,8 @@ class data_provider
         index_generator _index_gen;
     public:
         typedef std::unique_ptr<data_provider> pointer_type;
-        typedef operation::argument_type       value_type;
+        typedef operation::array_type array_type;
+        typedef std::pair<array_type,array_type> value_type;
 
         data_provider();
         data_provider(const index_generator &g);

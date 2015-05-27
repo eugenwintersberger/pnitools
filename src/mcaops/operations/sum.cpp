@@ -34,11 +34,11 @@ sum::~sum(){}
 //----------------------------------------------------------------------------
 void sum::operator()(const argument_type &data)
 {
-    _sum = 0;
-    _sum = std::accumulate(data.second.begin(),
-                           data.second.end(),float64(0));
-}
+    auto &mca_range = data.second;
 
+    _sum = std::accumulate(mca_range.first,
+                           mca_range.second,float64(0));
+}
 
 //----------------------------------------------------------------------------
  std::ostream &sum::stream_result(std::ostream &o) const

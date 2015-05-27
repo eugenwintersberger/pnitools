@@ -15,8 +15,11 @@
    height="253.60103"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="mca_basics_1.svg">
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="mca_basics_1.svg"
+   inkscape:export-filename="/home/wintersb/Development/HDRI/pnitools/doc/info/pics/mca_basics_1.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -25,14 +28,14 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.0945349"
-     inkscape:cx="254.8804"
+     inkscape:cx="255.5267"
      inkscape:cy="131.90443"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1014"
-     inkscape:window-x="0"
+     inkscape:window-height="1144"
+     inkscape:window-x="1600"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      showguides="true"
@@ -143,7 +146,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>

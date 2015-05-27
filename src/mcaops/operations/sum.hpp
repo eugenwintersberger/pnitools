@@ -21,13 +21,14 @@
 ///
 #pragma once
 
+#include <pni/core/arrays/slice.hpp>
 #include <pni/core/types.hpp>
 
 #include "operation.hpp"
 
 //!
 //! \ingroup mcaops_devel
-//! \brief compute summ of input data
+//! \brief compute sum of bin contents
 //! 
 //! Compute the sum of the input data and output the result.
 //!

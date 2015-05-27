@@ -42,10 +42,12 @@ void dump::operator()(const argument_type &data)
 //! write result to output stream
 std::ostream &dump::stream_result(std::ostream &o) const
 {
-    auto citer = _data.first.begin();
-    auto diter = _data.second.begin();
+    auto &channel_range = _data.first;
+    auto &mca_range     = _data.second;
+    auto citer = channel_range.first;
+    auto diter = mca_range.first;
 
-    while(citer!=_data.first.end())
+    while(citer!=channel_range.second)
         o<<*citer++<<"\t"<<*diter++<<std::endl;
 
     return o;

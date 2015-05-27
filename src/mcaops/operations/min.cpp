@@ -32,7 +32,8 @@ min::~min(){}
 //----------------------------------------------------------------------------
 void min::operator()(const argument_type &data)
 {
-    auto iter = std::min_element(data.second.begin(),data.second.end());
+    auto &mca_range = data.second;
+    auto iter = std::min_element(mca_range.first,mca_range.second);
     _value = *iter;
 }
 

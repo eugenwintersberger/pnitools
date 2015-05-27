@@ -33,34 +33,67 @@
 //!
 class operation
 {
-    private:
-        bool _verbose;
     public:
         //=================public types========================================
         //! general array type
         typedef pni::core::dynamic_array<pni::core::float64> array_type;
-        //! input data object - channel:data pair
-        typedef std::pair<array_type,array_type>  argument_type;
-        //! shape type
-        typedef pni::core::shape_t shape_type;
-        //! pointer type
+        //! iterator type
+        typedef array_type::const_iterator data_iterator;
+
+        //--------------------------------------------------------------------
+        //! 
+        //! \brief range over input data
+        //! 
+        //! The first element of the pair is the start iterator, the second the 
+        //! end iterator over the data range the operation has to process. 
+        typedef std::pair<data_iterator,data_iterator> data_range;
+
+        //--------------------------------------------------------------------
+        //!
+        //! \brief argument type for each operation
+        //!
+        //! The first element of the pair is the channel/bin center range
+        //! while the second one is the MCA data range.
+        typedef std::pair<data_range,data_range> argument_type;
+
+        //--------------------------------------------------------------------
+        //! 
+        //! \brief operation pointer type
+        //! 
+        //! Used only for polymorphy. 
+        //! 
         typedef std::unique_ptr<operation> pointer_type;
+    
         //---------------------------------------------------------------------
-        operation():_verbose(false){}
+        //! default constructor
+        operation();
 
         //---------------------------------------------------------------------
-        virtual ~operation() {}
+        //! destructor (has to be virtual)
+        virtual ~operation();
 
         //---------------------------------------------------------------------
-        bool verbose() const { return _verbose; }
-
-        //---------------------------------------------------------------------
-        void verbose(bool v) { _verbose = v; }
-
-        //---------------------------------------------------------------------
+        //!
+        //! \brief execute the operation
+        //! 
+        //! Abstact method - each operation has to implement this method which 
+        //! finally executes the operation requested by the user. 
+        //!
+        //! \param arg reference to the input argument 
+        //!
         virtual void operator()(const argument_type &arg) = 0;
 
         //---------------------------------------------------------------------
+        //!
+        //! \brief write output to stream
+        //! 
+        //! Write the result of the operation. Currently the output is written
+        //! to a simple stream. This may changes in future. 
+        //! This method must be implemented by every concrete operation and is 
+        //! called by the << operator for the operation type.
+        //!
+        //! \param output stream
+        //!
         virtual std::ostream &stream_result(std::ostream &o) const = 0;
 };
 
@@ -68,5 +101,4 @@ class operation
 //! write operation to output stream
 std::ostream &operator<<(std::ostream &o,const operation &op);
 
-std::ostream &operator<<(std::ostream &o,const operation::argument_type &a);
 

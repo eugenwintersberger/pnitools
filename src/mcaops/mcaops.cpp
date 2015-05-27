@@ -22,6 +22,8 @@
 
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
+#include <pni/core/arrays/slice.hpp>
+#include <pni/io/parsers.hpp>
 #include "operations/operation.hpp"
 #include "operations/operation_factory.hpp"
 #include "io/data_provider.hpp"
@@ -29,6 +31,21 @@
 
 
 using namespace pni::core;
+using namespace pni::io;
+
+
+std::istream &operator>>(std::istream &stream,slice &s)
+{
+    typedef parser<string::const_iterator,slice> parser_type;
+
+    parser_type p;
+    string data;
+    stream>>data;
+    s = p(data);
+
+    return stream;
+}
+
 
 //-----------------------------------------------------------------------------
 configuration create_global_config()
@@ -59,6 +76,9 @@ configuration create_global_config()
     
     config.add_option(config_option<size_t>("mca-size","s",
                 "number of channels of a single MCA spectrum",size_t(0)));
+
+    config.add_option(config_option<slice>("roi","r",
+                "ROI for the input data"));
 
     return config;
 }
@@ -93,7 +113,15 @@ int main(int argc,char **argv)
     //-------------------parse and store program options-----------------------
     std::vector<string> args = cliargs2vector(argc,argv);
     std::vector<string> cmd_args; 
-    cmd_args = parse(config,args,true);
+    try
+    {
+        cmd_args = parse(config,args,true);
+    }
+    catch(cli_option_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
 
     //cmd_args are those arguments not consumed by the global parser but 
     //are rather used for the configuration of the different commands
@@ -133,11 +161,20 @@ int main(int argc,char **argv)
     if(config.value<bool>("header"))
         std::cout<<"#chan data"<<std::endl;
 
+    typedef operation::data_range data_range;
+
     while(!provider->finished())
     {
         try
         {
-            (*ops_ptr)(provider->next());
+            //get the next data set 
+            auto data = provider->next();
+
+            data_range channel_range(data.first.begin(),data.first.end());
+            data_range mca_range(data.second.begin(),data.second.end());
+            operation::argument_type arg(channel_range,mca_range);
+
+            (*ops_ptr)(arg);
             std::cout<<*ops_ptr<<std::endl;
             //(*ops_ptr)(provider_ptr->next());  //run the operation
         }

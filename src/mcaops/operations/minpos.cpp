@@ -32,8 +32,13 @@ minpos::~minpos(){}
 //----------------------------------------------------------------------------
 void minpos::operator()(const argument_type &data)
 {
-    auto iter = std::min_element(data.second.begin(),data.second.end());
-    _value = data.first[std::distance(data.second.begin(),iter)];
+    auto channel_range = data.first;
+    auto mca_range     = data.second;
+
+    auto iter = std::min_element(mca_range.first,mca_range.second);
+    size_t offset = std::distance(mca_range.first,iter);
+    std::advance(channel_range.first,offset);
+    _value = *channel_range.first;
 }
 
 //----------------------------------------------------------------------------

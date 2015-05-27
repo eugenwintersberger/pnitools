@@ -25,6 +25,12 @@
 #include <iomanip>
 #include "operation.hpp"
 
+operation::operation()
+{}
+
+//-----------------------------------------------------------------------------
+operation::~operation()
+{}
 
 //-----------------------------------------------------------------------------
 std::ostream &operator<<(std::ostream &o,const operation &op)
@@ -35,14 +41,3 @@ std::ostream &operator<<(std::ostream &o,const operation &op)
     return op.stream_result(o);
 }
 
-//----------------------------------------------------------------------------
-std::ostream &operator<<(std::ostream &o,const operation::argument_type &a)
-{
-    auto c_iter = a.first.begin();
-    auto m_iter = a.second.begin();
-
-    for(;m_iter != a.second.end();++c_iter,++m_iter)
-        o<<*c_iter<<"\t"<<*m_iter<<std::endl;
-
-    return o;
-}

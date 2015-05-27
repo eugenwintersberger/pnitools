@@ -26,7 +26,6 @@
 class stdin_provider : public data_provider
 {
     private:
-        typedef operation::argument_type value_type;
         size_t _mca_size;
     public:
         stdin_provider(size_t mca_size,const index_generator &g);
