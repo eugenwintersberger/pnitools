@@ -30,7 +30,7 @@
 #include "max.hpp"
 #include "maxpos.hpp"
 #include "min.hpp"
-
+#include "minpos.hpp"
 
 
 using namespace pni::core;
@@ -55,6 +55,8 @@ operation::pointer_type operation_factory::create(const configuration &config)
         return pointer_type(new maxpos());
     else if(command == "min")
         return pointer_type(new min());
+    else if(command == "minpos")
+        return pointer_type(new minpos());
     else
         throw key_error(EXCEPTION_RECORD,"Unknown operation ["+command+"]!");
 }

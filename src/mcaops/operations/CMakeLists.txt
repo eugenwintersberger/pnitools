@@ -5,6 +5,7 @@ set(SOURCE operation.cpp
            max.cpp
            maxpos.cpp
            min.cpp
+           minpos.cpp
            )
 
 add_library(mcaops_ops OBJECT ${SOURCE})
