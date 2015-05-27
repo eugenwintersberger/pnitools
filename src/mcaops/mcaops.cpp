@@ -48,6 +48,14 @@ std::istream &operator>>(std::istream &stream,slice &s)
 
 
 //-----------------------------------------------------------------------------
+void apply_roi(operation::data_range &range,const slice &roi)
+{
+    range.second = range.first;
+    std::advance(range.first,roi.first());
+    std::advance(range.second,roi.last());
+}
+
+//-----------------------------------------------------------------------------
 configuration create_global_config()
 {
     configuration config;
@@ -113,15 +121,7 @@ int main(int argc,char **argv)
     //-------------------parse and store program options-----------------------
     std::vector<string> args = cliargs2vector(argc,argv);
     std::vector<string> cmd_args; 
-    try
-    {
-        cmd_args = parse(config,args,true);
-    }
-    catch(cli_option_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
+    cmd_args = parse(config,args,true);
 
     //cmd_args are those arguments not consumed by the global parser but 
     //are rather used for the configuration of the different commands
@@ -131,18 +131,6 @@ int main(int argc,char **argv)
         std::cerr<<usage_string<<std::endl<<std::endl;
         std::cerr<<command_string<<std::endl;
         std::cerr<<config<<std::endl;
-        return 1;
-    }
-
-
-    //-------------------------------------------------------------------------
-    //Get the command
-    //-------------------------------------------------------------------------
-    //need to choose an operation
-    if(!config.has_option("command"))
-    {
-        std::cerr<<"No command specified!"<<std::endl<<std::endl;
-        std::cerr<<usage_string<<std::endl;
         return 1;
     }
 
@@ -163,6 +151,9 @@ int main(int argc,char **argv)
 
     typedef operation::data_range data_range;
 
+    if(config.has_option("roi"))
+        std::cout<<config.value<slice>("roi")<<std::endl;
+
     while(!provider->finished())
     {
         try
@@ -172,6 +163,14 @@ int main(int argc,char **argv)
 
             data_range channel_range(data.first.begin(),data.first.end());
             data_range mca_range(data.second.begin(),data.second.end());
+
+            if(config.has_option("roi"))
+            {
+                auto roi = config.value<slice>("roi");
+                apply_roi(channel_range,roi);
+                apply_roi(mca_range,roi);
+            }
+
             operation::argument_type arg(channel_range,mca_range);
 
             (*ops_ptr)(arg);
