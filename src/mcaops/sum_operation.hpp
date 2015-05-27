@@ -25,8 +25,6 @@
 
 #include "operation.hpp"
 
-using namespace pni::core;
-
 //!
 //! \ingroup mcaops_devel
 //! \brief compute summ of input data
@@ -37,38 +35,22 @@ class sum_operation:public operation
 {
     private:
         //!sum
-        float64 _sum;
+        pni::core::float64 _sum;
     public:
         //---------------------------------------------------------------------
         //! default constructor
-        sum_operation():
-            operation(),
-            _sum(0)
-        {}
+        sum_operation();
 
         //---------------------------------------------------------------------
         //! destructor
-        ~sum_operation(){}
+        ~sum_operation();
 
         //---------------------------------------------------------------------
         //! execute operation
-        virtual void operator()(const array_type &channels,
-                                const array_type &data)
-        {
-            if(this->verbose())
-                std::cout<<"Execute sum operation ..."<<std::endl;
-
-            _sum = 0;
-            _sum = std::accumulate(data.begin(),data.end(),float64(0));
-        }
-
+        virtual void operator()(const argument_type &data);
 
         //---------------------------------------------------------------------
         //! write result to output stream
-        virtual std::ostream &stream_result(std::ostream &o) const
-        {
-            o<<_sum;
-            return o;
-        }
+        virtual std::ostream &stream_result(std::ostream &o) const;
 };
 

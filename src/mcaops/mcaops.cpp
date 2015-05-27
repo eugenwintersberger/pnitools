@@ -23,8 +23,10 @@
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
 #include "operation.hpp"
+#include "operation_factory.hpp"
 #include "io/data_provider.hpp"
 #include "io/data_provider_factory.hpp"
+
 
 using namespace pni::core;
 
@@ -121,6 +123,9 @@ int main(int argc,char **argv)
     //-------------------------------------------------------------------------
     data_provider::pointer_type provider =
         data_provider_factory::create(config);
+
+    //-------------------------------------------------------------------------
+    operation::pointer_type ops_ptr = operation_factory::create(config);
     
     //-------------------------------------------------------------------------
     //perform the operation
@@ -132,7 +137,8 @@ int main(int argc,char **argv)
     {
         try
         {
-            std::cout<<provider->next()<<std::endl;
+            (*ops_ptr)(provider->next());
+            std::cout<<*ops_ptr<<std::endl;
             //(*ops_ptr)(provider_ptr->next());  //run the operation
         }
         catch(value_error &error)

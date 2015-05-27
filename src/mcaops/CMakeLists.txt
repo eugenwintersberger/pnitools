@@ -1,5 +1,4 @@
-set(MCAOPS_SOURCE 
-                  #io.cpp 
+set(MCAOPS_SOURCE #io.cpp 
                   mcaops.cpp 
                   io/data_provider.cpp
                   io/data_provider_factory.cpp
@@ -7,6 +6,8 @@ set(MCAOPS_SOURCE
                   io/index_generator.cpp
                   #mcaops_utils.cpp 
                   operation.cpp 
+                  sum_operation.cpp
+                  operation_factory.cpp
                   #rebin_operation.cpp 
                   #scale_operation.cpp
                   )

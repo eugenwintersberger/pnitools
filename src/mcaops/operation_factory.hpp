@@ -21,6 +21,7 @@
 //
 #pragma once
 
+#include <pni/core/configuration.hpp>
 #include "operation.hpp"
 
 //!
@@ -32,10 +33,7 @@
 class operation_factory
 {
     public:
-        static operation::pointer_type create(
+        static operation::pointer_type create(const pni::core::configuration &p);
 };
 
-//-----------------------------------------------------------------------------
-//! write operation to output stream
-std::ostream &operator<<(std::ostream &o,const operation &op);
 

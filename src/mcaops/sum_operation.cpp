@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2012 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2015 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 // This file is part of pnitools.
 //
@@ -16,35 +16,34 @@
 // You should have received a copy of the GNU General Public License
 // along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: May 10,2013
+// Created on: May 27, 2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include <limits>
-#include <ios>
-#include <iomanip>
-#include "operation_factory.hpp"
-
 #include "sum_operation.hpp"
-
-
 
 using namespace pni::core;
 
-operation::pointer_type operation_factory::create(const configuration &config)
+//----------------------------------------------------------------------------
+sum_operation::sum_operation():operation(),_sum(0)
+{}
+
+//----------------------------------------------------------------------------
+sum_operation::~sum_operation(){}
+
+//----------------------------------------------------------------------------
+void sum_operation::operator()(const argument_type &data)
 {
-    typedef operation::pointer_type pointer_type;
-
-    //check if command argument has been provided by the user - throw an 
-    //exception if not
-    if(!config.has_option("command"))
-        throw cli_error(EXCEPTION_RECORD,"No command passed - aborting!");
-
-    auto command = config.value<string>("command");
-    if(command == "sum")
-        return pointer_type(new sum_operation());
-    else
-        throw key_error(EXCEPTION_RECORD,"Unknown operation ["+command+"]!");
+    _sum = 0;
+    _sum = std::accumulate(data.second.begin(),
+                           data.second.end(),float64(0));
 }
 
+
+//----------------------------------------------------------------------------
+ std::ostream &sum_operation::stream_result(std::ostream &o) const
+{
+    o<<_sum;
+    return o;
+}
 
