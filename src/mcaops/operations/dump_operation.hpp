@@ -18,14 +18,10 @@
 // ===========================================================================
 // Created on: May 14,2013
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
-///
+//
 #pragma once
 
-#include <pni/core/types.hpp>
-
 #include "operation.hpp"
-
-using namespace pni::core;
 
 //!
 //! \ingroup mcaops_devel
@@ -38,41 +34,23 @@ using namespace pni::core;
 class dump_operation:public operation
 {
     private:
-        array_type _channels;
-        array_type _data;
+        argument_type _data;
     public:
         //---------------------------------------------------------------------
         //! default constructor
-        dump_operation():
-            operation()
-        {}
+        dump_operation();
 
         //---------------------------------------------------------------------
         //! destructor
-        ~dump_operation(){}
+        ~dump_operation();
 
         //---------------------------------------------------------------------
         //! execute operation
-        virtual void operator()(const array_type &channels,
-                                const array_type &data)
-        {
-            //here we do nothing
-            _channels = channels;
-            _data = data;
-        }
+        virtual void operator()(const argument_type &data);
 
 
         //---------------------------------------------------------------------
         //! write result to output stream
-        virtual std::ostream &stream_result(std::ostream &o) const
-        {
-            auto citer = _channels.begin();
-            auto diter = _data.begin();
-
-            while(citer!=_channels.end())
-                o<<*(citer++)<<"\t"<<*(diter++)<<std::endl;
-
-            return o;
-        }
+        virtual std::ostream &stream_result(std::ostream &o) const;
 };
 

@@ -26,6 +26,7 @@
 #include "operation_factory.hpp"
 
 #include "sum_operation.hpp"
+#include "dump_operation.hpp"
 
 
 
@@ -43,6 +44,8 @@ operation::pointer_type operation_factory::create(const configuration &config)
     auto command = config.value<string>("command");
     if(command == "sum")
         return pointer_type(new sum_operation());
+    else if(command == "dump")
+        return pointer_type(new dump_operation());
     else
         throw key_error(EXCEPTION_RECORD,"Unknown operation ["+command+"]!");
 }
