@@ -27,6 +27,7 @@
 
 #include "sum_operation.hpp"
 #include "dump_operation.hpp"
+#include "max_operation.hpp"
 
 
 
@@ -46,6 +47,8 @@ operation::pointer_type operation_factory::create(const configuration &config)
         return pointer_type(new sum_operation());
     else if(command == "dump")
         return pointer_type(new dump_operation());
+    else if(command == "max")
+        return pointer_type(new max_operation());
     else
         throw key_error(EXCEPTION_RECORD,"Unknown operation ["+command+"]!");
 }

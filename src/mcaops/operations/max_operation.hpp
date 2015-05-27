@@ -37,40 +37,23 @@ using namespace pni::core;
 class max_operation:public operation
 {
     private:
-        //! position of the maximum
-        size_t _max_pos;
         //! maximum value
-        float64 _max_value;
+        pni::core::float64 _value;
     public:
         //---------------------------------------------------------------------
         //! default constructor
-        max_operation():
-            operation(),
-            _max_pos(0),
-            _max_value(0)
-        {}
+        max_operation();
 
         //---------------------------------------------------------------------
         //! destructor
-        ~max_operation(){}
+        ~max_operation();
 
         //---------------------------------------------------------------------
         //!execute operation
-        virtual void operator()(const array_type &channels, 
-                                const array_type &data)
-        {
-            size_t imax;
-            auto iter = std::max_element(data.begin(),data.end());
-            _max_value = *iter;
-            _max_pos = channels[std::distance(data.begin(),iter)];
-        }
+        virtual void operator()(const argument_type &data);
 
         //---------------------------------------------------------------------
         //! write result to output stream
-        virtual std::ostream &stream_result(std::ostream &o) const
-        {
-            o<< _max_pos<<"\t"<<_max_value;
-            return o;
-        }
+        virtual std::ostream &stream_result(std::ostream &o) const;
 };
 
