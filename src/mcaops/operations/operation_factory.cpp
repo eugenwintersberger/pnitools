@@ -28,6 +28,7 @@
 #include "sum.hpp"
 #include "dump.hpp"
 #include "max.hpp"
+#include "maxpos.hpp"
 
 
 
@@ -49,6 +50,8 @@ operation::pointer_type operation_factory::create(const configuration &config)
         return pointer_type(new dump());
     else if(command == "max")
         return pointer_type(new max());
+    else if(command == "maxpos")
+        return pointer_type(new maxpos());
     else
         throw key_error(EXCEPTION_RECORD,"Unknown operation ["+command+"]!");
 }
