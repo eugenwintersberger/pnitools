@@ -88,15 +88,6 @@ int main(int argc,char **argv)
     }
     configuration config = create_global_config();
 
-   
-    //-------------------------------------------------------------------------
-    //options for the rebin command
-    //configuration rebin_config = create_rebin_config();
-
-    //-------------------------------------------------------------------------
-    //options for the scale command
-    //configuration scale_config = create_scale_config();
-
     //-------------------parse and store program options-----------------------
     std::vector<string> args = cliargs2vector(argc,argv);
     std::vector<string> cmd_args; 
@@ -130,72 +121,6 @@ int main(int argc,char **argv)
     //-------------------------------------------------------------------------
     data_provider::pointer_type provider =
         data_provider_factory::create(config);
-
-    //-------------------------------------------------------------------------
-    //Configure and select the operation - we have to do this before reading the
-    //input data. If no command is given but the name of a file the filename
-    //will be interpreted as a command which is obviously wrong. However, we can
-    //catch the situation here.
-    //-------------------------------------------------------------------------
-    //operation::pointer_type ops_ptr;
-
-    /*
-    This code should go away to the command builder
-    if(config.value<string>("command") == "scale")
-    {
-        parse(scale_config,cmd_args,true);
-        optr = select_operator(config,scale_config);
-    }
-    else if(config.value<string>("command") == "rebin")
-    {
-        parse(rebin_config,cmd_args,true);
-        optr = select_operator(config,rebin_config);
-    }
-    else if(config.value<string>("command") == "sum" ||
-            config.value<string>("command") == "max")
-    {
-        optr = select_operator(config,config);
-    }
-    else
-    {
-        std::cerr<<"Unknown command [";
-        std::cerr<<config.value<string>("command")<<"]!"<<std::endl;
-        return 1;
-    }
-    */
-
-    //-------------------------------------------------------------------------
-    //here we will read data either from the standard in or from a file 
-    //-------------------------------------------------------------------------
-
-    /*
-    This code should go away
-    if(config.has_option("input"))
-    {
-        //read channel and mca data from a file
-        try
-        {
-            read_from_file(config.value<string>("input"),channels,data,
-                           config.value<string>("xcolumn"),
-                           config.value<string>("ycolumn"));
-        }
-        catch(file_error &error)
-        {
-            std::cerr<<error<<std::endl;
-            return 1;
-        }
-    }
-    else
-    {
-        //read channel and mca data from stdandard input
-        read_from_stdin(channels,data);
-        if((channels.size() == 0) || (data.size() == 0))
-        {
-            std::cerr<<"No data read from standard input!";
-            return 1;
-        }
-    }
-    */
     
     //-------------------------------------------------------------------------
     //perform the operation
@@ -222,9 +147,6 @@ int main(int argc,char **argv)
         {
             std::cerr<<error<<std::endl; return 1;
         }
-    
-        //output result data
-        //std::cout<<*ops_ptr<<std::endl;
     }
     
     return 0;
