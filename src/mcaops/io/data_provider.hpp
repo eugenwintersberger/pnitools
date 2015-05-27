@@ -23,7 +23,7 @@
 
 #include <pni/core/types.hpp>
 #include "index_generator.hpp"
-#include "../operation.hpp"
+#include "../operations/operation.hpp"
 
 class data_provider
 {

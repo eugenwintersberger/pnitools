@@ -22,8 +22,8 @@
 
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
-#include "operation.hpp"
-#include "operation_factory.hpp"
+#include "operations/operation.hpp"
+#include "operations/operation_factory.hpp"
 #include "io/data_provider.hpp"
 #include "io/data_provider_factory.hpp"
 
