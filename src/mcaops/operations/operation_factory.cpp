@@ -31,34 +31,31 @@
 #include "maxpos.hpp"
 #include "min.hpp"
 #include "minpos.hpp"
+#include "rebin.hpp"
 
 
 using namespace pni::core;
 
-operation::pointer_type operation_factory::create(const configuration &config)
+operation::pointer_type operation_factory::create(const string &name)
 {
     typedef operation::pointer_type pointer_type;
 
-    //check if command argument has been provided by the user - throw an 
-    //exception if not
-    if(!config.has_option("command"))
-        throw cli_error(EXCEPTION_RECORD,"No command passed - aborting!");
-
-    auto command = config.value<string>("command");
-    if(command == "sum")
+    if(name == "sum")
         return pointer_type(new sum());
-    else if(command == "dump")
+    else if(name == "dump")
         return pointer_type(new dump());
-    else if(command == "max")
+    else if(name == "max")
         return pointer_type(new max());
-    else if(command == "maxpos")
+    else if(name == "maxpos")
         return pointer_type(new maxpos());
-    else if(command == "min")
+    else if(name == "min")
         return pointer_type(new min());
-    else if(command == "minpos")
+    else if(name == "minpos")
         return pointer_type(new minpos());
+    else if(name == "rebin")
+        return pointer_type(new rebin());
     else
-        throw key_error(EXCEPTION_RECORD,"Unknown operation ["+command+"]!");
+        throw key_error(EXCEPTION_RECORD,"Unknown operation ["+name+"]!");
 }
 
 

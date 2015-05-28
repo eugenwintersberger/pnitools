@@ -32,8 +32,11 @@
 //!
 class operation_factory
 {
+    private:
     public:
-        static operation::pointer_type create(const pni::core::configuration &p);
+
+        static operation::pointer_type create(const pni::core::string &name);
 };
+
 
 

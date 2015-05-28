@@ -32,6 +32,12 @@ sum::sum():operation(),_sum(0)
 sum::~sum(){}
 
 //----------------------------------------------------------------------------
+operation::args_vector sum::configure(const args_vector &args)
+{
+    return args;
+}
+
+//----------------------------------------------------------------------------
 void sum::operator()(const argument_type &data)
 {
     auto &mca_range = data.second;

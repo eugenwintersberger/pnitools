@@ -30,6 +30,12 @@ max::max(): operation(),_value(0)
 max::~max(){}
 
 //----------------------------------------------------------------------------
+operation::args_vector max::configure(const args_vector &args) 
+{
+    return args;
+}
+
+//----------------------------------------------------------------------------
 void max::operator()(const argument_type &data)
 {
     auto &mca_range = data.second;

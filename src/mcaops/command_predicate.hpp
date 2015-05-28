@@ -19,33 +19,18 @@
 // Created on: May 27, 2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#pragma once
 
-#include "min.hpp"
+#include <pni/core/types.hpp>
+#include <vector>
 
-//----------------------------------------------------------------------------
-min::min(): operation(),_value(0)
-{}
-
-//----------------------------------------------------------------------------
-min::~min(){}
-
-//----------------------------------------------------------------------------
-operation::args_vector min::configure(const args_vector &args)
+class command_predicate
 {
-    return args;
-}
+    private:
+        static const std::vector<pni::core::string> _commands;
+    public:
 
-//----------------------------------------------------------------------------
-void min::operator()(const argument_type &data)
-{
-    auto &mca_range = data.second;
-    auto iter = std::min_element(mca_range.first,mca_range.second);
-    _value = *iter;
-}
+        bool operator()(const pni::core::string &s) const;
+        
+};
 
-//----------------------------------------------------------------------------
-std::ostream &min::stream_result(std::ostream &o) const
-{
-    o<< _value;
-    return o;
-}

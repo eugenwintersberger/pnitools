@@ -16,36 +16,23 @@
 // You should have received a copy of the GNU General Public License
 // along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: May 27, 2015
+// Created on: May 12,2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "min.hpp"
+#include "command_predicate.hpp"
 
-//----------------------------------------------------------------------------
-min::min(): operation(),_value(0)
-{}
+using namespace pni::core;
 
-//----------------------------------------------------------------------------
-min::~min(){}
+const std::vector<pni::core::string> 
+command_predicate::_commands = {"min","max","minpos","maxpos","sum","rebin"};
 
-//----------------------------------------------------------------------------
-operation::args_vector min::configure(const args_vector &args)
+bool command_predicate::operator()(const string &s) const
 {
-    return args;
-}
+    auto iter = std::find(_commands.begin(),_commands.end(),s);
 
-//----------------------------------------------------------------------------
-void min::operator()(const argument_type &data)
-{
-    auto &mca_range = data.second;
-    auto iter = std::min_element(mca_range.first,mca_range.second);
-    _value = *iter;
-}
-
-//----------------------------------------------------------------------------
-std::ostream &min::stream_result(std::ostream &o) const
-{
-    o<< _value;
-    return o;
+    if(iter != _commands.end()) 
+        return true;
+    else
+        return false;
 }

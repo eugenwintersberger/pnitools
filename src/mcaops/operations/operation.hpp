@@ -39,6 +39,8 @@ class operation
         typedef pni::core::dynamic_array<pni::core::float64> array_type;
         //! iterator type
         typedef array_type::const_iterator data_iterator;
+        //! argument vector
+        typedef std::vector<pni::core::string> args_vector;
 
         //--------------------------------------------------------------------
         //! 
@@ -71,6 +73,16 @@ class operation
         //---------------------------------------------------------------------
         //! destructor (has to be virtual)
         virtual ~operation();
+
+        //---------------------------------------------------------------------
+        //!
+        //! \brief configure operation
+        //! 
+        //! This method configures the operation according to command line 
+        //! options provided by the user. 
+        //! 
+
+        virtual args_vector configure(const args_vector &args) = 0;
 
         //---------------------------------------------------------------------
         //!

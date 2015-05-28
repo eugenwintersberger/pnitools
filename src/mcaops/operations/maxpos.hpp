@@ -47,6 +47,9 @@ class maxpos:public operation
         ~maxpos();
 
         //---------------------------------------------------------------------
+        virtual args_vector configure(const args_vector &args);
+
+        //---------------------------------------------------------------------
         //!execute operation
         virtual void operator()(const argument_type &data);
 

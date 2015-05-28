@@ -6,6 +6,7 @@ set(SOURCE operation.cpp
            maxpos.cpp
            min.cpp
            minpos.cpp
+           rebin.cpp
            )
 
 add_library(mcaops_ops OBJECT ${SOURCE})

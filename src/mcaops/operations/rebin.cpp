@@ -20,28 +20,61 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "rebin_operation.hpp"
+#include <pni/core/configuration.hpp>
+#include "rebin.hpp"
+
+using namespace pni::core;
+
+configuration create_config()
+{
+    configuration c;
+
+    c.add_option(config_option<size_t>("binsize","b",
+                "Number of bins to collate!",1));
+    c.add_option(config_option<bool>("noxrebin","",
+                "no x-axis rebinning",false));
+    c.add_option(config_option<bool>("normalize","",
+                "normalize the input data",false));
+
+    return c;
+}
        
 //-----------------------------------------------------------------------------
-rebin_operation::rebin_operation():
+rebin::rebin():
         operation(),
         _bsize(0),
         _noxrebin(false),
-        _norm(false),
-        _channels(),
-        _data()
-{}
+        _norm(false)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+operation::args_vector rebin::configure(const args_vector &args) 
+{
+    configuration c = create_config();
+    args_vector unused = parse(c,args,true);
+
+    _bsize    = c.value<size_t>("binsize");
+    _noxrebin = c.value<bool>("noxrebin");
+    _norm     = c.value<bool>("normalize");
+
+    return unused;
+}
        
 //-----------------------------------------------------------------------------
-void rebin_operation::operator()(const array_type &channels,
-                        const array_type &data)
+void rebin::operator()(const argument_type &data)
 {
-    //compute the number of bins for the new histogram
-    size_t size = (channels.size()-channels.size()%_bsize)/_bsize;
+    data_range channel_range = data.first;
+    data_range mca_range     = data.second;
+
+    //compute the number of bins for the new histogramq
+    size_t nchannels = std::distance(channel_range.first,channel_range.second);
+    size_t size = (nchannels - nchannels%_bsize) /_bsize;
     //if the size of the original histogram is not an integer multiple
     //of the new bin size add an additional channel to collect the
     //residual channels
-    if(channels.size()%_bsize != 0) size++;
+    if(nchannels%_bsize != 0) size++;
    
     //create output data and initialize it with 0
     _channels = array_type::create(shape_type{{size}});
@@ -52,7 +85,7 @@ void rebin_operation::operator()(const array_type &channels,
 
     //start with rebinning loop
     size_t new_index = 0;
-    for(size_t i=0;i<channels.size();i++)
+    for(size_t i=0;i<nchannels;i++)
     {
         if((i%_bsize == 0)&&i)
         {
@@ -70,21 +103,21 @@ void rebin_operation::operator()(const array_type &channels,
         }
 
         //add content to the new bin positions
-        _data[new_index] += data[i];
-        _channels[new_index] += channels[i];
+        _data[new_index] += *(mca_range.first+i);
+        _channels[new_index] += *(channel_range.first+i);
 
     }
 
     //when we are done we have to manage the last bin 
-    if(channels.size()%_bsize != 0)
+    if(nchannels%_bsize != 0)
     {
         if(_norm)
-            _data[new_index] /= channels.size()%_bsize;
+            _data[new_index] /= nchannels%_bsize;
 
         if(_noxrebin) 
             _channels[new_index] = new_index; 
         else
-            _channels[new_index] /= channels.size()%_bsize;
+            _channels[new_index] /= nchannels%_bsize;
     }
     else
     {
@@ -99,7 +132,7 @@ void rebin_operation::operator()(const array_type &channels,
 
 
 //-----------------------------------------------------------------------------
-std::ostream &rebin_operation::stream_result(std::ostream &o) const
+std::ostream &rebin::stream_result(std::ostream &o) const
 {
     for(size_t i=0;i<_channels.size();i++)
     {

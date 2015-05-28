@@ -30,6 +30,12 @@ maxpos::maxpos(): operation(),_pos(0.0)
 maxpos::~maxpos(){}
 
 //----------------------------------------------------------------------------
+operation::args_vector maxpos::configure(const args_vector &args)
+{
+    return args;
+}
+
+//----------------------------------------------------------------------------
 void maxpos::operator()(const argument_type &data)
 {
     auto channel_range = data.first;

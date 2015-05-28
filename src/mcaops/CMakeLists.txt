@@ -1,5 +1,6 @@
 set(MCAOPS_SOURCE #io.cpp 
                   mcaops.cpp 
+                  command_predicate.cpp
                   #mcaops_utils.cpp 
                   #rebin_operation.cpp 
                   #scale_operation.cpp

@@ -28,6 +28,7 @@
 #include "operations/operation_factory.hpp"
 #include "io/data_provider.hpp"
 #include "io/data_provider_factory.hpp"
+#include "command_predicate.hpp"
 
 
 using namespace pni::core;
@@ -116,12 +117,28 @@ int main(int argc,char **argv)
         std::cout<<"\nuse mcatool -h for more information"<<std::endl;
         return 1;
     }
+    
+    typedef std::vector<string> args_vector;
+    typedef operation::pointer_type operation_ptr;
+    typedef data_provider::pointer_type provider_ptr;
+
     configuration config = create_global_config();
 
     //-------------------parse and store program options-----------------------
-    std::vector<string> args = cliargs2vector(argc,argv);
-    std::vector<string> cmd_args; 
-    cmd_args = parse(config,args,true);
+    args_vector args = cliargs2vector(argc,argv);
+    auto args_begin = args.begin();
+    auto args_end   = args.end();
+    auto cmd_iter = std::find_if(args_begin,args_end,command_predicate());
+    string cmd_name = *cmd_iter; //get the command name
+    //generate a dummy operation
+    operation_ptr ops = operation_factory::create(cmd_name);
+
+    args_vector res = ops->configure(args_vector(cmd_iter+1,args_end));
+
+    //now we can assemble the new options and argument vector from the 
+    args_vector global_args = args_vector(args_begin,cmd_iter);
+
+    parse(config,global_args,true);
 
     //cmd_args are those arguments not consumed by the global parser but 
     //are rather used for the configuration of the different commands
@@ -137,11 +154,7 @@ int main(int argc,char **argv)
     //-------------------------------------------------------------------------
     // constructing the provider for input data
     //-------------------------------------------------------------------------
-    data_provider::pointer_type provider =
-        data_provider_factory::create(config);
-
-    //-------------------------------------------------------------------------
-    operation::pointer_type ops_ptr = operation_factory::create(config);
+    provider_ptr provider = data_provider_factory::create(config);
     
     //-------------------------------------------------------------------------
     //perform the operation
@@ -149,10 +162,6 @@ int main(int argc,char **argv)
     if(config.value<bool>("header"))
         std::cout<<"#chan data"<<std::endl;
 
-    typedef operation::data_range data_range;
-
-    if(config.has_option("roi"))
-        std::cout<<config.value<slice>("roi")<<std::endl;
 
     while(!provider->finished())
     {
@@ -161,6 +170,7 @@ int main(int argc,char **argv)
             //get the next data set 
             auto data = provider->next();
 
+            typedef operation::data_range data_range;
             data_range channel_range(data.first.begin(),data.first.end());
             data_range mca_range(data.second.begin(),data.second.end());
 
@@ -173,8 +183,8 @@ int main(int argc,char **argv)
 
             operation::argument_type arg(channel_range,mca_range);
 
-            (*ops_ptr)(arg);
-            std::cout<<*ops_ptr<<std::endl;
+            (*ops)(arg);
+            std::cout<<*ops<<std::endl;
             //(*ops_ptr)(provider_ptr->next());  //run the operation
         }
         catch(value_error &error)

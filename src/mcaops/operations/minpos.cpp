@@ -30,6 +30,12 @@ minpos::minpos(): operation(),_value(0)
 minpos::~minpos(){}
 
 //----------------------------------------------------------------------------
+operation::args_vector minpos::configure(const args_vector &args)
+{
+    return args;
+}
+
+//----------------------------------------------------------------------------
 void minpos::operator()(const argument_type &data)
 {
     auto channel_range = data.first;

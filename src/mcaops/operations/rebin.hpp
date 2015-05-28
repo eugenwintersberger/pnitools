@@ -22,10 +22,7 @@
 #pragma once
 
 #include <pni/core/types.hpp>
-
 #include "operation.hpp"
-
-using namespace pni::core;
 
 //!
 //! \ingroup mcaops_devel
@@ -34,7 +31,7 @@ using namespace pni::core;
 //! This class provides the implementation of the rebining operation for 
 //! MCA histograms. 
 //!
-class rebin_operation:public operation
+class rebin:public operation
 {
     private:
         //! number of bins to collate
@@ -43,18 +40,19 @@ class rebin_operation:public operation
         bool   _noxrebin;
         //! flag for normalization
         bool   _norm;
-        //! output channel data
-        array_type _channels;
-        //! output mca data
-        array_type _data;
+        //! 
+        array_type _channels,_data;
     public:
         //---------------------------------------------------------------------
         //! default constructor
-        rebin_operation();
+        rebin();
 
         //---------------------------------------------------------------------
         //! destructor
-        ~rebin_operation(){}
+        ~rebin(){}
+
+        //---------------------------------------------------------------------
+        virtual args_vector configure(const args_vector &args);
 
         //---------------------------------------------------------------------
         //! get bin size
@@ -81,8 +79,7 @@ class rebin_operation:public operation
         bool normalization() const { return _norm; }
 
         //---------------------------------------------------------------------
-        virtual void operator()(const array_type &channels,
-                                const array_type &data);
+        virtual void operator()(const argument_type &data);
 
         //---------------------------------------------------------------------
         virtual std::ostream &stream_result(std::ostream &o) const;

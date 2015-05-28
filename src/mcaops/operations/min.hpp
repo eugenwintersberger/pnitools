@@ -22,11 +22,7 @@
 #pragma once
 
 #include <pni/core/types.hpp>
-
 #include "operation.hpp"
-
-using namespace pni::core;
-
 
 //!
 //! \ingroup mcaops_devel
@@ -48,6 +44,9 @@ class min:public operation
         //---------------------------------------------------------------------
         //! destructor
         ~min();
+
+        //---------------------------------------------------------------------
+        virtual args_vector configure(const args_vector &args);
 
         //---------------------------------------------------------------------
         //!execute operation
