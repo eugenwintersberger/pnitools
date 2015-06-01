@@ -9,6 +9,7 @@ endif()
    
 #setup for GNU CXX compiler
 if(CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions(-std=c++11)
     message("found GNU compiler ...")
     if(CMAKE_BUILD_TYPE MATCHES RELEASE)
         message("setup for release build ...")
@@ -19,32 +20,15 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     endif()
 endif()
 
-#=====================need to check compiler flags=============================
-#check for supported c++11 flags
+#=====================check for BOOST libraries================================
+find_package(Boost 1.49 COMPONENTS unit_test_framework)
 
-#should wrap this into a macro and call it in the GNU CXX section of the
-#configuration
-
-#store the original state of CMAKE_REQUIRED_FLAGS
-set(CMAKE_REQUIRED_FLAGS_ORIG "${CMAKE_REQUIRED_FLAGS}")
-
-set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS_ORIG} -std=c++11")
-check_cxx_source_compiles("int main() { return 0; }" HAS_CXX11_FLAG)
-
-set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS_ORIG} -std=c++0x")
-check_cxx_source_compiles("int main() { return 0; }" HAS_CXX0X_FLAG)
-
-if(HAS_CXX11_FLAG)
-    add_definitions(-std=c++11)
-    set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS_ORIG} -std=c++11")
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
 else()
-    if(HAS_CXX0X_FLAG)
-        add_definitions(-std=c++0x)
-        set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS_ORIG} -std=c++0x")
-    else()
-        message(FATAL_ERROR,"Compiler does not support C++11 compiler flag")
-    endif()
+    message(FATAL_ERROR "Could not find BOOST libraries!")
 endif()
+
 #===================================check the size of data types===============
 include(configure/CheckTypeSize.txt)
 
@@ -55,9 +39,7 @@ include(configure/CheckTypeSize.txt)
 #==========================check for libraries=====================================
 #the only thing we have to do here is to check for pnicore
 pkg_search_module(PNIIO_PKG REQUIRED pniio)
-pkg_search_module(CPPUNIT_PKG REQUIRED cppunit)
 
-link_directories(${CPPUNIT_PKG_LIBRARY_DIRS})
 link_directories(${PNIIO_PKG_LIBRARY_DIRS})
 include_directories(${PNIIO_PKG_INCLUDE_DIRS})
 add_definitions(${PNIIO_PKG_CFLAGS})

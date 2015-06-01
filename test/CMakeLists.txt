@@ -42,10 +42,14 @@ foreach(XML_FILE ${XML_FILES})
         ${CMAKE_CURRENT_BINARY_DIR}/${XML_FILE} COPYONLY)
 endforeach() 
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
+add_definitions(-DBOOST_TEST_DYN_LINK -DBOOST_TEST_MAIN)
+add_subdirectory(unittests)
+
 
 #===================extract the data an prepear for testing=================
 
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
-add_executable(pnitoolstest ${TEST_SOURCES})
-target_link_libraries(pnitoolstest common_objects ${CPPUNIT_PKG_LIBRARIES} ${PNIIO_PKG_LIBRARIES})
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
+#add_executable(pnitoolstest ${TEST_SOURCES})
+#target_link_libraries(pnitoolstest common_objects ${CPPUNIT_PKG_LIBRARIES} ${PNIIO_PKG_LIBRARIES})

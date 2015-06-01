@@ -400,6 +400,9 @@ of this option is a numeric range (@pxref{Numeric ranges}).
 @itemx --mca-size
 this option provides the total number of channels of the input data. It only
 takes effect when data is read from standard input.
+@item --base
+base path for NeXus files. The value of this option is used as a prefix to
+every NeXus object used with @option{-b} and @option{-m}.
 @end table
 
 @subsubsection Options for the @command{rebin} operation
