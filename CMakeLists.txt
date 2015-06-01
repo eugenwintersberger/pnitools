@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 project(pnitools)
+enable_testing()
 
 set(PROGRAM_VERSION "1.0.0")
 set(CMAKE_FAMILY_VERSION "${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}")
