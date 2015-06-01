@@ -34,6 +34,7 @@ enum class file_type { UNKNOWN,    //!< unknown file type
                        SPEC_FILE,  //!< the file is a SPEC file
                        FIO_FILE,   //!< the file is a FIO file
                        TIFF_FILE,  //!< a TIFF image file
+                       CBF_FILE    //!< a CBF file
                      };
 
 //----------------------------------------------------------------------------

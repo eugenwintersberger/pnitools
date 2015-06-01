@@ -68,6 +68,7 @@ file_type get_file_type(const pni::core::string &fname)
         //we are now done with meagic bytes and go to file extensions
         if(extension == ".fio") return file_type::FIO_FILE;
         else if(extension == ".spec") return file_type::SPEC_FILE;
+        else if(extension == ".cbf") return file_type::CBF_FILE;
         else
             return file_type::UNKNOWN;
     } 
