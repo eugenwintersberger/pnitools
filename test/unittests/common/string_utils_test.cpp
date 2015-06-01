@@ -20,6 +20,7 @@
 //  Created on: Oct 7, 2014
 //      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE test common components
 #include <boost/test/unit_test.hpp>
 #include <boost/current_function.hpp>

@@ -1,67 +1,68 @@
-/*
- * (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
- *
- * This file is part of pnitools.
- *
- * pnitools is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * pnitools is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
- *************************************************************************
- *
- *  Created on: Jun 26, 2013
- *      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
- */
-
+//
+// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+// This file is part of pnitools.
+//
+// pnitools is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// pnitools is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
+//************************************************************************
+//
+//  Created on: Jun 26, 2013
+//      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//
+#include <boost/test/unit_test.hpp>
 #include <boost/current_function.hpp>
-#include<cppunit/extensions/HelperMacros.h>
 
-#include "file_test.hpp"
+#include <pni/core/types.hpp>
+#include <common/file.hpp>
 
+using namespace pni::core;
 
-CPPUNIT_TEST_SUITE_REGISTRATION(file_test);
-
-//-----------------------------------------------------------------------------
-void file_test::setUp()
+struct file_fixture
 {
-    p1 = "./data/fio/scan_mca_00001.fio";
-    p2 = ".";
-    p3 = "./nothing.txt";
-}
+    string _p1;
+    string _p2;
+    string _p3;
+
+    file_fixture():
+        _p1("../../data/fio/scan_mca_00001.fio"),
+        _p2("."),
+        _p3("./nothing.txt")
+    {}
+};
+
+BOOST_FIXTURE_TEST_SUITE(file_tests,file_fixture)
+
 
 //-----------------------------------------------------------------------------
-void file_test::tearDown() { }
-
-
-//-----------------------------------------------------------------------------
-void file_test::test_creation()
+BOOST_AUTO_TEST_CASE(test_creation)
 {
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-    file f;
     //should be ok - the file exists
-    CPPUNIT_ASSERT_NO_THROW(f = file(p1));
+    BOOST_CHECK_NO_THROW(file f(_p1));
     //not ok - we try to open a directory
-    CPPUNIT_ASSERT_THROW(f = file(p3),file_error);;
+    BOOST_CHECK_THROW(file f(_p2),file_error);;
     //not ok - the file does not exist
-    CPPUNIT_ASSERT_THROW(f = file(p2),file_error);
+    BOOST_CHECK_THROW(file f(_p3),file_error);
 }
 
 //-----------------------------------------------------------------------------
-void file_test::test_inquery()
+BOOST_AUTO_TEST_CASE(test_inquery)
 {
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-    
-    file f(p1);
-    CPPUNIT_ASSERT(f.name() == "scan_mca_00001.fio");
-    CPPUNIT_ASSERT(f.extension() == ".fio");
-    CPPUNIT_ASSERT(f.path() == "./data/fio/scan_mca_00001.fio");
-    CPPUNIT_ASSERT(f.base() == "./data/fio");
+    file f(_p1);
+    BOOST_CHECK_EQUAL(f.name() , "scan_mca_00001.fio");
+    BOOST_CHECK_EQUAL(f.extension() , ".fio");
+    BOOST_CHECK_EQUAL(f.path() , "../../data/fio/scan_mca_00001.fio");
+    BOOST_CHECK_EQUAL(f.base() , "../../data/fio");
 }
+
+BOOST_AUTO_TEST_SUITE_END()

@@ -20,74 +20,87 @@
 //      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
+#include <boost/test/unit_test.hpp>
 #include <boost/current_function.hpp>
-#include<cppunit/extensions/HelperMacros.h>
+#include <boost/iterator/zip_iterator.hpp>
+#include <common/file_list_parser.hpp>
 
-#include "file_list_parser_test.hpp"
-
-
-CPPUNIT_TEST_SUITE_REGISTRATION(file_list_parser_test);
-
-//-----------------------------------------------------------------------------
-void file_list_parser_test::setUp()
+struct file_list_fixture
 {
-    name_list = std::vector<string>{"data/fio/scan_mca_00001.fio",
-                                    "data/fio/scan_mca_00002.fio",
-                                    "data/fio/scan_mca_00003.fio",
-                                    "data/fio/scan_mca_00004.fio",
-                                    "data/fio/scan_mca_00005.fio",
-                                    "data/fio/scan_mca_00006.fio",
-                                    "data/fio/scan_mca_00007.fio",
-                                    "data/fio/scan_mca_00008.fio"};
-    range_list = std::vector<string>{"data/fio/scan_mca_%05i.fio:1:9"};
-    mixed_list = std::vector<string>();
-    mixed_list.push_back("data/fio/scan_mca_00001.fio");
-    mixed_list.push_back("data/fio/scan_mca_00002.fio");
-    mixed_list.push_back("data/fio/scan_mca_%05i.fio:3:8");
-    mixed_list.push_back("data/fio/scan_mca_00008.fio");
-}
+    typedef std::vector<string> list_type; 
 
+    list_type name_list;
+    list_type range_list;
+    list_type mixed_list; 
+
+    file_list_fixture():
+        name_list(list_type{"../../data/fio/scan_mca_00001.fio",
+                            "../../data/fio/scan_mca_00002.fio",
+                            "../../data/fio/scan_mca_00003.fio",
+                            "../../data/fio/scan_mca_00004.fio",
+                            "../../data/fio/scan_mca_00005.fio",
+                            "../../data/fio/scan_mca_00006.fio",
+                            "../../data/fio/scan_mca_00007.fio",
+                            "../../data/fio/scan_mca_00008.fio"}),
+        range_list(list_type{"../../data/fio/scan_mca_%05i.fio:1:9"}),
+        mixed_list(list_type{"../../data/fio/scan_mca_00001.fio",
+                             "../../data/fio/scan_mca_00002.fio",
+                             "../../data/fio/scan_mca_%05i.fio:3:8",
+                             "../../data/fio/scan_mca_00008.fio"})
+    {}
+
+};
+
+
+BOOST_FIXTURE_TEST_SUITE(file_list_parser_tests,file_list_fixture)
+
+typedef std::list<file> result_t;
 //-----------------------------------------------------------------------------
-void file_list_parser_test::tearDown() { }
-
-
-//-----------------------------------------------------------------------------
-void file_list_parser_test::test_parse_list()
+BOOST_AUTO_TEST_CASE(test_parse_list)
 {
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    result_t result_list;
+    BOOST_REQUIRE_NO_THROW(result_list =
+            file_list_parser::parse<result_t>(name_list));
+    BOOST_CHECK_EQUAL(result_list.size(),name_list.size());
 
-    result_list = file_list_parser::parse<result_t>(name_list);
     auto niter = name_list.begin();
-    for(auto  iter = result_list.begin();
-              iter != result_list.end(); ++iter,++niter)
-        CPPUNIT_ASSERT(iter->path() == *niter);
+    auto riter = result_list.begin();
+    for(;riter != result_list.end(); ++riter,++niter)
+    {
+        BOOST_CHECK_EQUAL(riter->path() , *niter);
+    }
 }
 
 //-----------------------------------------------------------------------------
-void file_list_parser_test::test_parse_range()
+BOOST_AUTO_TEST_CASE(test_parse_range)
 {
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    result_t result_list;
+    BOOST_REQUIRE_NO_THROW(result_list = 
+                           file_list_parser::parse<result_t>(range_list));
 
-    result_list = file_list_parser::parse<result_t>(range_list);
-    CPPUNIT_ASSERT(result_list.size() == name_list.size());
+    BOOST_CHECK_EQUAL(result_list.size() , name_list.size());
     auto niter = name_list.begin();
-    for(auto iter = result_list.begin();
-             iter != result_list.end();
-             ++iter,++niter)
-       CPPUNIT_ASSERT(iter->path() == *niter); 
-    
+    auto riter = result_list.begin();
+    for(;riter != result_list.end(); ++riter,++niter)
+    {
+       BOOST_CHECK_EQUAL(riter->path() , *niter); 
+    }
 }
 
 //-----------------------------------------------------------------------------
-void file_list_parser_test::test_parse_mixed()
+BOOST_AUTO_TEST_CASE(test_parse_mixed)
 {
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    result_t result_list;
+    BOOST_REQUIRE_NO_THROW(result_list = 
+                           file_list_parser::parse<result_t>(mixed_list));
 
-    result_list = file_list_parser::parse<result_t>(mixed_list);
-    CPPUNIT_ASSERT(result_list.size() == name_list.size());
+    BOOST_CHECK_EQUAL(result_list.size() , name_list.size());
     auto niter = name_list.begin();
-    for(auto iter = result_list.begin();
-             iter != result_list.end();
-             ++iter,++niter)
-       CPPUNIT_ASSERT(iter->path() == *niter); 
+    auto riter = result_list.begin();
+    for(;riter != result_list.end();++riter,++niter)
+    {
+       BOOST_CHECK_EQUAL(riter->path() , *niter); 
+    }
 }
+
+BOOST_AUTO_TEST_SUITE_END()

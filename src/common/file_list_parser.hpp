@@ -27,8 +27,6 @@
 #include <boost/tokenizer.hpp>
 #include <boost/format.hpp>
 
-using namespace pni::core;
-
 
 //!
 //! \ingroup common_devel
@@ -63,7 +61,8 @@ class file_list_parser
         //! \param flist instance of CTYPE where to append the files
         //!
         template<typename CTYPE>
-        static bool _fill_from_num_range(const string &po,CTYPE &flist);
+        static bool _fill_from_num_range(const pni::core::string &po,
+                                         CTYPE &flist);
     
     public:
         //------------------------------------------------------------------
@@ -84,10 +83,22 @@ class file_list_parser
                 > 
         static OTYPE parse(const ITYPE &pl)
         {
+            //check the value types of the input and output container types
+            //provided by the user.
+            static_assert(std::is_same<typename OTYPE::value_type,
+                                       file>::value,
+                          "Target container must store files!");
+            static_assert(std::is_same<typename ITYPE::value_type,
+                                       pni::core::string>::value,
+                          "Source container must store string!");
+
+            //--------------------------------------------
+            // main loop
+            //--------------------------------------------
             OTYPE flist;
             for(auto po: pl)
             {
-                if(!_fill_from_num_range(po,flist))
+                if(!_fill_from_num_range(po,flist)) 
                     flist.push_back(po);
             }
 
@@ -97,7 +108,8 @@ class file_list_parser
 
 //-----------------------------------------------------------------------------
 template<typename CTYPE> 
-bool file_list_parser::_fill_from_num_range(const string &p,CTYPE &flist)
+bool file_list_parser::_fill_from_num_range(const pni::core::string &p,
+                                            CTYPE &flist)
 {
 
     nrseparator sep(":");
