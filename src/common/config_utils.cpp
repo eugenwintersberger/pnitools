@@ -22,6 +22,8 @@
 
 #include "config_utils.hpp"
 
+using namespace pni::core;
+
 //-----------------------------------------------------------------------------
 bool check_help_request(const configuration &config,const string &header)
 {

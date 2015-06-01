@@ -24,20 +24,18 @@
 #include<pni/core/types.hpp>
 #include<pni/core/error.hpp>
 
-using namespace pni::core;
-
 //!
 //! \brief file type error
 //! 
 //! This exception is thrown if the input or output file format cannot be
 //! handled.
 //!
-class file_type_error:public exception
+class file_type_error:public pni::core::exception
 {
     public:
         //-----------------------------------------------------------------
         //! default constructor
-        file_type_error():exception("file_type_error"){}
+        file_type_error():pni::core::exception("file_type_error"){}
         
         //-----------------------------------------------------------------
         //!
@@ -46,7 +44,8 @@ class file_type_error:public exception
         //! \param r exception record
         //! \param d description
         //!
-        file_type_error(const exception_record &r,const string &d):
+        file_type_error(const pni::core::exception_record &r,
+                        const pni::core::string &d):
             exception("file_type_error",r,d)
         {}
 
@@ -64,12 +63,12 @@ class file_type_error:public exception
 //! This exception is thrown in all situations which would cause a program 
 //! to quit. 
 //!
-class program_error : public exception
+class program_error : public pni::core::exception
 {
     public:
         //--------------------------------------------------------------------
         //! default constructor
-        program_error():exception("program_error") {}
+        program_error():pni::core::exception("program_error") {}
 
         //--------------------------------------------------------------------
         //!
@@ -78,7 +77,8 @@ class program_error : public exception
         //! \param r exception record
         //! \param d description
         //!
-        program_error(const exception_record &r,const string &d):
+        program_error(const pni::core::exception_record &r,
+                      const pni::core::string &d):
             exception("program_error",r,d)
         {}
 

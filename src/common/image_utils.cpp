@@ -27,6 +27,9 @@
 #include <pni/io/cbf/cbf_reader.hpp>
 #include <pni/io/tiff/tiff_reader.hpp>
 
+using namespace pni::core;
+using namespace pni::io;
+
 //----------------------------------------------------------------------------
 image_reader_ptr get_image_reader(const file &image_file)
 {

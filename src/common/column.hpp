@@ -26,12 +26,6 @@
 #include <pni/core/arrays.hpp>
 #include <pni/core/type_erasures.hpp>
 
-#ifdef NOFOREACH
-#include <boost/foreach.hpp>
-#endif
-
-using namespace pni::core;
-
 //!
 //! \ingroup common_devel
 //! \brief column template
@@ -63,25 +57,25 @@ template<typename CTYPE> class column
         typedef typename CTYPE::value_type value_type;
     private:
         CTYPE _container;
-        string _name;
-        string _unit;
+        pni::core::string _name;
+        pni::core::string _unit;
 
     public: 
         //======================public methods=================================
         //! return column name
-        string name() const { return _name; }
+        pni::core::string name() const { return _name; }
 
         //---------------------------------------------------------------------
         //! set column name
-        void name(const string &n) { _name = n; }
+        void name(const pni::core::string &n) { _name = n; }
 
         //---------------------------------------------------------------------
         //! return unit 
-        string unit() const { return _unit; }
+        pni::core::string unit() const { return _unit; }
 
         //---------------------------------------------------------------------
         //! set unit
-        void unit(const string &u) { _unit = u; }
+        void unit(const pni::core::string &u) { _unit = u; }
 
         //---------------------------------------------------------------------
         //!
@@ -100,7 +94,7 @@ template<typename CTYPE> class column
 
         //---------------------------------------------------------------------
         //! get element type ID
-        type_id_t type_id() const 
+        pni::core::type_id_t type_id() const 
         {
             return pni::core::type_id(_container.front());
         }
@@ -167,7 +161,8 @@ template<typename CTYPE> class column
 //! \return instance of column
 //!
 template<typename CTYPE>
-column<CTYPE> create_column(const string &n,const string &u)
+column<CTYPE> create_column(const pni::core::string &n,
+                            const pni::core::string &u)
 {
     column<CTYPE> col;
     col.name(n);
@@ -195,7 +190,8 @@ template<
          typename CTYPE,
          typename UC
         >
-column<CTYPE> create_column(const string &n,const string &u,const UC &c)
+column<CTYPE> create_column(const pni::core::string &n,
+                            const pni::core::string &u,const UC &c)
 {
     column<CTYPE> col;
     col.name(n);

@@ -23,8 +23,6 @@
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
 
-using namespace pni::core;
-
 //!
 //! \ingroup common_devel
 //! \brief check for help request
@@ -46,7 +44,8 @@ if(check_help_request(config,"Program usage")) return 1;
 //! \param header the header string for the output
 //! \return true if the user requested help
 //!
-bool check_help_request(const configuration &config,const string &header);
+bool check_help_request(const pni::core::configuration &config,
+                        const pni::core::string &header);
 
 //-----------------------------------------------------------------------------
 //!
@@ -79,5 +78,5 @@ int main(int argc,char **argv)
 //! \param config instance of configuration where to store the data
 //! \return true in case of errors, false otherwise
 //!
-bool parse_cli_opts(int argc,char **argv,const string &progname,
-                    configuration &config);
+bool parse_cli_opts(int argc,char **argv,const pni::core::string &progname,
+                    pni::core::configuration &config);

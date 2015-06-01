@@ -31,41 +31,39 @@
 #include "file.hpp"
 #include "file_list_parser.hpp"
 
-using namespace pni::io;
-
 //-----------------------------------------------------------------------------
-/*!
-\brief extension to type map
-
-This map provides an easy way to map file extensions to file types. It is mainly
-used to select the appropriate reader.
-*/
+//!
+//! \brief extension to type map
+//! 
+//! This map provides an easy way to map file extensions to file types. It is 
+//! mainly used to select the appropriate reader.
+//!
 static std::map<string,string> type_extension_map = 
     {{".cbf","cbf"},
      {".tif","tif"},
      {".tiff","tif"}};
 
 //-----------------------------------------------------------------------------
-/*!
-\brief read data 
-
-This template function takes a pointer to a reader and reads the data from the
-file. Data is read in its native data type and later converted to the value_type
-of image_type. One should have a look if this causes significant performance
-penalties. 
-
-\throws file_error in case of IO problems
-\throws memory_allocation_error if the amount of memory required to store the
-data cannot be allocated 
-\param reader unique pointer to the reader object
-\return instance of image_type with image data
-*/
+//!
+//! \brief read data 
+//! 
+//! This template function takes a pointer to a reader and reads the data 
+//! from the file. Data is read in its native data type and later converted 
+//! to the value_type of image_type. One should have a look if this 
+//! causes significant performance penalties. 
+//! 
+//! \throws file_error in case of IO problems
+//! \throws memory_allocation_error if the amount of memory required to store 
+//! the data cannot be allocated 
+//! \param reader unique pointer to the reader object
+//! \return instance of image_type with image data
+//!
 template<typename ITYPE,typename RTYPE> ITYPE read_data(RTYPE &&reader)
 {
     typedef typename ITYPE::storage_type storage_type;
 
     //get image information
-    image_info info = reader.info(0);
+    pni::io::image_info info = reader.info(0);
 
     return ITYPE(shape_t{info.nx(),info.ny()},
                  reader.template image<storage_type>(0,0));
@@ -73,22 +71,22 @@ template<typename ITYPE,typename RTYPE> ITYPE read_data(RTYPE &&reader)
 }
 
 //-----------------------------------------------------------------------------
-/*!
-\brief read an image from a file
-
-Function reading a single image from a file. 
-\throws file_error in case of IO errors
-\tparam ITYPE image type
-\param f input file
-\return instance of image_type with image data
-*/
+//!
+//! \brief read an image from a file
+//! 
+//! Function reading a single image from a file. 
+//! \throws file_error in case of IO errors
+//! \tparam ITYPE image type
+//! \param f input file
+//! \return instance of image_type with image data
+//! 
 template<typename ITYPE> ITYPE read_image(const file &infile)
 {
     //determine the reader type from the file extension
-    string type;
+    pni::core::string type;
     try
     {
-        string extension = infile.extension();
+        pni::core::string extension = infile.extension();
         std::transform(extension.begin(),extension.end(),extension.begin(),
                        std::ptr_fun<int,int>(std::tolower));
         type = type_extension_map[extension];
@@ -113,7 +111,7 @@ template<typename ITYPE> ITYPE read_image(const file &infile)
     }
 }
 
-template<typename ITYPE> ITYPE read_image(const string &fname)
+template<typename ITYPE> ITYPE read_image(const pni::core::string &fname)
 {
     return read_image<ITYPE>(file(fname));
 }

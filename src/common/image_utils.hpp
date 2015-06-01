@@ -27,8 +27,6 @@
 
 class file;
 
-using namespace pni::core;
-using namespace pni::io;
 
 //! a unique pointer to a image reader
 typedef std::unique_ptr<pni::io::image_reader> image_reader_ptr;
@@ -57,7 +55,7 @@ image_reader_ptr get_image_reader(const file &image_file);
 //! \param image_file the input file
 //! \return instance of image_info
 //!
-image_info get_image_info(const file &image_file);
+pni::io::image_info get_image_info(const file &image_file);
 
 
 
