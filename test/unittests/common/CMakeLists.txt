@@ -1,6 +1,7 @@
 set(SOURCES string_utils_test.cpp 
             file_test.cpp
             file_list_parser_test.cpp
+            column_test.cpp
             )
 
 
