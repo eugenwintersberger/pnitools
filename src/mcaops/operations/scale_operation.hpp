@@ -25,10 +25,8 @@
 
 #include "operation.hpp"
 
-using namespace pni::core;
-
 //!
-//! \ingroup mcaops_devel
+//! \ingroup mcaops_ops_devel
 //! \brief scale operation implementation
 //! 
 //! This class implements the scale operation. Scaling means that the center
@@ -53,12 +51,12 @@ class scale_operation:public operation
 {
     private:
         
-        bool _search_max;     //! determine center search mode
-        size_t _center;       //! index of the center bin
-        float64 _delta;       //! step size from bin to bin
-        float64 _cvalue;      //! center bin value
-        array_type _channels; //! output data bin values
-        array_type _data;     //! output data values
+        bool _search_max;           //!< determine center search mode
+        size_t _center;             //!< index of the center bin
+        pni::core::float64 _delta;  //!< step size from bin to bin
+        pni::core::float64 _cvalue; //!< center bin value
+        array_type _channels;       //!< output data bin values
+        array_type _data;           //!< output data values
 
         //---------------------------------------------------------------------
         //!
@@ -74,7 +72,7 @@ class scale_operation:public operation
         //! was performed
         //!
         void check_channel_bounds(const array_type &channels,
-                                  const exception_record &rec) const;
+                                  const pni::core::exception_record &rec) const;
 
         //---------------------------------------------------------------------
         //!
@@ -90,7 +88,8 @@ class scale_operation:public operation
         //! function was called
         //!
         void check_arrays(const array_type &channels, 
-                          const array_type &data,const exception_record &rec)
+                          const array_type &data,
+                          const pni::core::exception_record &rec)
             const;
     public:
         //---------------------------------------------------------------------
@@ -123,11 +122,11 @@ class scale_operation:public operation
 
         //--------------------------------------------------------------------
         //! get center value
-        float64 center_value() const;
+        pni::core::float64 center_value() const;
 
         //---------------------------------------------------------------------
         //! set center value
-        void center_value(float64 v);
+        void center_value(pni::core::float64 v);
 
         //---------------------------------------------------------------------
         //! get step size
@@ -135,7 +134,7 @@ class scale_operation:public operation
 
         //---------------------------------------------------------------------
         //! set step size
-        void delta(float64 d);
+        void delta(pni::core::float64 d);
          
 
         //---------------------------------------------------------------------

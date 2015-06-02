@@ -29,10 +29,11 @@ using namespace pni::core;
 
 
 //!
-//! \ingroup mcaops_devel
+//! \ingroup mcaops_ops_devel
 //! \brief compute maximum
 //! 
-//! Computes the maximum value along with its position in the input data. 
+//! Finds the maximum value in the MCA data. The maximum value is written to the 
+//! output.
 //!
 class max:public operation
 {

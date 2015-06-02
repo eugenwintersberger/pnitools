@@ -26,7 +26,7 @@
 
 
 //!
-//! \ingroup mcaops_devel
+//! \ingroup mcaops_ops_devel
 //! \brief find maximum position
 //! 
 //! Returns the channel index or bin center value of the maximum value in the 

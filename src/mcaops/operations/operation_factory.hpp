@@ -25,16 +25,28 @@
 #include "operation.hpp"
 
 //!
+//! \ingroup mcaops_ops_devel
 //! \brief factory creating different operations
 //! 
 //! This class provides a single static method 'create' which is used to 
-//! create an instance of a particular operator.
+//! create an instance of a particular operator. 
 //!
 class operation_factory
 {
-    private:
     public:
 
+        //!
+        //! \brief create operation instance
+        //! 
+        //! Return an instance of the requested operation. The operation is 
+        //! identified by its name which is passed as the only argument 
+        //! to this function. If no operation for a given name is found a 
+        //! key_error exception is thrown.
+        //!
+        //! \throws key_error if no operation of the given name exists
+        //! \param name operation name
+        //! \return smart pointer to the operation 
+        //! 
         static operation::pointer_type create(const pni::core::string &name);
 };
 

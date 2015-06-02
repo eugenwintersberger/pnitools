@@ -25,7 +25,7 @@
 #include "operation.hpp"
 
 //!
-//! \ingroup mcaops_devel
+//! \ingroup mcaops_ops_devel
 //! \brief implementation of rebining
 //! 
 //! This class provides the implementation of the rebining operation for 

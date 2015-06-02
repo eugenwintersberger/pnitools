@@ -25,7 +25,7 @@
 #include "operation.hpp"
 
 //!
-//! \ingroup mcaops_devel
+//! \ingroup mcaops_ops_devel
 //! \brief find minimum value
 //! 
 //! Returns the minimum value in the data. If there are multiple equal values

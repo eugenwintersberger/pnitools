@@ -26,10 +26,27 @@
 #include <pni/core/arrays.hpp>
 
 //!
+//! \ingroup mcaops_ops_devel
 //! \brief base class for operations
 //! 
 //! This class provides the basic interface for all operations (commands) that
 //! can be performed with mcaops.
+//! 
+//! An operation takes a pair of data ranges as its input where a data range 
+//! is a pair of \a begin \a end iterators. The first range runs over the 
+//! channel index/bin-center values and the second over the MCA data. Using 
+//! iterators as input arguments makes the application of ROIs simple as we 
+//! only have to adjust the two iterators for each range according to a given 
+//! ROI. 
+//!
+//! Only a default constructor is provided. All further configuration of the 
+//! operation must be done via its configure() method. In the current
+//! implementation a list of command line options is passed to this member 
+//! function from which every operation has to extract those options 
+//! it requires. 
+//!
+//! From the point of the main program an operation will be recieved as a 
+//! smart pointer which allows for polymorphy. 
 //!
 class operation
 {

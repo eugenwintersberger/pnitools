@@ -27,7 +27,7 @@
 #include "operation.hpp"
 
 //!
-//! \ingroup mcaops_devel
+//! \ingroup mcaops_ops_devel
 //! \brief compute sum of bin contents
 //! 
 //! Compute the sum of the input data and output the result.

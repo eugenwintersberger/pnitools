@@ -24,7 +24,7 @@
 #include "operation.hpp"
 
 //!
-//! \ingroup mcaops_devel
+//! \ingroup mcaops_ops_devel
 //! \brief pass through 
 //! 
 //! The dump operation takes the input and passes it through without 
