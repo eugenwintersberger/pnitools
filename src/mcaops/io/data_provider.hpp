@@ -26,7 +26,7 @@
 #include "../operations/operation.hpp"
 
 //!
-//! \ingroup mcaops_devel
+//! \ingroup mcaops_io_devel
 //! \brief data provider base class
 //!
 //! Base class for all data providers. This class defines the interface every 
@@ -85,6 +85,9 @@ class data_provider
         //! Take an index generator as its only argument. 
         //!
         data_provider(const index_generator &g);
+
+        //--------------------------------------------------------------------
+        //! destructor
         virtual ~data_provider();
 
 

@@ -24,7 +24,7 @@
 #include "data_provider.hpp"
 
 //!
-//! \ingroup mcaops_devel
+//! \ingroup mcaops_io_devel
 //! \brief standard input data provider
 //! 
 //! This data provider reads channel/MCA data from standard input. If default

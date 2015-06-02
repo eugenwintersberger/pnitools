@@ -30,33 +30,40 @@ BOOST_AUTO_TEST_SUITE(file_type_test)
 
 BOOST_AUTO_TEST_CASE(tif_test)
 {
-    BOOST_CHECK(get_file_type("../../data/tif/detector_013.tif") ==
-                      file_type::TIFF_FILE);
+    string s = "../../data/tif/detector_013.tif";
+    BOOST_CHECK(get_file_type(s) == file_type::TIFF_FILE);
+    BOOST_CHECK(get_file_type(file(s)) == file_type::TIFF_FILE);
 }
 
 BOOST_AUTO_TEST_CASE(cbf_test)
 {
-    BOOST_CHECK(get_file_type("../../data/cbf/LAOS3_05461.cbf") == 
-                file_type::CBF_FILE);
+    string s = "../../data/cbf/LAOS3_05461.cbf";
+    BOOST_CHECK(get_file_type(s) == file_type::CBF_FILE);
+    BOOST_CHECK(get_file_type(file(s)) == file_type::CBF_FILE);
 }
 
 BOOST_AUTO_TEST_CASE(nexus_test)
 {
-    BOOST_CHECK(get_file_type("../../data/nexus/CSP93065.nxs") == 
-                file_type::NEXUS_FILE);
-    BOOST_CHECK(get_file_type("../../data/nexus/tstfile_00012.h5") == 
-                file_type::NEXUS_FILE);
+    string s1 = "../../data/nexus/CSP93065.nxs";
+    BOOST_CHECK(get_file_type(s1) == file_type::NEXUS_FILE);
+    BOOST_CHECK(get_file_type(file(s1)) == file_type::NEXUS_FILE);
+
+    string s2 = "../../data/nexus/tstfile_00012.h5";
+    BOOST_CHECK(get_file_type(s2) == file_type::NEXUS_FILE);
+    BOOST_CHECK(get_file_type(file(s2)) == file_type::NEXUS_FILE);
 }
 
 BOOST_AUTO_TEST_CASE(fio_test)
 {
-    BOOST_CHECK(get_file_type("../../data/fio/scan_mca_00007.fio") == 
-                file_type::FIO_FILE);
+    string s = "../../data/fio/scan_mca_00007.fio";
+    BOOST_CHECK(get_file_type(s) == file_type::FIO_FILE);
+    BOOST_CHECK(get_file_type(file(s)) == file_type::FIO_FILE);
 }
 
 BOOST_AUTO_TEST_CASE(unkown_test)
 {
     BOOST_CHECK(get_file_type("common_test") == file_type::UNKNOWN);
+    BOOST_CHECK(get_file_type(file("common_test")) == file_type::UNKNOWN);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

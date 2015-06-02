@@ -21,7 +21,7 @@
 //
 
 #include "image_utils.hpp"
-#include "file_utils.hpp"
+#include "file_type.hpp"
 #include "exceptions.hpp"
 
 #include <pni/io/cbf/cbf_reader.hpp>
@@ -33,15 +33,16 @@ using namespace pni::io;
 //----------------------------------------------------------------------------
 image_reader_ptr get_image_reader(const file &image_file)
 {
-    file_type type = get_file_type(image_file);
-
-    if(type == file_type::CBF)
-        return image_reader_ptr(new cbf_reader(image_file.path()));
-    else if(type == file_type::TIF)
-        return image_reader_ptr(new tiff_reader(image_file.path()));
-    else
-        throw file_type_error(EXCEPTION_RECORD,
-                "Unkown image format!");
+    switch(get_file_type(image_file))
+    {
+        case file_type::CBF_FILE:
+            return image_reader_ptr(new cbf_reader(image_file.path()));
+        case file_type::TIFF_FILE:
+            return image_reader_ptr(new tiff_reader(image_file.path()));
+        default:
+            throw file_type_error(EXCEPTION_RECORD,
+                    "Unkown image format!");
+    }
 }
 
 //----------------------------------------------------------------------------

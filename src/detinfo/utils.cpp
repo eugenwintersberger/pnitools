@@ -26,7 +26,7 @@
 #include "tiff_info_reader.hpp"
 #include "nexus_info_reader.hpp"
 #include "formatter_factory.hpp"
-#include "../common/file_utils.hpp"
+#include "../common/file_type.hpp"
 #include "../common/file_list_parser.hpp"
 
 
@@ -34,16 +34,19 @@
 detector_info_list get_info(const file &f)
 {
     typedef std::unique_ptr<detector_info_reader> reader_pointer;
-
-    file_type type = get_file_type(f);
     
     reader_pointer reader;
-    if(type == file_type::CBF)
-        reader = reader_pointer(new cbf_info_reader());
-    else if(type == file_type::TIF)
-        reader = reader_pointer(new tiff_info_reader());
-    else if(type == file_type::NEXUS)
-        reader = reader_pointer(new nexus_info_reader());
+    switch(get_file_type(f))
+    {
+        case file_type::CBF_FILE:
+            reader = reader_pointer(new cbf_info_reader()); break;
+        case file_type::TIFF_FILE:
+            reader = reader_pointer(new tiff_info_reader()); break;
+        case file_type::NEXUS_FILE:
+            reader = reader_pointer(new nexus_info_reader()); break;
+        default:
+            throw file_error(EXCEPTION_RECORD, "Unkonw file type");
+    }
 
     return (*reader)(f);
 }

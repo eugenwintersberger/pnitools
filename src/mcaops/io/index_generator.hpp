@@ -24,7 +24,7 @@
 #include <iostream>
 
 //!
-//! \ingroup mcaops_devel
+//! \ingroup mcaops_io_devel
 //! \brief channel index generator
 //!
 //! This is a functor which generates a channel index. A call to operator()

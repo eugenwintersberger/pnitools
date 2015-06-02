@@ -22,6 +22,7 @@
 #pragma once
 
 #include <pni/core/types.hpp>
+#include "file.hpp"
 
 //!
 //! \ingroup common_devel
@@ -49,3 +50,16 @@ enum class file_type { UNKNOWN,    //!< unknown file type
 //! \param fname name of the file
 //! \return file type enumeration
 file_type get_file_type(const pni::core::string &fname);
+
+//----------------------------------------------------------------------------
+//!
+//! \ingroup common_devel
+//! \brief return file type
+//!
+//! Returns the file type for a file determined by its name. The file type is 
+//! determined by means of magic bytes. If this is not possible, the files
+//! extension is used.
+//!
+//! \param f reference to a file object
+//! \return file type enumeration
+file_type get_file_type(const file &f);

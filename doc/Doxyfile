@@ -131,8 +131,8 @@ WARN_LOGFILE           =
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 
-INPUT                  = ../src devel_mainpage common_devel det2nx_devel
-                         nxls_devel
+INPUT                  = ../src devel_mainpage common_devel det2nx_devel \
+                         nxls_devel mcaops_devel
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          =
 RECURSIVE              = YES

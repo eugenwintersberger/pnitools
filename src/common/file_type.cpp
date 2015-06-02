@@ -74,3 +74,9 @@ file_type get_file_type(const pni::core::string &fname)
     } 
     return file_type::UNKNOWN;
 }
+
+//----------------------------------------------------------------------------
+file_type get_file_type(const file &f)
+{
+    return get_file_type(f.path());
+}

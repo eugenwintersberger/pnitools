@@ -2,7 +2,6 @@ set(COMMON_SOURCES
                    config_utils.cpp 
                    exceptions.cpp
                    file.cpp 
-                   file_utils.cpp
                    string_utils.cpp
                    image_utils.cpp
                    file_type.cpp

@@ -24,13 +24,44 @@
 #include <pni/core/configuration/configuration.hpp>
 #include "data_provider.hpp"
 
+//!
+//! \ingroup mcaops_io_devel 
+//! \brief data provider factory
+//! 
+//! This factory class returns a smart pointer to a particular data provider
+//! implementation. Which provider to load depends on the user configuration 
+//! passed to the program via the command line. 
+//!
 class data_provider_factory
 {
     private:
+        //! provider pointer type
         typedef data_provider::pointer_type pointer_type;
+
+        //!
+        //! \brief create standard in provider
+        //!
+        //! Utility function used internaly by the factory to create a 
+        //! standard input provider. 
+        //!
+        //! \param c reference to the global program configuration
+        //! \return smart pointer to the provider implementation
+        //!
         static pointer_type 
             create_stdin_provider( const pni::core::configuration &c);
     public:
+        //!
+        //! \brief create provider instance
+        //! 
+        //! Returns a smart pointer to a data provider implementation. The type 
+        //! of provider is determined by the global program configuration passed 
+        //! via the command line. 
+        //! \li if no input files are provided the standard input provider will
+        //!     be generated
+        //! \li if there are input files, the first of them determines the file 
+        //!     type, and a file provider according to this type will be 
+        //!     created.
+        //! 
         static pointer_type 
             create(const pni::core::configuration &config);
 };

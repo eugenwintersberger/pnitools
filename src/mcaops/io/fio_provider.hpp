@@ -25,7 +25,7 @@
 #include <pni/io/fio/fio_reader.hpp>
 
 //!
-//! \ingroup mcaops_devel
+//! \ingroup mcaops_io_devel
 //! \brief read MCA data from a FIO file
 //! 
 //! This provider reads MCA data from a FIO file. As FIO files can store

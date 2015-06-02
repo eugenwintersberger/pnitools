@@ -1,0 +1,30 @@
+/*!
+\defgroup mcaops_devel mcaops development
+\brief classes and functions specific to \c mcaops
+
+Description of the components used to implement \c mcaops. Before reading this
+documentation it is strongly recommended to read the info pages on \c mcaops to
+get an impression of how the program should work. 
+
+Once familiar with \c mcaops continue here with the API documentation. 
+*/
+
+/*!
+\ingroup mcaops_devel
+\defgroup mcaops_ops_devel mcaops operations 
+\brief classes and function implementing the operations
+
+This section describes the classes and functions concerned with the particular
+operations \c mcaops provides. 
+*/
+
+/*!
+\ingroup mcaops_devel
+\defgroup mcaops_io_devel mcaops input/output 
+\brief classes and functions implementing I/O
+
+This section describes the classes and functions concerned with the I/O system
+used by \c mcaops.
+*/
+
+
