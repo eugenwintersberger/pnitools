@@ -70,6 +70,8 @@ configuration create_global_config()
 
     config.add_option(config_option<slice>("roi","r",
                 "ROI for the input data"));
+    config.add_option(config_option<string>("base","",
+                "base path for Nexus objects",""));
 
     return config;
 }

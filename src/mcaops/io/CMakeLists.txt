@@ -3,6 +3,7 @@ set(SOURCE data_provider.cpp
            index_generator.cpp
            stdin_provider.cpp
            fio_provider.cpp
+           nexus_provider.cpp
            )
 
 add_library(mcaops_io OBJECT ${SOURCE})
