@@ -33,12 +33,14 @@ using namespace pni::io;
 
 fio_provider::fio_provider(const string &filename, 
                            const string &mca_column_name,
-                           const string &channel_column_name):
+                           const string &channel_column_name,
+                           size_t channel_offset):
     data_provider(),
     _filename(filename),
     _mca_column(mca_column_name),
     _channel_column(channel_column_name),
-    _file_read(false)
+    _file_read(false),
+    _channel_offset(channel_offset)
 {
     if(_mca_column.empty())
         throw key_error(EXCEPTION_RECORD,
@@ -120,7 +122,7 @@ fio_provider::get_channel_data(const fio_reader &reader,size_t n) const
     else
     {
         //generate artificial channel index
-        std::generate_n(std::back_inserter(channels),n,index_generator());
+        std::generate_n(std::back_inserter(channels),n,index_generator(_channel_offset));
         return array_type::create(shape_t{n},std::move(channels));
     }
 
@@ -142,7 +144,7 @@ data_provider::value_type fio_provider::next()
     array_type channels = get_channel_data(reader,mca.size());
 
     //finally construct the result 
-    return value_type{std::move(mca),std::move(channels)};
+    return value_type{std::move(channels),std::move(mca)};
 }
 
 //----------------------------------------------------------------------------

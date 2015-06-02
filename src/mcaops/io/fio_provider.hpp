@@ -51,6 +51,8 @@ class fio_provider : public data_provider
         pni::core::string _channel_column;
         //! flag indicating whether or not a file has been read
         bool _file_read;
+        //! channel counter offset
+        size_t _channel_offset;
         
         //!
         //! \brief read mca data
@@ -89,7 +91,8 @@ class fio_provider : public data_provider
         //!
         fio_provider(const pni::core::string &filename,
                      const pni::core::string &mca_column_name,
-                     const pni::core::string &channel_column_name="");
+                     const pni::core::string &channel_column_name="",
+                     size_t channel_offset = 0);
 
         //--------------------------------------------------------------------
         //! destructor

@@ -1,0 +1,12 @@
+set(SOURCES )
+
+
+add_executable(mcaops_operations_test ${SOURCES})
+target_link_libraries(mcaops_operations_test 
+                      common_objects 
+                      ${PNIIO_PKG_LIBRARIES}
+                      ${Boost_LIBRARIES} 
+                      )
+
+add_test(NAME "mcaops:operations_test" 
+         COMMAND mcaops_operations_test)

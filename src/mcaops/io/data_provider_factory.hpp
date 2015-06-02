@@ -35,6 +35,8 @@
 class data_provider_factory
 {
     private:
+        //! a string vector for filenames
+        typedef std::vector<pni::core::string> filename_vector;
         //! provider pointer type
         typedef data_provider::pointer_type pointer_type;
 
@@ -48,7 +50,18 @@ class data_provider_factory
         //! \return smart pointer to the provider implementation
         //!
         static pointer_type 
-            create_stdin_provider( const pni::core::configuration &c);
+            create_stdin_provider(const pni::core::configuration &c);
+
+        //!
+        //! \brief create FIO provider
+        //!
+        //! Utility function used to create a FIO provider. 
+        //!
+        //! \param c reference to the global program configuration
+        //! \return smart pointer to the provider instance
+        static pointer_type
+            create_fio_provider(const pni::core::configuration &c,
+                                const filename_vector &filenames);
     public:
         //!
         //! \brief create provider instance

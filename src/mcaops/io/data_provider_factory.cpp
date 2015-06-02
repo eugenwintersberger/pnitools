@@ -23,11 +23,12 @@
 #include "../../common/file_type.hpp"
 #include "data_provider_factory.hpp"
 #include "stdin_provider.hpp"
+#include "fio_provider.hpp"
 
 using namespace pni::core;
 
-data_provider::pointer_type data_provider_factory::create_stdin_provider(
-        const configuration &c)
+data_provider::pointer_type 
+data_provider_factory::create_stdin_provider(const configuration &c)
 {
     if(c.value<bool>("verbose"))
     {
@@ -35,31 +36,76 @@ data_provider::pointer_type data_provider_factory::create_stdin_provider(
         std::cerr<<std::endl;
     }
 
+    //------------------------------------------------------------------------
+    // these options have default value which we can use
+    //------------------------------------------------------------------------
     auto mca_size = c.value<size_t>("mca-size");
     auto index_offset = c.value<size_t>("auto-index-offset");
+
+    //------------------------------------------------------------------------
+    // construct the provider
+    //------------------------------------------------------------------------
     return pointer_type(new
             stdin_provider(mca_size,index_generator(index_offset)));
 }
 
 //----------------------------------------------------------------------------
-data_provider::pointer_type data_provider_factory::create(const configuration
-        &config)
+data_provider::pointer_type 
+data_provider_factory::create_fio_provider(const configuration &c,
+                                           const filename_vector &filenames)
+{
+    if(c.value<bool>("verbose"))
+        std::cerr<<"Creating input provider for a FIO file!"<<std::endl;
+
+    //------------------------------------------------------------------------
+    // get the column name for the MCA data in the file
+    //------------------------------------------------------------------------
+    string mca_col_name;
+    if(c.has_option("mca"))
+        mca_col_name = c.value<string>("mca");
+    else
+        throw cli_error(EXCEPTION_RECORD,
+                "For FIO files the -m (--mca) option has to be used!");
+
+    //------------------------------------------------------------------------
+    // get the channel/bin-center column name (optional)
+    //------------------------------------------------------------------------
+    string channel_col_name;
+    if(c.has_option("channels"))
+        channel_col_name = c.value<string>("channels");
+    else if(c.has_option("bins"))
+        channel_col_name = c.value<string>("bins");
+
+    //------------------------------------------------------------------------
+    // get the channel offset
+    //------------------------------------------------------------------------
+    auto coffset = c.value<size_t>("auto-index-offset");
+
+    //------------------------------------------------------------------------
+    // construct the provider
+    //------------------------------------------------------------------------
+
+    return pointer_type(new fio_provider(filenames.front(),
+                                         mca_col_name,channel_col_name,
+                                         coffset));
+
+}
+
+//----------------------------------------------------------------------------
+data_provider::pointer_type 
+data_provider_factory::create(const configuration &config)
 {
     typedef data_provider::pointer_type pointer_type;
     if(config.has_option("input-files"))
     {
-        if(config.value<bool>("verbose"))
-        {
-            std::cerr<<"Creating file data provider for";
-        }
-
         auto file_names = config.value<std::vector<string>>("input-files");
+        string file_name = file_names.front();
         switch(get_file_type(file_names.front()))
         {
             case file_type::NEXUS_FILE:
                 std::cerr<<"Nexus files"<<std::endl;
             case file_type::FIO_FILE:
-                std::cerr<<"FIO files"<<std::endl;
+                return create_fio_provider(config,file_names);
             default:
                 return pointer_type();
         }

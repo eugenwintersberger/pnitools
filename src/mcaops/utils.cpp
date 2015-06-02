@@ -46,8 +46,7 @@ configuration create_global_config()
 
     //----------------setting up the program options---------------------------
     //these options do not show up in the help text
-    config.add_argument(config_argument<string>("command",1));
-    config.add_argument(config_argument<string>("input",2));
+    config.add_argument(config_argument<std::vector<string>>("input-files",1));
 
     //-------------------------------------------------------------------------
     //global options valid for all commands

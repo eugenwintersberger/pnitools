@@ -64,7 +64,7 @@ int main(int argc,char **argv)
         //create operation and configure it
         ops = operation_factory::create(*cmd_iter);
         args_vector res = ops->configure(args_vector(cmd_iter+1,args_end));
-       
+
         //append the residual aruments to the global opptions
         for(auto r:res) global_args.push_back(r);
     }
