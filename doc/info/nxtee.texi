@@ -1,0 +1,142 @@
+
+@command{nxtee} is a NeXus utility program quite similar to the standard Unix
+@command{tee} utility. It reads data from standard input and writes it to a 
+NeXus object. Calling @command{nxtee} is fairly simple
+
+@example
+$ nxtee  NEXUSPATH 
+@end example
+
+@noindent
+The program requires no additional command line options. All data received via 
+standard input is appended to the NeXus object referenced by @var{NEXUSPATH}. 
+As standard input can only provided a linear stream of data @command{nxtee}
+makes some assumptions about how this data is appended to the target object.
+Furthermore there are some limitations in particular when dealing with string
+data. 
+@itemize @bullet
+@item
+for the NeXus object, @command{nxtee} assumes that the first dimension runs over
+the number of entries in the particular field. In other words, in order to
+append the field is grown along the first dimension.
+@item 
+every line (stream of data terminated with a newline) is assumed to represent a
+single entry.
+@item 
+string data can only be written to one dimensional fields where every input line 
+is interpreted as a single element.
+@item 
+the target object mus already exist. This is necessary as the existing field
+determines the type of data parsed from standard input.
+@item 
+one can write only to one object. 
+@end itemize
+
+
+@subsection Program options
+
+@command{nxls} accepts the following command line arguments
+@table @samp
+@item -h
+@itemx --help
+print short program help
+@item -b
+@itemx --begin=[BEGINCHAR]
+In the case of multidimensional input this denotes the starting charachter
+@item -e
+@itemx --end=[ENDCHAR]
+Terminal symbol for line input
+@item -s
+@itemx --separator=[SEPCHAR]
+separator character for the different entries
+@item -r
+@item --replace 
+overwrite the data in an already existing field. If used, the input data must
+exactly match the size of the field (so that the total content can be written).
+@item -a
+@itemx --append
+append data to an existing field. This is the default action
+@end table
+
+@subsection Examples
+
+@subsubsection Simple scalar and one dimensional data
+
+The simplest application is also one of the most typical ones. Lets assume that
+we want to write the name of the sample in a NeXus file. This can easily be done
+with
+
+@smallexample
+$ echo "S10234_01" | nxtee -r test.nxs://:NXentry/:NXsample/name
+$ nxcat test.nxs://:NXentry/:NXsample/name
+S10234_01
+@end smallexample
+@noindent
+In this case we replace the current content of the @option{name} field with the
+new data provided by standard input. A typical application would be when
+creating a file from a template and then change the relevant fields to match the
+current situation.
+
+Appending some motor positions to an existing field
+@smallexample
+$ BASE=test.nxs://:NXentry/:NXinstrument/:NXdetector
+$ printf "1.5\n2.0\n3.2\n4.2" | nxtee -a $BASE/theta
+@end smallexample
+@noindent
+Alternatively one can do this also from a file 
+@smallexample
+$ BASE=test.nxs://:NXentry/:NXinstrument/:NXdetector
+$ nxtee -a $BASE/theta < theta.dat
+@end smallexample
+@noindent
+with @file{theta.dat} having content like this 
+@smallexample
+1.5
+2.3
+4.5
+6.7
+@end smallexample
+@noindent
+This approach can be used to easily copy data from an ASCII to a NeXus file.
+
+@command{nxtee} not only handles NeXus fields but also attributes. This is
+particularly useful with the @command{units} attribute of fields. 
+
+@smallexample
+$ BASE=test.nxs://:NXentry/:NXinstrument/:NXdetector
+$ echo "m" | nxtee -r $BASE/distance@@units 
+@end smallexample
+@noindent
+where a unit can be altered, for instance according to a new hardware setup. 
+
+@subsubsection Working with multidimensional data
+
+Multidimensional data requires a bit more work. Lets start with an example where
+the @command{vector} transformation attribute of a field should be altered. 
+This can simple be done with
+@smallexample
+$ BASE=test.nxs://:NXentry/:NXinstrument/:NXdetector/:NXtransformation
+$ echo "0 0 1" | nxtee -r $BASE/omega@@vector
+@end smallexample
+@noindent
+Note here that the elements of the input data separated only by a whitespace not
+by a newline character. 
+In the next example we consider a two dimensional field where the first
+dimension represents the number of measurement points and the second the number
+of item recorded at each point (in this case only three). 
+If we would like to add additional data from an ASCII file we could use the 
+same procedure as shown above for the simple motor data
+@smallexample
+$ BASE=test.nxs://:NXentry/:NXsample
+$ nxtee -a $BASE/velocities < velocities.dat
+@end smallexample
+@noindent
+where the data in @file{velocities.dat} is organized like this
+@smallexample
+0.0 2.e-2 3.42
+0.2 1.e-2 9.33
+0.4 3.e-3 0.98
+@end smallexample
+@noindent
+note again that the every line represents a data item along the second dimension
+of the target NeXus field.
