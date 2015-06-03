@@ -32,6 +32,31 @@ determines the type of data parsed from standard input.
 one can write only to one object. 
 @end itemize
 
+@subsubsection Appending data
+
+@float Figure,fig:nxtee_append 
+@center @image{pics/nxtee_append,3in,,,}
+@caption{When appending data each line in the ASCII input corresponds to the 
+data reference by an index along the first dimension of the target field}
+@end float
+
+The default operation for @command{nxtee} is to append data to existing fields. 
+As illustrated above the data gets appended along the first dimension of a
+field. Every line in the input data corresponds to the data associated with the
+residual dimensions of a particular index along the first dimension. 
+
+@subsubsection Replacing data
+
+@float Figure,fig:nxtee_replace 
+@center @image{pics/nxtee_replace,3in,,,}
+@caption{With the @option{-r} the data from the ASCII stream is used to 
+replace already existing data in a field. }
+@end float
+When called with the @option{-r} @command{nxtee} operates in replace mode. In
+this mode the ASCII data is used to replace already existing data in a field. 
+By default the replacement starts at the @math{0}th element along the first
+dimension. This can be altered using the @option{--start-index}.
+
 
 @subsection Program options
 
@@ -56,6 +81,9 @@ exactly match the size of the field (so that the total content can be written).
 @item -a
 @itemx --append
 append data to an existing field. This is the default action
+@item --start-index=[INDEX OFFSET]
+when used in replace mode, this option determines the starting index for 
+the replacement operation along the first dimension.
 @end table
 
 @subsection Examples

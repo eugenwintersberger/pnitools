@@ -187,7 +187,7 @@ An MCA basically collects a histogram of events.
 Before discussing the individual operations in more detail some terms have 
 to be defined. 
 
-@center @image{pics/mca_basics_1,,3in,,}
+@center @image{pics/mca_basics_1,3in,,,}
 
 @multitable @columnfractions 0.05 0.95
 @item @math{i} 

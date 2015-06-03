@@ -17,6 +17,8 @@ set(SOURCE gnuplot.pdf
            nxcat_full.png
            nxcat_selection.pdf
            nxcat_selection.png
+           nxtee_append.png
+           nxtee_replace.png
            )
 
 foreach(IMAGE ${SOURCE})
