@@ -22,15 +22,23 @@
 #include <iostream>
 #include <fstream>
 
-#include <pni/core/config/config_parser.hpp>
-#include <pni/core/config/configuration.hpp>
+#include <pni/core/types.hpp>
+#include <pni/core/configuration.hpp>
 
-#include "../common/config_utils.hpp"
-#include "nxtee.hpp"
+#include <pni/io/nx/nx.hpp>
+#include <pni/io/nx/nxpath.hpp>
+
+#include "utils.hpp"
+
+using namespace pni::io::nx;
+using namespace pni::core;
 
 static const string program_name = "nxtee";
 static const string help_header = 
 "Program usage:\n  nxtee NEXUSPATH";
+
+
+
 
 
 int main(int argc,char **argv)
@@ -45,52 +53,38 @@ int main(int argc,char **argv)
         return 1;
     }
 
-    //-------------------------------------------------------------------------
-    //start here with program configuration
-    configuration config;
+    configuration config = create_global_config();
+    parse(config,cliargs2vector(argc,argv));
 
-    config.add_option(config_option<bool>("help","h",
-                "show help text",false));
-    config.add_argument(config_argument<string>("nexus-path",-1));
+    //------------------------------------------------------------------------
+    // check command line options
+    //------------------------------------------------------------------------
+    if(show_help(config)) return 1;
+    if(no_target_path(config)) return 1;
+    
+    //------------------------------------------------------------------------
+    // retrieve the target object
+    //------------------------------------------------------------------------
 
-    //-------------------------------------------------------------------------
-    //parse the command line arguments
-    try
-    {
-        if(parse_cli_opts(argc,argv,program_name,conf))
-            return 1;
-       
-        if(check_help_request(conf,help_header)) 
-            return 1;
-    }
-    catch(pni::core::cli_option_error &error)
-    {
-        std::cerr<<"Error during parsing command line options and arguments!";
-        std::cerr<<std::endl;
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
+    //retrieve the path to the target
+    auto target_path = config.value<nxpath>("target");
 
-    //=========================================================================
-    //start here with program main loop
-    try
-    {
-        //first we need to obtain the target object - we assume that it already
-        //exists
-        nxpath path = path_from_string(config.value<string>("nexus-path"));
-        //open the file in read-write mode
-        h5::nxfile file = h5::open_file(path.filename(),false);
-        nxobject_t root = h5::nxgroup(file["/"]);
+    //get the file
+    h5::nxfile file; 
+    if(!get_target_file(target_path,file)) return 1;
+    
+    //get the object in the file
+    h5::nxobject target;
+    if(!get_target_object(target_path,file,target)) return 1;
 
-        nxobject_t target = get_object(root,path);
+    
+    //------------------------------------------------------------------------
+    // perform operation
+    //------------------------------------------------------------------------
 
 
-    }
-    catch(....)
-    {
-        std::cerr<<"Unkown error - something went wrong!"<<std::endl;
-        return 1;
-    }
+
+
 
     //in case of success we return 0
     return 0;
