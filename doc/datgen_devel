@@ -1,0 +1,12 @@
+/*!
+\defgroup datven_devel datven development
+\brief classes and functions specific to \c datven
+
+Description of the components used to implement \c datven. Before reading this
+documentation it is strongly recommended to read the info pages on \c datven to
+get an impression of how the program should work. 
+
+Once familiar with \c datgen continue here with the API documentation. 
+*/
+
+
