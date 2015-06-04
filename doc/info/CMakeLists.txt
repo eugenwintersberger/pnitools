@@ -12,6 +12,7 @@ set(TEXI_SRC det2nx.texi
              xml2nx.texi 
              top_node.texi
              nxtee.texi
+             datgen.texi
             )
 set(INFO_SRC pnitools.txi)
 

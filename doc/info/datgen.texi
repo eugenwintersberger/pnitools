@@ -1,0 +1,168 @@
+
+@command{datgen} is a program primarily intended to produce test data for other
+programs. It allows the generation of all kind of input data via different
+generators. Multiple generators can be used simultaneously in which case the
+result will be a superposition of the signals produced by the different
+generators. The basic calling convention for @command{datgen} looks like this
+
+@example
+$ datgen [GLOBAL OPTIONS] [GENERATOR [GENERATOR OPTIONS]] ...
+@end example
+
+@noindent
+The first options passed to the program are global options which determine the
+overall behavior of the @command{datgen}. They are common to all generators. 
+Subsequent to the global options follows the name of the first data generator
+along with its specific options.
+
+All data is computed on a regular grid (currently only one dimensional data is
+supported). The following data generators are available at the moment
+
+@table @asis
+@item uniform 
+This generator produces random data uniformly distributed within a given range. 
+@item gauss
+A gaussian bell curve generator. Virtually all parameters of the Gaussian can be
+setup via command line options. 
+@item linear
+A linear generator which could be quite useful to model background. 
+@end table
+@noindent
+Each generator can produced either 64Bit integer or floating point numbers. 
+The same generator can be used multiple times within the generator chain. 
+If the @command{uniform} generator is somewhere involved in the chain using the
+@option{--repeat=n} can be useful. This optoin repeats the computation @math{n}
+times. For a uniform distribution one would get @math{n} different results.
+
+@subsection Datatypes
+
+The data generator currently produced integer or floating point numbers. Which
+one is used can be adjusted with the global option @option{-t} by setting its
+value either to @option{int} or @option{float}. In the former case the results
+are computed as 64 bit singed integer numbers while in the latter case 64 bit
+floating point numbers are used. 
+
+In fact, all computations are carried out with 64 bit floating point numbers.
+When the results are requested as integer values the floating point results are
+rounded to the next integer. 
+
+@subsection Producing output
+
+By default data is written to standard output. The @option{-o} can be used to
+redirect the output directory to a file. Currently only ASCII files are
+supported. In future one can also maybe write Nexus files directly.
+@command{datgen} writes a two column output. The first column holds the
+@math{x}-values while the second the generated data. 
+
+@subsection Program options
+
+@subsubsection Global program options
+@command{nxls} accepts the following command line arguments
+@table @samp
+
+@item -h
+@itemx --help
+print short program help
+
+@item -b
+@itemx --begin=START
+start value along the x grid
+
+@item -e
+@itemx --end=STOP
+last value along the x grid
+
+@item -s
+@itemx --steps=STEPS
+number of steps along x
+
+@item -r 
+@itemx --repeat=REPEATS
+Repeat the signal calculation. This option only makes sense if the
+@command{uniform} generator is involved in the generator chain. Otherwise the
+program would simply reproduce the data.
+
+@item -oOUTFILE
+@itemx --output=OUTFILE
+determins the file where to write the results. If omitted the results are written
+to standard output.
+
+@item -t 
+@itemx --type=TYPECODE
+Can be either @command{int} or @command{float}. 
+
+@end table
+
+@subsubsection Options for the @command{uniform} generator
+
+@table @samp
+
+@item -u
+@itemx --upper=UPPER_BOUND
+The upper bound for the random numbers
+
+@itemx -l
+@itemx --lower=LOWER_BOUND
+The lower bound for the random numbers
+
+@end table
+@noindent 
+These two parameters completely define the random number generator. The random
+numbers lie in the closed interval defined by these two values.
+
+@subsubsection Options for the @command{gauss} generator
+
+@table @samp
+
+@item -s
+@itemx --sigma=SIGMA
+The variance of the normal distribution with default value @math{1}.
+
+@item -m
+@itemx --mu=MU
+the expectation value with default value @math{0}.
+
+@item -a
+@itemx --amplitude=AMP
+The amplitude of the Gauss function. The default value is @math{1}.
+
+@end table
+@noindent
+What this generator computes is basically a Gauss- or Normaldistribution. 
+@tex
+$$
+    g(x) =  {{A}\over{\sigma}\sqrt{2\pi}}
+    e^{-{{1}\over{2}}({{x-\mu}\over{\sigma}})^2}
+$$
+@end tex
+@noindent
+where the amplitude @math{A} is determined by @option{-a}, the variance
+@math{\sigma} by @option{-s}, and the expectation value @math{\mu} by
+@option{-m}.
+
+@subsubsection Options for the @command{linear} generator
+
+@table @samp
+
+@item -s
+@item --slope=SLOPE
+The slope of the linear function with default value @math{1}.
+
+@item -o
+@itemx --offset=OFFSET
+The offset of the linear function with default value @math{0}.
+
+@end table 
+@noindent
+This generator computes 
+@tex
+$$
+    g(x) = k\times x+d
+$$
+@end tex
+@noindent 
+where the slope @math{k} is determined by @option{-s} and the offset @math{d} by
+@option{-o}.
+
+@subsection Examples
+

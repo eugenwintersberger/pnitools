@@ -30,6 +30,7 @@ Copyright @copyright{} 2013 Eugen Wintersberger
 * xml2nx: (pnitools) xml2nx. documentation of xml2nx
 * detops: (pnitools) detops. documentation of detops
 * nxtee:  (pnitools) nxtee. documentation of nxtee
+* datgen: (pnitools) datgen. documentation of datgen
 @end direntry
 
 @c ============================================================================
@@ -229,6 +230,7 @@ The following packages are currently provided by the pnitools distribution
 * nx2xml:: convert a Nexus structure to XML
 * detops:: apply cumulative operations on detector data
 * nxtee:: append data from standard input to a Nexus object
+* datgen:: data generator
 @end menu
 
 @page
@@ -275,6 +277,11 @@ The following packages are currently provided by the pnitools distribution
 @node detops
 @section detops
 @include detops.texi
+
+@page
+@node datgen
+@section datgen
+@include datgen.texi
 
 
 @bye
