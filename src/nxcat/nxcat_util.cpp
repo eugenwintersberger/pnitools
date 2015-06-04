@@ -83,8 +83,9 @@ column_t read_column(const nxpath &source_path)
     array data = make_array(get_type(object),data_shape);
 
     //create a selection in order to read data from the file
-    std::vector<slice> selection(file_shape.begin(),file_shape.end());
-    selection[0] = slice(0);
+    std::vector<slice> selection;
+    for(auto fs: file_shape) selection.push_back(slice(0,fs));
+    selection.front() = slice(0);
 
     for(size_t i=0;i<file_shape[0];++i)
     {
@@ -100,7 +101,8 @@ column_t read_column(const nxpath &source_path)
 table_t  read_table(const sources_list &sources)
 {
     table_t t;
-    for(auto source: sources) t.push_back(read_column(source));
+    for(auto source: sources) 
+        t.push_back(read_column(source));
 
     return t;
 }
