@@ -1,4 +1,4 @@
-set(SOURCE nxtee.cpp utils.cpp)
+set(SOURCE nxtee.cpp utils.cpp operation.cpp)
 
 link_directories(${PNIIO_PKG_LIBRARY_DIRS})
 include_directories(${PNIIO_PKG_INCLUDE_DIRS})

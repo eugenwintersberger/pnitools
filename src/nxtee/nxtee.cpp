@@ -28,6 +28,7 @@
 #include <pni/io/nx/nx.hpp>
 #include <pni/io/nx/nxpath.hpp>
 
+#include "operation.hpp"
 #include "utils.hpp"
 
 using namespace pni::io::nx;
@@ -36,9 +37,6 @@ using namespace pni::core;
 static const string program_name = "nxtee";
 static const string help_header = 
 "Program usage:\n  nxtee NEXUSPATH";
-
-
-
 
 
 int main(int argc,char **argv)
@@ -79,12 +77,24 @@ int main(int argc,char **argv)
 
     
     //------------------------------------------------------------------------
-    // perform operation
+    // perform operation - currently append is implemented
     //------------------------------------------------------------------------
-
-
-
-
+    if(config.value<bool>("replace"))
+    {
+        replace(target,config.value<size_t>("start-index"));
+    }
+    else
+    {
+        try
+        {
+            append(target);
+        }
+        catch(range_error &error)
+        {
+            std::cerr<<error<<std::endl;
+            return 1;
+        }
+    }
 
     //in case of success we return 0
     return 0;
