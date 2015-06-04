@@ -25,6 +25,7 @@
 #include <pni/io/nx/algorithms/is_attribute.hpp>
 #include <pni/io/nx/algorithms/get_type.hpp>
 #include <pni/io/nx/algorithms/read.hpp>
+#include <pni/io/nx/algorithms/get_size.hpp>
 
 #include "nxcat.hpp"
 
@@ -52,6 +53,11 @@ column_t read_column(const nxpath &source_path)
 
     //have to retrieve the object from the file
     auto object = get_object(root,source_path);
+    //check if the object is empty - throw an exception in this case
+    if(!get_size(object))
+        throw size_mismatch_error(EXCEPTION_RECORD,
+                "Object ["+nxpath::to_string(source_path)+"! doest not "
+                "contain any data - aborting!");
 
     //============need to take care here about a particular bug ===============
     //it seems that get_object does not return attributes attached to the root

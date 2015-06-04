@@ -26,6 +26,7 @@
 #include <pni/core/configuration.hpp>
 
 #include <pni/io/nx/nx.hpp>
+#include <pni/io/nx/algorithms/is_attribute.hpp>
 #include <pni/io/nx/nxpath.hpp>
 
 #include "operation.hpp"
@@ -85,6 +86,12 @@ int main(int argc,char **argv)
     }
     else
     {
+        if(is_attribute(target))
+        {
+            std::cerr<<"Cannot append data to an attribute - abort!"<<std::endl;
+            return 1;
+        }
+
         try
         {
             append(target);

@@ -39,10 +39,13 @@ struct write_scalars : public write_predicates
     public:
         virtual bool operator()(const h5::nxobject &o) const
         {
+            /*
             if(is_attribute(o) || is_field(o))
                 return get_size(o) == 1;
+            */
 
-            return false;
+            //return false;
+            return true;
         }
 };
 
