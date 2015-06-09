@@ -1,6 +1,7 @@
 set(SOURCE grid_generator.cpp
            grid_generator_builder.cpp
            datgen_utils.cpp
+           options_splitter.cpp
     )
 
 
