@@ -21,27 +21,63 @@
 //
 
 #include "functor_factory.hpp"
+#include "uniform.hpp"
+#include "gauss.hpp"
+#include "linear.hpp"
+#include <pni/core/configuration.hpp>
 
 using namespace pni::core;
 
 //----------------------------------------------------------------------------
 functor::pointer_type functor_factory::create_uniform(const args_vector &args)
 {
-    
-    return functor::pointer_type();
-}
+    configuration c;
+    c.add_option(config_option<float64>("upper","u",
+                "Upper bound of uniform distribution",1.0));
+    c.add_option(config_option<float64>("lower","l",
+                "Lower bound of uniform distribution",0.0));
+    parse(c,args);
 
-//----------------------------------------------------------------------------
-functor::pointer_type functor_factory::create_linear(const args_vector &args)
-{
-    return functor::pointer_type();
+    return functor::pointer_type(
+            new uniform(c.value<float64>("lower"),c.value<float64>("upper"))
+            );
 }
 
 //----------------------------------------------------------------------------
 functor::pointer_type functor_factory::create_gauss(const args_vector &args)
 {
-    
-    return functor::pointer_type();
+    configuration c;
+    c.add_option(config_option<float64>("sigma","s",
+                "Sigma parameter of the Gaussian",1.0));
+    c.add_option(config_option<float64>("mu","m",
+                "Center parameter of the Gaussian",0.0));
+    c.add_option(config_option<float64>("amplitude","a",
+                "Amplitude of the Gaussian",1.0));
+
+    parse(c,args);
+
+    return functor::pointer_type(
+            new gauss(c.value<float64>("sigma"),
+                      c.value<float64>("mu"),
+                      c.value<float64>("amplitude"))
+            );
+}
+
+//----------------------------------------------------------------------------
+functor::pointer_type functor_factory::create_linear(const args_vector &args)
+{
+    configuration c;
+    c.add_option(config_option<float64>("slope","s",
+                "Slope of the linear function",1.0));
+    c.add_option(config_option<float64>("offset","o",
+                "Offset of the linear function",0.0));
+
+    parse(c,args);
+
+    return functor::pointer_type(
+            new linear(c.value<float64>("slope"),
+                       c.value<float64>("offset"))
+            );
 }
 
 //----------------------------------------------------------------------------

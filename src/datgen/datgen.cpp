@@ -26,6 +26,9 @@
 #include "options_splitter.hpp"
 #include "grid_generator_builder.hpp"
 #include "grid_generator.hpp"
+#include "functors/functor.hpp"
+#include "functors/functor_factory.hpp"
+#include "functors/executor.hpp"
 
 using namespace pni::core;
 
@@ -74,6 +77,12 @@ int main(int argc,char **argv)
     //------------------------------------------------------------------------
     // assemble the functor stack here
     //------------------------------------------------------------------------
+    functor_vector funcs;
+
+    for(auto f: m)
+        funcs.push_back(functor_factory::create(f.first,f.second));
+
+    executor exe(std::move(funcs));
 
     //------------------------------------------------------------------------
     // these are the main loops of the program
@@ -85,7 +94,9 @@ int main(int argc,char **argv)
         float64 x = g();
 
         if(global_config.value<bool>("show-grid"))
-            std::cout<<x<<std::endl;
+            std::cout<<x<<"\t";
+
+        std::cout<<exe(x)<<std::endl;
     }
 
 
