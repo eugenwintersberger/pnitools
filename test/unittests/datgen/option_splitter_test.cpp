@@ -56,8 +56,7 @@ BOOST_AUTO_TEST_CASE(test_no_args)
 {
     args_vector args;
     args_map m = splitter(args);
-    BOOST_CHECK_EQUAL(m.size(),1);
-    BOOST_CHECK_EQUAL(m.find("global")->second.size(),0);
+    BOOST_CHECK_EQUAL(m.size(),0);
 }
 
 //----------------------------------------------------------------------------

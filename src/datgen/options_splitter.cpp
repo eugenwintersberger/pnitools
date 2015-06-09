@@ -36,8 +36,7 @@ args_map options_splitter::operator()(const args_vector &args)
     string current_key = "global"; 
 
     //return an empty map if no arguments are passed
-    if(args.empty()) 
-        return args_map{{current_key,args_vector()}};
+    if(args.empty()) return args_map();
 
     //if no keyworeds where passed during construction
     if(_keywords.empty()) 

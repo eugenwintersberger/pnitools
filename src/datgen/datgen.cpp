@@ -38,7 +38,6 @@ int main(int argc,char **argv)
     options_splitter splitter(args_vector{"uniform","gauss","linear"});
     args_map m=splitter(cliargs2vector(argc,argv));
 
-
     parse(global_config,m.find("global")->second);
     
 
