@@ -4,6 +4,7 @@ set(SOURCES grid_generator_test.cpp
             utils_test.cpp
             option_splitter_test.cpp
             linear_functor_test.cpp
+            gauss_functor_test.cpp
             )
 
 
