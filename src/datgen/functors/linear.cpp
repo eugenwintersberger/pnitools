@@ -20,12 +20,25 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "functor.hpp"
+#include "linear.hpp"
 
-functor::~functor() {}
+using namespace pni::core;
+
+linear::linear(float64 slope,float64 offset):
+    functor(),
+    _slope(slope),
+    _offset(offset)
+{}
 
 //----------------------------------------------------------------------------
-std::ostream &operator<<(std::ostream &o,const functor &f)
+float64 linear::operator()(float64 x) const
 {
-    return f.to_stream(o);
+    return _slope*x+_offset;
+}
+
+//----------------------------------------------------------------------------
+std::ostream &linear::to_stream(std::ostream &stream) const
+{
+    stream<<"linear \t"<<"slope="<<_slope<<"\t offset="<<_offset;
+    return stream;
 }

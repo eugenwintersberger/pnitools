@@ -37,6 +37,9 @@ class functor
         //! shared pointer type to a functor
         typedef std::unique_ptr<functor> pointer_type;
 
+        //! virtual distructor for polymorphy
+        virtual ~functor();
+
         //--------------------------------------------------------------------
         //! 
         //! \brief execute function

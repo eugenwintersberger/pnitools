@@ -19,13 +19,35 @@
 // Created on: Jun 9, 2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#pragma once
 
 #include "functor.hpp"
 
-functor::~functor() {}
-
-//----------------------------------------------------------------------------
-std::ostream &operator<<(std::ostream &o,const functor &f)
+//!
+//! \ingroup datgen_devel
+//! \brief implementation of a linear functor
+//! 
+//! This functor computes a linear function. 
+//!
+class linear : public functor
 {
-    return f.to_stream(o);
-}
+    private:
+        //! slope of the linear function
+        pni::core::float64 _slope;
+        //! offset of the linear function
+        pni::core::float64 _offset;
+    public:
+        //! 
+        //! \brief constructor
+        //! 
+        //! \param slope the slope of the function
+        //! \param offset the offset of the function
+        linear(pni::core::float64 slope,pni::core::float64 offset);
+
+        //! compute result
+        virtual pni::core::float64 operator()(pni::core::float64 x) const;
+
+        //! output to stream
+        virtual std::ostream &to_stream(std::ostream &stream) const;
+    
+};

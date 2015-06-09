@@ -19,13 +19,26 @@
 // Created on: Jun 9, 2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#pragma once
 
+#include <pni/core/types.hpp>
 #include "functor.hpp"
+#include "../options_splitter.hpp"
 
-functor::~functor() {}
-
-//----------------------------------------------------------------------------
-std::ostream &operator<<(std::ostream &o,const functor &f)
+//! 
+//! \ingroup datgen_devel
+//! \brief functor factory class
+//! 
+//! This class is used to create concrete functors. It is stateless and all 
+//! work is done via static member functions.
+//! 
+class functor_factory
 {
-    return f.to_stream(o);
-}
+    private:
+        static functor::pointer_type create_uniform(const args_vector &args);
+        static functor::pointer_type create_linear(const args_vector &args);
+        static functor::pointer_type create_gauss(const args_vector &args);
+    public:
+        static functor::pointer_type create(const pni::core::string &name,
+                                            const args_vector &args);
+};

@@ -15,17 +15,31 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
-// ===========================================================================
-// Created on: Jun 9, 2015
-//     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
+//************************************************************************
+//
+//  Created on: Jun 9, 2015
+//      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "functor.hpp"
+#include <boost/test/unit_test.hpp>
+#include <datgen/functors/linear.hpp>
 
-functor::~functor() {}
+using namespace pni::core;
 
-//----------------------------------------------------------------------------
-std::ostream &operator<<(std::ostream &o,const functor &f)
+static float64 tolerance = 1.e-8;
+
+BOOST_AUTO_TEST_SUITE(linear_functor_test)
+
+BOOST_AUTO_TEST_CASE(test_linear)
 {
-    return f.to_stream(o);
+    linear f(1.2,0.5);
+
+    BOOST_CHECK_CLOSE(f(0),0.5,tolerance);
+    BOOST_CHECK_CLOSE(f(1),1.7,tolerance);
+    BOOST_CHECK_CLOSE(f(-1.),-0.7,tolerance);
 }
+
+
+BOOST_AUTO_TEST_SUITE_END()
+
+
