@@ -16,19 +16,38 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: 8 May, 2015
+// Created on: Jun 9, 2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#pragma once
 
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
 
-using namespace pni::core;
+//!
+//! \ingroup datgen_devel
+//! \brief create global configuration
+//!
+//! Utilty function creating the global configuration for the datgen 
+//! program. 
+//!
+//! \return configuration instance
+//!
+pni::core::configuration create_global_config();
 
+//!
+//! \ingroup datgen_devel
+//! \brief read type id an input stream
+//!
+//! This is a special version of the input stream operator for type IDs. 
+//! It basically handles only "int" and "float" which ware mapped to 
+//! type_id_t::INT64 and type_id_t::FLOAT64. All other input causes a 
+//! type_error exception to be thrown.
+//!
+//! \throws type_error in case of an unkown type code
+//! \param stream reference to input stream
+//! \param tid reference to type_id value
+//! \return reference to input stream
+//!
+std::istream &operator>>(std::istream &stream,pni::core::type_id_t &tid);
 
-int main(int argc,char **argv)
-{
-    
-
-    return 0;
-}

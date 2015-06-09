@@ -1,6 +1,7 @@
 set(SOURCES grid_generator_test.cpp            
             grid_generator_builder_test.cpp
             main.cpp
+            utils_test.cpp
             )
 
 
