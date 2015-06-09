@@ -82,5 +82,21 @@ BOOST_AUTO_TEST_CASE(test_no_global)
     BOOST_CHECK_EQUAL(m.find("uniform")->second.size(),1);
 }
 
+//----------------------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(test_multiple_equal_keys)
+{
+    args_vector args{"-f","-x","linear","-s12","-o3","linear","-s34.12"};
+    args_map m = splitter(args);
+    BOOST_CHECK_EQUAL(m.size(),3);
+
+    auto iter = m.find("linear");
+    BOOST_CHECK_EQUAL(iter->second.size(),2);
+    ++iter;
+    BOOST_CHECK_EQUAL(iter->second.size(),1);
+    ++iter;
+    BOOST_CHECK(iter==m.end());
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
