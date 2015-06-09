@@ -24,6 +24,8 @@
 #include <pni/core/configuration.hpp>
 #include "datgen_utils.hpp"
 #include "options_splitter.hpp"
+#include "grid_generator_builder.hpp"
+#include "grid_generator.hpp"
 
 using namespace pni::core;
 
@@ -38,7 +40,55 @@ int main(int argc,char **argv)
     options_splitter splitter(args_vector{"uniform","gauss","linear"});
     args_map m=splitter(cliargs2vector(argc,argv));
 
+    if(m.empty())
+    {
+        std::cerr<<"No command line arguments passed!"<<std::endl
+                 <<"use datgen -h for help!"<<std::endl;
+        return 1;
+    }
+
+    //parse the global configuration
     parse(global_config,m.find("global")->second);
+    //remove the global options from the map
+    m.erase(m.find("global")); 
+
+    //------------------------------------------------------------------------
+    // build the grid generator
+    //------------------------------------------------------------------------
+    grid_generator g;
+    try
+    {
+        g = grid_generator_builder::build(global_config);
+    }
+    catch(cli_option_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
+    catch(range_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return 1;
+    }
+
+    //------------------------------------------------------------------------
+    // assemble the functor stack here
+    //------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------
+    // these are the main loops of the program
+    //------------------------------------------------------------------------
+    for(size_t grid_index=0;
+        grid_index<global_config.value<size_t>("steps");
+        grid_index++)
+    {
+        float64 x = g();
+
+        if(global_config.value<bool>("show-grid"))
+            std::cout<<x<<std::endl;
+    }
+
+
     
 
     return 0;

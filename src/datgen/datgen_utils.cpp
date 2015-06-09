@@ -54,12 +54,12 @@ configuration create_global_config()
                 "Last grid value"));
     c.add_option(config_option<size_t>("steps","s",
                 "Number of grid points"));
-    c.add_option(config_option<size_t>("repeats","r",
-                "Number of repititions",1));
     c.add_option(config_option<type_id_t>("type","t",
                 "Type code of the requested data type"));
     c.add_option(config_option<string>("output","o",
                 "Ouput file"));
+    c.add_option(config_option<bool>("show-grid","",
+                "Show x grid values",false));
 
     return c;
 }
