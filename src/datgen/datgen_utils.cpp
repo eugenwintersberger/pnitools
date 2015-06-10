@@ -55,9 +55,8 @@ configuration create_global_config()
     c.add_option(config_option<size_t>("steps","s",
                 "Number of grid points"));
     c.add_option(config_option<type_id_t>("type","t",
-                "Type code of the requested data type"));
-    c.add_option(config_option<string>("output","o",
-                "Ouput file"));
+                "Type code of the requested data type",
+                type_id_t::FLOAT64));
     c.add_option(config_option<bool>("show-grid","",
                 "Show x grid values",false));
 

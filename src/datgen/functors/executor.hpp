@@ -26,13 +26,37 @@
 
 typedef std::vector<functor::pointer_type> functor_vector;
 
+//!
+//! \ingroup datgen_devel
+//! \brief executes functor stack
+//!
+//! Executes a stack of functors provided during construction for a 
+//! particular point along the x-grid. 
+//!
 class executor
 {
     private:
+        //! vector with functors
         functor_vector _functors;
     public:
+        //!
+        //! \brief constructors
+        //!
+        //! Creates a new instance of the executor class and moves 
+        //! in all functors.
+        //! \param functors vector of functors
+        //!
         executor(functor_vector &&functors);
 
-
+        //!
+        //! \brief exectute functors
+        //!
+        //! Execute functors at a given point x along the x-grid and
+        //! sum up all the results.
+        //! 
+        //! \param x point along the x-grid
+        //! 
+        //! \return sum of all results
+        //!
         pni::core::float64 operator()(pni::core::float64 x) const;
 };

@@ -35,10 +35,46 @@
 class functor_factory
 {
     private:
+        //!
+        //! \brief create uniform functor
+        //!
+        //! Creates an instance of a uniform functor. 
+        //! \param args command line options associated with this instance
+        //! \return unique pointer to the functor instance
+        //!
         static functor::pointer_type create_uniform(const args_vector &args);
+
+        //--------------------------------------------------------------------
+        //!
+        //! \brief create linear functor
+        //!
+        //! Creates an instance of a linear functor.
+        //! \param args command line options associated with this instance
+        //! \return unique pointer to the functor instance
+        //!
         static functor::pointer_type create_linear(const args_vector &args);
+
+        //--------------------------------------------------------------------
+        //!
+        //! \brief create gaussian functor
+        //!
+        //! Creates an instnace of a Gaussian functor.
+        //! \param args command line options associated with this instance
+        //! \return unique pointer ot the functo instance
+        //!
         static functor::pointer_type create_gauss(const args_vector &args);
     public:
+        //!
+        //! \brief create functor 
+        //! 
+        //! Static function which creates a functor. All required configuration 
+        //! is drawn from the name of the functor and the particular 
+        //! command line options provided along with this name. 
+        //!
+        //! \param name the name of the functor to create
+        //! \param args list of command line arguments for the functor
+        //! \return unique pointer to the newly created functor instance
+        //!
         static functor::pointer_type create(const pni::core::string &name,
                                             const args_vector &args);
 };
