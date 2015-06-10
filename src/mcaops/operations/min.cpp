@@ -46,6 +46,6 @@ void min::operator()(const argument_type &data)
 //----------------------------------------------------------------------------
 std::ostream &min::stream_result(std::ostream &o) const
 {
-    o<< _value;
+    o<<float64_fmt_type()(_value);
     return o;
 }

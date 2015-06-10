@@ -1,6 +1,8 @@
 set(OPS_SOURCES main.cpp 
                 sum_test.cpp
-                max_test.cpp)
+                max_test.cpp
+                min_test.cpp 
+                )
 
 
 add_executable(mcaops_operations_test ${OPS_SOURCES} 
