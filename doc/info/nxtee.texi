@@ -32,7 +32,7 @@ determines the type of data parsed from standard input.
 one can write only to one object. 
 @end itemize
 
-@subsubsection Appending data
+@subsection Appending data
 
 @float Figure,fig:nxtee_append 
 @center @image{pics/nxtee_append,3in,,,}
@@ -45,7 +45,7 @@ As illustrated above the data gets appended along the first dimension of a
 field. Every line in the input data corresponds to the data associated with the
 residual dimensions of a particular index along the first dimension. 
 
-@subsubsection Replacing data
+@subsection Replacing data
 
 @float Figure,fig:nxtee_replace 
 @center @image{pics/nxtee_replace,3in,,,}

@@ -76,20 +76,13 @@ last value along the x grid
 @itemx --steps=STEPS
 number of steps along x
 
-@item -r 
-@itemx --repeat=REPEATS
-Repeat the signal calculation. This option only makes sense if the
-@command{uniform} generator is involved in the generator chain. Otherwise the
-program would simply reproduce the data.
-
-@item -oOUTFILE
-@itemx --output=OUTFILE
-determins the file where to write the results. If omitted the results are written
-to standard output.
-
 @item -t 
 @itemx --type=TYPECODE
 Can be either @command{int} or @command{float}. 
+
+@item --show-grid
+plot @math{x}-grid values along with the data output. This option might be
+useful in situations where the data should be plotted.
 
 @end table
 
@@ -166,3 +159,34 @@ where the slope @math{k} is determined by @option{-s} and the offset @math{d} by
 
 @subsection Examples
 
+In the first example we want to produce two Guassian peaks on a linear
+background with 
+@example
+$ datgen --show-grid -b0 -e100 -s1000 \
+  linear -s-0.5 -o100 \
+  gauss -m25 -a100 \
+  gauss -m75 -a200 
+@end example
+The result would look like this
+
+@center @image{pics/datgen_example_1,,3in,,}
+@noindent
+However, this is not a very realistic situations as most measured signals have
+some noise superimposed on the original signal and the width of the peaks may be
+a bit too small. To add some noise one could use the @option{uniform} random
+generator and to adjust the width of the peaks the @option{-s} for the
+@option{gauss} generator can be used
+
+@example
+$ datgen --show-grid -b0 -e100 -s1000 \
+  linear -s-0.5 -o100 \
+  gauss -m25 -a100 -s2\
+  gauss -m75 -a200 -s3 \
+  uniform -l-2 -u2
+@end example
+which would yields
+
+@center @image{pics/datgen_example_2,,3in,,}
+@noindent
+This looks far more realistic and could be used as input data to some program
+(for instance a filter program to remove the noise).

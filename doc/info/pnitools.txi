@@ -22,15 +22,15 @@ Copyright @copyright{} 2013 Eugen Wintersberger
 @direntry 
 * pnitools: (pnitools). pnitools full documentation
 * detinfo: (pnitools) detinfo. documentation of detinfo 
-* det2nx: (pnitools) det2nx. documentation of det2nx
-* mcaops: (pnitools) mcaops. documentation of mcaops
-* nxcat: (pnitools) nxcat. documentation of nxcat
+* datgen: (pnitools) datgen. documentation of datgen
+* xml2nx: (pnitools) xml2nx. documentation of xml2nx
 * nxls: (pnitools) nxls. documentation of nxls
 * nx2xml: (pnitools) nx2xml. documentation of nx2xml
-* xml2nx: (pnitools) xml2nx. documentation of xml2nx
-* detops: (pnitools) detops. documentation of detops
+* nxcat: (pnitools) nxcat. documentation of nxcat
 * nxtee:  (pnitools) nxtee. documentation of nxtee
-* datgen: (pnitools) datgen. documentation of datgen
+* det2nx: (pnitools) det2nx. documentation of det2nx
+* mcaops: (pnitools) mcaops. documentation of mcaops
+* detops: (pnitools) detops. documentation of detops
 @end direntry
 
 @c ============================================================================
@@ -222,15 +222,15 @@ The following packages are currently provided by the pnitools distribution
 @end ifinfo
 @menu 
 * detinfo:: program to obtain information from a detector file
-* det2nx:: program to merge detector images in a Nexus file
-* mcaops:: program for the manipulation of MCA data
+* datgen:: data generator
+* xml2nx:: convert XML structures to a Nexus file
 * nxls:: list the content of a nexus file
 * nxcat:: write the content of Nexus data fields to standard out
-* xml2nx:: convert XML structures to a Nexus file
-* nx2xml:: convert a Nexus structure to XML
-* detops:: apply cumulative operations on detector data
 * nxtee:: append data from standard input to a Nexus object
-* datgen:: data generator
+* det2nx:: program to merge detector images in a Nexus file
+* nx2xml:: convert a Nexus structure to XML
+* mcaops:: program for the manipulation of MCA data
+* detops:: apply cumulative operations on detector data
 @end menu
 
 @page
@@ -239,14 +239,14 @@ The following packages are currently provided by the pnitools distribution
 @include detinfo.texi
 
 @page
-@node det2nx
-@section det2nx
-@include det2nx.texi
+@node datgen
+@section datgen
+@include datgen.texi
 
 @page
-@node mcaops
-@section mcaops
-@include mcaops.texi
+@node xml2nx
+@section xml2nx
+@include xml2nx.texi
 
 @page
 @node nxls
@@ -264,24 +264,24 @@ The following packages are currently provided by the pnitools distribution
 @include nxtee.texi
 
 @page
-@node xml2nx
-@section xml2nx
-@include xml2nx.texi
+@node det2nx
+@section det2nx
+@include det2nx.texi
 
 @page
 @node nx2xml
 @section nx2xml
 @include nx2xml.texi
 
+@page
+@node mcaops
+@section mcaops
+@include mcaops.texi
+
 @page 
 @node detops
 @section detops
 @include detops.texi
-
-@page
-@node datgen
-@section datgen
-@include datgen.texi
 
 
 @bye
