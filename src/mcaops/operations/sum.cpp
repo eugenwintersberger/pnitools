@@ -49,7 +49,7 @@ void sum::operator()(const argument_type &data)
 //----------------------------------------------------------------------------
  std::ostream &sum::stream_result(std::ostream &o) const
 {
-    o<<_sum;
+    o<<float64_fmt_type()(_sum);
     return o;
 }
 

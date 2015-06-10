@@ -9,4 +9,4 @@ set(SOURCE operation.cpp
            rebin.cpp
            )
 
-add_library(mcaops_ops OBJECT ${SOURCE})
+add_library(mcaops_ops_objects OBJECT ${SOURCE})

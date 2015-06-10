@@ -47,6 +47,6 @@ void max::operator()(const argument_type &data)
 //----------------------------------------------------------------------------
 std::ostream &max::stream_result(std::ostream &o) const
 {
-    o<< _value;
+    o<<float64_fmt_type()(_value);
     return o;
 }

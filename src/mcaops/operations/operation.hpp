@@ -24,6 +24,10 @@
 #include <iostream>
 #include <pni/core/types.hpp>
 #include <pni/core/arrays.hpp>
+#include <pni/io/formatters.hpp>
+
+typedef pni::io::formatter<pni::core::float64> float64_fmt_type;
+typedef pni::io::formatter<size_t>             size_t_fmt_type;
 
 //!
 //! \ingroup mcaops_ops_devel
