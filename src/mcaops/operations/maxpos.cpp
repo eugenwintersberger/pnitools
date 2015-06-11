@@ -50,6 +50,6 @@ void maxpos::operator()(const argument_type &data)
 //----------------------------------------------------------------------------
 std::ostream &maxpos::stream_result(std::ostream &o) const
 {
-    o<< _pos;
+    o<<_pos;
     return o;
 }
