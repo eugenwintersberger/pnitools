@@ -40,8 +40,59 @@ class rebin:public operation
         bool   _noxrebin;
         //! flag for normalization
         bool   _norm;
+
+        array_type _new_channels;
+        array_type _new_mca;
+
+        //!
+        //! \brief create a new array a new array
         //! 
-        array_type _channels,_data;
+        //! Create a new array instance with the required size. 
+        //!
+        //! \param size number of elements 
+        //! \return new array instance
+        //!
+        static array_type create_array(size_t size);
+
+        //!
+        //! \brief compute new size
+        //!
+        //! Compute the size of the rebinned data. This is not a static 
+        //! method as is required access to the bin size of the new data set 
+        //! which is stored in _bsize; 
+        //!
+        //! \param orig_channels number of channels in the input data
+        //! \return number of channels in the output data
+        //!
+        size_t get_new_channels(size_t orig_channels) const;
+
+        static size_t distance(data_range range);
+
+        array_type create_norm(size_t orig_channels,size_t new_channels) const;
+
+        //!
+        //! 
+        template<typename ITERT1,
+                 typename ITERT2>
+        void reduce_data(ITERT1 ifirst,ITERT1 ilast,ITERT2 ofirst,ITERT2 olast)
+        {
+            auto ilower = ifirst;
+            auto iupper = ifirst;
+            std::advance(iupper,_bsize);
+
+            for(; ofirst != olast;++ofirst) 
+            {
+                *ofirst = std::accumulate(ilower,iupper,0);
+
+                //now we need to advance
+                std::advance(ilower,_bsize);
+                if(std::distance(iupper,ilast)<_bsize) iupper = ilast;
+                else
+                    std::advance(iupper,_bsize);
+            }
+            
+        }
+
     public:
         //---------------------------------------------------------------------
         //! default constructor

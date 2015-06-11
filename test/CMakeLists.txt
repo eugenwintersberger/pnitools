@@ -46,6 +46,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 #add_definitions(-DBOOST_TEST_DYN_LINK -DBOOST_TEST_MAIN)
 add_subdirectory(unittests)
 add_subdirectory(nxtee)
+add_subdirectory(mcaops)
 
 
 #===================extract the data an prepear for testing=================

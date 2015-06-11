@@ -47,9 +47,7 @@ struct fixture_maxpos
                     storage_type{1000.2323,83,10000000,-23e-2,1000000})),
         op(),
         stream()
-    {
-        std::cout<<shape.size()<<"\t"<<shape[0]<<std::endl; 
-    }
+    { }
 };
 
 BOOST_FIXTURE_TEST_SUITE(maxpos_test,fixture_maxpos)

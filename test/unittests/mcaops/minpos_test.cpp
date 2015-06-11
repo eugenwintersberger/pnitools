@@ -16,41 +16,41 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-//  Created on: Jun 10, 2015
+//  Created on: Jun 11, 2015
 //      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
 #include "operations_test_common.hpp"
-#include <mcaops/operations/min.hpp>
+#include <mcaops/operations/minpos.hpp>
 
 using namespace pni::core;
 using boost::test_tools::output_test_stream;
 
-struct fixture_min
+struct fixture_minpos
 {
     shape_t shape;
     array_type channels;
     array_type data_1; 
     array_type data_2;
     array_type data_3;
-    min op;
+    minpos op;
     output_test_stream stream;
 
-    fixture_min():
-        shape(shape_t{4}),
-        channels(array_type::create(shape,storage_type{0,1,2,3})),
+    fixture_minpos():
+        shape(shape_t{5}),
+        channels(array_type::create(shape,storage_type{0,1,2,3,4})),
         data_1(array_type::create(shape,
-                    storage_type{1.,-5.39,10.3948,9.739 })),
+                    storage_type{1.,-5.39,10.3948,3.4,9.739 })),
         data_2(array_type::create(shape,
-                    storage_type{1000.023,-234,4.20,1000.0})),
+                    storage_type{1000.023,1000.023,-234,4.20,1000.0})),
         data_3(array_type::create(shape,
-                    storage_type{1000.2323,83,-23e-2,1000000})),
+                    storage_type{1000.2323,83,10000000,-23e-2,1000000})),
         op(),
         stream()
-    {}
+    { }
 };
 
-BOOST_FIXTURE_TEST_SUITE(min_test,fixture_min)
+BOOST_FIXTURE_TEST_SUITE(minpos_test,fixture_minpos)
    
 //----------------------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(test_1)
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(test_1)
                       {data_1.begin(),data_1.end()}};
     op(arg);
     op.stream_result(stream);
-    BOOST_CHECK(stream.is_equal("-5.39e00"));
+    BOOST_CHECK(stream.is_equal("1"));
 }
 
 //----------------------------------------------------------------------------
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(test_2)
                       {data_2.begin(),data_2.end()}};
     op(arg);
     op.stream_result(stream);
-    BOOST_CHECK(stream.is_equal("-2.34e02"));
+    BOOST_CHECK(stream.is_equal("2"));
 }
 
 //----------------------------------------------------------------------------
@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(test_3)
                       {data_3.begin(),data_3.end()}};
     op(arg);
     op.stream_result(stream);
-    BOOST_CHECK(stream.is_equal("-2.3e-01"));
+    BOOST_CHECK(stream.is_equal("3"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

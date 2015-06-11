@@ -5,6 +5,7 @@ set(COMMON_SOURCES
                    string_utils.cpp
                    image_utils.cpp
                    file_type.cpp
+                   roi.cpp
                    )
 
 add_library(common_objects STATIC ${COMMON_SOURCES})

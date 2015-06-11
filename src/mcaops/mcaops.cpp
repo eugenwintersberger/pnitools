@@ -66,7 +66,7 @@ int main(int argc,char **argv)
         args_vector res = ops->configure(args_vector(cmd_iter+1,args_end));
 
         //append the residual aruments to the global opptions
-        for(auto r:res) global_args.push_back(r);
+        std::copy(res.begin(),res.end(),std::back_inserter(global_args));
     }
     //now we can assemble the new options and argument vector from the 
     configuration config = create_global_config();

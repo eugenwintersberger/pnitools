@@ -2,6 +2,8 @@ set(OPS_SOURCES main.cpp
                 sum_test.cpp
                 max_test.cpp
                 min_test.cpp 
+                maxpos_test.cpp
+                minpos_test.cpp
                 )
 
 
