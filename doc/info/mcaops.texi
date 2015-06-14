@@ -222,7 +222,12 @@ the last.
 @subsubsection The @command{min}, @command{max}, @command{minpos}, @command{maxpos} operation
 
 None of these operations require an additional argument and do what their names
-imply. 
+imply. The @command{min} and @command{max} print the maximum channel count 
+to standard output while @command{minpos} and @command{maxpos} look for the bin
+index or bin center value of the minimum or maximum value respectively. 
+In cases where @command{min} or @command{max} find multiple occurances of the
+minimum or maximum value the first one is taken. This is also true for 
+@command{minpos} and @command{maxpos}.
 
 @c ---------------------------------------------------------------------------
 @subsubsection The @command{sum} operation
