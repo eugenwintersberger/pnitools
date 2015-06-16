@@ -27,17 +27,23 @@
 using namespace pni::core;
 using namespace pni::io;
 
-std::istream &operator>>(std::istream &stream,slice &s)
+namespace std
 {
-    typedef parser<string::const_iterator,slice> parser_type;
 
-    parser_type p;
-    string data;
-    stream>>data;
-    s = p(data);
+    istream &operator>>(istream &stream,slice &s)
+    {
+        typedef parser<string::const_iterator,slice> parser_type;
 
-    return stream;
+        parser_type p;
+        string data;
+        stream>>data;
+        s = p(data);
+
+        return stream;
+    }
+
 }
+
 
 //-----------------------------------------------------------------------------
 configuration create_global_config()

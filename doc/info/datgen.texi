@@ -94,7 +94,7 @@ useful in situations where the data should be plotted.
 @itemx --upper=UPPER_BOUND
 The upper bound for the random numbers
 
-@itemx -l
+@item -l
 @itemx --lower=LOWER_BOUND
 The lower bound for the random numbers
 

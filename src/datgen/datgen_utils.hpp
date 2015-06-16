@@ -21,6 +21,7 @@
 //
 #pragma once
 
+#include <iostream>
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
 
@@ -44,10 +45,16 @@ pni::core::configuration create_global_config();
 //! type_id_t::INT64 and type_id_t::FLOAT64. All other input causes a 
 //! type_error exception to be thrown.
 //!
+//! Need to do this in namespace std:: for the same reason as I have to 
+//! do this for the slice input operator in mcaops_utils.hpp.
+//!
 //! \throws type_error in case of an unkown type code
 //! \param stream reference to input stream
 //! \param tid reference to type_id value
 //! \return reference to input stream
 //!
-std::istream &operator>>(std::istream &stream,pni::core::type_id_t &tid);
+namespace std{
+    istream &operator>>(istream &stream,pni::core::type_id_t &tid);
+}
+
 

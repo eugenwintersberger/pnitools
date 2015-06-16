@@ -24,20 +24,23 @@
 
 using namespace pni::core;
 
-std::istream &operator>>(std::istream &stream,type_id_t &tid)
-{
-    string s;
-    stream>>s;
+namespace std{
+    istream &operator>>(istream &stream,type_id_t &tid)
+    {
+        string s;
+        stream>>s;
 
-    if(s=="int")
-        tid=type_id_t::INT64;
-    else if(s=="float")
-        tid=type_id_t::FLOAT64;
-    else
-        throw type_error(EXCEPTION_RECORD,
-                "Unkonwn type code ["+s+"]!");
+        if(s=="int")
+            tid=type_id_t::INT64;
+        else if(s=="float")
+            tid=type_id_t::FLOAT64;
+        else
+            throw type_error(EXCEPTION_RECORD,
+                    "Unkonwn type code ["+s+"]!");
 
-    return stream;
+        return stream;
+    }
+
 }
 
 //----------------------------------------------------------------------------

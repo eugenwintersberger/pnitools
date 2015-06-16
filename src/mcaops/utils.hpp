@@ -34,11 +34,22 @@
 //! Operator to read a slice from a stream. This operator is required to use 
 //! slices as a possible type for a command line option.
 //!
+//! We have to define this in namespace std:: in order to make 
+//! boost::program_options to work correctly. We do not have to define an 
+//! output operator as it is allready defined in pni::core (see slice.hpp). 
+//! 
+//! A good reference for this can be found in 
+//! http://stackoverflow.com/questions/27848995/\
+//!        boost-program-options-pair-value
+//!
 //! \param stream reference to the input stream
 //! \param s reference to the slice
 //! \return reference to the input stream
 //!
-std::istream &operator>>(std::istream &stream,pni::core::slice &s);
+namespace std{
+    istream &operator>>(istream &stream,pni::core::slice &s);
+}
+
 
 //----------------------------------------------------------------------------
 //!
