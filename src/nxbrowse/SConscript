@@ -1,9 +1,0 @@
-Import("gui_program_env")
-
-nxbrowse_objects =[gui_program_env.Object(["main.cpp","MainWidget.cpp","NexusFileModel.cpp"])]
-nxbrowse_objects.extend(SConscript("../common/SConscript"))
-nxbrowse = gui_program_env.Program(target="nxbrowse",source=nxbrowse_objects)
-nxbrowse_install = gui_program_env.Install("$PREFIX/bin",nxbrowse)
-
-gui_program_env.Alias("all",[nxbrowse])
-gui_program_env.Alias("install",[nxbrowse_install])
