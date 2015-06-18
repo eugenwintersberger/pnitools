@@ -1,18 +1,18 @@
 
-set(MAN_SRC det2nx.1.cmake
-            detinfo.1.cmake
-            mcaops.1.cmake
-            nxcat.1.cmake
-            nxls.1.cmake
-            xml2nx.1.cmake
+set(MANPAGES datgen.1
+             det2nx.1
+             detinfo.1
+             detops.1
+             mcaops.1
+             nxcat.1
+             nxls.1
+             xml2nx.1
             )
 
-set(MANPAGES)
 
-foreach(SRC_FILE ${MAN_SRC})
-    string(REPLACE ".cmake" "" MAN_FILE ${SRC_FILE})
-    configure_file(${SRC_FILE} ${CMAKE_CURRENT_BINARY_DIR}/${MAN_FILE} @ONLY)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MAN_FILE}
+foreach(F ${MANPAGES})
+    configure_file(${F} ${F} @ONLY)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${F}
             DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
 endforeach()
 
