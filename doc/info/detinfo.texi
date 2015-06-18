@@ -1,40 +1,47 @@
-The @command{detinfo} program reveals basic information about the data
-stored in a detector file. This information incldues
+@command{detinfo} reveals basic information about the data stored in a detector
+file. A typical application of @command{detinfo} would be to determine the
+detector parameters for a bunch of individual files before merging them into a
+single NeXus file.
+The parameters retrieved by @command{detinfo} are
 @itemize @bullet
 @item 
-the data source -- for CBF files or TIF this is the filename, for Nexus file it
-is the path to the data field in the corresponding NXdetector instance
+the data source. For CBF or TIF files this is the filename, for Nexus files it
+is the path to the data field in the detectors NXdetector instance. 
+
 @item
 the number of pixels along each of the detectors dimensions
+
 @item 
-the data type for an individual pixel
+the pixel data type 
+
 @item
-the detector type, which is currently either:  @emph{point}, 
+the total number of frames stores in the file
+
+@item
+the detectors type, which is currently either:  @emph{point}, 
 @emph{linear}, or @emph{area}
 @end itemize
 @noindent
-The detector type @emph{point} denotes a @math{0}D point detector while 
-@emph{linear} and @emph{area} denote @math{1}D strip and @math{2}D area 
-detectors respectively.
-The current version of @command{detinfo} can obtain this information 
-for detector data stores in one of the following file formats
+The detector types @emph{point}, @emph{linear}, and @emph{area} denote 
+a @math{0}-, @math{1}-, and @math{2}-dimensional detector respectively. 
+@command{detinfo} currently supports the following detector file formats
 @itemize @bullet
 @item 
 CBF - the CIF binary format written by DECTRIS detectors
+
 @item 
 TIFF - the tagged image file format
+
 @item 
-Nexus - with HDF5 as physical file format
+NeXus - with HDF5 as physical file format
+
 @end itemize
 @noindent
 In the case of CBF or TIF files the program assumes that each files belongs to a
 single detector. As a Nexus file can store several detectors in a single file 
 the information is shown for every instance of NXdetector in the file.
-A typical application for @command{detinfo} would be to determine detector
-parameters from individual files and use this information to merge the detector
-data into a Nexus file.
 
-The invocation of @command{detinfo} is rather straight forward
+Invocing @command{detinfo} is rather straight forward
 @example
 detinfo [OPTIONS] FILESPEC
 @end example
@@ -44,6 +51,9 @@ detinfo [OPTIONS] FILESPEC
 @command{detinfo}. For more information about how to specify input files see
 @ref{Input file selection}.
 @command{detinfo} returns 0 in case of success and 1 otherwise. 
+By default the program writes its output in a tabular from to standard output. 
+Different output formats like @emph{XML} or @emph{CSV} can be 
+chosen by using the @option{-f} option (see below).
 
 @c ===========================================================================
 @c describe command line options here
@@ -70,8 +80,8 @@ the default), keyvalue, csv, or xml
 @c ===========================================================================
 @subsection Examples
 
-Consider we have a directory with TIF files produced by a detector. A very
-simple call to @command{detinfo} could look like this
+Consider a directory with TIF files, calling @command{detinfo} with no options
+would yield a similar result like this
 @smallexample
 $ detinfo detector_%03i.tif:9:16
 detector_009.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
@@ -83,7 +93,7 @@ detector_014.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (23
 detector_015.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
 @end smallexample
 @noindent
-Output as a CSV table could be achieved with
+Output as a @emph{CSV} table could be achieved with
 @smallexample
 $ detinfo -fcsv detector_%03i.tif:9:16
 source ; type ; pixel type ; number of frames ; frame shape
@@ -95,6 +105,10 @@ detector_013.tif ; area ; UINT32 ; 1 ; (2300,2300)
 detector_014.tif ; area ; UINT32 ; 1 ; (2300,2300)
 detector_015.tif ; area ; UINT32 ; 1 ; (2300,2300)
 @end smallexample
+@noindent
+The @emph{CSV} output could be used for automatic processing of the output. 
+Note that the first row of output contains the column names 
+@command{detinfo} associates weach entry with.
 
 A Nexus file can store the data of several detectors and the full path to the
 data field of every detector is used as the source 

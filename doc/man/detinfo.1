@@ -2,13 +2,14 @@
 .\" Contact Eugen Wintersberger <eugen.wintersberger@desy.de> for typos and corrections
 .TH detinfo 1 "29.01.2013" "@PROGRAM_VERSION@" "User commands"
 .SH NAME
-detinfo - prints detector information from data files
+detinfo - prints detector information from files to standard output
 
 .SH SYNOPSIS
 .B detinfo [OPTIONS] FILE [FILE ...]
 
 .SH DESCRIPTION
-\fBdetinfo\fR prints information about detector data stored in files. 
+\fBdetinfo\fR prints information about detector data stored in files 
+to standard output using various formats.
 Currently \fBdetinfo\fR supports the following file formats:
 .RS 3 
 .P
@@ -19,7 +20,7 @@ Currently \fBdetinfo\fR supports the following file formats:
  - Nexus using HDF5 as a storage backend.
 .RE
 .P
-The following information is provided by \fBdetinfo\fR
+The parameters \fBdetinfo\fR retrieves are 
 .RS 3
 .P 
 - the path to the data (file path and/or Nexus object path)
@@ -28,7 +29,7 @@ The following information is provided by \fBdetinfo\fR
 .br
 - the number of elements along each dimension of a single detector frame
 .br
-- the data type used for each pixel
+- the pixel data type
 .br
 - the detector type
 .RE
@@ -36,14 +37,13 @@ The following information is provided by \fBdetinfo\fR
 Possible detector types are \fBpoint\fR, \fBlinear\fR, and \fBarea\fR.
 .P 
 For TIF and CBF files \fBdetinfo\fR assumes that all the data in a file belongs
-to a single detector. However, Nexus files are slightly different as they can 
-store data from several detectors in a file. In this case, the information
-listed above is shown for each instance of NXdetector (the group type used to 
-store data from an individual detector) available in the file.
-A typical application of \fBdetinfo\fR would be to gather all the information
-required to merge data from single TIF or CBF files into a Nexus file. 
-As with all programs from the \fBpni-tools\fR-package input files can be
-specified as individual files and/or as a file template with a numeric range. 
+to a single detector. However, Nexus files are slightly different as they can
+store data from several detectors in a single file. In this case, the
+information listed above is shown for each instance of NXdetector available in
+the file.  A typical application of \fBdetinfo\fR would be to gather all the
+information required to merge data from single TIF or CBF files into a Nexus
+file.  As with all programs from the \fBpni-tools\fR-package input files can be
+specified as individual files and/or as a file template with a numeric range.
 For details see the info page for pni-tools how to do this.
 
 .SH OPTIONS
@@ -78,8 +78,18 @@ change and redistribute it. There is no WARRENTY, to the extent permitted by
 law.
 
 .SH SEE ALSO
-.IP \fBpni-tools\fR 
-
+A more detailed description can be found consulting the infor pages of 
+the \fBpnitools\fR package 
+.RS 3
+.P 
+    \fBinfo pni-tools\fR
+.RE
+.P
+or the info page of \fBdetinfo\fR
+.RS 3
+.P
+    \fBinfo detinfo\fR
+.RE
 
 
 
