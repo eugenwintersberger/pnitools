@@ -33,7 +33,6 @@ configuration create_configuration()
 {
     configuration config;
     config.add_option(config_option<bool>("help","h","show help",false));
-    config.add_option(config_option<bool>("verbose","v","be verbose",false));
     config.add_option(config_option<string>("format","f","output format",
                                             "simple"));
     config.add_argument(config_argument<string_list>("input-files",-1,
