@@ -15,7 +15,6 @@ set(TEST_SOURCES pnitoolstest.cpp
 
 set(CLI_TEST_PY_FILES check_output.py 
                       det2nx_test.py 
-                      detinfo_test.py
                       mcaops_test.py 
                       nxcat_test.py 
                       nxls_test.py 
@@ -45,6 +44,7 @@ endforeach()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 #add_definitions(-DBOOST_TEST_DYN_LINK -DBOOST_TEST_MAIN)
 add_subdirectory(unittests)
+add_subdirectory(detinfo)
 add_subdirectory(nxtee)
 add_subdirectory(mcaops)
 
