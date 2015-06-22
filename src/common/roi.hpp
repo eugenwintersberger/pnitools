@@ -68,12 +68,6 @@ size_t rank(const roi_type &roi);
 //! 
 std::istream &operator>>(std::istream &stream,roi_type &roi);
 
-//----------------------------------------------------------------------------
-//!
-//! \ingroup common_devel
-//! 
-//! Apply a ROI to a bunch of iterators. 
-//!
 
 template<typename ITERT1>
 void apply_roi_to_iterators(roi_type::const_iterator &r,ITERT1 &first,ITERT1 &last)
@@ -86,14 +80,18 @@ void apply_roi_to_iterators(roi_type::const_iterator &r,ITERT1 &first,ITERT1 &la
 template<typename ITERT1,typename ...ITERT>
 void apply_roi_to_iterators(roi_type::const_iterator &r,ITERT1 &first,ITERT1 &last,ITERT& ...iterators)
 {
-    size_t s = std::distance(first,last);
-    std::advance(first,r->first()-1);
-    std::advance(last,-(s-r->last()+1));
+    apply_roi_to_iterators(r,first,last);
 
     r++;
     apply_roi_to_iterators(r,iterators...);
 }
 
+//----------------------------------------------------------------------------
+//!
+//! \ingroup common_devel
+//! 
+//! Apply a ROI to a bunch of iterators. 
+//!
 template<typename ...ITERT>
 void apply_roi_to_iterators(const roi_type &roi,ITERT& ...iterators)
 {
