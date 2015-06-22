@@ -23,6 +23,7 @@
 #include <pni/core/types.hpp>
 #include <pni/io/parsers.hpp>
 #include "utils.hpp"
+#include "../common/roi.hpp"
 
 using namespace pni::core;
 using namespace pni::io;
@@ -74,7 +75,7 @@ configuration create_global_config()
     config.add_option(config_option<size_t>("mca-size","s",
                 "number of channels of a single MCA spectrum",size_t(0)));
 
-    config.add_option(config_option<slice>("roi","r",
+    config.add_option(config_option<roi_type>("roi","r",
                 "ROI for the input data"));
     config.add_option(config_option<string>("base","",
                 "base path for Nexus objects",""));

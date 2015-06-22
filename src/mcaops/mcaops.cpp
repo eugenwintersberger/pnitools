@@ -28,6 +28,7 @@
 #include "io/data_provider_factory.hpp"
 #include "command_predicate.hpp"
 #include "utils.hpp"
+#include "../common/roi.hpp"
 
 
 using namespace pni::core;
@@ -83,6 +84,16 @@ int main(int argc,char **argv)
     // output the header if requested by the user
     //-------------------------------------------------------------------------
     if(config.value<bool>("header")) std::cout<<"#chan data"<<std::endl;
+    
+    //-------------------------------------------------------------------------
+    // get the region of interrest if the user has set one
+    //-------------------------------------------------------------------------
+    roi_type roi;
+    if(config.has_option("roi"))
+    {
+        roi = config.value<roi_type>("roi");
+        roi.push_back(roi.back());
+    }
 
 
     //------------------------------------------------------------------------
@@ -99,11 +110,10 @@ int main(int argc,char **argv)
             data_range mca_range(data.second.begin(),data.second.end());
 
             if(config.has_option("roi"))
-            {
-                auto roi = config.value<slice>("roi");
-                apply_roi(channel_range,roi);
-                apply_roi(mca_range,roi);
-            }
+                apply_roi_to_iterators(roi,channel_range.first,
+                                           channel_range.second,
+                                           mca_range.first,
+                                           mca_range.second);
 
             operation::argument_type arg(channel_range,mca_range);
 

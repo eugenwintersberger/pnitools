@@ -36,10 +36,10 @@ append_data = "1 2 3 4 5\n 6 7 8 9 10\n 11 12 13 14 15"
 replace_data = "10 20 30 40 50\n 60 70 80 90 100\n 110 120 130 140 150"
 
 class nxtee_test(unittest.TestCase):
-    filename = "nxtee_test.nxs"
+    filename = "nxtee/nxtee_test.nxs"
     instrument = filename+"://:NXentry/:NXinstrument"
     def setUp(self):
-        call(['xml2nx','-o',"-p"+self.filename+"://","mca.xml"])
+        call(['xml2nx','-o',"-p"+self.filename+"://","nxtee/mca.xml"])
 
     def tearDown(self):
         pass
@@ -88,10 +88,6 @@ class nxtee_test(unittest.TestCase):
         f.close()
         
 
-
-
-
-
-
+#---------------------------run the program if necessary----------------------
 if __name__ == "__main__":
     unittest.main()
