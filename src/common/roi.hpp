@@ -90,7 +90,8 @@ void apply_roi_to_iterators(roi_type::const_iterator &r,ITERT1 &first,ITERT1 &la
     std::advance(first,r->first()-1);
     std::advance(last,-(s-r->last()+1));
 
-    apply_roi_to_iterators(r++,iterators...);
+    r++;
+    apply_roi_to_iterators(r,iterators...);
 }
 
 template<typename ...ITERT>

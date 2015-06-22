@@ -39,15 +39,21 @@ struct roi_fixture
     roi_type roi_3;
     roi_type r;
     array_type a;
+    array_type b;
+    array_type c;
 
     roi_fixture():
         roi_1(roi_type{slice(0)}),
         roi_2(roi_type{slice(10),slice(0,100)}),
         roi_3(roi_type{slice(5,20),slice(20),slice(1024)}),
         a(array_type::create(shape_t{100})),
+        b(array_type::create(shape_t{100})),
+        c(array_type::create(shape_t{100})),
         r()
     {
         std::iota(a.begin(),a.end(),0); 
+        std::iota(b.begin(),b.end(),100);
+        std::iota(c.begin(),c.end(),200);
     }
 };
 
@@ -127,6 +133,42 @@ BOOST_AUTO_TEST_CASE(test_apply_2)
 
     BOOST_CHECK_EQUAL(*first,49);
     BOOST_CHECK_EQUAL(*last,50);
+}
+
+//----------------------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(test_apply_2d)
+{
+    r = roi_type{slice(10,20),slice(50,100)};
+    auto a_first = a.begin();
+    auto a_last  = a.end();
+    auto b_first = b.begin();
+    auto b_last  = b.end();
+
+    apply_roi_to_iterators(r,a_first,a_last,b_first,b_last);
+    BOOST_CHECK_EQUAL(*a_first,9);
+    BOOST_CHECK_EQUAL(*a_last,19);
+    BOOST_CHECK_EQUAL(*b_first,149);
+    BOOST_CHECK_EQUAL(*b_last,199);
+}
+
+//----------------------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(test_apply_3d)
+{
+    r = roi_type{slice(10,20),slice(50,100),slice(20,76)};
+    auto a_first = a.begin();
+    auto a_last  = a.end();
+    auto b_first = b.begin();
+    auto b_last  = b.end();
+    auto c_first = c.begin();
+    auto c_last  = c.end();
+
+    apply_roi_to_iterators(r,a_first,a_last,b_first,b_last,c_first,c_last);
+    BOOST_CHECK_EQUAL(*a_first,9);
+    BOOST_CHECK_EQUAL(*a_last,19);
+    BOOST_CHECK_EQUAL(*b_first,149);
+    BOOST_CHECK_EQUAL(*b_last,199);
+    BOOST_CHECK_EQUAL(*c_first,219);
+    BOOST_CHECK_EQUAL(*c_last,275);
 }
 
 //----------------------------------------------------------------------------
