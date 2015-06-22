@@ -22,6 +22,7 @@
 #pragma once
 
 #include <pni/core/types.hpp>
+#include <pni/core/configuration.hpp>
 #include "functor.hpp"
 #include "../options_splitter.hpp"
 
@@ -45,6 +46,15 @@ class functor_factory
         static functor::pointer_type create_uniform(const args_vector &args);
 
         //--------------------------------------------------------------------
+        //! 
+        //! \brief create uniform configuration
+        //! 
+        //! Create the configuration for a uniform functor
+        //! \return configuration instance
+        //! 
+        static pni::core::configuration create_uniform_config();
+
+        //--------------------------------------------------------------------
         //!
         //! \brief create linear functor
         //!
@@ -53,6 +63,15 @@ class functor_factory
         //! \return unique pointer to the functor instance
         //!
         static functor::pointer_type create_linear(const args_vector &args);
+        
+        //--------------------------------------------------------------------
+        //! 
+        //! \brief create linear configuration
+        //! 
+        //! Create the configuration for a linear functor
+        //! \return configuration instance
+        //! 
+        static pni::core::configuration create_linear_config();
 
         //--------------------------------------------------------------------
         //!
@@ -63,6 +82,15 @@ class functor_factory
         //! \return unique pointer ot the functo instance
         //!
         static functor::pointer_type create_gauss(const args_vector &args);
+        
+        //--------------------------------------------------------------------
+        //! 
+        //! \brief create gauss configuration
+        //! 
+        //! Create the configuration for a gauss functor
+        //! \return configuration instance
+        //! 
+        static pni::core::configuration create_gauss_config();
     public:
         //!
         //! \brief create functor 
@@ -77,4 +105,17 @@ class functor_factory
         //!
         static functor::pointer_type create(const pni::core::string &name,
                                             const args_vector &args);
+
+        //--------------------------------------------------------------------
+        //!
+        //! \brief get configuration for a functor
+        //! 
+        //! Returns the configuration for a particular functor determined 
+        //! by its name.
+        //! 
+        //! \param name the name of the functor
+        //! \return the configuration for this very functor
+        //! 
+        static pni::core::configuration 
+            config(const pni::core::string &name);
 };

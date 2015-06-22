@@ -24,6 +24,9 @@
 #include <iostream>
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
+#include "grid_generator.hpp"
+#include "options_splitter.hpp"
+#include "functors/executor.hpp"
 
 //!
 //! \ingroup datgen_devel
@@ -57,4 +60,75 @@ namespace std{
     istream &operator>>(istream &stream,pni::core::type_id_t &tid);
 }
 
+//!
+//! \ingroup datgen_devel
+//! \brief show help text on user request 
+//! 
+//! Prints the help text when the user starts the program with -h or 
+//! --help. The function returns true if help is shown. 
+//! This should be used as an indicator that the program should 
+//! abort.
+//! 
+//! \param global_config reference to the global configuration of the
+//!                      program
+//! \return true if showing help, false otherwise
+bool show_help(const pni::core::configuration &global_config);
 
+//----------------------------------------------------------------------------
+//! 
+//! \ingroup datgen_devel
+//! \brief build the grid generator
+//! 
+//! Build the grid generator from the global program configuration. 
+//! If the function returns false an error occured and the program should 
+//! bort. 
+//! 
+//! \param global_config reference to the program global configuration
+//! \param generator reference to the grid_generator insance to create
+//! \return true if everything is fine, false otherwise
+//!
+bool build_grid_generator(const pni::core::configuration &global_config,
+                          grid_generator &generator);
+
+//----------------------------------------------------------------------------
+//! 
+//! \ingroup datgen_devel
+//! \brief build executor
+//! 
+//! Build the executor stack from the functors passed by the user to the 
+//! command line of the program. The function returns true if everything went
+//! fine. Otherwise false is returned.
+//! 
+//! \param arg_map argument map
+//! \param exe reference to the executor
+//! \return true if everything went find, false otherwise
+bool build_executor(const args_map &,executor &);
+
+//-----------------------------------------------------------------------------
+//!
+//! \ingroup datgen_devel
+//! \brief check number of input arguments
+//! 
+//! Check if there are input arguments at all and if the functor names are
+//! valid. If true everything is OK. If false the program should abort.
+//! 
+//! \param args input arguments map
+//! \return true if everying is ok, flase otherwise
+//! 
+bool check_arguments(const args_map &args);
+
+//----------------------------------------------------------------------------
+//!
+//! \ingroup datgen_devel
+//! \brief parse global configuration
+//! 
+//! Parsers the global configuration provided by the user from the 
+//! arguments map. It finally removes the 'globals' section from the 
+//! arguments map. The function returns true if everything was ok, and 
+//! false otherwise. If the return value is false the program should abort. 
+//!
+//! 
+bool parse_global_config(pni::core::configuration &global_config,
+                         args_map &args);
+
+//

@@ -24,6 +24,11 @@
 
 using namespace pni::core;
 
+executor::executor():
+    _functors()
+{}
+
+//----------------------------------------------------------------------------
 executor::executor(functor_vector &&functors):
     _functors(std::move(functors))
 {}

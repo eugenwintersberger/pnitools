@@ -24,18 +24,24 @@
 #include "uniform.hpp"
 #include "gauss.hpp"
 #include "linear.hpp"
-#include <pni/core/configuration.hpp>
 
 using namespace pni::core;
 
-//----------------------------------------------------------------------------
-functor::pointer_type functor_factory::create_uniform(const args_vector &args)
+configuration functor_factory::create_uniform_config()
 {
     configuration c;
     c.add_option(config_option<float64>("upper","u",
                 "Upper bound of uniform distribution",1.0));
     c.add_option(config_option<float64>("lower","l",
                 "Lower bound of uniform distribution",0.0));
+
+    return c;
+}
+
+//----------------------------------------------------------------------------
+functor::pointer_type functor_factory::create_uniform(const args_vector &args)
+{
+    configuration c = create_uniform_config();
     parse(c,args);
 
     return functor::pointer_type(
@@ -43,8 +49,8 @@ functor::pointer_type functor_factory::create_uniform(const args_vector &args)
             );
 }
 
-//----------------------------------------------------------------------------
-functor::pointer_type functor_factory::create_gauss(const args_vector &args)
+//---------------------------------------------------------------------------
+configuration functor_factory::create_gauss_config()
 {
     configuration c;
     c.add_option(config_option<float64>("sigma","s",
@@ -53,6 +59,13 @@ functor::pointer_type functor_factory::create_gauss(const args_vector &args)
                 "Center parameter of the Gaussian",0.0));
     c.add_option(config_option<float64>("amplitude","a",
                 "Amplitude of the Gaussian",1.0));
+    return c;
+}
+
+//----------------------------------------------------------------------------
+functor::pointer_type functor_factory::create_gauss(const args_vector &args)
+{
+    configuration c = create_gauss_config();
 
     parse(c,args);
 
@@ -64,7 +77,7 @@ functor::pointer_type functor_factory::create_gauss(const args_vector &args)
 }
 
 //----------------------------------------------------------------------------
-functor::pointer_type functor_factory::create_linear(const args_vector &args)
+configuration functor_factory::create_linear_config()
 {
     configuration c;
     c.add_option(config_option<float64>("slope","s",
@@ -72,6 +85,13 @@ functor::pointer_type functor_factory::create_linear(const args_vector &args)
     c.add_option(config_option<float64>("offset","o",
                 "Offset of the linear function",0.0));
 
+    return c;
+}
+
+//----------------------------------------------------------------------------
+functor::pointer_type functor_factory::create_linear(const args_vector &args)
+{
+    configuration c = create_linear_config();
     parse(c,args);
 
     return functor::pointer_type(
@@ -93,4 +113,15 @@ functor::pointer_type functor_factory::create(const string &name,
     else
         throw key_error(EXCEPTION_RECORD,
                 "Unknown function key ["+name+"]!");
+}
+
+//----------------------------------------------------------------------------
+configuration functor_factory::config(const string &name)
+{
+    if(name == "uniform")     return create_uniform_config();
+    else if(name == "linear") return create_linear_config();
+    else if(name == "gauss")  return create_gauss_config();
+    else 
+        throw key_error(EXCEPTION_RECORD,
+                "Unkonwn function key ["+name+"]!");
 }

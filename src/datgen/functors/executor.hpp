@@ -39,6 +39,10 @@ class executor
         //! vector with functors
         functor_vector _functors;
     public:
+        //! default constructor
+        executor();
+
+        //--------------------------------------------------------------------
         //!
         //! \brief constructors
         //!
