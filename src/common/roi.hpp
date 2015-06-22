@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <pni/core/arrays/slice.hpp>
+#include <pni/io/parsers.hpp>
 #include <vector>
 
 //!
@@ -58,7 +59,7 @@ size_t size(const roi_type &roi);
 //!
 size_t rank(const roi_type &roi);
 
-//!---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //!
 //! \ingroup common_devel
 //! \brief input operator for a ROI
@@ -66,3 +67,35 @@ size_t rank(const roi_type &roi);
 //! This operator is required to make rois available from the command line. 
 //! 
 std::istream &operator>>(std::istream &stream,roi_type &roi);
+
+//----------------------------------------------------------------------------
+//!
+//! \ingroup common_devel
+//! 
+//! Apply a ROI to a bunch of iterators. 
+//!
+
+template<typename ITERT1>
+void apply_roi_to_iterators(roi_type::const_iterator &r,ITERT1 &first,ITERT1 &last)
+{
+    size_t s = std::distance(first,last);
+    std::advance(first,r->first()-1);
+    std::advance(last,-(s-r->last()+1));
+}
+
+template<typename ITERT1,typename ...ITERT>
+void apply_roi_to_iterators(roi_type::const_iterator &r,ITERT1 &first,ITERT1 &last,ITERT& ...iterators)
+{
+    size_t s = std::distance(first,last);
+    std::advance(first,r->first()-1);
+    std::advance(last,-(s-r->last()+1));
+
+    apply_roi_to_iterators(r++,iterators...);
+}
+
+template<typename ...ITERT>
+void apply_roi_to_iterators(const roi_type &roi,ITERT& ...iterators)
+{
+    auto riter = roi.begin();
+    apply_roi_to_iterators(riter,iterators...);
+}

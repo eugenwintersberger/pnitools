@@ -22,11 +22,15 @@
 //
 #include <boost/test/unit_test.hpp>
 #include <boost/current_function.hpp>
+#include <pni/core/types.hpp>
+#include <pni/core/arrays.hpp>
 #include <sstream>
 
 #include <common/roi.hpp>
 
 using namespace pni::core;
+
+typedef dynamic_array<int64> array_type;
 
 struct roi_fixture
 {
@@ -34,13 +38,17 @@ struct roi_fixture
     roi_type roi_2;
     roi_type roi_3;
     roi_type r;
+    array_type a;
 
     roi_fixture():
         roi_1(roi_type{slice(0)}),
         roi_2(roi_type{slice(10),slice(0,100)}),
         roi_3(roi_type{slice(5,20),slice(20),slice(1024)}),
+        a(array_type::create(shape_t{100})),
         r()
-    {}
+    {
+        std::iota(a.begin(),a.end(),0); 
+    }
 };
 
 
@@ -96,6 +104,32 @@ BOOST_AUTO_TEST_CASE(test_input_3d)
     BOOST_CHECK_EQUAL(r[1],slice(34));
     BOOST_CHECK_EQUAL(r[2],slice(100,200));
 }
+
+//----------------------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(test_apply_1)
+{
+    r = roi_type{slice(10,20)};
+    auto first = a.begin();
+    auto last  = a.end();
+    apply_roi_to_iterators(r,first,last);
+
+    BOOST_CHECK_EQUAL(*first,9);
+    BOOST_CHECK_EQUAL(*last,19);
+}
+
+//----------------------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(test_apply_2)
+{
+    r = roi_type{slice(50,51)};
+    auto first = a.begin();
+    auto last  = a.end();
+    apply_roi_to_iterators(r,first,last);
+
+    BOOST_CHECK_EQUAL(*first,49);
+    BOOST_CHECK_EQUAL(*last,50);
+}
+
+//----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
 
