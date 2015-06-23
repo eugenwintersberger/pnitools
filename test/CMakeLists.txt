@@ -47,6 +47,7 @@ add_subdirectory(unittests)
 add_subdirectory(detinfo)
 add_subdirectory(nxtee)
 add_subdirectory(mcaops)
+add_subdirectory(datgen)
 
 
 #===================extract the data an prepear for testing=================

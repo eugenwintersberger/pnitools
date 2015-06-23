@@ -28,7 +28,12 @@ uniform::uniform(float64 lower_bound,float64 upper_bound):
     functor(),
     _generator(std::random_device()()),
     _distribution(distribution_type(lower_bound,upper_bound))
-{}
+{
+    if(upper_bound < lower_bound)
+        throw range_error(EXCEPTION_RECORD,
+                "Upper bound of uniform random generator is smaller than"
+                " lower bound!");
+}
 
 //----------------------------------------------------------------------------
 float64 uniform::operator()(float64 x) const

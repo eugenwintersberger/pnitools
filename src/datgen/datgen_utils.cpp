@@ -101,12 +101,12 @@ bool build_grid_generator(const configuration &global_config,
     }
     catch(cli_option_error &error)
     {
-        std::cerr<<error<<std::endl;
+        std::cerr<<error.description()<<std::endl;
         return false;
     }
     catch(range_error &error)
     {
-        std::cerr<<error<<std::endl;
+        std::cerr<<error.description()<<std::endl;
         return false;
     }
 
@@ -126,6 +126,11 @@ bool build_executor(const args_map &args,executor &exe)
             funcs.push_back(functor_factory::create(arg.first,arg.second));
         }
         catch(cli_option_error &error)
+        {
+            std::cerr<<error.description()<<std::endl;
+            return false;
+        }
+        catch(range_error &error)
         {
             std::cerr<<error.description()<<std::endl;
             return false;
