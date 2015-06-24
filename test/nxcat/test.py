@@ -22,11 +22,7 @@
 #  Created on: Oct 07, 2013
 #      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 #
-try:
-    from subprocess import check_output
-except:
-    from check_output import check_output
-
+from subprocess import check_output
 from subprocess import STDOUT
 from subprocess import call
 import unittest
@@ -35,7 +31,7 @@ import pni.io.nx.h5 as nx
 import numpy
 
 class nxcat_test(unittest.TestCase):
-    input_file = "data/nexus/nxls_test.nxs"
+    input_file = "../data/nexus/nxls_test.nxs"
 
     def setUp(self):
         #need to delete the file before we can start a new run
@@ -95,10 +91,10 @@ class nxcat_test(unittest.TestCase):
     #read scalar field data array
     def test_read_float_array_field(self):
         #read reference data
-        data = numpy.loadtxt('data/fio/tstfile_00012.fio',skiprows=32)
+        data = numpy.loadtxt('../data/fio/tstfile_00012.fio',skiprows=32)
         pos  = data[:,0]
         det1 = data[:,1]
-        path = 'data/nexus/tstfile_00012.h5'
+        path = '../data/nexus/tstfile_00012.h5'
         path += '://:NXentry/:NXinstrument/channel_1/polar_angle'
         result = check_output(['nxcat',path])
         pa_nx = numpy.fromstring(result,sep='\n')

@@ -16,7 +16,6 @@ set(TEST_SOURCES pnitoolstest.cpp
 set(CLI_TEST_PY_FILES check_output.py 
                       det2nx_test.py 
                       mcaops_test.py 
-                      nxcat_test.py 
                       detops_test.py
                       run_cli_test.py)
 
@@ -48,6 +47,7 @@ add_subdirectory(mcaops)
 add_subdirectory(datgen)
 add_subdirectory(xml2nx)
 add_subdirectory(nxls)
+add_subdirectory(nxcat)
 
 
 #===================extract the data an prepear for testing=================
