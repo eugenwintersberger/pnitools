@@ -22,10 +22,7 @@
 #  Created on: Oct 02, 2013
 #      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 #
-try:
-    from subprocess import check_output
-except:
-    from check_output import check_output
+from subprocess import check_output
 
 from subprocess import STDOUT
 from subprocess import call
@@ -34,7 +31,7 @@ import os
 import pni.io.nx.h5 as nx
 
 class nxls_test(unittest.TestCase):
-    input_file = "data/nexus/nxls_test.nxs"
+    input_file = "../data/nexus/nxls_test.nxs"
 
     def setUp(self):
         pass
