@@ -107,15 +107,15 @@ bool build_executor(const args_map &,executor &);
 //-----------------------------------------------------------------------------
 //!
 //! \ingroup datgen_devel
-//! \brief check number of input arguments
+//! \brief check if there are no input arguments
 //! 
-//! Check if there are input arguments at all and if the functor names are
-//! valid. If true everything is OK. If false the program should abort.
+//! Check if there are input arguments at all. The function returns true if
+//! there are no arguments which should indicate that the program must abort. 
 //! 
 //! \param args input arguments map
-//! \return true if everying is ok, flase otherwise
+//! \return true if no arguments, false otherwise
 //! 
-bool check_arguments(const args_map &args);
+bool check_no_arguments(const args_map &args);
 
 //----------------------------------------------------------------------------
 //!

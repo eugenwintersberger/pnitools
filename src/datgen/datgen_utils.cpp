@@ -142,22 +142,24 @@ bool build_executor(const args_map &args,executor &exe)
 }
 
 //----------------------------------------------------------------------------
-bool check_arguments(const args_map &args)
+bool check_no_arguments(const args_map &args)
 {
     if(args.empty())
     {
         std::cerr<<"No command line arguments passed!"<<std::endl
                  <<"use datgen -h for help!"<<std::endl;
-        return false;
-    }
-    else if(args.size()==1)
-    {
-        std::cerr<<"No or unknown functor name provided - aborting!"<<std::endl;
-        std::cerr<<"For more help use: datgen -h"<<std::endl;
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
+}
+
+//----------------------------------------------------------------------------
+bool check_no_functor(const args_map &args)
+{
+    if(args.empty())
+
+    return false;
 }
 
 //----------------------------------------------------------------------------
@@ -180,8 +182,22 @@ bool parse_global_config(configuration &global_config, args_map &args)
         std::cerr<<"This option can be either 'int' or 'float'!"<<std::endl;
         return false;
     }
+
+    //show the help text here
+    if(show_help(global_config)) return false;
     
     //remove the global options from the map
     args.erase(args.find("global")); 
+
+    //after stripping of the global section the remaining argument map must
+    //not be empty. If this is the case not functor has been provided and the 
+    //program must abort.
+    if(args.empty())
+    {
+        std::cerr<<"No or unknown functor name provided - aborting!"<<std::endl;
+        std::cerr<<"For more help use: datgen -h"<<std::endl;
+        return false;
+    }
+
     return true;
 }

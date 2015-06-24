@@ -91,6 +91,18 @@ class functor_factory
         //! \return configuration instance
         //! 
         static pni::core::configuration create_gauss_config();
+
+        //---------------------------------------------------------------------
+        //!
+        //! \brief create error message 
+        //! 
+        //! Return the error message in situations where unkown options or 
+        //! arguments where passed to a functor
+        //! 
+        //! \param res residual arguments not parsed
+        //! \return error message as string
+        //!
+        static pni::core::string get_cli_error_message(const args_vector &res);
     public:
         //!
         //! \brief create functor 

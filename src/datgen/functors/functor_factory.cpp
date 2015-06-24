@@ -27,6 +27,16 @@
 
 using namespace pni::core;
 
+string functor_factory::get_cli_error_message(const args_vector &res)
+{
+    string output = "Unknown options or arguments [";
+    for(auto a: res) output += a+" ";
+
+    output +="]!";
+    return output;
+}
+
+//----------------------------------------------------------------------------
 configuration functor_factory::create_uniform_config()
 {
     configuration c;
@@ -42,7 +52,9 @@ configuration functor_factory::create_uniform_config()
 functor::pointer_type functor_factory::create_uniform(const args_vector &args)
 {
     configuration c = create_uniform_config();
-    parse(c,args);
+    auto res = parse(c,args,true);
+    if(!res.empty()) 
+        throw cli_option_error(EXCEPTION_RECORD,get_cli_error_message(res));
 
     return functor::pointer_type(
             new uniform(c.value<float64>("lower"),c.value<float64>("upper"))
@@ -67,7 +79,9 @@ functor::pointer_type functor_factory::create_gauss(const args_vector &args)
 {
     configuration c = create_gauss_config();
 
-    parse(c,args);
+    auto res = parse(c,args,true);
+    if(!res.empty())
+        throw cli_option_error(EXCEPTION_RECORD,get_cli_error_message(res));
 
     return functor::pointer_type(
             new gauss(c.value<float64>("sigma"),
@@ -92,7 +106,9 @@ configuration functor_factory::create_linear_config()
 functor::pointer_type functor_factory::create_linear(const args_vector &args)
 {
     configuration c = create_linear_config();
-    parse(c,args);
+    auto res = parse(c,args,true);
+    if(!res.empty())
+        throw cli_option_error(EXCEPTION_RECORD,get_cli_error_message(res));
 
     return functor::pointer_type(
             new linear(c.value<float64>("slope"),

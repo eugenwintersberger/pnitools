@@ -43,15 +43,12 @@ int main(int argc,char **argv)
     options_splitter splitter(args_vector{"uniform","gauss","linear"});
     args_map m=splitter(cliargs2vector(argc,argv));
     
-    if(!check_arguments(m)) return 1;
+    if(check_no_arguments(m)) return 1;
 
     //------------------------------------------------------------------------
     // parse the global configuration
     //------------------------------------------------------------------------
-    parse_global_config(global_config,m);
-
-    //show help text if requested by the user
-    if(show_help(global_config)) return 1;
+    if(!parse_global_config(global_config,m)) return 1;
 
     //------------------------------------------------------------------------
     // build the grid generator
