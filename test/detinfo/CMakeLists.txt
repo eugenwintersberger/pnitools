@@ -1,5 +1,9 @@
-set(FILES detinfo_test.py __init__.py)
+set(FILES test.py)
 
 foreach(F ${FILES})
     configure_file(${F} ${F} COPYONLY)
 endforeach()
+
+add_test(NAME detinfo:acceptance:test
+         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+         COMMAND test.py)
