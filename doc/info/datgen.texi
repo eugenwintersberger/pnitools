@@ -16,8 +16,18 @@ Subsequent to the global options follows the name of the first data generator
 along with its specific options.
 
 All data is computed on a regular grid (currently only one dimensional data is
-supported). The following data generators are available at the moment
+supported). The grid is controlled by the three command line options 
+@option{-b}, @option{-e}, and @option{-s}. @option{-b} and @option{-e} determine 
+the first and the last point of the grid while @option{-s} provides the number 
+of steps. The step width of the grid is computed from this value with
+@tex
+$$
+\Delta = {{e-b}\over{s-1}}
+$$
+@end tex
 
+
+Currently the following generators are available 
 @table @asis
 @item uniform 
 This generator produces random data uniformly distributed within a given range. 
@@ -30,9 +40,6 @@ A linear generator which could be quite useful to model background.
 @noindent
 Each generator can produced either 64Bit integer or floating point numbers. 
 The same generator can be used multiple times within the generator chain. 
-If the @command{uniform} generator is somewhere involved in the chain using the
-@option{--repeat=n} can be useful. This optoin repeats the computation @math{n}
-times. For a uniform distribution one would get @math{n} different results.
 
 @subsection Datatypes
 
