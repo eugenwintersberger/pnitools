@@ -18,11 +18,10 @@ set(CLI_TEST_PY_FILES check_output.py
                       mcaops_test.py 
                       nxcat_test.py 
                       nxls_test.py 
-                      xml2nx_test.py 
                       detops_test.py
                       run_cli_test.py)
 
-set(XML_FILES basic.xml detector.xml det2nx.xml)
+set(XML_FILES det2nx.xml)
 
     file(MAKE_DIRECTORY data)
 
@@ -48,6 +47,7 @@ add_subdirectory(detinfo)
 add_subdirectory(nxtee)
 add_subdirectory(mcaops)
 add_subdirectory(datgen)
+add_subdirectory(xml2nx)
 
 
 #===================extract the data an prepear for testing=================

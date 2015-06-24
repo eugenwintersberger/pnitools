@@ -23,10 +23,7 @@
 #      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 #
 
-try:
-    from subprocess import check_output
-except:
-    from check_output import check_output
+from subprocess import check_output
 
 from subprocess import STDOUT
 from subprocess import call
