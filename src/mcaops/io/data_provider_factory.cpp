@@ -24,6 +24,7 @@
 #include "data_provider_factory.hpp"
 #include "stdin_provider.hpp"
 #include "fio_provider.hpp"
+#include "nexus_provider.hpp"
 
 using namespace pni::core;
 
@@ -52,7 +53,7 @@ data_provider_factory::create_stdin_provider(const configuration &c)
 //----------------------------------------------------------------------------
 data_provider::pointer_type 
 data_provider_factory::create_fio_provider(const configuration &c,
-                                           const filename_vector &filenames)
+                                           const string &filename)
 {
     if(c.value<bool>("verbose"))
         std::cerr<<"Creating input provider for a FIO file!"<<std::endl;
@@ -63,9 +64,6 @@ data_provider_factory::create_fio_provider(const configuration &c,
     string mca_col_name;
     if(c.has_option("mca"))
         mca_col_name = c.value<string>("mca");
-    else
-        throw cli_error(EXCEPTION_RECORD,
-                "For FIO files the -m (--mca) option has to be used!");
 
     //------------------------------------------------------------------------
     // get the channel/bin-center column name (optional)
@@ -85,34 +83,47 @@ data_provider_factory::create_fio_provider(const configuration &c,
     // construct the provider
     //------------------------------------------------------------------------
 
-    return pointer_type(new fio_provider(filenames.front(),
+    return pointer_type(new fio_provider(filename,
                                          mca_col_name,channel_col_name,
                                          coffset));
 
 }
 
 //----------------------------------------------------------------------------
+data_provider::pointer_type
+data_provider_factory::create_nexus_provider(const configuration &c,
+                                             const string &filename)
+{
+    string channel_path; 
+    if(c.has_option("channels")) channel_path = c.value<string>("channels");
+    if(c.has_option("bins")) channel_path = c.value<string>("bins");
+
+    return pointer_type(new nexus_provider(filename,
+                                           channel_path,
+                                           c.value<string>("mca"),
+                                           c.value<size_t>("auto-index-offset")));
+}
+
+//----------------------------------------------------------------------------
 data_provider::pointer_type 
-data_provider_factory::create(const configuration &config)
+data_provider_factory::create(const string &fname,const configuration &config)
 {
     typedef data_provider::pointer_type pointer_type;
-    if(config.has_option("input-files"))
+
+    if(!fname.empty())
     {
-        auto file_names = config.value<std::vector<string>>("input-files");
-        string file_name = file_names.front();
-        switch(get_file_type(file_names.front()))
+        switch(get_file_type(fname))
         {
             case file_type::NEXUS_FILE:
-                std::cerr<<"Nexus files"<<std::endl;
+                return create_nexus_provider(config,fname);
             case file_type::FIO_FILE:
-                return create_fio_provider(config,file_names);
+                return create_fio_provider(config,fname);
             default:
-                return pointer_type();
+                throw file_error(EXCEPTION_RECORD,
+                        "File ["+fname+"] is of unknown format!");
         }
     }
     else
-    {
         return create_stdin_provider(config);
-    }
 
 }

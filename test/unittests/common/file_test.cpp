@@ -43,6 +43,15 @@ struct file_fixture
 
 BOOST_FIXTURE_TEST_SUITE(file_tests,file_fixture)
 
+//-----------------------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(test_default_construction)
+{
+    file f;
+    BOOST_CHECK_EQUAL(f.name(),"");
+    BOOST_CHECK_EQUAL(f.extension(),"");
+    BOOST_CHECK_EQUAL(f.path(),"");
+    BOOST_CHECK_EQUAL(f.base(),"");
+}
 
 //-----------------------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(test_creation)

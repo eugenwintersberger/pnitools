@@ -31,8 +31,8 @@ file::file(const string &path):
        fs::is_directory(_path) ||
        !fs::exists(_path))
     {
-        throw file_error(EXCEPTION_RECORD,"File ["+path+"] is not a regular"
-                        "file!");
+        throw file_error(EXCEPTION_RECORD,"File ["+path+"] is not a regular "
+                        "file or does not exist!");
     }
 }
 

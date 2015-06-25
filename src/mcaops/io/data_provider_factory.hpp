@@ -58,10 +58,23 @@ class data_provider_factory
         //! Utility function used to create a FIO provider. 
         //!
         //! \param c reference to the global program configuration
+        //! \param filenames reference to a list of filenames
         //! \return smart pointer to the provider instance
         static pointer_type
             create_fio_provider(const pni::core::configuration &c,
-                                const filename_vector &filenames);
+                                const pni::core::string &filename);
+
+        //!
+        //! \brief create a Nexus provider
+        //! 
+        //! Utility function used to create a Nexus data provider. 
+        //! 
+        //! \param c reference to the global program configuration
+        //! \param filenames reference to the list of filenames
+        //! \return pointer to a new nexus provider instance
+        static pointer_type
+            create_nexus_provider(const pni::core::configuration &c,
+                                  const pni::core::string &filename);
     public:
         //!
         //! \brief create provider instance
@@ -74,7 +87,10 @@ class data_provider_factory
         //! \li if there are input files, the first of them determines the file 
         //!     type, and a file provider according to this type will be 
         //!     created.
+        //!
+        //! \param config reference to the global configuration
+        //! \return pointer to the provider implementation
         //! 
-        static pointer_type 
-            create(const pni::core::configuration &config);
+        static pointer_type create(const pni::core::string &fname,
+                                   const pni::core::configuration &config);
 };

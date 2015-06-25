@@ -41,11 +41,7 @@ fio_provider::fio_provider(const string &filename,
     _channel_column(channel_column_name),
     _file_read(false),
     _channel_offset(channel_offset)
-{
-    if(_mca_column.empty())
-        throw key_error(EXCEPTION_RECORD,
-                "For FIO files the column with MCA data must be provided!");
-}
+{ }
 
 //----------------------------------------------------------------------------
 fio_provider :: ~fio_provider()
@@ -71,11 +67,11 @@ fio_provider::get_mca_data(const fio_reader &reader) const
     }
     catch(key_error &error)
     {
-        std::cerr<<error<<std::endl;
+        std::cerr<<error.description()<<std::endl;
     }
     catch(file_error &error)
     {
-        std::cerr<<error<<std::endl;
+        std::cerr<<error.description()<<std::endl;
     }
     catch(...)
     {
@@ -84,7 +80,7 @@ fio_provider::get_mca_data(const fio_reader &reader) const
 
     //if we arrive here something went wrong
     throw io_error(EXCEPTION_RECORD,
-            "Failed to read MCA data from the file!");
+            "Failed to read MCA data from file ["+_filename+"!");
 
 }
 
@@ -105,11 +101,11 @@ fio_provider::get_channel_data(const fio_reader &reader,size_t n) const
         }
         catch(key_error &error)
         {
-            std::cerr<<error<<std::endl;
+            std::cerr<<error.description()<<std::endl;
         }
         catch(file_error &error)
         {
-            std::cerr<<error<<std::endl;
+            std::cerr<<error.description()<<std::endl;
         }
         catch(...)
         {
@@ -117,7 +113,7 @@ fio_provider::get_channel_data(const fio_reader &reader,size_t n) const
         }
 
         throw io_error(EXCEPTION_RECORD,
-                "Failed to read channel data from the file!");
+                "Failed to read channel data from the file ["+_filename+"!");
     }
     else
     {
@@ -136,6 +132,9 @@ data_provider::value_type fio_provider::next()
    
     //open the file
     fio_reader reader(_filename);
+
+    if(_mca_column.empty())
+        _mca_column = reader.begin()->name();
 
     //read MCA data from the file
     array_type mca = get_mca_data(reader);

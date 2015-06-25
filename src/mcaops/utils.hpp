@@ -25,7 +25,11 @@
 #include <pni/core/arrays/slice.hpp>
 #include <pni/core/configuration/configuration.hpp>
 #include "operations/operation.hpp"
+#include "../common/file_queue.hpp"
+#include "../common/roi.hpp"
+#include "io/data_provider.hpp"
 
+typedef data_provider::pointer_type provider_ptr;
 
 //!
 //! \ingroup mcaops_devel
@@ -98,6 +102,50 @@ bool check_argument_count(int argc);
 //! the case true will be returned (and the program should terminate).
 //!
 bool manage_help_request(const pni::core::configuration &c);
+
+//-----------------------------------------------------------------------------
+//!
+//! \ingroup mcaops_devel
+//! \brief retrieve fiel queue from the input arguments provided by the user
+//! 
+//! The function returns false if there were any errors (in which case the 
+//! program should abort). True is returned in case of success. 
+//! 
+//! \param c reference to the program configuration
+//! \param q reference to the file queue
+//! \return true in case of success, false otherwise 
+//! 
+bool get_file_queue(const pni::core::configuration &c,file_queue &q);
+
+//-----------------------------------------------------------------------------
+//!
+//! \ingroup mcaops_devel
+//! \brief get ROI from program configuration
+//! 
+//! Return the ROI from the use configuration. This function returns true on 
+//! success and false otherwise. 
+//!
+//! \param c reference to the program configuration
+//! \param r reference to the ROI 
+//! \return true if success, false otherwise
+//! 
+bool get_roi(const pni::core::configuration &c,roi_type &r);
+
+//------------------------------------------------------------------------------
+//!
+//! \ingroup mcaops_devel
+//! \abrief get data provider
+//! 
+//! Returns the data provider from the file path and the configuration .
+//! The function returns true on success, false otherwise. 
+//! 
+//! \param path reference to the file path
+//! \param c reference to the program configuration
+//! \param provider reference to the provider 
+//! \return true if successful, false otherwise
+//! 
+bool get_provider(const pni::core::string &path,const pni::core::configuration &c,
+                  provider_ptr &provider);
 
 //=============================================================================
 static const char usage_string[] = 

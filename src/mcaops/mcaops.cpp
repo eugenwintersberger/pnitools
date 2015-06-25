@@ -22,13 +22,11 @@
 
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
+#include <pni/io/exceptions.hpp>
 #include "operations/operation.hpp"
 #include "operations/operation_factory.hpp"
-#include "io/data_provider.hpp"
-#include "io/data_provider_factory.hpp"
 #include "command_predicate.hpp"
 #include "utils.hpp"
-#include "../common/roi.hpp"
 
 
 using namespace pni::core;
@@ -39,7 +37,6 @@ using namespace pni::core;
 typedef std::vector<string>         args_vector;
 typedef operation::pointer_type     operation_ptr;
 typedef operation::data_range       data_range;
-typedef data_provider::pointer_type provider_ptr;
 
 
 //=============================================================================
@@ -71,14 +68,20 @@ int main(int argc,char **argv)
     }
     //now we can assemble the new options and argument vector from the 
     configuration config = create_global_config();
-    parse(config,global_args,true);
+
+    try
+    {
+        parse(config,global_args,true);
+    }
+    catch(range_error &error)
+    {
+        std::cerr<<error.description()<<std::endl<<std::endl;
+        std::cerr<<"Check your ROI or the numeric ranges for file patterns!";
+        std::cerr<<std::endl;
+        return 1;
+    }
 
     if(manage_help_request(config)) return 1;
-
-    //-------------------------------------------------------------------------
-    // constructing the provider for input data
-    //-------------------------------------------------------------------------
-    provider_ptr provider = data_provider_factory::create(config);
     
     //-------------------------------------------------------------------------
     // output the header if requested by the user
@@ -89,49 +92,65 @@ int main(int argc,char **argv)
     // get the region of interrest if the user has set one
     //-------------------------------------------------------------------------
     roi_type roi;
-    if(config.has_option("roi"))
-    {
-        roi = config.value<roi_type>("roi");
-        roi.push_back(roi.back());
-    }
-
+    if(!get_roi(config,roi)) return 1;
 
     //------------------------------------------------------------------------
-    // main processing loop
+    // main processing loop -- loop over all input files
     //------------------------------------------------------------------------
-    while(!provider->finished())
+    file_queue fileq;
+    if(!get_file_queue(config,fileq)) return 1;
+
+    while(!fileq.empty())
     {
-        try
-        {
-            //get the next data set 
-            auto data = provider->next();
+        //---------------------------------------------------------------------
+        // constructing the provider for input data
+        //---------------------------------------------------------------------
+        provider_ptr provider;
+        if(!get_provider(fileq.front().path(),config,provider)) return 1;
 
-            data_range channel_range(data.first.begin(),data.first.end());
-            data_range mca_range(data.second.begin(),data.second.end());
-
-            if(config.has_option("roi"))
-                apply_roi_to_iterators(roi,channel_range.first,
-                                           channel_range.second,
-                                           mca_range.first,
-                                           mca_range.second);
-
-            operation::argument_type arg(channel_range,mca_range);
-
-            (*ops)(arg);
-            std::cout<<*ops<<std::endl;
-        }
-        catch(value_error &error)
+        //--------------------------------------------------------------------
+        // perform the operation on the data
+        //--------------------------------------------------------------------
+        while(!provider->finished())
         {
-            std::cerr<<error<<std::endl; return 1;
+            try
+            {
+                //get the next data set 
+                auto data = provider->next();
+
+                data_range channel_range(data.first.begin(),data.first.end());
+                data_range mca_range(data.second.begin(),data.second.end());
+
+                if(config.has_option("roi"))
+                    apply_roi_to_iterators(roi,channel_range.first,
+                                               channel_range.second,
+                                               mca_range.first,
+                                               mca_range.second);
+
+                operation::argument_type arg(channel_range,mca_range);
+
+                (*ops)(arg);
+                std::cout<<*ops<<std::endl;
+            }
+            catch(value_error &error)
+            {
+                std::cerr<<error.description()<<std::endl; return 1;
+            }
+            catch(size_mismatch_error &error)
+            {
+                std::cerr<<error.description()<<std::endl; return 1;
+            }
+            catch(shape_mismatch_error &error)
+            {
+                std::cerr<<error.description()<<std::endl; return 1;
+            }
+            catch(pni::io::io_error &error)
+            {
+                std::cerr<<error.description()<<std::endl; return 1;
+            }
         }
-        catch(size_mismatch_error &error)
-        {
-            std::cerr<<error<<std::endl; return 1;
-        }
-        catch(shape_mismatch_error &error)
-        {
-            std::cerr<<error<<std::endl; return 1;
-        }
+
+        fileq.pop();
     }
     
     return 0;

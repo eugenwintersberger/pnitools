@@ -24,6 +24,7 @@
 #include <pni/io/parsers.hpp>
 #include "utils.hpp"
 #include "../common/roi.hpp"
+#include "io/data_provider_factory.hpp"
 
 using namespace pni::core;
 using namespace pni::io;
@@ -53,7 +54,7 @@ configuration create_global_config()
 
     //----------------setting up the program options---------------------------
     //these options do not show up in the help text
-    config.add_argument(config_argument<std::vector<string>>("input-files",1));
+    config.add_argument(config_argument<std::vector<string>>("input-files",-1));
 
     //-------------------------------------------------------------------------
     //global options valid for all commands
@@ -116,4 +117,62 @@ bool manage_help_request(const configuration &c)
     }
 
     return false;
+}
+
+//----------------------------------------------------------------------------
+bool get_file_queue(const pni::core::configuration &c,file_queue &q)
+{
+    try
+    {
+        if(c.has_option("input-files"))
+            q = fill_file_queue(c.value<std::vector<string>>("input-files"));
+        else
+            q.push(file());
+    }
+    catch(file_error &error)
+    {
+        std::cerr<<error.description()<<std::endl;
+        return false;
+    }
+    return true;
+}
+
+//----------------------------------------------------------------------------
+bool get_roi(const pni::core::configuration &c,roi_type &r)
+{
+    try
+    {
+        if(c.has_option("roi")) r = c.value<roi_type>("roi");
+    }
+    catch(range_error &error)
+    {
+        std::cerr<<error.description()<<std::endl;
+        return false;
+    }
+    //duplicate ROI for the channel data
+    r.push_back(r.back());
+
+    return true;
+}
+
+//----------------------------------------------------------------------------
+bool get_provider(const string &path,const configuration &c,
+                  provider_ptr &provider)
+{
+    try
+    {
+        provider = data_provider_factory::create(path,c);
+    }
+    catch(file_error &error)
+    {
+        std::cerr<<error.description()<<std::endl;
+        return false;
+    }
+    catch(cli_error &error)
+    {
+        std::cerr<<error.description()<<std::endl;
+        return false;
+    }
+
+    return true;
 }
