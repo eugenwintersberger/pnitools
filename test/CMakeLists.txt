@@ -16,8 +16,7 @@ set(TEST_SOURCES pnitoolstest.cpp
 set(CLI_TEST_PY_FILES check_output.py 
                       det2nx_test.py 
                       mcaops_test.py 
-                      detops_test.py
-                      run_cli_test.py)
+                      detops_test.py)
 
 set(XML_FILES det2nx.xml)
 

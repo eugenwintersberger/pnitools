@@ -4,6 +4,7 @@ set(SOURCES string_utils_test.cpp
             column_test.cpp
             file_type_test.cpp
             roi_test.cpp
+            file_queue_test.cpp
             )
 
 
