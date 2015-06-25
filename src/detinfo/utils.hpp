@@ -28,6 +28,7 @@
 
 using namespace pni::core;
 
+typedef std::unique_ptr<output_formatter> formatter_ptr;
 
 //----------------------------------------------------------------------------
 //!
@@ -48,7 +49,7 @@ detector_info_list get_info(const file &f);
 //! \param config reference to the user configuration
 //! \return pointer to the formatter instance
 //!
-output_formatter *get_output_formatter(const configuration &config);
+bool get_output_formatter(const configuration &config,formatter_ptr &formatter);
 
 //----------------------------------------------------------------------------
 //!
@@ -60,7 +61,8 @@ output_formatter *get_output_formatter(const configuration &config);
 //! return value of 1. 
 //!
 //! \param config user configuration
+//! \param files list to fill with files
 //! \return list of input files
 //!
-file_list get_input_files(const configuration &config);
+bool get_input_files(const configuration &config,file_list &files);
 

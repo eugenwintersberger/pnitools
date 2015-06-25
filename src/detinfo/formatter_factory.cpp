@@ -38,5 +38,5 @@ output_formatter *formatter_factory::output(const string &name)
         return new xml_output_formatter();
     else
         throw value_error(EXCEPTION_RECORD,
-                "Unknown output formatter!");
+                "Unknown output formatter ["+name+"]!");
 }

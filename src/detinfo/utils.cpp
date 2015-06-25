@@ -45,50 +45,63 @@ detector_info_list get_info(const file &f)
         case file_type::NEXUS_FILE:
             reader = reader_pointer(new nexus_info_reader()); break;
         default:
-            throw file_error(EXCEPTION_RECORD, "Unkonw file type");
+            throw file_error(EXCEPTION_RECORD, 
+                    "File ["+f.path()+"] is of unknown type!");
     }
 
     return (*reader)(f);
 }
 
 //----------------------------------------------------------------------------
-output_formatter *get_output_formatter(const configuration &config)
+bool get_output_formatter(const configuration &config,formatter_ptr &formatter)
 {
     try
     {
         auto format = config.value<string>("format");
-        return formatter_factory::output(format);
+        formatter = formatter_ptr(formatter_factory::output(format));
     }
     catch(value_error &error)
     {
-        std::cerr<<error<<std::endl;
-        std::exit(1);
+        std::cerr<<error.description()<<std::endl;
+        return false;
     }
     catch(...)
     {
         std::cerr<<"Unknown error during output formatter creation!";
         std::cerr<<std::endl;
-        std::exit(1);
+        return false;
     }
+    return true;
 }
 
 //---------------------------------------------------------------------------
-file_list get_input_files(const configuration &config)
+bool get_input_files(const configuration &config,file_list &files)
 {
+    if(!config.has_option("input-files"))
+    {
+        std::cerr<<"You have to pass a list of files as arguments!";
+        std::cerr<<std::endl;
+        std::cerr<<"Use:"<<std::endl;
+        std::cerr<<"     detinfo -h"<<std::endl;
+        std::cerr<<"for more information about how to use detinfo"<<std::endl;
+        return false;
+    }
+
     //retrieve list of input files passed by the user
     try
     {
         auto name_list = config.value<string_list>("input-files");
-        return file_list_parser::parse<file_list>(name_list);
+        files = file_list_parser::parse<file_list>(name_list);
     }
     catch(cli_option_error &error)
     {
-        std::cerr<<error<<std::endl;
-        std::exit(1);
+        std::cerr<<error.description()<<std::endl;
+        return false;
     }
     catch(...)
     {
         std::cerr<<"Error while creating input file list!"<<std::endl;
-        std::exit(1);
+        return false;
     }
+    return true;
 }

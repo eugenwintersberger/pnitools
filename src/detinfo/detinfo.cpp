@@ -30,7 +30,6 @@
 #include "utils.hpp"
 #include "detector_info.hpp"
 
-typedef std::unique_ptr<output_formatter> formatter_ptr;
 
 int main(int argc,char **argv)
 {
@@ -39,13 +38,16 @@ int main(int argc,char **argv)
     configuration config = parse_configuration(argc,argv);
 
     //get output format - abort if this fails
-    auto formatter = formatter_ptr(get_output_formatter(config));
+
+    formatter_ptr formatter;
+    if(!get_output_formatter(config,formatter)) return 1;
 
     //select the output stream
     std::ostream &output_stream = std::cout;
 
     //get input files - abort if there is a problem here
-    file_list input_files = get_input_files(config);
+    file_list input_files;
+    if(!get_input_files(config,input_files)) return 1;
 
     //-----------------------here comes the real business----------------------
     try
@@ -69,7 +71,7 @@ int main(int argc,char **argv)
     }
     catch(file_error &error)
     {
-        std::cerr<<error<<std::endl;
+        std::cerr<<error.description()<<std::endl;
         return 1;
     }
     catch(...)
