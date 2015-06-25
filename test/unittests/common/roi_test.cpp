@@ -119,8 +119,8 @@ BOOST_AUTO_TEST_CASE(test_apply_1)
     auto last  = a.end();
     apply_roi_to_iterators(r,first,last);
 
-    BOOST_CHECK_EQUAL(*first,9);
-    BOOST_CHECK_EQUAL(*last,19);
+    BOOST_CHECK_EQUAL(*first,10);
+    BOOST_CHECK_EQUAL(*last,20);
 }
 
 //----------------------------------------------------------------------------
@@ -131,30 +131,30 @@ BOOST_AUTO_TEST_CASE(test_apply_2)
     auto last  = a.end();
     apply_roi_to_iterators(r,first,last);
 
-    BOOST_CHECK_EQUAL(*first,49);
-    BOOST_CHECK_EQUAL(*last,50);
+    BOOST_CHECK_EQUAL(*first,50);
+    BOOST_CHECK_EQUAL(*last,51);
 }
 
 //----------------------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(test_apply_2d)
 {
-    r = roi_type{slice(10,20),slice(50,100)};
+    r = roi_type{slice(10,20),slice(50,99)};
     auto a_first = a.begin();
     auto a_last  = a.end();
     auto b_first = b.begin();
     auto b_last  = b.end();
 
     apply_roi_to_iterators(r,a_first,a_last,b_first,b_last);
-    BOOST_CHECK_EQUAL(*a_first,9);
-    BOOST_CHECK_EQUAL(*a_last,19);
-    BOOST_CHECK_EQUAL(*b_first,149);
+    BOOST_CHECK_EQUAL(*a_first,10);
+    BOOST_CHECK_EQUAL(*a_last,20);
+    BOOST_CHECK_EQUAL(*b_first,150);
     BOOST_CHECK_EQUAL(*b_last,199);
 }
 
 //----------------------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(test_apply_3d)
 {
-    r = roi_type{slice(10,20),slice(50,100),slice(20,76)};
+    r = roi_type{slice(10,20),slice(50,99),slice(20,75)};
     auto a_first = a.begin();
     auto a_last  = a.end();
     auto b_first = b.begin();
@@ -163,11 +163,11 @@ BOOST_AUTO_TEST_CASE(test_apply_3d)
     auto c_last  = c.end();
 
     apply_roi_to_iterators(r,a_first,a_last,b_first,b_last,c_first,c_last);
-    BOOST_CHECK_EQUAL(*a_first,9);
-    BOOST_CHECK_EQUAL(*a_last,19);
-    BOOST_CHECK_EQUAL(*b_first,149);
+    BOOST_CHECK_EQUAL(*a_first,10);
+    BOOST_CHECK_EQUAL(*a_last,20);
+    BOOST_CHECK_EQUAL(*b_first,150);
     BOOST_CHECK_EQUAL(*b_last,199);
-    BOOST_CHECK_EQUAL(*c_first,219);
+    BOOST_CHECK_EQUAL(*c_first,220);
     BOOST_CHECK_EQUAL(*c_last,275);
 }
 

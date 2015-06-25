@@ -72,9 +72,9 @@ std::istream &operator>>(std::istream &stream,roi_type &roi);
 template<typename ITERT1>
 void apply_roi_to_iterators(roi_type::const_iterator &r,ITERT1 &first,ITERT1 &last)
 {
-    size_t s = std::distance(first,last);
-    std::advance(first,r->first()-1);
-    std::advance(last,-(s-r->last()+1));
+    ssize_t s = std::distance(first,last);
+    std::advance(first,r->first());
+    std::advance(last,-(s-ssize_t(r->last())));
 }
 
 template<typename ITERT1,typename ...ITERT>
