@@ -133,9 +133,14 @@ void rebin::operator()(const argument_type &data)
 //-----------------------------------------------------------------------------
 std::ostream &rebin::stream_result(std::ostream &o) const
 {
+    const output_config &c = this->output_configuration();
+
     for(size_t i=0;i<_new_channels.size();i++)
     {
-        o<<_new_channels[i]<<"\t"<<_new_mca[i]<<std::endl;
+        if(c.channel_output())
+            o<<_new_channels[i]<<"\t";
+        
+        o<<_new_mca[i]<<c.channel_separator();
     }
     return o;
 }
