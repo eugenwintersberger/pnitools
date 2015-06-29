@@ -25,6 +25,7 @@
 #include <pni/core/types.hpp>
 #include <pni/core/arrays.hpp>
 #include <pni/io/formatters.hpp>
+#include "output_config.hpp"
 
 typedef pni::io::formatter<pni::core::float64> float64_fmt_type;
 typedef pni::io::formatter<size_t>             size_t_fmt_type;
@@ -54,6 +55,8 @@ typedef pni::io::formatter<size_t>             size_t_fmt_type;
 //!
 class operation
 {
+    private:
+        output_config _oconfig;
     public:
         //=================public types========================================
         //! general array type
@@ -97,12 +100,34 @@ class operation
 
         //---------------------------------------------------------------------
         //!
+        //! \brief set output configuration
+        //!
+        //! Set the output configuration for the operation.
+        //! 
+        //! \param o reference to output configuration
+        //!
+        void output_configuration(const output_config &o);
+
+        //---------------------------------------------------------------------
+        //!
+        //! \brief get output configuration
+        //! 
+        //! Return a reference to the output configuration.
+        //! 
+        //! \return const reference to the output configuration
+        //! 
+        const output_config& output_configuration() const;
+
+        //---------------------------------------------------------------------
+        //!
         //! \brief configure operation
         //! 
         //! This method configures the operation according to command line 
         //! options provided by the user. 
         //! 
-
+        //! \param args operation specific command line options
+        //! \return unrecognized command line arguments
+        //!
         virtual args_vector configure(const args_vector &args) = 0;
 
         //---------------------------------------------------------------------

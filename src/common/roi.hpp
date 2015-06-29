@@ -66,7 +66,11 @@ size_t rank(const roi_type &roi);
 //! 
 //! This operator is required to make rois available from the command line. 
 //! 
-std::istream &operator>>(std::istream &stream,roi_type &roi);
+namespace std{
+    istream &operator>>(istream &stream,pni::core::slice &s);
+    istream &operator>>(istream &stream,roi_type &roi);
+
+}
 
 
 template<typename ITERT1>

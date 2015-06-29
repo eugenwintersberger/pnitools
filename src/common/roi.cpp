@@ -43,14 +43,29 @@ size_t rank(const roi_type &roi)
 }
 
 //----------------------------------------------------------------------------
-std::istream &operator>>(std::istream &stream,roi_type &roi)
-{
-    parser<string::const_iterator,roi_type> p(','); 
-    
-    string buffer; 
-    stream>>buffer;
-    roi = p(buffer);
+namespace std{
+    istream &operator>>(istream &stream,slice &s)
+    {
+        typedef parser<string::const_iterator,slice> parser_type;
 
-    return stream;
+        parser_type p;
+        string data;
+        stream>>data;
+        s = p(data);
 
+        return stream;
+    }
+
+
+    istream &operator>>(istream &stream,roi_type &roi)
+    {
+        parser<string::const_iterator,roi_type> p(','); 
+        
+        string buffer; 
+        stream>>buffer;
+        roi = p(buffer);
+
+        return stream;
+
+    }
 }

@@ -21,8 +21,6 @@
 //
 #pragma once
 
-#include <iostream>
-#include <pni/core/arrays/slice.hpp>
 #include <pni/core/configuration/configuration.hpp>
 #include "operations/operation.hpp"
 #include "../common/file_queue.hpp"
@@ -31,43 +29,6 @@
 
 typedef data_provider::pointer_type provider_ptr;
 
-//!
-//! \ingroup mcaops_devel
-//! \brief read slice from a stream
-//! 
-//! Operator to read a slice from a stream. This operator is required to use 
-//! slices as a possible type for a command line option.
-//!
-//! We have to define this in namespace std:: in order to make 
-//! boost::program_options to work correctly. We do not have to define an 
-//! output operator as it is allready defined in pni::core (see slice.hpp). 
-//! 
-//! A good reference for this can be found in 
-//! http://stackoverflow.com/questions/27848995/\
-//!        boost-program-options-pair-value
-//!
-//! \param stream reference to the input stream
-//! \param s reference to the slice
-//! \return reference to the input stream
-//!
-namespace std{
-    istream &operator>>(istream &stream,pni::core::slice &s);
-}
-
-
-//----------------------------------------------------------------------------
-//!
-//! \ingroup mcaops_devel
-//! \brief applay a ROI to a data range
-//!
-//! This function applies a ROI to a data range. Basically it adjusts the 
-//! begin and end iterator according to the ROI. The changes are applied 
-//! inplace to the range passed as a non-const reference.
-//!
-//! \param range the iterator range to which to apply the ROI
-//! \param roi the slice instance representing the ROI
-//! 
-void apply_roi(operation::data_range &range,const pni::core::slice &roi);
 
 //----------------------------------------------------------------------------
 //!

@@ -27,6 +27,7 @@
 #include "operations/operation_factory.hpp"
 #include "command_predicate.hpp"
 #include "utils.hpp"
+#include "operations/output_config.hpp"
 
 
 using namespace pni::core;
@@ -81,7 +82,20 @@ int main(int argc,char **argv)
         return 1;
     }
 
+
     if(manage_help_request(config)) return 1;
+
+    //check if an operation was found
+    if(!ops)
+    {
+        std::cerr<<"No or unkown command passed to mcaops - aborting!"
+                  <<std::endl;
+        return 1;
+    }
+    
+    //set output format
+    ops->output_configuration(output_config(!config.value<bool>("no-channel-output"),
+                                            config.value<string>("channel-sep")));
     
     //-------------------------------------------------------------------------
     // output the header if requested by the user
@@ -121,7 +135,7 @@ int main(int argc,char **argv)
                 data_range channel_range(data.first.begin(),data.first.end());
                 data_range mca_range(data.second.begin(),data.second.end());
 
-                if(config.has_option("roi"))
+                if(!roi.empty())
                     apply_roi_to_iterators(roi,channel_range.first,
                                                channel_range.second,
                                                mca_range.first,

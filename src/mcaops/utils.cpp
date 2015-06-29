@@ -29,25 +29,6 @@
 using namespace pni::core;
 using namespace pni::io;
 
-namespace std
-{
-
-    istream &operator>>(istream &stream,slice &s)
-    {
-        typedef parser<string::const_iterator,slice> parser_type;
-
-        parser_type p;
-        string data;
-        stream>>data;
-        s = p(data);
-
-        return stream;
-    }
-
-}
-
-
-//-----------------------------------------------------------------------------
 configuration create_global_config()
 {
     configuration config;
@@ -81,15 +62,12 @@ configuration create_global_config()
     config.add_option(config_option<string>("base","",
                 "base path for Nexus objects",""));
 
-    return config;
-}
+    config.add_option(config_option<string>("channel-sep","",
+                "channel separator","\n"));
+    config.add_option(config_option<bool>("no-channel-output","",
+                "Supress channel data output",false));
 
-//-----------------------------------------------------------------------------
-void apply_roi(operation::data_range &range,const slice &roi)
-{
-    range.second = range.first;
-    std::advance(range.first,roi.first());
-    std::advance(range.second,roi.last());
+    return config;
 }
 
 //------------------------------------------------------------------------------
@@ -142,15 +120,18 @@ bool get_roi(const pni::core::configuration &c,roi_type &r)
 {
     try
     {
-        if(c.has_option("roi")) r = c.value<roi_type>("roi");
+        if(c.has_option("roi")) 
+        {
+            r = c.value<roi_type>("roi");
+            //duplicate ROI for the channel data
+            r.push_back(r.back());
+        }
     }
     catch(range_error &error)
     {
         std::cerr<<error.description()<<std::endl;
         return false;
     }
-    //duplicate ROI for the channel data
-    r.push_back(r.back());
 
     return true;
 }

@@ -16,50 +16,39 @@
 // You should have received a copy of the GNU General Public License
 // along with libpniutils.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: May 27,2015
+// Created on: Jun 29,2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "dump.hpp"
+#include "output_config.hpp"
 
-//----------------------------------------------------------------------------
-dump::dump():operation()
+using namespace pni::core;
+
+output_config::output_config():
+    _channel_output(true),
+    _channel_separator("\n")
 {}
 
 //----------------------------------------------------------------------------
-//! destructor
-dump::~dump()
+output_config::output_config(bool channel_output,string channel_separator):
+    _channel_output(channel_output),
+    _channel_separator(channel_separator)
 {}
 
 //----------------------------------------------------------------------------
-operation::args_vector dump::configure(const args_vector &args)
-{ }
+output_config::output_config(const output_config &c):
+    _channel_output(c._channel_output),
+    _channel_separator(c._channel_separator)
+{}
 
 //----------------------------------------------------------------------------
-//! execute operation
-void dump::operator()(const argument_type &data)
+bool output_config::channel_output() const
 {
-    _data = data;
+    return _channel_output;
 }
 
 //----------------------------------------------------------------------------
-//! write result to output stream
-std::ostream &dump::stream_result(std::ostream &o) const
+string output_config::channel_separator() const
 {
-    auto &channel_range = _data.first;
-    auto &mca_range     = _data.second;
-    auto citer = channel_range.first;
-    auto diter = mca_range.first;
-
-    const output_config &c = this->output_configuration();
-
-    while(citer!=channel_range.second)
-    {
-        if(c.channel_output()) o<<*citer++<<"\t";
-        else citer++;
-        
-        o<<*diter++<<c.channel_separator();
-    }
-
-    return o;
+    return _channel_separator;
 }

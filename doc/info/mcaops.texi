@@ -145,8 +145,55 @@ file, and so on.
 
 @c ===========================================================================
 @subsection Writing output
-Currently, @command{mcaops} supports output only to standard output. In the
-future more options to write the results may become available. 
+Currently, @command{mcaops} supports output only to standard output. The 
+result data is written column like fashion
+
+@example
+0 12139
+1 203
+2 1029943
+. .
+. .
+. .
+@end example
+
+@noindent
+where the first column are the bin centers or channel indices and the second
+column contains the actual channel data. In some cases it might be 
+useful to supress the channel data from the output. This can be achieved using the global
+option @option{--no-channel-output} option. Using this, the above output would
+look like this
+
+@example
+12139
+203
+1029943
+.
+.
+.
+@end example
+
+@noindent
+Furthermore, in particular when using @command{mcaops} in batch mode and in
+connection with @option{nxtee}. In this case every result spectrum should be 
+plotted in a single line. For this purpose one has to change the 
+channel separator character from its default value (a carrige return) to 
+something else (for instance a simple whitespace). The global option 
+@option{--channel-sep} does exactly this. With 
+@option{--channel-sep=' '} the above output would alter to 
+
+@example
+12139 203 1029943
+@end example 
+
+@noindent
+It must be noted that @option{--channel-sep} implies
+@option{--no-channel-output} as there is not unique way how to write the channel 
+data. However, as @option{--channel-sep} is typically used in batch mode 
+where we assume that the bin/channel data is the same for all input files
+this is not a serious limitation.
+
+
 
 @c ---------------------------------------------------------------------------
 @subsection Available operations
@@ -408,6 +455,12 @@ takes effect when data is read from standard input.
 @item --base
 base path for NeXus files. The value of this option is used as a prefix to
 every NeXus object used with @option{-b} and @option{-m}.
+
+@item --channel-sep
+defines the channel seperator. By default this is a line '\n' character. 
+
+@item --no-channel-output
+do not print channel data to the output stream. 
 @end table
 
 @subsubsection Options for the @command{rebin} operation

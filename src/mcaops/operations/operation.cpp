@@ -25,12 +25,25 @@
 #include <iomanip>
 #include "operation.hpp"
 
-operation::operation()
+operation::operation():
+    _oconfig()
 {}
 
 //-----------------------------------------------------------------------------
 operation::~operation()
 {}
+
+//-----------------------------------------------------------------------------
+const output_config &operation::output_configuration() const
+{
+    return _oconfig;
+}
+
+//-----------------------------------------------------------------------------
+void operation::output_configuration(const output_config &c)
+{
+    _oconfig = c;
+}
 
 //-----------------------------------------------------------------------------
 std::ostream &operator<<(std::ostream &o,const operation &op)
