@@ -20,126 +20,58 @@
 //      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include <boost/current_function.hpp>
-#include<cppunit/extensions/HelperMacros.h>
+#include "operations_test_common.hpp"
+#include <mcaops/operations/rebin.hpp>
 
-#include <vector>
-#include <list>
-#include <sstream>
-#include <algorithm>
-#include <iomanip>
-#include <limits>
-#include "../test_utils.hpp"
+using namespace pni::core;
+using boost::test_tools::output_test_stream;
 
-#include "rebin_operation_test.hpp"
-
-CPPUNIT_TEST_SUITE_REGISTRATION(rebin_operation_test);
-
-
-//-----------------------------------------------------------------------------
-void rebin_operation_test::get_result(operation &op,array_type &axis,
-                                      array_type &data)
+struct rebin_fixture
 {
-    std::vector<value_type> c_v,d_v;
-    std::stringstream ss;
-    ss<<op;
-    value_type c,d;
-   
-    while(ss>>c>>d) 
-    {
-        c_v.push_back(c);
-        d_v.push_back(d);
-    }
+    shape_t shape;
+    array_type mca;
+    array_type channels;
+    output_test_stream stream;
 
-    axis = array_type::create(shape_t({c_v.size()}));
-    data = array_type::create(shape_t({d_v.size()}));
-
-    std::copy(c_v.begin(),c_v.end(),axis.begin());
-    std::copy(d_v.begin(),d_v.end(),data.begin());
-}
-
-
-//-----------------------------------------------------------------------------
-void rebin_operation_test::setUp() 
-{ 
-    shape = shape_t{nchannels};
-    std::vector<value_type> rdata = {45, 13, 52, 51, 51, 62, 69, 83, 41, 41,
+    rebin_fixture():
+        shape(shape_t{48}),
+        mca(array_type::create(shape,
+                    storage_type{45, 13, 52, 51, 51, 62, 69, 83, 41, 41,
                                      49, 58, 84, 36, 42,  0, 50, 25, 71, 68,
                                       0,  8, 49, 34, 25, 56, 85, 80, 33, 56, 
                                       3, 56, 95, 63, 33, 42, 24, 32, 92, 35, 
-                                     57, 38, 30, 90, 31, 75, 17, 63};
+                                     57, 38, 30, 90, 31, 75, 17, 63})),
+        channels(array_type::create(shape)),
+        stream()
+    {
+        std::iota(channels.begin(),channels.end(),0);
+    }
 
-    //---------------setup the different channel indices-----------------------
-    channels_1 = array_type::create(shape);
-    channels_2 = array_type::create(shape);
+};
 
-    create_range(channels_1.begin(),channels_1.end(),0,1);
-    create_range(channels_2.begin(),channels_2.end(),3,1);
+BOOST_FIXTURE_TEST_SUITE(rebin_test,rebin_fixture)
 
-    //---------------------setup the data array--------------------------------
-    data = array_type::create(shape);
-    std::copy(rdata.begin(),rdata.end(),data.begin());
-
-}
-//-----------------------------------------------------------------------------
-void rebin_operation_test::tearDown() {}
 
 //-----------------------------------------------------------------------------
-void rebin_operation_test::test_configuration()
+BOOST_AUTO_TEST_CASE(test_rebin_no_x_no_norm)
 {
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-   
-    //check default configuration
-    rebin_operation op;
-    CPPUNIT_ASSERT(op.bin_size() == 0);
-    CPPUNIT_ASSERT(!op.no_x_rebinning());
-    CPPUNIT_ASSERT(!op.normalization());
-}
 
-//-----------------------------------------------------------------------------
-void rebin_operation_test::test_set_get()
-{
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-
-    rebin_operation op;
-
-    op.bin_size(10);
-    CPPUNIT_ASSERT(op.bin_size() == 10);
-    op.normalization(true);
-    CPPUNIT_ASSERT(op.normalization());
-    op.no_x_rebinning(true);
-    CPPUNIT_ASSERT(op.no_x_rebinning());
-}
-
-//-----------------------------------------------------------------------------
-void rebin_operation_test::test_rebin_no_x_no_norm()
-{
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-    
-
-    rebin_operation op;
-    op.bin_size(10);
-    op.no_x_rebinning(true);
+    rebin op;
+    op.configure(args_vector{"-b10","--noxrebin"});
+    op(argument_type{{channels.begin(),channels.end(),
+                      mca.begin(),mca.end()}});
     op(channels_1,data);
-    array_type rdata,rchannels;
-    get_result(op,rchannels,rdata);
-    CPPUNIT_ASSERT(rdata.size() == 5);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[0],508.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[1],483.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[2],426.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[3],475.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[4],401.0,1.e-8);
-    CPPUNIT_ASSERT(rchannels.size() == 5);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[0],0.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[1],1.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[2],2.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[3],3.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[4],4.0,1.e-8);
+    op.stream_result(stream);
 
-    
+    string result= "0\t508.0\n1\n483.0\n"
+                   "2\t426.0\n3\n475.0\n"
+                   "4\t401.0";
+
+    BOOST_CHECK(stream.is_equal(result));
 }
 
 //-----------------------------------------------------------------------------
+/*
 void rebin_operation_test::test_rebin_no_x_norm()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
@@ -163,8 +95,9 @@ void rebin_operation_test::test_rebin_no_x_norm()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[3],3.0,1.e-8);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[4],4.0,1.e-8);
 }
-
+*/
 //-----------------------------------------------------------------------------
+/*
 void rebin_operation_test::test_rebin_x_norm()
 {
     std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
@@ -189,6 +122,9 @@ void rebin_operation_test::test_rebin_x_norm()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[3],345.0/10.,1.e-8);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[4],348.0/8.,1.e-8);
 }
+*/
+
+BOOST_AUTO_TEST_SUITE_END()
 
 
 

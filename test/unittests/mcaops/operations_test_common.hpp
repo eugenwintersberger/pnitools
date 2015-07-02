@@ -24,8 +24,10 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/test/output_test_stream.hpp>
 #include <mcaops/operations/operation.hpp>
+#include <vector>
 #include <pni/core/types.hpp>
 
+typedef std::vector<pni::core::string> args_vector;
 typedef operation::array_type    array_type;
 typedef array_type::storage_type storage_type;
 typedef operation::data_range    data_range;

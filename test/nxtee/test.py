@@ -39,7 +39,7 @@ class nxtee_test(unittest.TestCase):
     filename = "nxtee_test.nxs"
     instrument = filename+"://:NXentry/:NXinstrument"
     def setUp(self):
-        call(['xml2nx','-o',"-p"+self.filename+"://","nxtee/mca.xml"])
+        call(['xml2nx','-o',"-p"+self.filename+"://","mca.xml"])
 
     def tearDown(self):
         pass

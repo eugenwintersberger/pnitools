@@ -4,6 +4,7 @@ set(OPS_SOURCES main.cpp
                 min_test.cpp 
                 maxpos_test.cpp
                 minpos_test.cpp
+                rebin_test.cpp
                 )
 
 
