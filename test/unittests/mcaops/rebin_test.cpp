@@ -55,12 +55,11 @@ BOOST_FIXTURE_TEST_SUITE(rebin_test,rebin_fixture)
 //-----------------------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(test_rebin_no_x_no_norm)
 {
-
     rebin op;
     op.configure(args_vector{"-b10","--noxrebin"});
-    op(argument_type{{channels.begin(),channels.end(),
-                      mca.begin(),mca.end()}});
-    op(channels_1,data);
+    argument_type arg{{channels.begin(),channels.end(),
+                      mca.begin(),mca.end()}};
+    op(arg);
     op.stream_result(stream);
 
     string result= "0\t508.0\n1\n483.0\n"
