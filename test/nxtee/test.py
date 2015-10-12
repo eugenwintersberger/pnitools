@@ -84,7 +84,7 @@ class nxtee_test(unittest.TestCase):
 
         f = nx.open_file(self.filename)
         d = f.root()["entry"]["instrument"]["mca2"]["data"]
-        self.assertEqual(d.attributes['units'].value,"counts")
+        self.assertEqual(d.attributes['units'].read(),"counts")
         f.close()
         
 

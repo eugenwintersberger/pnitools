@@ -24,9 +24,8 @@
 
 roi_type get_roi_from_string(const string &s)
 {
-    typedef string::const_iterator iterator_type;
     typedef std::vector<slice> slice_vector;
-    typedef parser<string::const_iterator,slice_vector> parser_type;
+    typedef parser<slice_vector> parser_type;
     roi_type roi;
 
     parser_type p(',');
