@@ -1,0 +1,21 @@
+<group name="/" type="NXroot">
+    <group name="entry" type="NXentry">
+        <group name="instrument" type="NXinstrument">
+
+            <!-- first MCA -->
+            <group name="mca" type="NXdetector">
+                <field name="data" type="uint16" units="au" 
+                    long_name="default MCA">
+                    <dimensions rank="2">
+                        <dim value="3" index="1"/>
+                        <dim value="5" index="2"/>
+                    </dimensions>
+                    0 1 2 5 3
+                    17 0 2 7 2
+                    0 2 3 0 89
+                </field>
+            </group>
+
+        </group>
+    </group>
+</group>
