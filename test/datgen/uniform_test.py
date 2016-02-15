@@ -32,7 +32,7 @@ import pni.io.nx.h5 as nx
 
 class datgen_uniform_test(unittest.TestCase):
 
-    cmd = ['datgen','-b100','-e200','-s2','uniform']
+    cmd = ['../../src/datgen/datgen','-b100','-e200','-s2','uniform']
 
     def setUp(self):
         #need to delete the file before we can start a new run

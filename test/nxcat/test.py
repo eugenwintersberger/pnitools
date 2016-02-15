@@ -32,6 +32,7 @@ import numpy
 
 class nxcat_test(unittest.TestCase):
     input_file = "../data/nexus/nxls_test.nxs"
+    nxcat = "../../src/nxcat/nxcat"
 
     def setUp(self):
         #need to delete the file before we can start a new run
@@ -44,29 +45,29 @@ class nxcat_test(unittest.TestCase):
     def test_return(self):
 
         #should give a useage message and return 1
-        cmd = ['nxcat'] 
+        cmd = [self.nxcat] 
         self.assertEqual(int(call(cmd)),1)
         
         #should return 1 as the file does not exist
-        cmd = ['nxcat','test.nxs']
+        cmd = [self.nxcat,'test.nxs']
         self.assertEqual(int(call(cmd)),1)
 
         #shoule return 1 as the file is not a Nexus file
-        cmd = ['nxcat','nxcat_test.py']
+        cmd = [self.nxcat,'nxcat_test.py']
         self.assertEqual(int(call(cmd)),1)
 
         #should return 1 as the target object is not a field or attribute
-        cmd = ['nxcat',self.input_file+'://:NXentry']
+        cmd = [self.nxcat,self.input_file+'://:NXentry']
         self.assertEqual(int(call(cmd)),1)
 
         #this should finally work
-        cmd = ['nxcat',self.input_file+'://:NXentry/program_name']
+        cmd = [self.nxcat,self.input_file+'://:NXentry/program_name']
         self.assertEqual(int(call(cmd)),0)
 
 
     #test reading string data
     def test_read_string_field(self):
-        cmd = ['nxcat',self.input_file+'://:NXentry/program_name']
+        cmd = [self.nxcat,self.input_file+'://:NXentry/program_name']
         result = check_output(cmd)
         result = result.strip()
         self.assertEqual(result,"xml2nx")
@@ -74,7 +75,7 @@ class nxcat_test(unittest.TestCase):
 
     #read a string attribute
     def test_read_string_attribute(self):
-        cmd = ['nxcat',self.input_file+'://:NXentry/program_name@version']
+        cmd = [self.nxcat,self.input_file+'://:NXentry/program_name@version']
         result = check_output(cmd)
         result = result.strip()
         self.assertEqual(result,"0.1.0")
@@ -83,7 +84,7 @@ class nxcat_test(unittest.TestCase):
     def test_read_float_field(self):
         path = self.input_file
         path += '://:NXentry/:NXinstrument/:NXdetector/x_pixel_size'
-        cmd = ['nxcat',path]
+        cmd = [self.nxcat,path]
         result = check_output(cmd)
         print "Print the result ", result
         self.assertAlmostEqual(float(result),12.45,1.e-4)
@@ -96,7 +97,7 @@ class nxcat_test(unittest.TestCase):
         det1 = data[:,1]
         path = '../data/nexus/tstfile_00012.h5'
         path += '://:NXentry/:NXinstrument/channel_1/polar_angle'
-        result = check_output(['nxcat',path])
+        result = check_output([self.nxcat,path])
         pa_nx = numpy.fromstring(result,sep='\n')
 
         #check for size

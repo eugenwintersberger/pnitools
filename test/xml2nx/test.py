@@ -36,6 +36,7 @@ import sys
 class xml2nx_test(unittest.TestCase):
 
     out_file = "xml2nx_test.nxs"
+    xml2nx = "../../src/xml2nx/xml2nx"
 
     def tearDown(self):
         try:
@@ -107,12 +108,12 @@ class xml2nx_test(unittest.TestCase):
     #check the return values
     def test_return(self):
         #ok - too less arguments - this must fail
-        cmd = ['xml2nx']
+        cmd = [self.xml2nx]
         result = int(call(cmd))
         self.assertEqual(result,1)
 
         #this should everything is there
-        cmd = ['xml2nx','-p'+self.out_file+"://",'basic.xml']
+        cmd = [self.xml2nx,'-p'+self.out_file+"://",'basic.xml']
         result = int(call(cmd))
         self.assertEqual(result,0)
 
@@ -121,18 +122,18 @@ class xml2nx_test(unittest.TestCase):
         self.assertEqual(result,1)
 
         #this however yes
-        cmd = ['xml2nx','-o','-p'+self.out_file+"://",'basic.xml']
+        cmd = [self.xml2nx,'-o','-p'+self.out_file+"://",'basic.xml']
         result = int(call(cmd))
         self.assertEqual(result,0)
 
         #if we do not specify an output file - abort
-        cmd = ['xml2nx','basic.xml']
+        cmd = [self.xml2nx,'basic.xml']
         result = int(call(cmd))
         self.assertEqual(result,1)
 
     #check file creation
     def test_create_file(self):
-        cmd = ['xml2nx','-p'+self.out_file+"://",'basic.xml']
+        cmd = [self.xml2nx,'-p'+self.out_file+"://",'basic.xml']
         result = int(call(cmd))
         self.assertEqual(result,0)
 
@@ -143,10 +144,10 @@ class xml2nx_test(unittest.TestCase):
 
     #check appending content
     def test_append_file(self):
-        cmd = ['xml2nx','-p'+self.out_file+"://",'basic.xml']
+        cmd = [self.xml2nx,'-p'+self.out_file+"://",'basic.xml']
         result = int(call(cmd))
         self.assertEqual(result,0)
-        cmd = ['xml2nx',
+        cmd = [self.xml2nx,
                '-p'+self.out_file+'://:NXentry/:NXinstrument/',
                'detector.xml']
         result = int(call(cmd))

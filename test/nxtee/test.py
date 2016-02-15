@@ -23,6 +23,7 @@
 #      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 #
 
+from __future__ import print_function
 from subprocess import check_output
 from subprocess import STDOUT
 from subprocess import call
@@ -38,8 +39,9 @@ replace_data = "10 20 30 40 50\n 60 70 80 90 100\n 110 120 130 140 150"
 class nxtee_test(unittest.TestCase):
     filename = "nxtee_test.nxs"
     instrument = filename+"://:NXentry/:NXinstrument"
+    nxtee = "../../src/nxtee/nxtee"
     def setUp(self):
-        call(['xml2nx','-o',"-p"+self.filename+"://","mca.xml"])
+        call(['../../src/xml2nx/xml2nx','-o',"-p"+self.filename+"://","mca.xml"])
 
     def tearDown(self):
         pass
@@ -47,18 +49,20 @@ class nxtee_test(unittest.TestCase):
     def test_return(self):
         #-------------fails - cannot do append on an attribute-------
         echo = Popen(["echo","counts"],stdout=PIPE)
-        result = call(["nxtee",self.instrument+"/mca2/data@units"],
+        result = call([self.nxtee,self.instrument+"/mca2/data@units"],
                       stdin=echo.stdout)
         self.assertEqual(int(result),1)
 
     def test_append_field(self):
-        echo = Popen(["echo",append_data],stdout=PIPE)
-        result = call(["nxtee",self.instrument+"/mca/data"],
+        echo = Popen([self.nxtee,append_data],stdout=PIPE)
+        result = call([self.nxtee,self.instrument+"/mca/data"],
                       stdin=echo.stdout)
+        print(result)
 
         #readback data 
         f = nx.open_file(self.filename)
         d = f.root()["entry"]["instrument"]["mca"]["data"]
+        print(d.shape)
         data = d[...]
         f.close()
         for f,r in zip(data.flat,range(1,16)):
@@ -66,7 +70,7 @@ class nxtee_test(unittest.TestCase):
 
     def test_replace_field(self):
         echo = Popen(["echo",replace_data],stdout=PIPE)
-        result = call(["nxtee",'-r',self.instrument+"/mca2/data"],
+        result = call([self.nxtee,'-r',self.instrument+"/mca2/data"],
                       stdin=echo.stdout)
 
         #readback data 
@@ -79,7 +83,7 @@ class nxtee_test(unittest.TestCase):
 
     def test_replace_attribute(self):
         echo = Popen(["echo","counts"],stdout=PIPE)
-        result = call(["nxtee",'-r',self.instrument+"/mca2/data@units"],
+        result = call([self.nxtee,'-r',self.instrument+"/mca2/data@units"],
                       stdin=echo.stdout)
 
         f = nx.open_file(self.filename)
