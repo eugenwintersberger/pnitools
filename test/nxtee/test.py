@@ -54,7 +54,7 @@ class nxtee_test(unittest.TestCase):
         self.assertEqual(int(result),1)
 
     def test_append_field(self):
-        echo = Popen([self.nxtee,append_data],stdout=PIPE)
+        echo = Popen(["echo",append_data],stdout=PIPE)
         result = call([self.nxtee,self.instrument+"/mca/data"],
                       stdin=echo.stdout)
         print(result)
@@ -63,6 +63,8 @@ class nxtee_test(unittest.TestCase):
         f = nx.open_file(self.filename)
         d = f.root()["entry"]["instrument"]["mca"]["data"]
         print(d.shape)
+        self.assertEqual(d.shape[0],3)
+        self.assertEqual(d.shape[1],5)
         data = d[...]
         f.close()
         for f,r in zip(data.flat,range(1,16)):
