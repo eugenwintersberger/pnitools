@@ -19,10 +19,8 @@ endif()
 #======================do here some setup work=================================
 include(configure/CMakeLists.txt)
 
-add_subdirectory("doc/man")
-add_subdirectory("doc/info")
+add_subdirectory("doc")
 add_subdirectory("src/common")
-#add_subdirectory("src/det2nx")
 add_subdirectory("src/detinfo")
 add_subdirectory("src/detops")
 add_subdirectory("src/mcaops")

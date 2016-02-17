@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2014 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2015 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 // This file is part of pnitools.
 //
@@ -16,28 +16,32 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Oct 15, 2014
+// Created on: Jun 11, 2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 #pragma once
 
-#include <vector>
-#include <list>
-#include <pni/core/types.hpp>
-#include <pni/io/image_reader.hpp>
-#include <pni/io/image_info.hpp>
+#include <algorithm>
+#include <pni/core/error.hpp>
 
-#include "../common/file.hpp"
-
-using namespace pni::core;
-using namespace pni::io;
-
-//! lvector with strings
-typedef std::vector<string> string_vector;
-
-//! pointer type for readers
-typedef std::unique_ptr<pni::io::image_reader> reader_ptr;
-
-//! list with file objects
-typedef std::list<file> file_list;
-
+namespace algorithms
+{
+    //!
+    //! \ingroup common_devel
+    //! \brief compute sum of range
+    //! 
+    //! Compute the sum of all elements in the range defined by the two 
+    //! iterators \c first and \c last. 
+    //!
+	//! \tparam ITERT iterator type for the input container
+    //! \param first iterator to the first element in the range
+    //! \param last iterator to the final element in the range
+    //! \return sum of all elements
+    //!
+    template<typename ITERT>
+    typename ITERT::value_type sum(ITERT first,ITERT last)
+    {
+        typedef typename ITERT::value_type value_type;
+        return std::accumulate(first,last,value_type(0));
+    }
+}

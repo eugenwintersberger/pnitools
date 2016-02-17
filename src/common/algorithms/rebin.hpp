@@ -31,6 +31,14 @@ namespace algorithms
     //!
     //! \ingroup common_devel
     //! \brief rebin data between two ranges 
+	//!
+	//! \tparam ITERT1 type of the two input iterators
+	//! \tparam ITERT2 type of the output iterator
+	//! \param ifirst start iterator of input
+	//! \param ilast  end iterator of input
+	//! \param ofirst start iterator of the output container
+	//! \param bsize  number of bins to average
+	//! \param normalize if true the output data will be normalized
     //! 
     template<
              typename ITERT1,

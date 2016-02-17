@@ -1,6 +1,5 @@
 
 set(MANPAGES datgen.1
-             det2nx.1
              detinfo.1
              detops.1
              mcaops.1
