@@ -14,11 +14,9 @@ set(TEST_SOURCES pnitoolstest.cpp
                  )
 
 set(CLI_TEST_PY_FILES check_output.py 
-                      det2nx_test.py 
                       mcaops_test.py 
                       detops_test.py)
 
-set(XML_FILES det2nx.xml)
 
     file(MAKE_DIRECTORY data)
 
@@ -32,10 +30,6 @@ foreach(PYFILE ${CLI_TEST_PY_FILES})
         ${CMAKE_CURRENT_BINARY_DIR}/${PYFILE} COPYONLY)
 endforeach()
 
-foreach(XML_FILE ${XML_FILES})
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${XML_FILE}
-        ${CMAKE_CURRENT_BINARY_DIR}/${XML_FILE} COPYONLY)
-endforeach() 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 #add_definitions(-DBOOST_TEST_DYN_LINK -DBOOST_TEST_MAIN)

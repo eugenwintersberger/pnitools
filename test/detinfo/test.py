@@ -346,7 +346,7 @@ class detinfo_test(unittest.TestCase):
 
     tif_file = '../data/tif/detector_009.tif'
     cbf_file = '../data/cbf/LAOS3_05461.cbf'
-    program = 'detinfo'
+    program = '../../src/detinfo/detinfo'
 
     def _get_cmd(self,options=[],args=[]):
         cmd = [self.program]

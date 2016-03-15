@@ -22,7 +22,7 @@
 
 #include <iterator>
 #include <pni/core/configuration.hpp>
-#include "../../common/rebin.hpp"
+#include "../../common/algorithms/rebin.hpp"
 #include "rebin.hpp"
 
 using namespace pni::core;

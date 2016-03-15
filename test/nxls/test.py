@@ -32,6 +32,7 @@ import pni.io.nx.h5 as nx
 
 class nxls_test(unittest.TestCase):
     input_file = "../data/nexus/nxls_test.nxs"
+    nxls = "../../src/nxls/nxls"
 
     def setUp(self):
         pass
@@ -46,23 +47,23 @@ class nxls_test(unittest.TestCase):
         # 3.) the input file is not a Nexus/HDF5 file
 
         #should give a useage message and return 1
-        cmd = ['nxls'] 
+        cmd = [self.nxls] 
         result = int(call(cmd))
         self.assertEqual(result,1)
 
         #should return 1 as the group does not exist in the file
-        cmd = ['nxls','bla.nxs']
+        cmd = [self.nxls,'bla.nxs']
         result = int(call(cmd))
         self.assertEqual(result,1)
 
         #should return 1 as the file is not a nexus file
-        cmd = ['nxls','xml2nx_test.py']
+        cmd = [self.nxls,'xml2nx_test.py']
         result = int(call(cmd))
         self.assertEqual(result,1)
 
     def test_simple_list(self):
         #just produce a simple output list
-        cmd = ['nxls',self.input_file+"://"]
+        cmd = [self.nxls,self.input_file+"://"]
         result = check_output(cmd)
         self.assertEqual(result.strip(),'entry:NXentry')
 
@@ -71,7 +72,7 @@ class nxls_test(unittest.TestCase):
                   'control:NXmonitor','data:NXdata','title',
                   'experiment_description','start_time',
                   'end_time','program_name']
-        result = check_output(['nxls',self.input_file+'://:NXentry'])
+        result = check_output([self.nxls,self.input_file+'://:NXentry'])
         result = result.split('\n')
         result.remove('')
         self.assertEqual(len(result),len(output))
@@ -104,7 +105,7 @@ class nxls_test(unittest.TestCase):
                   'entry:NXentry/instrument:NXinstrument/source:NXsource/type',
                   'entry:NXentry/instrument:NXinstrument/source:NXsource/probe'
                 ]
-        result = check_output(['nxls','-r',self.input_file+"://"])
+        result = check_output([self.nxls,'-r',self.input_file+"://"])
         result = result.split('\n')
         result.remove('')
         self.assertEqual(len(result),len(output))
@@ -151,7 +152,7 @@ class nxls_test(unittest.TestCase):
                   'entry:NXentry/instrument:NXinstrument/source:NXsource/type',
                   'entry:NXentry/instrument:NXinstrument/source:NXsource/probe'
                 ]
-        result = check_output(['nxls','-ra',self.input_file+"://"])
+        result = check_output([self.nxls,'-ra',self.input_file+"://"])
         result = result.split('\n')
         result.remove('')
         for x in result: print x

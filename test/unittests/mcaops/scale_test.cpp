@@ -24,7 +24,7 @@
 #include <mcaops/operations/scale.hpp>
 
 
-BOOST_FIXTURE_TEST_SUITE()
+BOOST_FIXTURE_TEST_SUITE(scale_operation_test,)
 
 BOOST_AUTO_TEST_SUITE_END()
 

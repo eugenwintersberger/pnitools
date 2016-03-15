@@ -33,7 +33,7 @@ import numpy
 
 class datgen_linear_test(unittest.TestCase):
 
-    cmd = ['datgen','-b100','-e200','--show-grid','-s4','linear']
+    cmd = ['../../src/datgen/datgen','-b100','-e200','--show-grid','-s4','linear']
 
     def setUp(self):
         #need to delete the file before we can start a new run

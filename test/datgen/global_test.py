@@ -32,6 +32,8 @@ import pni.io.nx.h5 as nx
 import numpy
 
 class datgen_global_test(unittest.TestCase):
+    
+    datgen = "../../src/datgen/datgen"
 
     def setUp(self):
         pass
@@ -43,36 +45,36 @@ class datgen_global_test(unittest.TestCase):
         pass
 
     def test_noargs_noopts(self):
-        cmd = ['datgen']
+        cmd = [self.datgen]
         result = int(call(cmd))
         self.assertEqual(result,1)
 
     def test_nofunctor(self):
-        cmd = ['datgen','-b100','-e200','-s2']
+        cmd = [self.datgen,'-b100','-e200','-s2']
         self.assertEqual(int(call(cmd)),1);
 
     def test_wrong_functor(self):
-        cmd = ['datgen','-b100','-e200','-s2','uni']
+        cmd = [self.datgen,'-b100','-e200','-s2','uni']
         self.assertEqual(int(call(cmd)),1);
     
     def test_missing_grid_endpoint(self):
-        result = int(call(['datgen','-b100','-s2','uniform']))
+        result = int(call([self.datgen,'-b100','-s2','uniform']))
         self.assertEqual(result,1)
     
     def test_missing_grid_startpoint(self):
-        result = int(call(['datgen','-e100','-s2','uniform']))
+        result = int(call([self.datgen,'-e100','-s2','uniform']))
         self.assertEqual(result,1)
 
     def test_missing_grid_steps(self):
-        result = int(call(['datgen','-e100','-b2','uniform']))
+        result = int(call([self.datgen,'-e100','-b2','uniform']))
         self.assertEqual(result,1)
 
     def test_grid_end_small_start(self):
-        result = int(call(['datgen','-b100','-e2','-s1','uniform']))
+        result = int(call([self.datgen,'-b100','-e2','-s1','uniform']))
         self.assertEqual(result,1)
 
     def test_grid(self):
-        cmd = ['datgen','-b100','-e200','-s10','--show-grid','uniform']
+        cmd = [self.datgen,'-b100','-e200','-s10','--show-grid','uniform']
         result = check_output(cmd)
         data = numpy.fromstring(result,sep=" ").reshape(10,2)
         xdata = data[:,0]

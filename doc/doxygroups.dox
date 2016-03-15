@@ -1,0 +1,45 @@
+/*!
+\defgroup common_devel Common code
+*/
+
+//============================================================================
+/*!
+\defgroup nxls_devel nxls development
+\brief classes and functions specific to \c nxls
+*/
+
+//============================================================================
+/*!
+\defgroup nxtee_devel nxtee development
+\brief classes and functions specific to \c mcaops
+*/
+
+//============================================================================
+/*!
+\defgroup mcaops_devel mcaops development
+\brief classes and functions specific to \c mcaops
+*/
+
+/*!
+\ingroup mcaops_devel
+\defgroup mcaops_ops_devel mcaops operations 
+\brief classes and function implementing the operations
+*/
+
+/*!
+\ingroup mcaops_devel
+\defgroup mcaops_io_devel mcaops input/output 
+\brief classes and functions implementing I/O
+*/
+
+//============================================================================
+/*!
+\defgroup datven_devel datven development
+\brief classes and functions specific to \c datven
+
+Description of the components used to implement \c datgen. Before reading this
+documentation it is strongly recommended to read the info pages on \c datven to
+get an impression of how the program should work. 
+
+Once familiar with \c datgen continue here with the API documentation. 
+*/

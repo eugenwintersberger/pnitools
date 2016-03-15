@@ -38,10 +38,8 @@ template<typename T> class stdin_reader
         typedef T value_type;
         //! buffer type used to keep results
         typedef std::vector<value_type> buffer_type;
-        //! iterator type to create the parser type
-        typedef pni::core::string::const_iterator iterator_type;
         //! parser type
-        typedef pni::io::parser<iterator_type,buffer_type> parser_type;
+        typedef pni::io::parser<buffer_type> parser_type;
     private:
         //! local line storage
         pni::core::string _line_buffer;
