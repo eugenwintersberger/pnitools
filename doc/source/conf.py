@@ -238,7 +238,15 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'pnitools', 'PNI Tools Documentation',
-     ['Eugen Wintersberger'], 1)
+     ['Eugen Wintersberger'], 1),
+    ('cli_tools/detinfo','detinfo',u'show information about detector data stored in a file',
+    ['Eugen Wintersberger'],1),
+    ('cli_tools/nxcat','nxcat',u'write data from NeXus fields to standard output',
+     ['Eugen Wintersberger'],1),
+    ('cli_tools/nxls','nxls',u'lists fields, attributes, and groups in a NeXus file',
+     ['Eugen Wintersberger'],1),
+    ('cli_tools/xml2nx','xml2nx',u'creates NeXus objects and files from an XML description',
+     ['Eugen Wintersberger'],1),
 ]
 
 # If true, show URL addresses after external links.
