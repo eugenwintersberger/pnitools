@@ -1,5 +1,4 @@
 add_subdirectory("source")
-add_subdirectory("info")
 
 configure_file(SphinxMakefile SphinxMakefile COPYONLY)
 configure_file(Doxyfile Doxyfile @ONLY)
