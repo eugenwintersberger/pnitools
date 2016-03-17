@@ -16,7 +16,7 @@ mentioned in the documentation.
 .. toctree::
    :maxdepth: 2
 
-   general_concepts/input_files
-   general_concepts/nexus_path
    general_concepts/numeric_ranges
    general_concepts/rois
+   general_concepts/input_files
+   general_concepts/nexus_path

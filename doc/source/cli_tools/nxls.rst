@@ -31,39 +31,111 @@ Options
 -------
 The programm takes the following options:
 
--h, --help  print short program help
--r, --recursive  show the content of all subgroups of a given Nexus group
--a, --show-attributes  shows attributes in addition to groups and field.
--f, --full-path  show the full path for each object
--l, --long  show additional information for each object
+.. option:: -h, --help  
+
+   print short program help
+
+.. option:: -r, --recursive  
+
+   show the content of all subgroups of a given Nexus group
+
+.. option:: -a, --show-attributes  
+
+   shows attributes in addition to groups and field.
+
+.. option:: -f, --full-path  
+
+   show the full path for each object
+
+.. option:: -l, --long  
+ 
+   show additional information for each object
 
 Examples
 --------
-
-.. code-block:: bash
-    
-    $ nxls data.nxs://
-
-shows the content of the root group
+In the simplest case we want to list all the object below the root group of the
+file. This can be achieved with 
 
 .. code-block:: bash
 
-    $ nxls -f data.nxs://:NXentry/:NXinstrument
+    $ nxls nxls_test.nxs://
+    entry:NXentry
 
-lists all objects in the instrument group of the Nexus file with full path
+Note here that we had to add `://` after the filename. This is necessary as the
+program expects a full Nexus path to the base object. The filename alone is not
+a valid path. In addition one should recognize that the leading / in the output
+is removed. 
+Finally, in this example, only the those objects are listed which reside
+directly below the root node. 
+For a recursive list through all the children of a particular group we have to 
+add the :option:`--recursive` as in the next example
 
 .. code-block:: bash
 
-    $ nxls -a data.nxs://:NXentry/:NXinstrument
+    $ nxls -r nxls_test.nxs://:NXentry/:NXinstrument
+    detector:NXdetector
+    detector:NXdetector/data
+    detector:NXdetector/description
+    detector:NXdetector/distance
+    detector:NXdetector/layout
+    detector:NXdetector/x_pixel_size
+    detector:NXdetector/y_pixel_size
+    name
+    source:NXsource
+    source:NXsource/name
+    source:NXsource/probe
+    source:NXsource/type
 
-lists all objects in the instrument group of the Nexus file including all 
-attributes
+Here, all fields and groups below the instrument group of the Nexus file are
+listed. Again, the base portion of the path is removed from the output.  To
+obtain a full path for each object we have to add the :option:`--full-path`
+option
 
 .. code-block:: bash
 
-    $ nxls -al data.nxs://:NXentry/:NXinstrument/:NXdetector/data
+    $ nxls -rfa nxls_test.nx://:NXentry/:NXinstrument
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector@NX_class
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector/data
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector/data@units
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector/description
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector/distance
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector/distance@units
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector/layout
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector/x_pixel_size@units
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size
+    /entry:NXentry/instrument:NXinstrument/detector:NXdetector/y_pixel_size@units
+    /entry:NXentry/instrument:NXinstrument/name
+    /entry:NXentry/instrument:NXinstrument/name@short_name
+    /entry:NXentry/instrument:NXinstrument/source:NXsource
+    /entry:NXentry/instrument:NXinstrument/source:NXsource@NX_class
+    /entry:NXentry/instrument:NXinstrument/source:NXsource/name
+    /entry:NXentry/instrument:NXinstrument/source:NXsource/name@short_name
+    /entry:NXentry/instrument:NXinstrument/source:NXsource/probe
+    /entry:NXentry/instrument:NXinstrument/source:NXsource/type
 
-shows detailed information about the data field in the detector group
+The additional :option:`--show-attributes` adds also all attributes to the
+output.  If more information on stored objects is required the :option:`--long`
+can be used 
+
+.. code-block:: bash
+
+    $> nxls -l nxls_test.nxs://:NXentry/:NXinstrument/:NXdetector
+    FIELD   UINT32  (0,2048)    data
+    ATTRIB  STRING  (1) data@units
+    FIELD   STRING  (1) description
+    FIELD   FLOAT32 (1) distance
+    ATTRIB  STRING  (1) distance@units
+    FIELD   STRING  (1) layout
+    FIELD   FLOAT32 (1) x_pixel_size
+    ATTRIB  STRING  (1) x_pixel_size@units
+    FIELD   FLOAT32 (1) y_pixel_size
+    ATTRIB  STRING  (1) y_pixel_size@units
+
+The first column in the output describes the type of the object, the second the
+data type, and the third the shape. The latter two columns are only used for
+fields and attributes. 
 
 Return value
 ------------

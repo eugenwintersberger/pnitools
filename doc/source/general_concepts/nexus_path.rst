@@ -1,4 +1,6 @@
 
+.. _nexus_path-label:
+
 NeXus path
 ==========
 
@@ -12,46 +14,66 @@ this
     $ prog file://path/to/object
 
 The filename is separated from the object path by ``://`` everything
-afterwards refers to objects within the file. The In addition to groups and
-fields the Nexus path syntax allows also to address attributes
+afterwards refers to objects within the file. A NeXus path differs from a
+common Unix filesystem path by two aspects
+
+* groups and fields can have additional attributes to store meta-data
+* groups (which would be the equivalent to a directory on a filesystem)
+  can have a particular type which adds semantics to the fields stored 
+  in the group. In NeXus terminology the type of a group is also referred 
+  as the `class` a group belongs to.
+
+To access attributes attached to a group or field just add the name of the 
+attribute to path with a leading `@`
 
 .. code-block:: bash
 
     $ prog file://path/to/object@attribute
 
-The name of the attribute is indicated by the `@` symbol after the path
-to the object to which it is attached to.
+Dealing with the `class` of a group is a bit more complex. The `class` a NeXus
+group belongs to gives meaning (semantics) to the fields and groups stored
+within it. Consider, for instance, a group of `class` *NXdetector* which stores 
+data for detector data. Whenever a program enters such a group it can expect
+certain fields to be present and also knows what kind of data every field
+holds. See the `NXdetector definition`_ for the fields defined for this
+particular `class`. 
+A complete overview over all classes available in the NeXus standard  
+can be obtained from the `NeXus Class Definitions`_-website. 
 
-Unlik on a Unix filesystem where all directories are basically the same NeXus
-adds some additional semantic information to a group by giving it a type.
-A groups type indicates what kind of data is stored in this group. A group of
-type *NXdetector*, for instance, stores detector related data. The types
-correspond to NeXuS base classes which can be found in the NeXuS reference
-manual.A base class defines a set of fields along with their names and physical
-meaning. If we stay with the above example of the *NXdetector* type, the
-*NXdetector* specification defines a field *data* within an 
-instance of *NXdetector* which is intended to store the data recorded
-by a detector.
-With group types (base classes) at hand one can refine a path so that each
-element must not only be of a particular name but also of a particular type as
-in the next example 
+The `class` a group must belong to can be described in the NeXus path by 
+appending the `class` name to a group name separated by a ``:``. 
+Consider the  following example
 
 .. code-block:: bash
 
-    $ prog file://path:class_1/to:class_2/object:class_3
+    $ prog file.nxs://scan_1:NXentry/beamline:NXinstrument/pilatus:NXdetector
 
-Each element of the path (except for the filename) has the form *name:class*.
-The group types add an additional degree of freedom when writing a path.
-Consider the case where an instance of a particular type appears only once
-within its parent. In this case we can omit the names entirely and write the
-above path like this
+
+From this path we can easily determine to which `class` every group in the path
+must belong to
+
+==========  ============
+Group name  Class
+==========  ============
+scan_1      NXentry
+beamline    NXinstrument
+pilatus     NXdetector
+==========  ============
+
+The concept of a `class` allows it to write a generic path for a particular
+application as we can omit the name of a group in the path and just use the 
+`class`. We can rewrite the above example with 
 
 .. code-block:: bash
 
-    $ prog file://:class_1/:class_2/:class_3
+    $ prog file.nxs://:NXentry/:NXinstrument/:NXdetector
 
 Such a path is generic as we do not have to know the exact names of the
 particular elements. If data files are designed carefully according to the
 NeXus standard we can use this generic path on any file without caring about
 the names of objects.
+The only restriction we have is that there is only a single instance of each
+`class` at its level of the NeXus tree.
 
+.. _NXdetector definition: http://download.nexusformat.org/doc/html/classes/base_classes/NXdetector.html
+.. _NeXus Class Definitions: http://download.nexusformat.org/doc/html/classes/index.html
