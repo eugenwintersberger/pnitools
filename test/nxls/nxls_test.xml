@@ -1,0 +1,47 @@
+<group name="entry" type="NXentry">
+    <field name="title" type="string"/>
+    <field name="experiment_description" type="string"/>
+    <field name="start_time" type="string"/>
+    <field name="end_time" type="string"/>
+    <field name="program_name" type="string">
+        <attribute name="version" type="string"/>
+        <attribute name="configuration" type="string"/>
+    </field>
+
+    <group name="sample" type="NXsample">
+    </group>
+
+    <group name="control" type="NXmonitor">
+    </group>
+
+    <group name="data" type="NXdata">
+        <link name="data_1" target="/entry/instrument/detector/data"/>
+        <link name="data_2" target="/entry/instrument/maia/data"/>
+        <link name="data_3" target="extern.nxs://entry/instrument/detector/data"/>
+    </group>
+
+    <group name="instrument" type="NXinstrument">
+        <field name="name" type="string">
+            <attribute name="short_name" type="string"/>
+        </field>
+
+        <group name="detector" type="NXdetector">
+            <field name="data" units="cps" type="uint32"/>
+            <field name="x_pixel_size" units="um" type="float32"/>
+            <field name="y_pixel_size" units="um" type="float32"/>
+            <field name="layout" type="string"/>
+            <field name="description" type="string"/>
+            <field name="distance" units="mm" type="float32"/>
+        </group>
+
+        <group name="source" type="NXsource">
+            <field name="name" type="string">
+                <attribute name="short_name" type="string"/>
+            </field>
+
+            <field name="type" type="string"/>
+            <field name="probe" type="string"/>
+        </group>
+    </group>
+
+</group>

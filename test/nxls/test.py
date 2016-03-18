@@ -30,12 +30,19 @@ import unittest
 import os
 import pni.io.nx.h5 as nx
 
+
+
 class nxls_test(unittest.TestCase):
-    input_file = "../data/nexus/nxls_test.nxs"
+    input_file = "nxls_test.nxs"
     nxls = "../../src/nxls/nxls"
 
     def setUp(self):
-        pass
+        
+        with open('nxls_test.xml') as f:
+            xml_struct = f.read()
+
+        f = nx.create_file(self.input_file,overwrite=True)
+        nx.xml_to_nexus(xml_struct,f.root())
 
     def tearDown(self):
         pass
@@ -91,6 +98,9 @@ class nxls_test(unittest.TestCase):
                   'entry:NXentry/sample:NXsample',
                   'entry:NXentry/control:NXmonitor',
                   'entry:NXentry/data:NXdata',
+                  'entry:NXentry/data:NXdata/data_1',
+                  'entry:NXentry/data:NXdata/data_2',
+                  'entry:NXentry/data:NXdata/data_3',
                   'entry:NXentry/instrument:NXinstrument',
                   'entry:NXentry/instrument:NXinstrument/name',
                   'entry:NXentry/instrument:NXinstrument/detector:NXdetector',
@@ -129,6 +139,10 @@ class nxls_test(unittest.TestCase):
                   'entry:NXentry/control:NXmonitor@NX_class',
                   'entry:NXentry/data:NXdata',
                   'entry:NXentry/data:NXdata@NX_class',
+                  'entry:NXentry/data:NXdata/data_1',
+                  'entry:NXentry/data:NXdata/data_1@units',
+                  'entry:NXentry/data:NXdata/data_2',
+                  'entry:NXentry/data:NXdata/data_3',
                   'entry:NXentry/instrument:NXinstrument',
                   'entry:NXentry/instrument:NXinstrument@NX_class',
                   'entry:NXentry/instrument:NXinstrument/name',

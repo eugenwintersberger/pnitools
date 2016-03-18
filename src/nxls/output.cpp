@@ -25,23 +25,31 @@
 #include <pni/io/nx/algorithms/is_field.hpp>
 #include <pni/io/nx/algorithms/is_group.hpp>
 #include <pni/io/nx/algorithms/is_attribute.hpp>
+#include <pni/io/nx/algorithms/as_link.hpp>
+#include <pni/io/nx/algorithms/is_link.hpp>
+#include <pni/io/nx/nxlink.hpp>
 #include "output.hpp"
 
+#define OTYPE_FIELD_WIDTH 8 
+#define DTYPE_FIELD_WIDTH 10
+#define STATUS_FIELD_WIDTH 20
 
-std::ostream &operator<<(std::ostream &stream,const shape_t &shape)
+string shape_to_string(const shape_t &shape)
 {
-    if(shape.empty())
-        return stream;
-   
-    stream<<"(";
+    std::stringstream ss;
+
+    if(shape.empty()) return string();
+
+    ss<<"(";
     for(auto iter = shape.begin();iter!=shape.end();++iter)
     {
-        stream<<*iter;
-        if(iter!=shape.end()-1) stream<<",";
+        ss<<*iter;
+        if(iter!=shape.end()-1) ss<<",";
     }
 
-    stream<<")";
-    return stream;
+    ss<<")";
+    return ss.str();
+
 }
 
 //----------------------------------------------------------------------------
@@ -66,7 +74,8 @@ string get_data_metadata(const h5::nxobject &o)
     if(shape.empty())
         shape = shape_t{{1}};
 
-    ss<<get_type(o)<<'\t'<<shape<<'\t';
+    ss<<std::left<<std::setw(DTYPE_FIELD_WIDTH)<<get_type(o)
+      <<std::left<<std::setw(STATUS_FIELD_WIDTH)<<shape_to_string(shape);
     return ss.str();
 }
 
@@ -75,22 +84,46 @@ string get_field_metadata(const h5::nxobject &o)
 {
     std::stringstream ss;
         
-    ss<<"FIELD \t"<<get_data_metadata(o);
+    ss<<std::left<<std::setw(OTYPE_FIELD_WIDTH)<<"FIELD"<<get_data_metadata(o);
     return ss.str();
 }
 
 //----------------------------------------------------------------------------
 string get_group_metadata(const h5::nxobject &o)
 {
-    return string("GROUP \t\t\t");
+    std::stringstream ss;
+    ss<<std::left<<std::setw(OTYPE_FIELD_WIDTH+DTYPE_FIELD_WIDTH+STATUS_FIELD_WIDTH)
+      <<"GROUP";
+    return ss.str();
 }
 
 //----------------------------------------------------------------------------
 string get_attribute_metadata(const h5::nxobject &o)
 {
     std::stringstream ss;
-    ss<<"ATTRIB\t"<<get_data_metadata(o);
+    ss<<std::setw(OTYPE_FIELD_WIDTH)<<"ATTRIB\t"<<get_data_metadata(o);
     return ss.str();
+}
+
+//----------------------------------------------------------------------------
+string get_link_metadata(const h5::nxobject &o)
+{
+    auto link = as_link(o);
+    std::stringstream ss;
+    ss<<std::left<<std::setw(OTYPE_FIELD_WIDTH)<<"LINK";
+
+    if(link.type() == nxlink_type::SOFT)
+        ss<<std::left<<std::setw(DTYPE_FIELD_WIDTH)<<"INTERNAL";
+    else if(link.type() == nxlink_type::EXTERNAL)
+        ss<<std::left<<std::setw(DTYPE_FIELD_WIDTH)<<"EXTERNAL";
+    
+    if(link.status() == nxlink_status::VALID)
+        ss<<std::left<<std::setw(STATUS_FIELD_WIDTH)<<"VALID";
+    else if(link.status() == nxlink_status::INVALID)
+        ss<<std::left<<std::setw(STATUS_FIELD_WIDTH)<<"INVALID";
+
+    return ss.str();
+
 }
 
 //----------------------------------------------------------------------------
@@ -102,6 +135,7 @@ string get_metadata(const h5::nxobject &o)
     if(is_field(obj))          return get_field_metadata(obj);
     else if(is_group(obj))     return get_group_metadata(obj);
     else if(is_attribute(obj)) return get_attribute_metadata(obj);
+    else if(is_link(obj))      return get_link_metadata(obj);
     else
         return "";
 
@@ -120,7 +154,15 @@ void output::write_object(const h5::nxobject &o)
 {
     if(_config.long_output()) _stream<<get_metadata(o);
 
-    _stream<<get_path(o)<<std::endl;
+    _stream<<get_path(o);
+
+    if(_config.long_output() && is_link(o))
+    {
+        auto l = as_link(o);
+        _stream<<" -> "<<nxpath::to_string(l.target_path());
+    }
+
+    _stream<<std::endl;
         
     //handle attributes
     if(_config.with_attributes())

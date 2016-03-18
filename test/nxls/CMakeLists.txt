@@ -1,4 +1,4 @@
-set(FILES test.py)
+set(FILES test.py nxls_test.xml)
 
 foreach(F ${FILES})
     configure_file(${F} ${F} COPYONLY)
