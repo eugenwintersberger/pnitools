@@ -1,5 +1,5 @@
 
-.. _determining_input_files-label
+.. _determining-input-files:
 
 Determining input files
 =======================

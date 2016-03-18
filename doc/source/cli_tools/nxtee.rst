@@ -5,9 +5,6 @@ nxtee
 Synopsis
 --------
 
-:program:`nxtee` is a NeXus utility program quite similar to the standard Unix
-:command:`tee` utility. It reads data from standard input and writes it to a 
-NeXus object. Calling :program:`nxtee` is fairly simple
 
 .. code-block:: bash
 
@@ -15,6 +12,10 @@ NeXus object. Calling :program:`nxtee` is fairly simple
 
 Description
 -----------
+
+:program:`nxtee` is a NeXus utility program quite similar to the standard Unix
+:command:`tee` utility. It reads data from standard input and writes it to a 
+NeXus object. 
 
 The program requires no additional command line options. All data received via 
 standard input is appended to the NeXus object referenced by *NEXUSPATH*. 
@@ -32,10 +33,10 @@ data.
   input line is interpreted as a single element.
 * the target object mus already exist. This is necessary as the existing 
   field determines the type of data parsed from standard input.
-* one can write only to one object. 
+* currently, data can be written only to a single object.
 
 Appending data
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 .. figure:: pics/nxtee_append.png
    :align: center
@@ -49,24 +50,24 @@ of a field. Every line in the input data corresponds to the data associated
 with the residual dimensions of a particular index along the first dimension. 
 
 Replacing data
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 .. figure:: pics/nxtee_replace.png
    :align: center
 
-   With the :option:`-r` the data from the ASCII stream is used to replace
-   already existing data in a field. 
+   With the :option:`--replace` the data from the ASCII stream is used to
+   replace already existing data in a field. 
 
-When called with the :option:`-r` :program:`nxtee` operates in replace mode. In
-this mode the ASCII data is used to replace already existing data in a field. 
-By default the replacement starts at the 0-th element along the first
+When called with the :option:`--replace` :program:`nxtee` operates in replace
+mode. In this mode the ASCII data is used to replace already existing data in a
+field.  By default the replacement starts at the 0-th element along the first
 dimension. This can be altered using the :option:`--start-index`.
 
 
 Program options
 ---------------
 
-:program:`nxls` accepts the following command line arguments
+:program:`nxls` accepts the following command line options
 
 .. option:: -h, --help
     
@@ -103,7 +104,7 @@ Examples
 --------
 
 Simple scalar and one dimensional data
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The simplest application is also one of the most typical ones. Lets assume that
 we want to write the name of the sample in a NeXus file. This can easily be done
@@ -152,12 +153,12 @@ particularly useful with the *units* attribute of fields.
 .. code-block:: bash
 
     $ BASE=test.nxs://:NXentry/:NXinstrument/:NXdetector
-    $ echo "m" | nxtee -r $BASE/distance@@units 
+    $ echo "m" | nxtee -r $BASE/distance@units 
     
 where a unit can be altered, for instance according to a new hardware setup. 
 
 Working with multidimensional data
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Multidimensional data requires a bit more work. Lets start with an example where
 the *vector* transformation attribute of a field should be altered. 
@@ -166,7 +167,7 @@ This can simple be done with
 .. code-block:: bash
 
     $ BASE=test.nxs://:NXentry/:NXinstrument/:NXdetector/:NXtransformation
-    $ echo "0 0 1" | nxtee -r $BASE/omega@@vector
+    $ echo "0 0 1" | nxtee -r $BASE/omega@vector
 
 Note here that the elements of the input data separated only by a whitespace not
 by a newline character. 

@@ -14,44 +14,38 @@ Prints detector information from files to standard output
 Description
 -----------
 
-``detinfo`` prints information about detector data stored in files 
+:program:`detinfo` prints information about detector data stored in files 
 to standard output using various formats. A typical application for this 
 program is to determine the parameters of a bunch of detector files 
 before merging them together into a single NeXus file.
-Currently ``detinfo`` supports the following file formats:
+Currently :program:`detinfo` supports the following file formats:
 
 * CBF - the DECTRIS flavor used for Pilatus detectors
 * TIF - used by many other detectors to hold data
 * Nexus - using HDF5 as a storage backend.
 
-The parameters ``detinfo`` retrieves are 
+:program:`detinfo` provides information about
 
 * the path to the data (file path and/or Nexus object path)
-* the number of frames stored in the file or *NXdetector* group
+* the number of frames stored in a file or an *NXdetector* group in case of a
+  NeXus file
 * the number of elements along each dimension of a single detector frame
-* the pixel data type
-* the detector type, possible types are *point*, *linear*, and *area*
+* the data type of a single pixel
+* the detector type, possible types are *point*, *linear*, and *area* denoting
+  0-, 1-, and 2-dimensional detectors respectively.
 
-Where *point*, *linear*, and *area* denote 0-, 1-, and 2-dimensional detectors
-respectively.
-
-For TIF and CBF files ``detinfo`` assumes that all the data in a file belongs
-to a single detector. However, Nexus files are slightly different as they can
-store data from several detectors in a single file. In this case, the
-information listed above is shown for each instance of *NXdetector* available in
-the file.  A typical application of ``detinfo`` would be to gather all the
-information required to merge data from single TIF or CBF files into a Nexus
-file.  As with all programs from the *pni-tools*-package input files can be
-specified as individual files and/or as a file template with a numeric range.
-For details see the info page for pni-tools how to do this.
-
-Input files (`FILESPEC`) are passed either by individual files, wildcards, 
-or using a file range description.
+For TIF and CBF files :program:`detinfo` assumes that all the data in a file
+belongs to a single detector. Nexus files are treated differently as they can
+store data from several detectors in different instances of *NXdetector* in a
+single file. In this case, the information listed above is shown for each
+instance of *NXdetector* available in the file. 
+See :ref:`determining-input-files` for how to describe input files. 
 
 Options
 -------
 
-The programm takes the following options:
+The output of :program:`detinfo` can be controlled by means of the following
+options
 
 .. option:: -h, --help      
 
@@ -75,8 +69,8 @@ The programm takes the following options:
 Examples
 --------
 
-Consider a directory with TIF files, calling @command{detinfo} with no options
-would yield a similar result like this
+Consider a directory with TIF files, calling :program:`detinfo` with no options
+would yield a result similar to this
 
 .. code-block:: bash
 
@@ -89,7 +83,7 @@ would yield a similar result like this
     detector_014.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
     detector_015.tif  type = area  pixel type = UINT32  frames = 1 frame shape = (2300,2300)
 
-Output as a ``CSV`` table could be achieved with
+``csv`` output for the same directory 
 
 .. code-block:: bash
 
@@ -103,9 +97,9 @@ Output as a ``CSV`` table could be achieved with
     detector_014.tif ; area ; UINT32 ; 1 ; (2300,2300)
     detector_015.tif ; area ; UINT32 ; 1 ; (2300,2300)
 
-The ``CSV`` output could be used for automatic processing of the output. 
+The ``csv`` output could be used for automatic processing of the output. 
 Note that the first row of output contains the column names 
-:program:`detinfo` associates weach entry with.
+:program:`detinfo` associates each entry with.
 
 A Nexus file can store the data of several detectors and the full path to the
 data field of every detector is used as the source 
@@ -142,5 +136,5 @@ Return value
 
 Author
 ------
-Written bei Eugen Wintersberger <eugen.wintersberger@desy.de>
+Written by Eugen Wintersberger <eugen.wintersberger@desy.de>
 

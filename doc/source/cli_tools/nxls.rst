@@ -12,24 +12,24 @@ Synopsis
 Description
 -----------
 
-``nxls`` lists the content of a Nexus file. Like its Unix counter part
-``ls``, ``nxls`` shows the content of the file relative to a particular
+:program:`nxls` lists the content of a Nexus file. Like its Unix counter part
+:command:`ls`, :program:`nxls` shows the content of the file relative to a particular
 group within the file. In the simplest case this is the root group of the file. 
 As the command line argument must be a valid Nexus path in no case the name of
 the file alone will suffice. It is at least necessary to add the root part. 
-In such a case a possible call of ``nxls`` would look like this
+In such a case a possible call of :program:`nxls` would look like this
 
 .. code-block:: bash
 
     $ nxls data.nxs://
 
-By default ``nxls`` removes the leading part of the path of the individual 
+By default :program:`nxls` removes the leading part of the path of the individual 
 Nexus objects. This is just to save space in the output. To obtain the full 
-path use the ``-f`` option.
+path use the :option:`--full-path` option.
 
 Options
 -------
-The programm takes the following options:
+The program takes the following options:
 
 .. option:: -h, --help  
 
@@ -61,14 +61,13 @@ file. This can be achieved with
     $ nxls nxls_test.nxs://
     entry:NXentry
 
-Note here that we had to add `://` after the filename. This is necessary as the
-program expects a full Nexus path to the base object. The filename alone is not
-a valid path. In addition one should recognize that the leading / in the output
-is removed. 
-Finally, in this example, only the those objects are listed which reside
-directly below the root node. 
+Note the `://` after the filename which is required to obtain a full NeXus
+path. In addition one should recognize that the leading `/` in the output is
+removed as all the output is relative to the root group. 
+In this example only those objects residing directly below the root group are
+shown.
 For a recursive list through all the children of a particular group we have to 
-add the :option:`--recursive` as in the next example
+add the :option:`--recursive` 
 
 .. code-block:: bash
 
@@ -86,9 +85,7 @@ add the :option:`--recursive` as in the next example
     source:NXsource/probe
     source:NXsource/type
 
-Here, all fields and groups below the instrument group of the Nexus file are
-listed. Again, the base portion of the path is removed from the output.  To
-obtain a full path for each object we have to add the :option:`--full-path`
+To obtain a full path for each object we have to add the :option:`--full-path`
 option
 
 .. code-block:: bash

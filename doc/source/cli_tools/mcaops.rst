@@ -682,7 +682,7 @@ The scale is now shifted as the bin index in :file:`test1.dat` starts with 3.
     3       1
     $ cat test.dat | mcaops rebin --noxrebin -b3 | gnuplot -p -e "$GCMD"
 
-.. figure:: pics/mcaops_rebin3
+.. figure:: pics/mcaops_rebin3.png
    :align: center
    
 :program:`mcaops` does not normalize the re-binned data by default. To

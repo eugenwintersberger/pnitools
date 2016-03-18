@@ -8,16 +8,16 @@ output scalar data from a Nexus file
 
 .. code-block:: text
 
-    nxcat [OPTIONS] SOURCE [SOURCE ...]
+    nxcat [OPTIONS] NXFIELD [NXFIELD ...]
 
 Description
 -----------
 
-``nxcat`` prints the output of one or more fields stored in Nexus files to
-standard out. The fields are specified by Nexus paths. It is thus possible 
-to combine data not only from different fields but also from different 
+:program:`nxcat` prints the output of one or more fields stored in Nexus files
+to standard output. The fields are specified by Nexus paths. It is thus
+possible to combine data not only from different fields but also from different
 files. :program:`nxcat` produces output in tabular form, thus, only scalar
-fielss (one dimension) are currently supported. This may change in future. 
+fields (one dimension) are currently supported. This may change in future. 
 
 Options
 -------
@@ -62,7 +62,7 @@ yielding
    :align: center
 
 The plotting range can easily be reduced by only reading a section of the data
-which can be specified by the @option{-s} and @option{-e} option
+which can be specified by the :option:`--start`} and :option:`--end` options
 
 .. code-block:: bash
 
@@ -83,7 +83,7 @@ example
     6.99941         5 
 
 and for the previous plotting job this would be perfectly ok. However, some
-programs may require a name and a unit for each of the columns. Using the
+programs may require a name and a unit for each of the columns. Using 
 :option:`--header` makes :program:`nxcat` printing a short header holding the name
 and the unit of each column 
 

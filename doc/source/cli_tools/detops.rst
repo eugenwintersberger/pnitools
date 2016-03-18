@@ -5,118 +5,57 @@ detops
 Synopsis
 --------
 
-Apply cumulative image operations on detector files
-
 .. code-block:: bash
 
-    detops COMMAND [OPTIONS] [FILE]
+    detops [OPTIONS] FILESPEC [FILESPEC, ...]
 
 Description
 -----------
-``detops`` is a utility program applying certain operations on 2D detector data. 
-The detector data can be read from one or several single image detector files.
+:program:`detops` is a utility program applying accumulative operations on 2D
+detector data.  The detector data can be read from one or several single image
+detector files.  Currently the following file formats are supported 
 
-All results are written to standard output. This allows several `mcaops``
-commands to be chained using the pipe operator. 
+* CBF - DECTRIS style CBF files used for Pilatus detectors
+* TIF - tagged image format
 
-The behavior of ``mcaops`` is controlled via the command string which is
-passed as the first argument to the program.  Currently
-the following commands are available:
+Input files can be specified as described in
+:ref:`determining-input-files`.
 
-=========  ======================================================
-Command    Description
-=========  ======================================================
-**max**    find the value and its position in the spectrum
-**sum**    add all value in the spectrum
-**rebin**  rebin the spectrum to new bin sizes
-**scale**  scale the bin centers of the spectrum
-**dump**   dump channel and mca data unchanged to standard out
-=========  ======================================================
+:program:`detops` provides the following operations
 
-These operations can roughly devided into two groups: accumulating and
-non-accumulating operations. The former one reduces the entire MCA data to a
-single number while the latter one preserves the spectrum character of the data
-(though rebining maybe alters the number of bins). 
+=======  =============================================================
+Command  Description
+=======  =============================================================
+*sum*    compute the sum of all pixels of the detector or selected ROI 
+*max*    get maximum value of the entire detector or the selected ROI
+*min*    get minimum value of the entire detector or the selected ROI
+=======  =============================================================
+
+All operations can be restricted to a single region of interest (ROI) by using
+the :option:`--roi` option.
+
 
 Options
 -------
-The  options provided and their meaning depend on the operation that should be
-performed on the data. Some of of the options are global and valid for all
-operations other are only defined for a particular command. 
 
-Global options:
+.. option:: -h, --help
 
--h, --help  Print a usage message and exit.
--v, --verbose  Produce verbose output, printing information regarding the 
-               specified options and objects.  All output is printed to 
-               standard error allowing you to redirect payload data to an 
-               other program while still watching debugging output.
--q, --quiet    Suppress all unnecessary output (the counterpart of -v)
---header       print a header before dumping the output to standard out
---xolumn=[COLNAME]  specify the name of the column to choose from the input 
-                    to use as bin-center or -index values. This option is 
-                    only useful when used in connection with FIO files.
---ycolumn=[COLNAME]  specify the name of the column to use for MCA data. 
-                     This option is only useful with a FIO file. 
+   Print a short program help.
 
+.. option:: -c, --command
 
-Options for the **rebin** operation:
+   This option determines the operation executed on the image. It can be either
+   *sum*, *min*, or *max*
 
--b, --binsize=[NBINS]  defines the number of bins that should be collated 
-                       during rebining. 
---noxrebin  do not rebin the x-axis. Instead use indices for the output. 
---normalize  normalize the rebinned data.
+.. option:: -r, --roi
 
-Options for the  **scale** operation:
-
--c, --center=[CENTER]  defines the index of the center bin used for 
-                       rescaling. 
--d, --delta=[DELTA]    defines the step width for the rebin operation
--x, --cvalue=[CENTERVALUE]  the value of the center bin.
-
-The **sum** and **mmax** command have no additional options.
-
-Return value
-------------
-0 in case of success and -1 otherwise. 
+   Can be used to pass a ROI (currently only a single ROI can be used) to the
+   program. So the operation determined by :option:`--command` will only be 
+   applied to the ROI instead of the entire detector.
 
 Examples
 --------
 
-Lets start with a very simple example reading data form standard input and using
-the accumulating operations **sum** and **max**. For the sake of convenience 
-a data file should be created which looks like this
-
-.. code-block:: text
-
-    0 1
-    1 0
-    2 10
-    3 50
-    4 100
-    5 200
-    6 70
-    7 150
-    8 20
-    9 1
-    10 0
-
-and store the file as ``test.dat``. Here the first column is the channel 
-index while the second holds the channel data. 
-To compute the sum of the data stored use
-
-.. code-block:: bash
-
-    $ cat test.dat | mcaops sum 
-    602
-
-where the output, 602, is the sum of values stored in the second column.
-Analogously, to find the maximum use
-
-.. code-block:: bash
-
-    $ cat test.dat | mcaops max
-    5   200
-
-the two  numbers are the position of the maximum and its value respectively. 
-
+Return value
+------------
+0 in case of success and -1 otherwise. 

@@ -11,6 +11,11 @@ add_custom_target(html_doc
                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                   COMMENT Building html documentation)
 
+add_custom_target(pdf_doc
+                  COMMAND make -fSphinxMakefile latexpdf
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                  COMMENT Building PDF documentation)
+
 add_custom_target(man_doc ALL
                   COMMAND make -fSphinxMakefile man
                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

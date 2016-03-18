@@ -194,7 +194,7 @@ htmlhelp_basename = 'PNIToolsdoc'
 
 latex_elements = {
 # The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+'papersize': 'a4paper',
 
 # The font size ('10pt', '11pt' or '12pt').
 #'pointsize': '10pt',
@@ -217,7 +217,7 @@ latex_documents = [
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
-#latex_use_parts = False
+latex_use_parts = False
 
 # If true, show page references after internal links.
 #latex_show_pagerefs = False
@@ -246,6 +246,12 @@ man_pages = [
     ('cli_tools/nxls','nxls',u'lists fields, attributes, and groups in a NeXus file',
      ['Eugen Wintersberger'],1),
     ('cli_tools/xml2nx','xml2nx',u'creates NeXus objects and files from an XML description',
+     ['Eugen Wintersberger'],1),
+    ('cli_tools/detops','detops',u'apply accumulative operations on single detector frames',
+     ['Eugen Wintersberger'],1),
+    ('cli_tools/nxtee','nxtee',u'write data from standard output to a NeXus field or attribute',
+     ['Eugen Wintersberger'],1),
+    ('cli_tools/mcaops','mcaops',u'perform operations on MCA data',
      ['Eugen Wintersberger'],1),
 ]
 

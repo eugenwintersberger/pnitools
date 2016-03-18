@@ -8,20 +8,25 @@ Synopsis
 
 .. code-block:: text
 
-    xml2nx [OPTIONS] FILE [FILE ...]
+    xml2nx [OPTIONS] INPUT-FILE
 
 
 Description
 -----------
 
-``xml2nx`` converts XML files holding NXDL content to Nexus files. This
-program can be used to create fields and groups in a Nexus file on the basis of
-an NXDL file. It thus might be useful for systems using the shell as their
-operating environment. 
+:program:`xml2nx` creates NeXus files from an XML description. The XML format
+used is very close to NXDL but has some additions necessary to create 
+HDF5 files which are not covered by NXDL. 
+The XML description does not necessarily have to contain the full NeXus tree. 
+Single elements like detectors or samples could also be stored as XML snippets
+and then added to an existing NeXus file at a specific location.
+The XML description is read from an input file provided as command line
+argument or from standard input.
 
-The NXDL file does not necessarily need to contain the full file structure. It
-is even possible to add only a particular base class or component to the file. 
-This is particularly useful if one wants to play with different components.
+The location where the object should be created is determined by a full NeXus
+path (see :ref:`nexus-path`) passed via the :option:`--parent` option.
+If only the filename is provided as a parent the program assumes that the new
+object should be created below the root-group of the file.
 
 Options
 -------
@@ -32,10 +37,9 @@ The programm takes the following options:
 
    print short program help
 
-.. option:: -p, --parent  
+.. option:: -p [NEXUSPATH], --parent=[NEXUSPATH]
 
-   The parent node under which the content described by the NXDL file should be
-   attached. 
+   NeXus path to the parent location where an object should be created.
 
 .. option:: -o, --overwrite  
 
@@ -113,7 +117,7 @@ however we need to be a more precise here where to put the detector object.
 
 .. code-block:: bash
 
-    $ xml2nx -poutput.nx:///:NXentry/:NXinstrument detector.xml
+    $ xml2nx -poutput.nx://:NXentry/:NXinstrument detector.xml
 
 which leaves us with 
 

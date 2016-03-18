@@ -3,6 +3,7 @@ set(RSTFILES index.rst
              developer_documentation.rst
              general_concepts.rst
              installation.rst
+             overview.rst
              det2nx.rst)
 
 

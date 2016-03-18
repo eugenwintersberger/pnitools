@@ -1,5 +1,5 @@
 
-.. _nexus_path-label:
+.. _nexus-path:
 
 NeXus path
 ==========
