@@ -56,7 +56,7 @@ class data_provider
         //! Shared pointer type for data providers. Only used for 
         //! polymorphy.
         //! 
-        typedef std::unique_ptr<data_provider> pointer_type;
+        using pointer_type =  std::unique_ptr<data_provider>;
 
         //--------------------------------------------------------------------
         //!
@@ -64,7 +64,7 @@ class data_provider
         //! 
         //! Array type used to store data in memory.
         //! 
-        typedef operation::array_type array_type;
+        using array_type = operation::array_type;
         
         //--------------------------------------------------------------------
         //!
@@ -72,7 +72,7 @@ class data_provider
         //!
         //! Pair of channel and MCA data. 
         //! 
-        typedef std::pair<array_type,array_type> value_type;
+        using value_type = std::pair<array_type,array_type>;
 
         //--------------------------------------------------------------------
         //! default constructor

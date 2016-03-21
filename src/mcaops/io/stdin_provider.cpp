@@ -22,7 +22,9 @@
 
 #include <iostream>
 #include <sstream>
+#include <boost/algorithm/string/trim.hpp>
 #include "stdin_provider.hpp"
+
 
 using namespace pni::core;
 
@@ -62,6 +64,7 @@ stdin_provider::value_type stdin_provider::next()
 
         string line_buffer;
         getline(std::cin,line_buffer,'\n');
+        boost::trim(line_buffer);
         if(line_buffer.empty()) continue;
         std::stringstream s(line_buffer);
 

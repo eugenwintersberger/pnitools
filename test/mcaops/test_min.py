@@ -34,13 +34,13 @@ import unittest
 import os
 import pni.io.nx.h5 as nx
 
-class mcaops_test_sum(unittest.TestCase):
+class mcaops_min_test(unittest.TestCase):
     command = "../../src/mcaops/mcaops"
     base    = "/:NXentry/:NXinstrument/:NXdetector"
-    total_sum_ref = numpy.loadtxt("total_sum.dat",dtype="int32")
-    roi1_sum_ref = numpy.loadtxt("roi1_sum.dat",dtype="int32")
-    roi2_sum_ref = numpy.loadtxt("roi2_sum.dat",dtype="int32")
-    size = total_sum_ref.size
+    total_ref = numpy.loadtxt("total_min.dat",dtype="int32")
+    roi1_ref = numpy.loadtxt("roi1_min.dat",dtype="int32")
+    roi2_ref = numpy.loadtxt("roi2_min.dat",dtype="int32")
+    size = total_ref.size
 
     def result_to_ndarray(self,result):
         result = numpy.fromstring(result,dtype="float64",count=self.size,sep='\n')
@@ -48,57 +48,57 @@ class mcaops_test_sum(unittest.TestCase):
 
     def get_total_result(self):
         result =  check_output([self.command,"--base="+self.base,
-                      "-mdata","sum","fiodata.nxs"])
+                      "-mdata","min","fiodata.nxs"])
         return result
 
     def get_roi1_result(self):
         return check_output([self.command,"--roi=5:501","--base="+self.base,
-                      "-mdata","sum","fiodata.nxs"])
+                      "-mdata","min","fiodata.nxs"])
 
     def get_roi2_result(self):
         return check_output([self.command,"--roi=1024:2013","--base="+self.base,
-                      "-mdata","sum","fiodata.nxs"])
+                      "-mdata","min","fiodata.nxs"])
 
     def test_total_sum(self):
         result = self.result_to_ndarray(self.get_total_result())
-        for (ref,res) in zip(self.total_sum_ref.flat,result.flat):
+        for (ref,res) in zip(self.total_ref.flat,result.flat):
             self.assertEqual(ref,res)
 
     def test_roi1_sum(self):
         result = self.result_to_ndarray(self.get_roi1_result())
 
-        for (ref,res) in zip(self.roi1_sum_ref.flat,result.flat):
+        for (ref,res) in zip(self.roi1_ref.flat,result.flat):
             self.assertEqual(ref,res)
 
 
     def test_roi2_sum(self):
         result = self.result_to_ndarray(self.get_roi2_result())
 
-        for (ref,res) in zip(self.roi2_sum_ref.flat,result.flat):
+        for (ref,res) in zip(self.roi2_ref.flat,result.flat):
             self.assertEqual(ref,res)
 
-class mcaops_test_sum_fio(mcaops_test_sum):
+class mcaops_min_test_fio(mcaops_min_test):
     
     file_format = "../data/fio/scan_mca_%05i.fio"
     files1 = file_format+":1:11"
     files2 = file_format+":42:96"
 
     def get_total_result(self):
-        result =  check_output([self.command,"sum",
+        result =  check_output([self.command,"min",
                                 self.files1,self.files2,
                                ])
         return result
 
     def get_roi1_result(self):
-        return check_output([self.command,"--roi=5:501","sum",
+        return check_output([self.command,"--roi=5:501","min",
                              self.files1,self.files2])
 
     def get_roi2_result(self):
-        return check_output([self.command,"--roi=1024:2013", "sum",
+        return check_output([self.command,"--roi=1024:2013", "min",
                              self.files1,self.files2])
 
 
-class mcaops_test_sum_stdio(mcaops_test_sum):
+class mcaops_min_test_stdio(mcaops_min_test):
 
     input_files = (
     "../data/fio/scan_mca_00001.fio","../data/fio/scan_mca_00002.fio",
@@ -139,7 +139,7 @@ class mcaops_test_sum_stdio(mcaops_test_sum):
         result = ""
         for input_file in self.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([self.command,"sum"],stdin=tail.stdout)
+            result += check_output([self.command,"min"],stdin=tail.stdout)
 
         return result
     
@@ -147,7 +147,7 @@ class mcaops_test_sum_stdio(mcaops_test_sum):
         result = ""
         for input_file in self.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([self.command,"--roi=5:501","sum"],
+            result += check_output([self.command,"--roi=5:501","min"],
                                     stdin=tail.stdout)
 
         return result
@@ -156,7 +156,7 @@ class mcaops_test_sum_stdio(mcaops_test_sum):
         result = ""
         for input_file in self.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([self.command,"--roi=1024:2013","sum"],
+            result += check_output([self.command,"--roi=1024:2013","min"],
                                     stdin=tail.stdout)
 
         return result

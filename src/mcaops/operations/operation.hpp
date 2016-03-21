@@ -60,11 +60,11 @@ class operation
     public:
         //=================public types========================================
         //! general array type
-        typedef pni::core::dynamic_array<pni::core::float64> array_type;
+        using array_type =  pni::core::dynamic_array<pni::core::float64>;
         //! iterator type
-        typedef array_type::const_iterator data_iterator;
+        using data_iterator =  array_type::const_iterator;
         //! argument vector
-        typedef std::vector<pni::core::string> args_vector;
+        using args_vector = std::vector<pni::core::string>;
 
         //--------------------------------------------------------------------
         //! 
@@ -72,7 +72,7 @@ class operation
         //! 
         //! The first element of the pair is the start iterator, the second the 
         //! end iterator over the data range the operation has to process. 
-        typedef std::pair<data_iterator,data_iterator> data_range;
+        using data_range =  std::pair<data_iterator,data_iterator>;
 
         //--------------------------------------------------------------------
         //!
@@ -80,7 +80,7 @@ class operation
         //!
         //! The first element of the pair is the channel/bin center range
         //! while the second one is the MCA data range.
-        typedef std::pair<data_range,data_range> argument_type;
+        using argument_type = std::pair<data_range,data_range>;
 
         //--------------------------------------------------------------------
         //! 
@@ -88,7 +88,7 @@ class operation
         //! 
         //! Used only for polymorphy. 
         //! 
-        typedef std::unique_ptr<operation> pointer_type;
+        using pointer_type =  std::unique_ptr<operation>;
     
         //---------------------------------------------------------------------
         //! default constructor
