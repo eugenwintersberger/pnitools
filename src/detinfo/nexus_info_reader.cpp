@@ -23,6 +23,8 @@
 
 #include "nexus_info_reader.hpp"
 #include "../common/file.hpp"
+#include <pni/io/nx/algorithms/is_link.hpp>
+#include <pni/io/nx/algorithms/as_link.hpp>
 
 
 detector_info_list nexus_info_reader::operator()(const file &f) const
@@ -43,12 +45,19 @@ detector_info_list nexus_info_reader::operator()(const file &f) const
 //----------------------------------------------------------------------------
 detector_info nexus_info_reader::info_from_nxdetector(const h5::nxgroup &d)
 {
-    h5::nxfield data = d["data"];
-
-    auto shape = data.shape<shape_t>();
+    auto object = d["data"];
 
     detector_layout layout = get_detector_layout(d); 
-    string path = get_detector_path(data);
+    string path = get_detector_path(object);
+
+    if(is_link(object))
+        return detector_info(path,layout,
+                             nxpath::to_string(as_link(object).target_path()));
+
+
+    h5::nxfield data(object);
+    auto shape = data.shape<shape_t>();
+
     
     switch(get_detector_layout(d))
     {

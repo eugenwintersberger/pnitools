@@ -62,10 +62,20 @@ void xml_output_formatter::write(std::ostream &stream,
     stream<<string_from_layout(info.layout());
     stream<<"</type>"<<std::endl;
 
-    stream<<data_indent<<"<pixeltype>"<<info.type_id()<<"</pixel>"<<std::endl;
+    if(info)
+    {
+        stream<<data_indent<<"<pixeltype>"<<info.type_id()
+               <<"</pixel>"<<std::endl;
 
-    stream<<data_indent<<"<frames>"<<info.nframes()<<"</frames>"<<std::endl;
+        stream<<data_indent<<"<frames>"<<info.nframes()
+              <<"</frames>"<<std::endl;
 
-    stream<<data_indent<<"<frameshape>";
-    stream<<info.frame_shape()<<"</frameshape>"<<std::endl;
+        stream<<data_indent<<"<frameshape>";
+        stream<<info.frame_shape()<<"</frameshape>"<<std::endl;
+    }
+    else
+    {
+        stream<<data_indent<<"<target_path>"<<info.target_path()
+              <<"</target_path>"<<std::endl;
+    }
 }

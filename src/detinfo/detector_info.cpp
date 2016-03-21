@@ -22,7 +22,7 @@
 
 #include "detector_info.hpp"
 
-
+//-----------------------------------------------------------------------------
 detector_info::detector_info(const shape_t &frame_shape,
                              type_id_t pixel_type,
                              const string &file_path,
@@ -32,7 +32,22 @@ detector_info::detector_info(const shape_t &frame_shape,
     _tid(pixel_type),
     _file_path(file_path),
     _nframes(nframes),
-    _layout(layout)
+    _layout(layout),
+    _resolvable(true),
+    _target_path{}
+{}
+
+//-----------------------------------------------------------------------------
+detector_info::detector_info(const string &file_path,
+                             detector_layout layout,
+                             const string &target_path):
+    _frame_shape{},
+    _tid{},
+    _file_path(file_path),
+    _nframes(0),
+    _layout(layout),
+    _resolvable{false},
+    _target_path(target_path)
 {}
 
 //----------------------------------------------------------------------------
@@ -63,4 +78,10 @@ type_id_t detector_info::type_id() const
 detector_layout detector_info::layout() const
 {
     return _layout;
+}
+
+//----------------------------------------------------------------------------
+string detector_info::target_path() const
+{
+    return _target_path; 
 }

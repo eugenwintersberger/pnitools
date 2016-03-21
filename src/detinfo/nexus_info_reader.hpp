@@ -27,6 +27,7 @@
 #include "../common/string_utils.hpp"
 #include <pni/io/nx/algorithms/is_group.hpp>
 #include <pni/io/nx/algorithms/is_class.hpp>
+#include <pni/io/nx/algorithms/get_filename.hpp>
 
 using namespace pni::io::nx;
 
@@ -90,7 +91,7 @@ template<typename OTYPE>
 string nexus_info_reader::get_detector_path(const OTYPE &o)
 {
     nxpath path = nxpath::from_string(get_path(o));
-    path.filename(o.filename());
+    path.filename(get_filename(o));
 
     return nxpath::to_string(path);
 }

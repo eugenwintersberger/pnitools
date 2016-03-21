@@ -22,10 +22,12 @@
 #  Created on: Sep 17, 2013
 #      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 #
+from __future__ import print_function
 from subprocess import check_output
 from subprocess import STDOUT
 from subprocess import call
 import unittest
+import pni.io.nx.h5 as nexus
 
 nexus_simple_output ="""
 ../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
@@ -342,6 +344,17 @@ cbf_xml_output="""
 </detinfo>
 """
 
+dead_link_file ="""
+<group name="entry" type="NXentry">
+    <group name="instrument" type="NXinstrument">
+        <group name="detector" type="NXdetector">
+            <link name="data" target="eiger.nxs://entry/instrument/detector/data"/>
+            <field name="layout" type="string">area</field>
+        </group>
+    </group>
+</group>
+"""
+
 class detinfo_test(unittest.TestCase):
 
     tif_file = '../data/tif/detector_009.tif'
@@ -388,7 +401,7 @@ class detinfo_test(unittest.TestCase):
       
     #-------------------------------------------------------------------------
     def test_simple(self):
-        print "test simple output ..."
+        print("test simple output ...")
         result = self._check_output(options=["-fsimple"],
                                     args = [self.cbf_file])
 
@@ -396,8 +409,8 @@ class detinfo_test(unittest.TestCase):
         
         result = self._check_output(options=["-fsimple"],
                                     args = ["../data/nexus/tstfile_00012.h5"])
-        print result
-        print nexus_simple_output
+        print(result)
+        print(nexus_simple_output)
         self.assertEqual(result.strip(),nexus_simple_output.strip())        
         
         result = self._check_output(options=["-fsimple"],
@@ -450,6 +463,17 @@ class detinfo_test(unittest.TestCase):
         result = self._check_output(options=["-fxml"],
                                     args = ["../data/tif/detector_%03i.tif:9:16"])
         self.assertEqual(result.strip(),tif_xml_output.strip())
+
+
+    def test_unresolvable_link(self):
+        f = nexus.create_file("unresolvable_link.nxs",overwrite=True)
+        r = f.root()
+        nexus.xml_to_nexus(dead_link_file,r,lambda x: True)
+        r.close()
+        f.close()
+
+        result = self._check_output(args=["unresolvable_link.nxs"])
+        print(result)
 
 
 

@@ -47,13 +47,45 @@ class detector_info
         shape_t _frame_shape;
         //! the layout of the detector
         detector_layout _layout;
+
+        bool _resolvable;
+        string _target_path;
+
         
     public:
+        //!
+        //! \brief constructor 
+        //!
+        //! Use this constructor to build an instance of detector_info 
+        //! if link to the detector data can be resolved.
+        //!
+        //! \param frame_shape the shape of a single frame
+        //! \param pixel_type the data type of an individual pixel
+        //! \param file_path the path to the detetor object within the file
+        //! \param nframes number of frames stored in the file
+        //! \param layout the layout of the detector
+        //!
         explicit detector_info(const shape_t &frame_shape,
                                type_id_t pixel_type,
                                const string &file_path,
                                size_t nframes,
                                detector_layout layout);
+
+        //!
+        //! \brief constructor
+        //!
+        //! Use this constructor to build an instance of detector_info in 
+        //! situations where the link to the detector data could not be
+        //! resolved.
+        //! 
+        //! \param file_path path to the detector link
+        //! \param layout the layout of the detector
+        //! \param target_path path to the original target where the data
+        //!                    should be stored
+        //!
+        explicit detector_info(const string &file_path,
+                               detector_layout layout,
+                               const string &target_path);
     
         shape_t frame_shape() const;
 
@@ -64,6 +96,10 @@ class detector_info
         type_id_t type_id() const;
 
         detector_layout layout() const;
+
+        string target_path() const;
+        
+        explicit operator bool() const { return _resolvable; }
 };
 
 typedef std::vector<detector_info> detector_info_list;

@@ -46,8 +46,16 @@ void key_value_output_formatter::write(std::ostream &stream,
     stream<<"source           = "<<info.path()<<std::endl;
     stream<<"type             = "<<string_from_layout(info.layout());
     stream<<std::endl;
-    stream<<"pixel type       = "<<info.type_id()<<std::endl;
-    stream<<"number of frames = "<<info.nframes()<<std::endl;
-    stream<<"frame shape      = "<<info.frame_shape()<<std::endl;
+
+    if(info)
+    {
+        stream<<"pixel type       = "<<info.type_id()<<std::endl;
+        stream<<"number of frames = "<<info.nframes()<<std::endl;
+        stream<<"frame shape      = "<<info.frame_shape()<<std::endl;
+    }
+    else
+    {
+        stream<<"target path      = "<<info.target_path()<<std::endl;
+    }
 
 }
