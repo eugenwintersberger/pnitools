@@ -35,24 +35,26 @@ import os
 import pni.io.nx.h5 as nx
 import common
 
-class mcaops_max_test(unittest.TestCase):
-    total_ref = numpy.loadtxt("total_max.dat",dtype="int32")
-    roi1_ref = numpy.loadtxt("roi1_max.dat",dtype="int32")
-    roi2_ref = numpy.loadtxt("roi2_max.dat",dtype="int32")
+class mcaops_minpos_test(unittest.TestCase):
+    total_ref = numpy.loadtxt("total_argmin.dat",dtype="int32")
+    roi1_ref = numpy.loadtxt("roi1_argmin.dat",dtype="int32")
+    roi2_ref = numpy.loadtxt("roi2_argmin.dat",dtype="int32")
     size = total_ref.size
+
 
     def get_total_result(self):
         result =  check_output([common.command,common.base_opt,
-                      common.mca_opt,"max","fiodata.nxs"])
+                      common.mca_opt,"minpos","fiodata.nxs"])
         return result
 
     def get_roi1_result(self):
-        return check_output([common.command,common.roi1_opt,common.base_opt,
-                      common.mca_opt,"max","fiodata.nxs"])
+        result =  check_output([common.command,common.roi1_opt,common.base_opt,
+                      common.mca_opt,"minpos","fiodata.nxs"])
+        return result
 
     def get_roi2_result(self):
         return check_output([common.command,common.roi2_opt,common.base_opt,
-                      common.mca_opt,"max","fiodata.nxs"])
+                      common.mca_opt,"minpos","fiodata.nxs"])
 
     def test_total_sum(self):
         result = common.result_to_ndarray(self.get_total_result(),self.size)
@@ -61,6 +63,7 @@ class mcaops_max_test(unittest.TestCase):
 
     def test_roi1_sum(self):
         result = common.result_to_ndarray(self.get_roi1_result(),self.size)
+        result -= 5
 
         for (ref,res) in zip(self.roi1_ref.flat,result.flat):
             self.assertEqual(ref,res)
@@ -69,34 +72,38 @@ class mcaops_max_test(unittest.TestCase):
     def test_roi2_sum(self):
         result = common.result_to_ndarray(self.get_roi2_result(),self.size)
 
+        result -= 1024
+
         for (ref,res) in zip(self.roi2_ref.flat,result.flat):
             self.assertEqual(ref,res)
 
-class mcaops_max_test_fio(mcaops_max_test):
+#=============================================================================
+class mcaops_minpos_test_fio(mcaops_minpos_test):
 
     def get_total_result(self):
-        result =  check_output([common.command,"max",
+        result =  check_output([common.command,"minpos",
                                 common.files1,common.files2,
                                ])
         return result
 
     def get_roi1_result(self):
-        return check_output([common.command,common.roi1_opt,"max",
+        return check_output([common.command,common.roi1_opt,"minpos",
                              common.files1,common.files2])
 
     def get_roi2_result(self):
-        return check_output([common.command,common.roi2_opt, "max",
+        return check_output([common.command,common.roi2_opt, "minpos",
                              common.files1,common.files2])
 
 
-class mcaops_max_test_stdio(mcaops_max_test):
+class mcaops_minpos_test_stdio(mcaops_minpos_test):
+
 
     def get_total_result(self):
         
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([common.command,"max"],stdin=tail.stdout)
+            result += check_output([common.command,"minpos"],stdin=tail.stdout)
 
         return result
     
@@ -104,7 +111,7 @@ class mcaops_max_test_stdio(mcaops_max_test):
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([common.command,common.roi1_opt,"max"],
+            result += check_output([common.command,common.roi1_opt,"minpos"],
                                     stdin=tail.stdout)
 
         return result
@@ -113,7 +120,7 @@ class mcaops_max_test_stdio(mcaops_max_test):
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([common.command,common.roi2_opt,"max"],
+            result += check_output([common.command,common.roi2_opt,"minpos"],
                                     stdin=tail.stdout)
 
         return result

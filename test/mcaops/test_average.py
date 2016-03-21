@@ -35,68 +35,72 @@ import os
 import pni.io.nx.h5 as nx
 import common
 
-class mcaops_max_test(unittest.TestCase):
-    total_ref = numpy.loadtxt("total_max.dat",dtype="int32")
-    roi1_ref = numpy.loadtxt("roi1_max.dat",dtype="int32")
-    roi2_ref = numpy.loadtxt("roi2_max.dat",dtype="int32")
-    size = total_ref.size
+class mcaops_average_test(unittest.TestCase):
+    total_sum_ref = numpy.loadtxt("total_average.dat",dtype="float64")
+    roi1_sum_ref = numpy.loadtxt("roi1_average.dat",dtype="float64")
+    roi2_sum_ref = numpy.loadtxt("roi2_average.dat",dtype="float64")
+    size = total_sum_ref.size
+
 
     def get_total_result(self):
         result =  check_output([common.command,common.base_opt,
-                      common.mca_opt,"max","fiodata.nxs"])
+                      common.mca_opt,"average","fiodata.nxs"])
         return result
 
     def get_roi1_result(self):
         return check_output([common.command,common.roi1_opt,common.base_opt,
-                      common.mca_opt,"max","fiodata.nxs"])
+                      common.mca_opt,"average","fiodata.nxs"])
 
     def get_roi2_result(self):
         return check_output([common.command,common.roi2_opt,common.base_opt,
-                      common.mca_opt,"max","fiodata.nxs"])
+                      common.mca_opt,"average","fiodata.nxs"])
 
     def test_total_sum(self):
-        result = common.result_to_ndarray(self.get_total_result(),self.size)
-        for (ref,res) in zip(self.total_ref.flat,result.flat):
-            self.assertEqual(ref,res)
+        result = common.result_to_ndarray(self.get_total_result(),
+                                          self.size,dtype="float64")
+        for (ref,res) in zip(self.total_sum_ref.flat,result.flat):
+            self.assertAlmostEqual(ref,res)
 
     def test_roi1_sum(self):
-        result = common.result_to_ndarray(self.get_roi1_result(),self.size)
+        result = common.result_to_ndarray(self.get_roi1_result(),
+                                          self.size,dtype="float64")
 
-        for (ref,res) in zip(self.roi1_ref.flat,result.flat):
-            self.assertEqual(ref,res)
+        for (ref,res) in zip(self.roi1_sum_ref.flat,result.flat):
+            self.assertAlmostEqual(ref,res)
 
 
     def test_roi2_sum(self):
-        result = common.result_to_ndarray(self.get_roi2_result(),self.size)
+        result = common.result_to_ndarray(self.get_roi2_result(),
+                                          self.size,dtype="float64")
 
-        for (ref,res) in zip(self.roi2_ref.flat,result.flat):
-            self.assertEqual(ref,res)
+        for (ref,res) in zip(self.roi2_sum_ref.flat,result.flat):
+            self.assertAlmostEqual(ref,res)
 
-class mcaops_max_test_fio(mcaops_max_test):
-
+class mcaops_average_test_fio(mcaops_average_test):
+    
     def get_total_result(self):
-        result =  check_output([common.command,"max",
+        result =  check_output([common.command,"average",
                                 common.files1,common.files2,
                                ])
         return result
 
     def get_roi1_result(self):
-        return check_output([common.command,common.roi1_opt,"max",
+        return check_output([common.command,common.roi1_opt,"average",
                              common.files1,common.files2])
 
     def get_roi2_result(self):
-        return check_output([common.command,common.roi2_opt, "max",
+        return check_output([common.command,common.roi2_opt, "average",
                              common.files1,common.files2])
 
 
-class mcaops_max_test_stdio(mcaops_max_test):
+class mcaops_average_test_stdio(mcaops_average_test):
 
     def get_total_result(self):
         
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([common.command,"max"],stdin=tail.stdout)
+            result += check_output([common.command,"average"],stdin=tail.stdout)
 
         return result
     
@@ -104,7 +108,7 @@ class mcaops_max_test_stdio(mcaops_max_test):
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([common.command,common.roi1_opt,"max"],
+            result += check_output([common.command,common.roi1_opt,"average"],
                                     stdin=tail.stdout)
 
         return result
@@ -113,7 +117,7 @@ class mcaops_max_test_stdio(mcaops_max_test):
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([common.command,common.roi2_opt,"max"],
+            result += check_output([common.command,common.roi2_opt,"average"],
                                     stdin=tail.stdout)
 
         return result

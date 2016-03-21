@@ -8,6 +8,7 @@ set(SOURCE operation.cpp
            minpos.cpp
            rebin.cpp
            output_config.cpp
+           average.cpp
            )
 
 add_library(mcaops_ops_objects OBJECT ${SOURCE})
