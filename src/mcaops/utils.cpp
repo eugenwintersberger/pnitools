@@ -154,6 +154,11 @@ bool get_provider(const string &path,const configuration &c,
         std::cerr<<error.description()<<std::endl;
         return false;
     }
+    catch(type_error &error)
+    {
+        std::cerr<<error<<std::endl;
+        return false;
+    }
 
     return true;
 }

@@ -25,6 +25,7 @@
 #include "stdin_provider.hpp"
 #include "fio_provider.hpp"
 #include "nexus_provider.hpp"
+#include <pni/io/nx/nxpath.hpp>
 
 using namespace pni::core;
 
@@ -94,13 +95,29 @@ data_provider::pointer_type
 data_provider_factory::create_nexus_provider(const configuration &c,
                                              const string &filename)
 {
-    string channel_path; 
-    if(c.has_option("channels")) channel_path = c.value<string>("channels");
-    if(c.has_option("bins")) channel_path = c.value<string>("bins");
+    using namespace pni::io::nx;
+    nxpath channel_path;
+    if(c.has_option("channels")) 
+        channel_path = nxpath::from_string(c.value<string>("channels"));
+
+    if(c.has_option("bins")) 
+        channel_path = nxpath::from_string(c.value<string>("bins"));
+
+    auto mca_path = nxpath::from_string(c.value<string>("mca"));
+
+    //add base path if passed by the user
+    if(!c.value<string>("base").empty())
+    {
+        auto base_path = nxpath::from_string(c.value<string>("base"));
+        mca_path = join(base_path,mca_path);
+
+        if(channel_path.size())
+            channel_path = join(base_path,channel_path);
+    }
 
     return pointer_type(new nexus_provider(filename,
-                                           channel_path,
-                                           c.value<string>("mca"),
+                                           nxpath::to_string(channel_path),
+                                           nxpath::to_string(mca_path),
                                            c.value<size_t>("auto-index-offset")));
 }
 
