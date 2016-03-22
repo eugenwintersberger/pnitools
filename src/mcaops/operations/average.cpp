@@ -21,6 +21,7 @@
 //
 
 #include "average.hpp"
+#include "../../common/algorithms/average.hpp"
 
 using namespace pni::core;
 
@@ -42,9 +43,7 @@ void average::operator()(const argument_type &data)
 {
     auto &mca_range = data.second;
 
-    _average = std::accumulate(mca_range.first,
-                           mca_range.second,float64(0));
-    _average /= std::distance(mca_range.first,mca_range.second);
+    _average = algorithms::average(mca_range.first,mca_range.second);
 }
 
 //----------------------------------------------------------------------------

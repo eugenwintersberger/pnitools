@@ -48,6 +48,7 @@ namespace algorithms
                bool normalize)
     {
         using namespace pni::core;
+        using value_type = typename ITERT1::value_type;
         
         //check size of input range
         if(std::distance(ifirst,ilast)<bsize)
@@ -68,12 +69,17 @@ namespace algorithms
 
             //advance the input iterators
             std::advance(ifirst,bsize);
-            if(std::distance(imove,ilast)<bsize)
+            if(std::distance(imove,ilast)<=bsize)
                 imove = ilast;
             else
                 std::advance(imove,bsize);
 
         }
+
+        if(normalize)
+            *ofirst++ = average(ifirst,imove);
+        else
+            *ofirst++ = sum(ifirst,imove);
     }
 
 //end of namespace

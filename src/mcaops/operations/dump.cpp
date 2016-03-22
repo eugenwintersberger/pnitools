@@ -33,7 +33,9 @@ dump::~dump()
 
 //----------------------------------------------------------------------------
 operation::args_vector dump::configure(const args_vector &args)
-{ }
+{ 
+    return args;
+}
 
 //----------------------------------------------------------------------------
 //! execute operation

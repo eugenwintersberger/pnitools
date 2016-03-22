@@ -70,8 +70,8 @@ input_files = (
     "../data/fio/scan_mca_00094.fio","../data/fio/scan_mca_00095.fio")
 
 
-def result_to_ndarray(result,size,dtype="int32"):
-    result = numpy.fromstring(result,dtype="float64",count=size,sep='\n')
+def result_to_ndarray(result,size,dtype="int32",sep='\n'):
+    result = numpy.fromstring(result,dtype="float64",count=size,sep=sep)
 
     if dtype=="int32":
         return result.round().astype(dtype)
