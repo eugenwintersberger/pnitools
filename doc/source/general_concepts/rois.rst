@@ -27,13 +27,15 @@ For 2D data the ROI can be set with
     $ prog -r230:1026,100:512 [OTHER OPTIONS]
 
 which will select data form pixel 230 to 1025 along the first and 100 to
-511 along the second dimension. In many cases you can pass several ROIs to the
-program. In this case each ROI gets its own option. For the 1D case this would
-look like this
+511 along the second dimension. 
 
-.. code-block:: bash
+.. In many cases you can pass several ROIs to the
+    program. In this case each ROI gets its own option. For the 1D case this would
+    look like this
 
-    $ prog -r20:45 -r100:512 -r1024:1398 [OTHER OPTIONS]
+    .. code-block:: bash
 
-When setting a ROI keep in mind that, as for all numeric ranges, the last index
-is not included in the selection.
+        $ prog -r20:45 -r100:512 -r1024:1398 [OTHER OPTIONS]
+
+    When setting a ROI keep in mind that, as for all numeric ranges, the last index
+    is not included in the selection.

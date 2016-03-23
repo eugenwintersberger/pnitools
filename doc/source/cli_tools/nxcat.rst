@@ -17,7 +17,7 @@ Description
 to standard output. The fields are specified by Nexus paths. It is thus
 possible to combine data not only from different fields but also from different
 files. :program:`nxcat` produces output in tabular form, thus, only scalar
-fields (one dimension) are currently supported. This may change in future. 
+fields (one dimension) are currently supported. 
 
 Options
 -------
@@ -49,11 +49,10 @@ something like this
 
 .. code-block:: bash
 
-    $ GCMD1="set log y; plot '-' u 1 w l"
-    $ GCMD2="set log y; plot '-' u 1:2 w l"
+    $ GCMD="set log y; plot '-' u 1:2 w l"
     $ BASE="file.nx:///:NXentry/:NXinstrument"
     $ CHAN5=$BASE/channel_5
-    $ nxcat $CHAN5/polar_angle $CHAN5/data | gnuplot -p -e "$GCMD2"
+    $ nxcat $CHAN5/polar_angle $CHAN5/data | gnuplot -p -e "$GCMD"
 
 yielding 
 
@@ -66,7 +65,7 @@ which can be specified by the :option:`--start`} and :option:`--end` options
 
 .. code-block:: bash
 
-    $ nxcat -s200 -e400 $CHAN5/polar_angle $CHAN5/data | gnuplot -p -e "$GCMD2"
+    $ nxcat -s200 -e400 $CHAN5/polar_angle $CHAN5/data | gnuplot -p -e "$GCMD"
 
 .. figure:: pics/nxcat_selection.png
    :width: 75%

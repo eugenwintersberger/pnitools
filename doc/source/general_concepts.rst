@@ -4,10 +4,11 @@ General concepts
 ================
 
 Though all programs included in the pnitools distribution provide different
-functionality they all share some common concepts which shall be described here.
-Read this chapter carefully before proceeding to the detailed description of the
-individual programs. :program:`prog` as used in the examples in this chapter is a
-placeholder for an arbitrary program from the **pnitools** distribution.
+functionality they all share some common concepts which shall be described
+here.  Read this chapter carefully before proceeding to the detailed
+description of the individual programs. :program:`prog`, as used in the
+following examples, is a placeholder for an arbitrary program from the
+**pnitools** distribution.
 
 In some situations a program can deviate from the common procedures described
 in this section. In such a case the altered program behavior is explicitely

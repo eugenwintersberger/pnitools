@@ -17,12 +17,11 @@ Description
 :command:`tee` utility. It reads data from standard input and writes it to a 
 NeXus object. 
 
-The program requires no additional command line options. All data received via 
-standard input is appended to the NeXus object referenced by *NEXUSPATH*. 
-As standard input can only provided a linear stream of data :program:`nxtee`
-makes some assumptions about how this data is appended to the target object.
-Furthermore there are some limitations in particular when dealing with string
-data. 
+All data received via standard input is appended to the NeXus object referenced
+by *NEXUSPATH*.  As standard input can only provided a linear stream of data
+:program:`nxtee` makes some assumptions about how this data is appended to the
+target object.  Furthermore there are some limitations in particular when
+dealing with string data. 
 
 * for the NeXus object, :program:`nxtee` assumes that the first dimension 
   runs over the number of entries in the particular field. In other words, 
@@ -61,7 +60,7 @@ Replacing data
 When called with the :option:`--replace` :program:`nxtee` operates in replace
 mode. In this mode the ASCII data is used to replace already existing data in a
 field.  By default the replacement starts at the 0-th element along the first
-dimension. This can be altered using the :option:`--start-index`.
+dimension. This can be altered using the :option:`--start-index` option.
 
 
 Program options
@@ -135,7 +134,7 @@ Alternatively one can do this also from a file
     $ BASE=test.nxs://:NXentry/:NXinstrument/:NXdetector
     $ nxtee -a $BASE/theta < theta.dat
 
-with :file:`heta.dat` having content like this 
+with :file:`theta.dat` having content like this 
 
 .. code-block:: bash
 

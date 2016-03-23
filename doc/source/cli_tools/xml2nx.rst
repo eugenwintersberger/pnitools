@@ -91,26 +91,13 @@ In the next step we could add an detector as described in :file:`detector.xml`
                 <dim index="1" value="0"/>
                 <dim index="2" value="2048"/>
             </dimensions>
-
         </field>
 
-        <field name="x_pixel_size" unit="um" type="float32">
-            12.45
-        </field>
-        <field name="y_pixel_size" unit="um" type="float32">
-            12.45
-        </field>
-        <field name="layout" type="string" unit="">
-            linear
-        </field>
-
-        <field name="description" type="string" unit="">
-            PSD
-        </field>
-
-        <field name="distance" type="float32" unit="m">
-            0.8
-        </field>
+        <field name="x_pixel_size" unit="um" type="float32"> 12.45 </field>
+        <field name="y_pixel_size" unit="um" type="float32"> 12.45 </field>
+        <field name="layout" type="string" unit=""> linear </field>
+        <field name="description" type="string" unit=""> PSD </field>
+        <field name="distance" type="float32" unit="m"> 0.8 </field>
     </group>
 
 however we need to be a more precise here where to put the detector object. 

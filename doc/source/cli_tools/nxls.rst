@@ -23,9 +23,9 @@ In such a case a possible call of :program:`nxls` would look like this
 
     $ nxls data.nxs://
 
-By default :program:`nxls` removes the leading part of the path of the individual 
-Nexus objects. This is just to save space in the output. To obtain the full 
-path use the :option:`--full-path` option.
+By default :program:`nxls` removes the leading part of the path of the
+individual Nexus objects in order to save space on the terminal. To obtain the
+full path use the :option:`--full-path` option.
 
 Options
 -------

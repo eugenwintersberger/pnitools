@@ -30,7 +30,7 @@ You can obtain the **pnitools** code either directly from the `GIT repository`_.
 Stable releases are available as tarballs from the `releases site`_ on GitHub. 
 
 I strongly recommend to use the code directly from the GIT repository. The
-@emph{stable} branch always provides the latest release with all the bugfixes
+stable branch always provides the latest release with all the bugfixes
 and is guaranteed to build. To get the code from GIT use 
 
 .. code-block:: bash

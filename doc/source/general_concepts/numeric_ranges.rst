@@ -19,6 +19,7 @@ In `EBNF`_ a numeric range is defined as
     index: { digit } 
     digit: "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
+The meaning of the tokens is described in the next table
 
 ===============  ===========================================
 field            description
