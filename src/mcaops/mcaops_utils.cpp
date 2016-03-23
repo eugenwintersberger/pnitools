@@ -24,34 +24,6 @@
 
 
 //-----------------------------------------------------------------------------
-configuration create_rebin_config()
-{
-    configuration config;
-    config.add_option(config_option<size_t>("binsize","b",
-                "number of bins to collate",1));
-    config.add_option(config_option<bool>("noxrebin","",
-                "do not rebin the x-axis, use simple indices instead",false));
-    config.add_option(config_option<bool>("normalize","",
-                "normalize the rebinned data",false));
-
-    return config;
-}
-
-//-----------------------------------------------------------------------------
-configuration create_scale_config()
-{
-    configuration config;
-    config.add_option(config_option<size_t>("center","c",
-                "index of center bin"));
-    config.add_option(config_option<float64>("delta","d",
-                "size of a bin"));
-    config.add_option(config_option<float64>("cvalue","x",
-                "position of the center bin"));
-
-    return config;
-}
-
-//-----------------------------------------------------------------------------
 op_ptr select_operator(const configuration &config,
                        const configuration &cmd_config)
 {

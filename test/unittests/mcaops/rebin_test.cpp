@@ -52,77 +52,64 @@ struct rebin_fixture
 BOOST_FIXTURE_TEST_SUITE(rebin_test,rebin_fixture)
 
 
-//-----------------------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(test_rebin_no_x_no_norm)
-{
-    rebin op;
-    /*
-    op.configure(args_vector{"-b10","--noxrebin"});
-    op(argument_type{{channels.begin(),channels.end()},
-            {mca.begin(),mca.end()}});
-    op(arg);
-    op.stream_result(stream);
+    //-------------------------------------------------------------------------
+    BOOST_AUTO_TEST_CASE(test_rebin_no_x_no_norm)
+    {
+        rebin op;
+        BOOST_CHECK_NO_THROW(op.configure(args_vector{"-b10","--noxrebin"}));
+        auto arg = argument_type{{channels.begin(),channels.end()},
+                                 {mca.begin(),mca.end()}};
+        BOOST_CHECK_NO_THROW(op(arg));
+        op.stream_result(stream);
 
-    string result= "0\t508.0\n1\n483.0\n"
-                   "2\t426.0\n3\n475.0\n"
-                   "4\t401.0";
+        string result= "0.0e00 5.08e02\n"
+                       "1.0e00 4.83e02\n"
+                       "2.0e00 4.26e02\n"
+                       "3.0e00 4.75e02\n"
+                       "4.0e00 4.01e02\n";
 
-    BOOST_CHECK(stream.is_equal(result));*/
-}
+        BOOST_CHECK(stream.is_equal(result));
+    }
 
-//-----------------------------------------------------------------------------
-/*
-void rebin_operation_test::test_rebin_no_x_norm()
-{
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-    rebin_operation op;
-    op.bin_size(10);
-    op.normalization(true);
-    op.no_x_rebinning(true);
-    op(channels_1,data);
-    array_type rdata,rchannels;
-    get_result(op,rchannels,rdata);
-    CPPUNIT_ASSERT(rdata.size() == 5);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[0],508.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[1],483.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[2],426.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[3],475.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[4],401.0/8.,1.e-8);
-    CPPUNIT_ASSERT(rchannels.size() == 5);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[0],0.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[1],1.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[2],2.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[3],3.0,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[4],4.0,1.e-8);
-}
-*/
-//-----------------------------------------------------------------------------
-/*
-void rebin_operation_test::test_rebin_x_norm()
-{
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
+    //-------------------------------------------------------------------------
+    BOOST_AUTO_TEST_CASE(test_rebin_no_x_norm)
+    {
+        rebin op;
+        auto cnf_opts = args_vector{"-b10","--normalize","--noxrebin"};
+        BOOST_CHECK_NO_THROW(op.configure(cnf_opts));
+        auto arg = argument_type{{channels.begin(),channels.end()},
+                                 {mca.begin(),mca.end()}};
+        BOOST_CHECK_NO_THROW(op(arg));
+        op.stream_result(stream);
 
-    rebin_operation op;
-    op.bin_size(10);
-    op.normalization(true);
-    op.no_x_rebinning(false);
-    op(channels_1,data);
-    array_type rdata,rchannels;
-    get_result(op,rchannels,rdata);
-    CPPUNIT_ASSERT(rdata.size() == 5);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[0],508.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[1],483.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[2],426.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[3],475.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rdata[4],401.0/8.,1.e-8);
-    CPPUNIT_ASSERT(rchannels.size() == 5);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[0],45.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[1],145.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[2],245.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[3],345.0/10.,1.e-8);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(rchannels[4],348.0/8.,1.e-8);
-}
-*/
+        string result= "0.0e00 5.08e01\n"
+                       "1.0e00 4.83e01\n"
+                       "2.0e00 4.26e01\n"
+                       "3.0e00 4.75e01\n"
+                       "4.0e00 5.0125e01\n";
+
+        BOOST_CHECK(stream.is_equal(result));
+    }
+
+    //-------------------------------------------------------------------------
+    BOOST_AUTO_TEST_CASE(test_rebin_x_norm)
+    {
+        rebin op;
+        args_vector cnf_opts{"-b10","--normalize"};
+        BOOST_CHECK_NO_THROW(op.configure(cnf_opts));
+        argument_type arg{{channels.begin(),channels.end()},
+                          {mca.begin(),mca.end()}};
+        BOOST_CHECK_NO_THROW(op(arg));
+        op.stream_result(stream);
+        
+        string result= "4.5e00 5.08e01\n"
+                       "1.45e01 4.83e01\n"
+                       "2.45e01 4.26e01\n"
+                       "3.45e01 4.75e01\n"
+                       "4.35e01 5.0125e01\n";
+        
+        BOOST_CHECK(stream.is_equal(result));
+    }
 
 BOOST_AUTO_TEST_SUITE_END()
 

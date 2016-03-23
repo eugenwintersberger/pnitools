@@ -51,20 +51,23 @@ size_t rebin::get_new_channels(size_t orig_channels) const
 }
 
 //----------------------------------------------------------------------------
-configuration create_config()
-{
-    configuration c;
+namespace{
+    configuration create_config()
+    {
+        configuration c;
 
-    c.add_option(config_option<size_t>("binsize","b",
-                "Number of bins to collate!",1));
-    c.add_option(config_option<bool>("noxrebin","",
-                "no x-axis rebinning",false));
-    c.add_option(config_option<bool>("normalize","",
-                "normalize the input data",false));
+        c.add_option(config_option<size_t>("binsize","b",
+                    "Number of bins to collate!",1));
+        c.add_option(config_option<bool>("noxrebin","",
+                    "no x-axis rebinning",false));
+        c.add_option(config_option<bool>("normalize","",
+                    "normalize the input data",false));
 
-    return c;
+        return c;
+    }
+
 }
-       
+
 //-----------------------------------------------------------------------------
 rebin::rebin():
         operation(),
@@ -121,8 +124,15 @@ void rebin::operator()(const argument_type &data)
                       std::back_inserter(mca_storage),_bsize,_norm);
 
     if(!_noxrebin)
+    {
         algorithms::rebin(channel_range.first,channel_range.second,
                           std::back_inserter(channel_storage),_bsize,true);
+    }
+    else
+    {
+        channel_storage = array_type::storage_type(mca_storage.size());
+        std::iota(channel_storage.begin(),channel_storage.end(),0.0);
+    }
 
     shape_t shape{mca_storage.size()};
     _new_channels = array_type::create(shape,std::move(channel_storage));
