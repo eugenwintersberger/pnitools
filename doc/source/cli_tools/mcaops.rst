@@ -12,64 +12,72 @@ Synopsis
 
 where
 
-GENERAL OPTIONS  
-    are options valid for all commands available for @command{mcaops}
-
-OPS
-    determines the operation which to apply to the input data
-
-OPS OPTIONS
-    are options which are specific for the operation selected 
-
-INPUT FILE
-    determines the source from which to obtain the data to process.
++--------------------+----------------------------------------------------+
+| *GENERAL OPTIONS*  | are options valid for all commands available       |
+|                    | for :program:`mcaops`                              | 
++--------------------+----------------------------------------------------+
+| *OPS*              | determines the operation which to apply to the     |
+|                    | input data                                         |
++--------------------+----------------------------------------------------+
+| *OPS OPTIONS*      | are options which are specific for the operation   |
+|                    | selected                                           |
++--------------------+----------------------------------------------------+
+| *INPUT FILE*       | determines the source from which to obtain the     |
+|                    | data to process.                                   |
++--------------------+----------------------------------------------------+
 
 Description
 ===========
 
-:program:`mcaops` applies certain mathematical operations onto MCA data. These
-operations include summation, finding minimum and maximum in the data,
-channel-rebinning, and the like.   All results are written to standard output.
-This allows several :program:`mcaops`` commands to be chained using the pipe
-operator. 
+:program:`mcaops` applies certain mathematical operations onto MCA data. All
+results are written to standard output. This allows several :program:`mcaops``
+commands to be chained by using the pipe operator. 
 
-The behavior of ``mcaops`` is controlled via the command string which is
-passed as the first argument to the program.  Currently
-the following commands are available:
+Which operation to perform is controlled via the *OPS* argument which is passed
+as the first command line argument to :program:`mcaops`.
+Currently the following operations are available:
 
-=========  ======================================================
-Command    Description
-=========  ======================================================
-**max**    find the value and its position in the spectrum
-**sum**    add all value in the spectrum
-**rebin**  rebin the spectrum to new bin sizes
-**scale**  scale the bin centers of the spectrum
-**dump**   dump channel and mca data unchanged to standard out
-=========  ======================================================
+=======   ====================================================
+Command   Description
+=======   ====================================================
+max       find the maximum value in the MCA data 
+maxpos    find the position of the maximum value
+min       find the mininum value in the MCA data
+minpos    find the minimum location in the MCA data
+sum       add all value in the spectrum (see :ref:`sum-operation-reference`)
+average   compute the average from the entire MCA data (see :ref:`average-operation-reference`)
+rebin     rebin the spectrum to new bin sizes (see :ref:`rebin-operation-reference`)
+scale     scale the bin centers of the spectrum (see :ref:`scale-operation-reference`)
+dump      dump channel and mca data unchanged to standard out
+=======   ====================================================
 
-These operations can roughly devided into two groups: accumulating and
-non-accumulating operations. The former one reduces the entire MCA data to a
-single number while the latter one preserves the spectrum character of the data
-(though rebining maybe alters the number of bins). 
+One can roughly distinguish two kinds of operations: accumulating and
+non-accumulating operations. The former ones reduce the input data typically to
+one number while the latter ones do not.  Most of the available operations can
+be easily classified into one of the two kinds. The only exception is the 
+**rebin** operation though it reduces the number of bins in most cases it
+does not go that far to virtually sum all data into a single bin.
 
 Obtaining input
 ---------------
 
-Every command expects as its input arguemnts two arrays whose size is equal to
+Every command expects as its input arguments two arrays whose size is equal to
 the MCAs number of channels. The first array provides the channel indexes while
-the second one the actual MCA data. If the channel indexes or or bin center
+the second one the actual MCA data. If the channel indexes or bin center
 values are not provided, :program:`mcaops` generates a set of channel indexes by
 itself starting from with an index value provided by the 
-:option:`--auto-index-offset`. The default value of this option is 0.
+:option:`--auto-index-offset`. By default this value is 0.
 
 :program:`mcaops` can read MCA data from three sources
 
-* standard input
-* a single or multiple ASCII files 
-* a single or multiple NeXuS files
+* standard input (see :ref:`standard-input-reference`)
+* a single or multiple ASCII files (see :ref:`ascii-input-reference`)
+* a single or multiple NeXuS files (see :ref:`nexus-input-reference`)
 
 The way how :program:`mcaops` treats the data depends on the particular data
 source used to obtain the MCA data.
+
+.. _standard-input-reference:
 
 Reading data from standard input
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -94,34 +102,43 @@ If the number of channels *n* is provided by the
     8445.0
     2391.0
 
+.. _ascii-input-reference:
+
 Reading data from ASCII files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Currently the only ASCII format supported are :file:`.fio` files as produced by
 the :program:`online` data acquisition system used at some beamlines at DESY.
-In general :program:`mcaops` assumes that every ASCII file contains a single
-spectrum. :program:`mcaops` assumes that ASCII files can contain several, named
-columns of data. It is thus necessary to tell the program from which column to
-read the channel/bin center and the MCA data. 
-The general option :option:`--mca` determines the name of the column storing
-the MCA data.
+By default :program:`mcaops` assumes that every FIO file contains only a single
+MCA spectrum. Hoever, as FIO files can store several named columns of data 
+in a single file the global option :option:`--mca` must be used to tell 
+:program:`mcaops` from which column to read the MCA data.
 
 .. code-block:: bash
 
     $ mcaops -mmca_data sum testdata.fio
 
-The :option:`--mca` is thus mandatory. If the file also contains columns with
-the channel index or bin center data one can use the :option:`--channels` or
-:option:`--bins` respectively to inform :program:`mcaops` where to find this
-information
+For files with several data columns the :option:`--mca` is mandatory.
+If the file also contains columns with the channel index or bin center data one
+can use the :option:`--channels` or :option:`--bins` respectively to inform
+:program:`mcaops` where to find this information
 
 .. code-block:: bash
 
     $ mcaops -benergy -mmca_data sum testdata.fio
 
-Unlike the :option:`--mca`, :option:`--bins` and :option:`--channels` are
-optional as an channel index array will be generated automatically if not
-provided by the user.
+Unlike :option:`--mca`, the :option:`--bins` and :option:`--channels` options
+are in no case mandatory as an channel index array will be generated
+automatically if not provided by the user.
+
+MCA data can also be read from several FIO files using a numeric range 
+
+.. code-block:: bash
+
+    $ mcaops sum mca_scan_%05i.fio:0:101
+
+
+.. _nexus-input-reference:
 
 Reading data from NeXuS files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -141,7 +158,7 @@ case the field is considered to store a single spectrum while in the latter one
 the field is assumed to store several spectra where the first dimension runs
 over the number of spectra and the second dimension represents the MCA channels. 
 
-To reduce the writting effort one can use the general option :option:`--base`
+To reduce the writing effort one can use the general option :option:`--base`
 to set a base path. The previous example would then look like this 
 
 .. code-block:: bash
@@ -188,9 +205,8 @@ result data is written column like fashion
 
 where the first column are the bin centers or channel indices and the second
 column contains the actual channel data. In some cases it might be useful to
-supress the channel data from the output. This can be achieved using the global
-option :option:`--no-channel-output` option. Using this, the above output would
-look like this
+suppress the channel data from the output. This can be achieved using the global
+option :option:`--no-channel-output`. This reduces the above output to 
 
 .. code-block:: text
 
@@ -201,13 +217,14 @@ look like this
     .
     .
 
-Furthermore, in particular when using :program:`mcaops` in batch mode and in
-connection with :program:`nxtee`. In this case every result spectrum should be 
-plotted in a single line. For this purpose one has to change the 
-channel separator character from its default value (a carrige return) to 
-something else (for instance a simple whitespace). The global option 
-:option:`--channel-sep` does exactly this. With :option:`--channel-sep=' '` the
-above output would alter to 
+In the output stream, by default, the individual channels are separated by 
+a carriage return. In particular when using :program:`mcaops` in batch mode and in
+connection with :program:`nxtee` it is necessary to change this to a different
+symbol as for :program:`nxtee` the carriage return would indicate a new data
+point. A reasonable choice would be to change the channel separator character
+to a whitespace. This can be achieved by the global option 
+:option:`--channel-sep`. With :option:`--channel-sep=' '` the above output
+would alter to 
 
 .. code-block:: text
     
@@ -221,31 +238,6 @@ this is not a serious limitation.
 
 Available operations
 --------------------
-
-The behavior of :program:`mcaops` is controlled via the command string which is
-passed to the program after the general options. The operations currently
-
-=======   ====================================================
-Command   Description
-=======   ====================================================
-max       find the maximum value in the MCA data
-maxpos    find the position of the maximum value
-min       find the mininum value in the MCA data
-minpos    find the minimum location in the MCA data
-sum       add all value in the spectrum
-average   compute the average from the entire MCA data
-rebin     rebin the spectrum to new bin sizes
-scale     scale the bin centers of the spectrum
-dump      dump channel and mca data unchanged to standard out
-=======   ====================================================
-
-One can roughly distinguish two kinds of operations: accumulating and
-non-accumulating operations. The former ones reduce the input data typically to
-one number while the latter ones do not.  Most of the available operations can
-be easily classified into one of the two kinds. The only exception is the 
-*rebin* operation though it reduces the number of bins in most cases it
-does not go that far to virtually sum all data into a single bin.
-
 
 MCA terminology 
 ^^^^^^^^^^^^^^^
@@ -296,6 +288,8 @@ In cases where *min* or *max* find multiple occurances of the
 minimum or maximum value the first one is taken. This is also true for 
 *minpos* and *maxpos*.
 
+.. _sum-operation-reference:
+
 The *sum* operation
 ^^^^^^^^^^^^^^^^^^^
 
@@ -315,6 +309,8 @@ result written to standard output.  If a ROI is set the sum runs from
    s = \sum_{i=r_{start}}^{r_{stop}-1} b_{i}
 
 
+.. _average-operation-reference:
+
 The *average* operation
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -333,6 +329,8 @@ and in the presence of a ROI
      
 where in both expressions :math:`a` denotes the average.
 
+.. _rebin-operation-reference: 
+
 The *rebin* operation
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -345,7 +343,7 @@ of bins can be computed with
 
    \bar n = \biggm\lfloor {{n}\over{b}} \biggm\rfloor + (1)
 
-If :math:`N` is not an integer multiple of :math:`b` we have to add an extra
+If :math:`n` is not an integer multiple of :math:`b` we have to add an extra
 bin which comes from the last term in the previous expression.  Technically
 rebining is done by averaging the values stored in the original :math:`b` bins
 and store the result in a single bin
@@ -353,11 +351,11 @@ and store the result in a single bin
 .. math::
 
    \bar d_j = {{1}\over{\bar n}}
-           \sum_{i=r_{\rm start}}^{r_{\rm stop}}d_{jb+i}
+           \sum_{i=r_{\rm start}}^{r_{\rm stop}-1}d_{jb+i}
 
-where :math:`j=1,\ldots, n_r` and :math:`r_j` denots the value of the
+where :math:`j=1,\ldots, n_r` and :math:`r_j` denotes the value of the
 :math:`j`-th bin in the rebinned histogram. Again we have to take care for the
-situation where the :math:`n` is not a multiple interger of :math:`b`. In this
+situation where the :math:`n` is not a multiple integer of :math:`b`. In this
 case the last bin value for the new histogram is computed with
 
 .. math::
@@ -369,6 +367,7 @@ In some cases not only the data should be recomputed but also the center values
 of the bins. The procedure is actually the same as for the bin data shown above.
 However, instead of the :math:`d_j` averaging is done over the :math:`c_j`.
 
+.. _scale-operation-reference:
 
 The *scale* operation
 ^^^^^^^^^^^^^^^^^^^^^
@@ -445,6 +444,7 @@ These options apply to all operations
    specifies the name of the data object storing the channel index or bin
    center data. For *FIO* files this is the name of a column within the
    file and for *NeXuS* files this is the path to a one dimensional field.
+   This option has no effect if the data is read from standard input.
 
 .. option:: -b, --bins
 
@@ -456,6 +456,7 @@ These options apply to all operations
    should be processed. For *FIO* files this is the name of a column in
    the file and for *NeXuS* files it is the path to a one or two
    dimensional field.
+   This option has no effect when the data is read from standard input.
 
 .. option:: --auto-index-offset=[INDEX-OFFSET]
 
@@ -507,11 +508,12 @@ Options for the *scale* operation
 
 .. option:: -c [CENTER], --center=[CENTER]
 
-   defines the index of the center bin used for rescaling. 
+   defines the index of the center bin used for rescaling. By default the bin
+   with the maximum signal will be used.
 
 .. option:: -d [DELTA], --delta=[DELTA]
 
-   defines the step width for the rebin operation
+   defines the new width of the histogram bins
 
 .. option:: -x [CENTERVALUE], --cvalue=[CENTERVALUE]
 
