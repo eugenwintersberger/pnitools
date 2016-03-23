@@ -26,7 +26,7 @@ using namespace pni::core;
 
 const std::vector<pni::core::string> 
 command_predicate::_commands =
-{"min","max","minpos","maxpos","sum","rebin","dump","average"};
+{"min","max","minpos","maxpos","sum","rebin","dump","average","scale"};
 
 bool command_predicate::operator()(const string &s) const
 {

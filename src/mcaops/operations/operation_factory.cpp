@@ -33,6 +33,7 @@
 #include "minpos.hpp"
 #include "rebin.hpp"
 #include "average.hpp"
+#include "scale.hpp"
 
 
 using namespace pni::core;
@@ -57,6 +58,8 @@ operation::pointer_type operation_factory::create(const string &name)
         return pointer_type(new rebin());
     else if(name == "average")
         return pointer_type(new average());
+    else if(name == "scale")
+        return pointer_type(new scale());
     else
         throw key_error(EXCEPTION_RECORD,"Unknown operation ["+name+"]!");
 }

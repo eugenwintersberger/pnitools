@@ -35,7 +35,7 @@ import os
 import pni.io.nx.h5 as nx
 import common
 
-class mcaops_scale(unittest.TestCase):
+class mcaops_scale_test(unittest.TestCase):
     command = [common.command]
     scale_opts = ["scale","-x3.45","-d8.34"]
     center_value = 3.45
@@ -43,24 +43,48 @@ class mcaops_scale(unittest.TestCase):
 
     maxpos = numpy.loadtxt("total_argmax.dat",dtype="float64")
     maxpos = maxpos.round().astype("int32")
+    channels = numpy.arange(0,2048,dtype="int32")
 
     #-------------------------------------------------------------------------
-    def get_channels(self,index):
+    def get_channels(self,channels):
         
-        tail = Popen(["tail","-n2048",common.input_files[index]],stdout=PIPE)
-        result = check_output(self.command + ["--auto-index-offset=5"]+ 
-                              self.rebin_opt, stdin=tail.stdout)
-        
-        result = result.replace("\n"," ")
-        result = numpy.fromstring(result,sep=" ",dtype="float64")
-        result = result.reshape((result.size/2,2))
+        channels = channels.replace("\n"," ")
+        channels = numpy.fromstring(channels,sep=" ",dtype="float64")
+        channels = channels.reshape((channels.size/2,2))
 
-        return result
+        return channels[:,0]
+
+    def compute_reference(self,channels,center):
+
+        return 3.45+8.34*(channels-center)
 
     def test_auto_center(self):
-        pass
+
+        for index in range(len(common.input_files)):
+            tail = Popen(["tail","-n2048",common.input_files[index]],stdout=PIPE)
+            channels = check_output(self.command + self.scale_opts, 
+                                  stdin=tail.stdout)
+            channels = self.get_channels(channels)
+
+            expected = self.compute_reference(numpy.arange(0,2048),self.maxpos[index])
+
+            for (result,ref) in zip(channels.flat,expected.flat):
+                self.assertAlmostEqual(result,ref)
 
 
     def test_manual_center(self):
-        pass
+        
+        expected = self.compute_reference(numpy.arange(0,2048),1500)
+        for index in range(len(common.input_files)):
+            tail = Popen(["tail","-n2048",common.input_files[index]],stdout=PIPE)
+            channels = check_output(self.command + self.scale_opts + 
+                                    ["--center=1500"],stdin=tail.stdout)
+            channels = self.get_channels(channels)
 
+            for (result,ref) in zip(channels.flat,expected.flat):
+                self.assertAlmostEqual(result,ref)
+
+
+#---------------------------run the program if necessary----------------------
+if __name__ == "__main__":
+    unittest.main()
