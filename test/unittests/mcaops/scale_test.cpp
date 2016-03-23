@@ -23,160 +23,171 @@
 #include "operations_test_common.hpp"
 #include <mcaops/operations/scale.hpp>
 
+using namespace pni::core;
+using boost::test_tools::output_test_stream;
 
-BOOST_FIXTURE_TEST_SUITE(scale_operation_test,)
+struct scale_test_fixture
+{
+    shape_t shape;
+    array_type mca;
+    array_type channel_1;
+    array_type channel_2;
+    output_test_stream stream;
+
+    scale_test_fixture():
+        shape(shape_t{48}),
+        mca(array_type::create(shape,
+                    storage_type{45, 13, 52, 51, 51, 62, 69, 83, 41, 41,
+                                     49, 58, 84, 36, 42,  0, 50, 25, 71, 68,
+                                      0,  8, 49, 34, 25, 56, 85, 80, 33, 56, 
+                                      3, 56, 95, 63, 33, 42, 24, 32, 92, 35, 
+                                     57, 38, 30, 90, 31, 75, 17, 63})),
+        channel_1(array_type::create(shape)),
+        channel_2(array_type::create(shape)),
+        stream()
+    {
+        std::iota(channel_1.begin(),channel_1.end(),0.0);
+        std::iota(channel_2.begin(),channel_2.end(),3.0);
+    }
+
+};
+
+
+BOOST_FIXTURE_TEST_SUITE(scale_test,scale_test_fixture)
+
+    float64 compute_axis(float64 cv,size_t i,float64 d,size_t cb)
+    {
+        cv + d*(float64(i)-float64(cb));
+    }
+
+    //-------------------------------------------------------------------------
+    BOOST_AUTO_TEST_CASE(test_automax)
+    {
+        scale op;
+        args_vector cnf_opt{"--delta=0.5","--cvalue=1.34"};
+        BOOST_CHECK_NO_THROW(op.configure(cnf_opt));
+        argument_type arg{{channel_1.begin(),channel_1.end()},
+                          {mca.begin(),mca.end()}};
+        BOOST_CHECK_NO_THROW(op(arg));
+        op.stream_result(stream);
+        
+        string result = "-1.466e01 4.5e01\n"
+                        "-1.416e01 1.3e01\n"
+                        "-1.366e01 5.2e01\n"
+                        "-1.316e01 5.1e01\n"
+                        "-1.266e01 5.1e01\n" 
+                        "-1.216e01 6.2e01\n" 
+                        "-1.166e01 6.9e01\n"
+                        "-1.116e01 8.300000000000001e01\n"
+                        "-1.066e01 4.1e01\n"
+                        "-1.016e01 4.1e01\n"
+                        "-9.66e00 4.9e01\n"
+                        "-9.16e00 5.8e01\n"
+                        "-8.66e00 8.4e01\n"
+                        "-8.16e00 3.6e01\n"
+                        "-7.66e00 4.2e01\n"
+                        "-7.16e00 0.0e00\n"
+                        "-6.66e00 5.0e01\n"
+                        "-6.16e00 2.5e01\n"
+                        "-5.66e00 7.1e01\n"
+                        "-5.16e00 6.8e01\n"
+                        "-4.66e00 0.0e00\n"
+                        "-4.16e00 8.0e00\n"
+                        "-3.66e00 4.9e01\n"
+                        "-3.16e00 3.4e01\n"
+                        "-2.66e00 2.5e01\n"
+                        "-2.16e00 5.6e01\n"
+                        "-1.66e00 8.5e01\n"
+                        "-1.16e00 8.0e01\n" 
+                        "-6.6e-01 3.3e01\n"
+                        "-1.599999999999999e-01 5.6e01\n"
+                        "3.400000000000001e-01 3.0e00\n"
+                        "8.4e-01 5.6e01\n"
+                        "1.34e00 9.5e01\n"
+                        "1.84e00 6.3e01\n"
+                        "2.34e00 3.3e01\n"
+                        "2.84e00 4.2e01\n"
+                        "3.34e00 2.4e01\n"
+                        "3.84e00 3.2e01\n"
+                        "4.34e00 9.199999999999999e01\n"
+                        "4.84e00 3.5e01\n"
+                        "5.34e00 5.7e01\n"
+                        "5.84e00 3.8e01\n"
+                        "6.34e00 3.0e01\n"
+                        "6.84e00 9.0e01\n"
+                        "7.34e00 3.1e01\n"
+                        "7.84e00 7.5e01\n"
+                        "8.34e00 1.7e01\n"
+                        "8.84e00 6.3e01\n";
+
+        BOOST_CHECK(stream.is_equal(result));
+    }
+
+    //-----------------------------------------------------------------------------
+    BOOST_AUTO_TEST_CASE(test_usermax)
+    {
+        scale op;
+        args_vector cnf_opt{"--delta=0.5","--cvalue=1.34","--center=30"};
+        BOOST_CHECK_NO_THROW(op.configure(cnf_opt));
+        argument_type arg{{channel_1.begin(),channel_1.end()},
+                          {mca.begin(),mca.end()}};
+        BOOST_CHECK_NO_THROW(op(arg));
+        op.stream_result(stream);
+
+        string result = "-1.366e01 4.5e01\n"
+                        "-1.316e01 1.3e01\n"
+                        "-1.266e01 5.2e01\n"
+                        "-1.216e01 5.1e01\n"
+                        "-1.166e01 5.1e01\n" 
+                        "-1.116e01 6.2e01\n" 
+                        "-1.066e01 6.9e01\n"
+                        "-1.016e01 8.300000000000001e01\n"
+                        "-9.66e00 4.1e01\n"
+                        "-9.16e00 4.1e01\n"
+                        "-8.66e00 4.9e01\n"
+                        "-8.16e00 5.8e01\n"
+                        "-7.66e00 8.4e01\n"
+                        "-7.16e00 3.6e01\n"
+                        "-6.66e00 4.2e01\n"
+                        "-6.16e00 0.0e00\n"
+                        "-5.66e00 5.0e01\n"
+                        "-5.16e00 2.5e01\n"
+                        "-4.66e00 7.1e01\n"
+                        "-4.16e00 6.8e01\n"
+                        "-3.66e00 0.0e00\n"
+                        "-3.16e00 8.0e00\n"
+                        "-2.66e00 4.9e01\n"
+                        "-2.16e00 3.4e01\n"
+                        "-1.66e00 2.5e01\n"
+                        "-1.16e00 5.6e01\n"
+                        "-6.6e-01 8.5e01\n"
+                        "-1.599999999999999e-01 8.0e01\n" 
+                        "3.400000000000001e-01 3.3e01\n"
+                        "8.4e-01 5.6e01\n"
+                        "1.34e00 3.0e00\n"
+                        "1.84e00 5.6e01\n"
+                        "2.34e00 9.5e01\n"
+                        "2.84e00 6.3e01\n"
+                        "3.34e00 3.3e01\n"
+                        "3.84e00 4.2e01\n"
+                        "4.34e00 2.4e01\n"
+                        "4.84e00 3.2e01\n"
+                        "5.34e00 9.199999999999999e01\n"
+                        "5.84e00 3.5e01\n"
+                        "6.34e00 5.7e01\n"
+                        "6.84e00 3.8e01\n"
+                        "7.34e00 3.0e01\n"
+                        "7.84e00 9.0e01\n"
+                        "8.34e00 3.1e01\n"
+                        "8.84e00 7.5e01\n"
+                        "9.34e00 1.7e01\n"
+                        "9.84e00 6.3e01\n";
+
+        BOOST_CHECK(stream.is_equal(result));
+    }
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
-CPPUNIT_TEST_SUITE_REGISTRATION(scale_operation_test);
-
-//-----------------------------------------------------------------------------
-float64 scale_operation_test::compute_axis(float64 cv,size_t i,float64 d,
-                                           size_t cb)
-{
-    return cv + d*(float64(i)-float64(cb));
-}
-
-//-----------------------------------------------------------------------------
-void scale_operation_test::get_result(operation &op,array_type &axis)
-{
-    std::vector<value_type> data;
-    std::stringstream ss;
-    ss<<op;
-    value_type c,d;
-   
-    while(ss>>c>>d) data.push_back(c);
-
-    axis = array_type::create(shape_t({data.size()}));
-    std::copy(data.begin(),data.end(),axis.begin());
-}
 
 
-//-----------------------------------------------------------------------------
-void scale_operation_test::setUp() 
-{ 
-    shape = shape_t{{nchannels}};
-
-    //---------------setup the different channel indices-----------------------
-    channels_1 = array_type::create(shape);
-    channels_2 = array_type::create(shape);
-
-    create_range(channels_1.begin(),channels_1.end(),0,1);
-    create_range(channels_2.begin(),channels_2.end(),3,1);
-
-    //---------------------setup the data array--------------------------------
-    data = array_type::create(shape);
-    std::fill(data.begin(),data.end(),0.0);
-
-}
-//-----------------------------------------------------------------------------
-void scale_operation_test::tearDown() {}
-
-//-----------------------------------------------------------------------------
-void scale_operation_test::test_configuration()
-{
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-    
-    scale_operation op;
-    CPPUNIT_ASSERT(op.center_bin() == 0);
-    CPPUNIT_ASSERT(op.use_data_maximum());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(op.delta(),1.0,1.e-16);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(op.center_value(),0.0,1.e-16);
-    
-    //testing set and get methods
-    op.center_bin(100);
-    CPPUNIT_ASSERT(op.center_bin() == 100);
-    op.use_data_maximum(true);
-    CPPUNIT_ASSERT(op.use_data_maximum());
-    op.delta(-23.3221);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(op.delta(),-23.3221,1.e-8);
-    op.center_value(2.34e-4);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(op.center_value(),2.34e-4,1.e-8);
-}
-
-//-----------------------------------------------------------------------------
-void scale_operation_test::test_exceptions()
-{
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-   
-    //----------------check for size mismatch----------------------------------
-    auto d1 = array_type::create(shape_t({10}));
-    auto c1 = array_type::create(shape_t({20}));
-    size_t i=0;
-    for(auto &c: c1) c=i++;
-
-    scale_operation op;
-    CPPUNIT_ASSERT_THROW(op(c1,d1),size_mismatch_error);
-   
-    //-------------------check for shape mismatch------------------------------
-    auto d2 = array_type::create(shape_t({4,5}));
-    auto c2 = array_type::create(shape_t({2,5}));
-    i = 0;
-    for(auto &c: c2) c = i++;
-    CPPUNIT_ASSERT_THROW(op(c1,d2),shape_mismatch_error);
-    CPPUNIT_ASSERT_THROW(op(c2,d1),shape_mismatch_error);
-}
-
-//-----------------------------------------------------------------------------
-void scale_operation_test::test_automax()
-{
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-  
-    //set the data maximum to index 20 
-    data[20] = 100;
-
-    //setup the scale operator
-    scale_operation op;
-    op.delta(0.5);
-    op.center_value(1.34);
-
-    //test with 0-based channel indexes
-    op(channels_1,data);
-    CPPUNIT_ASSERT(op.center_bin() == 20);
-   
-    array_type axis;
-    get_result(op,axis);
-    for(auto c: channels_1)
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c],compute_axis(1.34,c,0.5,20),1.e-8);
-
-    //test with 3 based channel indexes
-    op(channels_2,data);
-    CPPUNIT_ASSERT(op.center_bin() == 23);
-    get_result(op,axis);
-    for(auto c: channels_2)
-        //need to fix here the index c-3 as the index is not the correct array
-        //index
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c-3],compute_axis(1.34,c,0.5,23),1.e-8);
-
-}
-
-//-----------------------------------------------------------------------------
-void scale_operation_test::test_usermax()
-{
-    std::cout<<BOOST_CURRENT_FUNCTION<<std::endl;
-  
-    //setup the scale operator
-    scale_operation op;
-    op.delta(0.5);
-    op.center_value(1.34);
-    op.center_bin(30);
-    op.use_data_maximum(false); //switch of automatic maximum search
-
-    //test with 0-based channel indexes
-    op(channels_1,data);
-    CPPUNIT_ASSERT(op.center_bin() == 30);
-   
-    array_type axis;
-    get_result(op,axis);
-    for(auto c: channels_1)
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c],compute_axis(1.34,c,0.5,30),1.e-8);
-
-    //test with 3-based channel indexes
-    op(channels_2,data);
-    CPPUNIT_ASSERT(op.center_bin() == 30);
-   
-    get_result(op,axis);
-    for(auto c: channels_2)
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(axis[c-3],compute_axis(1.34,c,0.5,30),1.e-8);
-
-}

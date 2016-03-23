@@ -47,95 +47,30 @@
 //! When the operator is called several sanity checks are performed on the 
 //! input data concerning the configuration of the class.
 //!
-class scale_operation:public operation
+class scale:public operation
 {
     private:
-        
-        bool _search_max;           //!< determine center search mode
+       
+        //! if true search automatically for the center bin at the maximum
+        //! of the data
+        bool   _auto_max;           
         size_t _center;             //!< index of the center bin
         pni::core::float64 _delta;  //!< step size from bin to bin
         pni::core::float64 _cvalue; //!< center bin value
         array_type _channels;       //!< output data bin values
         array_type _data;           //!< output data values
 
-        //---------------------------------------------------------------------
-        //!
-        //! \brief check center bin value
-        //! 
-        //! Check if the center bin value is within the channel number bounds 
-        //! of the input data. 
-        //!
-        //! \throws value_error if the center bin value is not within the 
-        //! interval
-        //! \param channels the channel number array
-        //! \param rec the exception record of the location where the check 
-        //! was performed
-        //!
-        void check_channel_bounds(const array_type &channels,
-                                  const pni::core::exception_record &rec) const;
 
-        //---------------------------------------------------------------------
-        //!
-        //! \brief check the input arrays
-        //!
-        //! \throws size_mismatch_error if array sizes do not match
-        //! \throws shape_mismatch_error in cases that the rank of one of the 
-        //! arrays is not 1
-        //!
-        //! \param channels array with channel data
-        //! \param data array with MCA counter data
-        //! \param rec the exception record of the function where this check
-        //! function was called
-        //!
-        void check_arrays(const array_type &channels, 
-                          const array_type &data,
-                          const pni::core::exception_record &rec)
-            const;
     public:
         //---------------------------------------------------------------------
         //! default constructor
-        scale_operation();
+        scale();
 
         //---------------------------------------------------------------------
         //! destructor
-        ~scale_operation();
+        ~scale();
 
-        //---------------------------------------------------------------------
-        //!
-        //! \brief use maximum data for center bin
-        //!
-        //! If this is set to true the operation will use the bin with the 
-        //! maximum count value as center bin.
-        //! \param v true or false
-        //!
-        void use_data_maximum(bool v);
-
-        bool use_data_maximum() const { return _search_max; }
-
-        //---------------------------------------------------------------------
-        //! get center bin
-        size_t center_bin() const;
-    
-        //---------------------------------------------------------------------
-        //! set center bin
-        void center_bin(size_t b);
-
-        //--------------------------------------------------------------------
-        //! get center value
-        pni::core::float64 center_value() const;
-
-        //---------------------------------------------------------------------
-        //! set center value
-        void center_value(pni::core::float64 v);
-
-        //---------------------------------------------------------------------
-        //! get step size
-        float64 delta() const;
-
-        //---------------------------------------------------------------------
-        //! set step size
-        void delta(pni::core::float64 d);
-         
+        virtual args_vector configure(const args_vector &args); 
 
         //---------------------------------------------------------------------
         //!
@@ -152,8 +87,7 @@ class scale_operation:public operation
         //! \param channels input channels
         //! \param data input data
         //!
-        virtual void operator()(const array_type &channels,
-                                const array_type &data);
+        virtual void operator()(const argument_type &arg);
 
         //---------------------------------------------------------------------
         //! write result to output stream

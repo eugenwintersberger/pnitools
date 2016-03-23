@@ -22,113 +22,101 @@
 
 #include <sstream>
 #include <iterator>
-#include "scale_operation.hpp"
+#include <pni/core/configuration.hpp>
+#include "scale.hpp"
 
-
-void scale_operation::check_channel_bounds(const array_type &channels,
-                                           const exception_record &rec) const
-{
-    std::stringstream ss;
-
-    //check if the reference bin is below the smallest channel number
-    if(_center < *(channels.begin()))
-    {
-        ss<<"Reference bin "<<_center<<" is below minimum bin of input data";
-        ss<<" "<<*channels.begin();
-        throw value_error(rec,ss.str());
-    }
-
-    //check if the reference bin is above the largest channel number
-    if(_center > *(channels.end()-1))
-    {
-        ss<<"Reference bin "<<_center<<" is above maximum bin of input data";
-        ss<<" "<<*(channels.end()-1);
-        throw value_error(rec,ss.str());
-    }
-}
+using namespace pni::core;
 
 //-----------------------------------------------------------------------------
-void scale_operation::check_arrays(const array_type &channels,
-                                   const array_type &data,
-                                   const exception_record &rec) const
-{
-    std::stringstream ss;
-    if(channels.size() != data.size())
-    {
-        ss<<"Channel size ("<<channels.size()<<") and data size (";
-        ss<<data.size()<<") do not match!";
-        throw size_mismatch_error(rec,ss.str());
-    }
-
-    if(channels.rank() != 1)
-        throw shape_mismatch_error(rec,"Channel data is not of rank 1!");
-
-    if(data.rank() != 1)
-        throw shape_mismatch_error(rec,"Data is not of rank 1!");
-
-}
-
-//-----------------------------------------------------------------------------
-scale_operation::scale_operation():
+scale::scale():
     operation(),
-    _search_max(true),
-    _center(0),
-    _delta(1),
-    _cvalue(0)
+    _auto_max{true},
+    _center{0},
+    _delta{1},
+    _cvalue{0},
+    _channels{},
+    _data{}
 { }
 
 //-----------------------------------------------------------------------------
-scale_operation::~scale_operation() {}
+scale::~scale() {}
 
 //-----------------------------------------------------------------------------
-void scale_operation::operator()(const array_type &channels,
-                                 const array_type &data)
-{
-    //perform some sanity checks
-    //check_channel_bounds(channels,EXCEPTION_RECORD);
-    check_arrays(channels,data,EXCEPTION_RECORD);
+namespace {
 
-    _channels = array_type(channels);
-    _data = array_type(data);
-
-    if(_search_max)
+    configuration create_config()
     {
-        auto max_iter = std::max_element(data.begin(),data.end());
-        size_t index = std::distance(data.begin(),max_iter);
-        _center = channels(index);
+        configuration config;
+        config.add_option(config_option<size_t>("center","c",
+                    "index of center bin"));
+        config.add_option(config_option<float64>("delta","d",
+                    "size of a bin"));
+        config.add_option(config_option<float64>("cvalue","x",
+                    "position of the center bin"));
+
+        return config;
     }
 
-    for(float64 &v: _channels)
-        v = _cvalue + _delta*(v - float64(_center)); 
-    
 }
 
 //-----------------------------------------------------------------------------
-void scale_operation::use_data_maximum(bool v) { _search_max = v; }
-
-//-----------------------------------------------------------------------------
-size_t scale_operation::center_bin() const { return _center; }
-
-//-----------------------------------------------------------------------------
-void scale_operation::center_bin(size_t v) { _center = v; }
-
-//-----------------------------------------------------------------------------
-float64 scale_operation::center_value() const { return _cvalue; }
-
-//-----------------------------------------------------------------------------
-void scale_operation::center_value(float64 v) { _cvalue = v; }
-
-//-----------------------------------------------------------------------------
-float64 scale_operation::delta() const { return _delta; }
-
-//-----------------------------------------------------------------------------
-void scale_operation::delta(float64 v) { _delta = v; }
-
-//-----------------------------------------------------------------------------
-std::ostream &scale_operation::stream_result(std::ostream &o) const
+operation::args_vector scale::configure(const args_vector &args)
 {
+    configuration c = create_config();
+    args_vector unused = parse(c,args,true);
+
+    _delta = c.value<float64>("delta");
+    _cvalue = c.value<float64>("cvalue");
+
+    if(c.has_option("center"))
+    {
+        _auto_max = false;
+        _center = c.value<size_t>("center");
+    }
+    else
+    {
+        _auto_max = true;
+    }
+
+    return unused;
+}
+
+//-----------------------------------------------------------------------------
+void scale::operator()(const argument_type &arg)
+{
+    data_range channel_range = arg.first;
+    data_range mca_range = arg.second;
+
+    //create new data array and copy original data - it will not be altered
+    //during the operation
+    shape_t shape{size_t(std::distance(mca_range.first,mca_range.second))};
+    _data = array_type::create(shape);
+    std::copy(mca_range.first,mca_range.second,_data.begin());
+
+    
+    //create new array for channel data
+    _channels = array_type::create(shape);
+
+    if(_auto_max)
+    {
+        auto max_iter = std::max_element(mca_range.first,mca_range.second);
+        size_t index = std::distance(mca_range.first,max_iter);
+        _center = *(channel_range.first+index);
+    }
+    
+    std::transform(channel_range.first,channel_range.second,_channels.begin(),
+                   [this](float64 index)
+                   { return this->_cvalue + this->_delta*(index - float64(this->_center)); });
+}
+
+
+//-----------------------------------------------------------------------------
+std::ostream &scale::stream_result(std::ostream &o) const
+{
+    float64_fmt_type formatter;
+
     for(size_t i=0;i<_channels.size();i++)
-        o<<_channels[i]<<"\t"<<_data[i]<<std::endl;
+        o<<formatter(_channels[i])<<" "<<formatter(_data[i])<<std::endl;
 
     return o;
 }
