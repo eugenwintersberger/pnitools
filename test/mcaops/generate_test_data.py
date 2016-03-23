@@ -41,7 +41,7 @@ total_rebin_norm = []
 roi1_rebin_norm = []
 roi2_rebin_norm = []
 
-channels = numpy.arange(5,2048+5,dtype="int32")
+channels = numpy.arange(5,2048+5,dtype="float64")
 
 def rebin(data,binsize,normalize=False):
     rebined_data = []
@@ -59,6 +59,9 @@ def rebin(data,binsize,normalize=False):
         rebined_data.append(d.sum()/norm)
 
     return numpy.array(rebined_data,dtype="float64")
+
+channels = rebin(channels,125,True)
+numpy.savetxt("rebin_channels.dat",channels,fmt="%.16f")
 
 
 

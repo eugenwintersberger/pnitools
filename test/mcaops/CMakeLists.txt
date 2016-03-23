@@ -6,6 +6,7 @@ set(DATFILES common.py
              test_minpos.py
              test_average.py
              test_rebin.py
+             test_rebin_with_channels.py
              fiodata.nxs
              total_sum.dat
              roi1_sum.dat
@@ -31,6 +32,7 @@ set(DATFILES common.py
              total_rebin_norm.dat
              roi1_rebin_norm.dat
              roi2_rebin_norm.dat
+             rebin_channels.dat
     )
 
 
@@ -65,3 +67,7 @@ add_test(NAME "mcaops_average_operation:acceptance:test"
 add_test(NAME "mcaops_rebin_operation:acceptance:test"
          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
          COMMAND python test_rebin.py)
+
+add_test(NAME "mcaops_rebin_channels_operation:acceptance:test"
+         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+         COMMAND python test_rebin_with_channels.py)

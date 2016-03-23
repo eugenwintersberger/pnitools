@@ -47,33 +47,33 @@ class mcaops_rebin_test(unittest.TestCase):
     nxopts  = [common.base_opt,common.mca_opt]
     rebin_opt = ["rebin","-b125"]
 
+    #-------------------------------------------------------------------------
     def check_result(self,result,expected):
         self.assertEqual(result.size,expected.size)
 
         for (ref,res) in zip(expected.flat,result.flat):
             self.assertAlmostEqual(ref,res)
 
-
+    #-------------------------------------------------------------------------
     def trim_output(self,data):
         data = data.replace("'","")
         data = data.replace("\n"," ")
         
         return data.replace("  "," ")
 
-    
     #-------------------------------------------------------------------------
     def get_total_result(self):
         result =  check_output(self.command+self.nxopts+self.rebin_opt+
                                ["fiodata.nxs"])
         result = self.trim_output(result)
         return result
+
     #-------------------------------------------------------------------------
     def get_total_result_norm(self):
         result =  check_output(self.command + self.nxopts + self.rebin_opt +  
                                ["--normalize","fiodata.nxs"])
         result = self.trim_output(result)
         return result
-
 
     #-------------------------------------------------------------------------
     def get_roi1_result(self):
