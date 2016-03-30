@@ -1,6 +1,6 @@
 set(source_files 
                  detinfo.rst
-                 detops.rst
+                 #detops.rst
                  mcaops.rst
                  nxcat.rst
                  nxls.rst

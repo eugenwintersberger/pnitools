@@ -247,8 +247,6 @@ man_pages = [
      ['Eugen Wintersberger'],1),
     ('cli_tools/xml2nx','xml2nx',u'creates NeXus objects and files from an XML description',
      ['Eugen Wintersberger'],1),
-    ('cli_tools/detops','detops',u'apply accumulative operations on single detector frames',
-     ['Eugen Wintersberger'],1),
     ('cli_tools/nxtee','nxtee',u'write data from standard output to a NeXus field or attribute',
      ['Eugen Wintersberger'],1),
     ('cli_tools/mcaops','mcaops',u'perform operations on MCA data',

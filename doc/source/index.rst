@@ -15,12 +15,13 @@ Welcome to PNI Tools's documentation!
    general_concepts
    command_line_tools
 
-.. only:: html
+
+.. .. only:: html
     
     .. toctree::
        :maxdepth: 2
 
-       developer_documentation
+..       developer_documentation
 
 
 

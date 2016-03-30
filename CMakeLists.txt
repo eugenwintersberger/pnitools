@@ -19,6 +19,7 @@ endif()
 #======================do here some setup work=================================
 include(configure/CMakeLists.txt)
 
+
 add_subdirectory("doc")
 add_subdirectory("src/common")
 add_subdirectory("src/detinfo")
