@@ -3,8 +3,7 @@ Command line tools
 ==================
 
 .. toctree::
-   :maxdepth: 5 
-    
+   :maxdepth: 2
    
    cli_tools/detinfo.rst
    cli_tools/xml2nx.rst
@@ -13,6 +12,3 @@ Command line tools
    cli_tools/nxls.rst
    cli_tools/nxcat.rst
    cli_tools/nxtee.rst
-
-
-..   cli_tools/detops.rst

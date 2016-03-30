@@ -1,10 +1,11 @@
-set(source_files datgen.rst
+set(source_files 
                  detinfo.rst
                  detops.rst
                  mcaops.rst
                  nxcat.rst
                  nxls.rst
                  xml2nx.rst
+                 nx2xml.rst
                  nxtee.rst
                  )
 

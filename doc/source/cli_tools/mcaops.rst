@@ -223,7 +223,7 @@ connection with :program:`nxtee` it is necessary to change this to a different
 symbol as for :program:`nxtee` the carriage return would indicate a new data
 point. A reasonable choice would be to change the channel separator character
 to a whitespace. This can be achieved by the global option 
-:option:`--channel-sep`. With :option:`--channel-sep=' '` the above output
+:option:`--channel-sep`. With :option:`--channel-sep` `=' '` the above output
 would alter to 
 
 .. code-block:: text
