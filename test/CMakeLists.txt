@@ -18,12 +18,6 @@ set(CLI_TEST_PY_FILES check_output.py
                       detops_test.py)
 
 
-    file(MAKE_DIRECTORY data)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/readme.txt
-    ${CMAKE_CURRENT_BINARY_DIR}/data/readme.txt COPYONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/data/download.sh
-    ${CMAKE_CURRENT_BINARY_DIR}/data/download.sh COPYONLY)
 
 foreach(PYFILE ${CLI_TEST_PY_FILES})
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PYFILE}"
@@ -33,6 +27,7 @@ endforeach()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 #add_definitions(-DBOOST_TEST_DYN_LINK -DBOOST_TEST_MAIN)
+add_subdirectory(data)
 add_subdirectory(unittests)
 add_subdirectory(detinfo)
 add_subdirectory(nxtee)
