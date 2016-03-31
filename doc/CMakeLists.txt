@@ -40,5 +40,5 @@ set(MANPAGES ${CMAKE_CURRENT_BINARY_DIR}/build/man/detinfo.1
              )
 
 install(FILES ${MANPAGES}
-        DESTINATION ${CMAKE_INSTALL_MANDIR})
+        DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
