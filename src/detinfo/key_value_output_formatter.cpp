@@ -51,7 +51,8 @@ void key_value_output_formatter::write(std::ostream &stream,
     {
         stream<<"pixel type       = "<<info.type_id()<<std::endl;
         stream<<"number of frames = "<<info.nframes()<<std::endl;
-        stream<<"frame shape      = "<<info.frame_shape()<<std::endl;
+        if(!info.frame_shape().empty())
+            stream<<"frame shape      = "<<info.frame_shape()<<std::endl;
     }
     else
     {
