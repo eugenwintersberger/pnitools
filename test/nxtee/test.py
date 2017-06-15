@@ -31,17 +31,22 @@ from subprocess import PIPE
 from subprocess import Popen
 import unittest
 import os
+import os.path
 import pni.io.nx.h5 as nx
 
 append_data = "1 2 3 4 5\n 6 7 8 9 10\n 11 12 13 14 15"
 replace_data = "10 20 30 40 50\n 60 70 80 90 100\n 110 120 130 140 150"
 
+here = os.path.dirname(os.path.abspath(__file__))
+bin_path = os.path.join(here,"..","..","bin")
+
 class nxtee_test(unittest.TestCase):
     filename = "nxtee_test.nxs"
     instrument = filename+"://:NXentry/:NXinstrument"
-    nxtee = "../../src/nxtee/nxtee"
+    nxtee = os.path.join(bin_path,"nxtee")
+    xml2nx = os.path.join(bin_path,"xml2nx")
     def setUp(self):
-        call(['../../src/xml2nx/xml2nx','-o',"-p"+self.filename+"://","mca.xml"])
+        call([self.xml2nx,'-o',"-p"+self.filename+"://","mca.xml"])
 
     def tearDown(self):
         pass
@@ -59,7 +64,7 @@ class nxtee_test(unittest.TestCase):
                       stdin=echo.stdout)
         print(result)
 
-        #readback data 
+        #readback data
         f = nx.open_file(self.filename)
         d = f.root()["entry"]["instrument"]["mca"]["data"]
         print(d.shape)
@@ -75,7 +80,7 @@ class nxtee_test(unittest.TestCase):
         result = call([self.nxtee,'-r',self.instrument+"/mca2/data"],
                       stdin=echo.stdout)
 
-        #readback data 
+        #readback data
         f = nx.open_file(self.filename)
         d = f.root()["entry"]["instrument"]["mca2"]["data"]
         data = d[...]
@@ -92,7 +97,7 @@ class nxtee_test(unittest.TestCase):
         d = f.root()["entry"]["instrument"]["mca2"]["data"]
         self.assertEqual(d.attributes['units'].read(),"counts")
         f.close()
-        
+
 
 #---------------------------run the program if necessary----------------------
 if __name__ == "__main__":

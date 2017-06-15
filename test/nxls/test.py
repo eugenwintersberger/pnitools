@@ -28,16 +28,19 @@ from subprocess import STDOUT
 from subprocess import call
 import unittest
 import os
+import os.path
 import pni.io.nx.h5 as nx
 
+here = os.path.dirname(os.path.abspath(__file__))
+bin_path = os.path.join(here,"..","..","bin")
 
 
 class nxls_test(unittest.TestCase):
     input_file = "nxls_test.nxs"
-    nxls = "../../src/nxls/nxls"
+    nxls = os.path.join(bin_path,"nxls")
 
     def setUp(self):
-        
+
         with open('nxls_test.xml') as f:
             xml_struct = f.read()
 
@@ -54,7 +57,7 @@ class nxls_test(unittest.TestCase):
         # 3.) the input file is not a Nexus/HDF5 file
 
         #should give a useage message and return 1
-        cmd = [self.nxls] 
+        cmd = [self.nxls]
         result = int(call(cmd))
         self.assertEqual(result,1)
 
@@ -86,7 +89,7 @@ class nxls_test(unittest.TestCase):
 
         for r in result:
             self.assertEqual(output.count(r.strip()),1)
-        
+
     def test_recursive_list(self):
         #check more lines
         output = ['entry:NXentry',

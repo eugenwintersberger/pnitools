@@ -27,12 +27,16 @@ from subprocess import STDOUT
 from subprocess import call
 import unittest
 import os
+import os.path
 import pni.io.nx.h5 as nx
 import numpy
 
+here = os.path.dirname(os.path.abspath(__file__))
+bin_path = os.path.join(here,"..","..","bin")
+
 class nxcat_test(unittest.TestCase):
     input_file = "../data/nexus/nxls_test.nxs"
-    nxcat = "../../src/nxcat/nxcat"
+    nxcat = os.path.join(bin_path,"nxcat")
 
     def setUp(self):
         #need to delete the file before we can start a new run
@@ -45,9 +49,9 @@ class nxcat_test(unittest.TestCase):
     def test_return(self):
 
         #should give a useage message and return 1
-        cmd = [self.nxcat] 
+        cmd = [self.nxcat]
         self.assertEqual(int(call(cmd)),1)
-        
+
         #should return 1 as the file does not exist
         cmd = [self.nxcat,'test.nxs']
         self.assertEqual(int(call(cmd)),1)
@@ -106,7 +110,7 @@ class nxcat_test(unittest.TestCase):
         #check data
         for x,y in zip(pa_nx,pos):
             self.assertAlmostEqual(x,y,4)
-        
+
 
 
 

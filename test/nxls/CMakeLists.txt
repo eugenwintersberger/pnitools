@@ -5,5 +5,5 @@ foreach(F ${FILES})
 endforeach()
 
 add_test(NAME "nxls::acceptance::test"
-         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/nxls
          COMMAND test.py)
