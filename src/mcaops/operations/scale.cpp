@@ -23,6 +23,7 @@
 #include <sstream>
 #include <iterator>
 #include <pni/core/configuration.hpp>
+#include <pni/io/formatters.hpp>
 #include "scale.hpp"
 
 using namespace pni::core;
@@ -93,7 +94,7 @@ void scale::operator()(const argument_type &arg)
     _data = array_type::create(shape);
     std::copy(mca_range.first,mca_range.second,_data.begin());
 
-    
+
     //create new array for channel data
     _channels = array_type::create(shape);
 
@@ -103,7 +104,7 @@ void scale::operator()(const argument_type &arg)
         size_t index = std::distance(mca_range.first,max_iter);
         _center = *(channel_range.first+index);
     }
-    
+
     std::transform(channel_range.first,channel_range.second,_channels.begin(),
                    [this](float64 index)
                    { return this->_cvalue + this->_delta*(index - float64(this->_center)); });
@@ -112,11 +113,9 @@ void scale::operator()(const argument_type &arg)
 
 //-----------------------------------------------------------------------------
 std::ostream &scale::stream_result(std::ostream &o) const
-{
-    float64_fmt_type formatter;
-
+{    
     for(size_t i=0;i<_channels.size();i++)
-        o<<formatter(_channels[i])<<" "<<formatter(_data[i])<<std::endl;
+        o<<pni::io::format(_channels[i])<<" "<<pni::io::format(_data[i])<<std::endl;
 
     return o;
 }

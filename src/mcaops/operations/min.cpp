@@ -21,6 +21,7 @@
 //
 
 #include "min.hpp"
+#include <pni/io/formatters.hpp>
 
 //----------------------------------------------------------------------------
 min::min(): operation(),_value(0)
@@ -46,6 +47,6 @@ void min::operator()(const argument_type &data)
 //----------------------------------------------------------------------------
 std::ostream &min::stream_result(std::ostream &o) const
 {
-    o<<float64_fmt_type()(_value);
+    o<<pni::io::format(_value);
     return o;
 }

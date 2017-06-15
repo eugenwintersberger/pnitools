@@ -21,6 +21,7 @@
 //
 
 #include "sum.hpp"
+#include <pni/io/formatters.hpp>
 
 using namespace pni::core;
 
@@ -49,7 +50,6 @@ void sum::operator()(const argument_type &data)
 //----------------------------------------------------------------------------
  std::ostream &sum::stream_result(std::ostream &o) const
 {
-    o<<float64_fmt_type()(_sum);
+    o<<pni::io::format(_sum);
     return o;
 }
-

@@ -1,26 +1,34 @@
-cmake_minimum_required(VERSION 2.6)
-project(pnitools)
-enable_testing()
+cmake_minimum_required(VERSION 3.0)
+project(pnitools
+        LANGUAGES CXX C
+        VERSION 1.1.0)
+include(CTest)
+set(CMAKE_CXX_STANDARD 11)
 
-set(PROGRAM_VERSION "1.0.0")
-set(CMAKE_FAMILY_VERSION "${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}")
-
-set(CMAKE_INSTALL_BINDIR   "${CMAKE_INSTALL_PREFIX}/bin")
-set(CMAKE_INSTALL_SHAREDIR "${CMAKE_INSTALL_PREFIX}/share")
-set(CMAKE_INSTALL_DOCDIR   "${CMAKE_INSTALL_PREFIX}/share/doc")
-set(CMAKE_INSTALL_INFODIR  "${CMAKE_INSTALL_PREFIX}/share/info")
-set(CMAKE_INSTALL_MANDIR   "${CMAKE_INSTALL_PREFIX}/share/man")
+#==============================================================================
+# load some default configuration
+#==============================================================================
+include(cmake/common/EnsureBuildType.cmake)
+include(cmake/common/InstallConfig.cmake)
+include(cmake/common/WindowsUtils.cmake)
 
 
-if(NOT CMAKE_BUILD_TYPE)
-    message("No build type specified - default is RELEASE")
-    set(CMAKE_BUILD_TYPE RELEASE)
+set(WITH_CONAN OFF CACHE BOOL "Satisfy depdencies from conan")
+if(CMAKE_HOST_SYSTEM_NAME MATCHES Windows)
+    set(WITH_CONAN ON)
 endif()
+
+if(WITH_CONAN)
+
+    include(${PROJECT_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
+endif()
+
 #======================do here some setup work=================================
 include(configure/CMakeLists.txt)
 
 
-add_subdirectory("doc")
+#add_subdirectory("doc")
 add_subdirectory("src/common")
 add_subdirectory("src/detinfo")
 add_subdirectory("src/detops")
@@ -33,4 +41,3 @@ add_subdirectory("src/xml2nx")
 add_subdirectory("src/datgen")
 
 add_subdirectory("test")
-

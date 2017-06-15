@@ -31,7 +31,7 @@ int main(int argc,char **argv)
 {
     //--------------------setup program configuration--------------------------
     configuration conf = create_configuration();
-    
+
     if(argc<2)
     {
         std::cerr<<"Insufficient number of command line arguments!"<<std::endl;
@@ -60,7 +60,7 @@ int main(int argc,char **argv)
         //obtain the list of column names
         auto keys = data_tab.keys<string_list>();
 
-        //print the colunm names (the table headers) if requested by the 
+        //print the colunm names (the table headers) if requested by the
         //user
         if(conf.value<bool>("header"))
         {
@@ -72,21 +72,20 @@ int main(int argc,char **argv)
         //get start and stop indices
         size_t start_index = conf.value<size_t>("start");
         //if the stop index is 0 we print everything
-        size_t end_index   = conf.value<size_t>("end")==0 ? data_tab.nrows() : 
+        size_t end_index   = conf.value<size_t>("end")==0 ? data_tab.nrows() :
                              conf.value<size_t>("end");
 
         //loop over all rows
-        formatter_type f;
         for(size_t row_index=start_index;row_index<end_index;++row_index)
         {
-            //loop over all columns - this is currently not very nice 
+            //loop over all columns - this is currently not very nice
             //but works and seems to be fast enough
             for(auto key: keys)
             {
 
                 column_t::iterator iter = data_tab[key].begin();
                 std::advance(iter,row_index);
-                std::cout<<f(*iter)<<"\t";
+                std::cout<<pni::io::format(*iter)<<"\t";
             }
 
             std::cout<<std::endl;
@@ -129,5 +128,3 @@ int main(int argc,char **argv)
 
     return 0;
 }
-
-

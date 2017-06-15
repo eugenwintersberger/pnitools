@@ -24,6 +24,7 @@
 #include <pni/core/configuration.hpp>
 #include "../../common/algorithms/rebin.hpp"
 #include "rebin.hpp"
+#include <pni/io/formatters.hpp>
 
 using namespace pni::core;
 
@@ -79,7 +80,7 @@ rebin::rebin():
 }
 
 //-----------------------------------------------------------------------------
-operation::args_vector rebin::configure(const args_vector &args) 
+operation::args_vector rebin::configure(const args_vector &args)
 {
     configuration c = create_config();
     args_vector unused = parse(c,args,true);
@@ -109,13 +110,13 @@ operation::array_type rebin::create_norm(size_t orig_channels,
     return n;
 }
 
-       
+
 //-----------------------------------------------------------------------------
 void rebin::operator()(const argument_type &data)
 {
     data_range channel_range = data.first;
     data_range mca_range     = data.second;
-   
+
     //create output data and initialize it with 0
     array_type::storage_type mca_storage;
     array_type::storage_type channel_storage;
@@ -143,15 +144,14 @@ void rebin::operator()(const argument_type &data)
 //-----------------------------------------------------------------------------
 std::ostream &rebin::stream_result(std::ostream &o) const
 {
-    const output_config &c = this->output_configuration();
-    float64_fmt_type formatter;
+    const output_config &c = this->output_configuration();    
 
     for(size_t i=0;i<_new_channels.size();i++)
     {
         if(c.channel_output())
-            o<<formatter(_new_channels[i])<<" ";
-        
-        o<<formatter(_new_mca[i])<<c.channel_separator();
+            o<<pni::io::format(_new_channels[i])<<" ";
+
+        o<<pni::io::format(_new_mca[i])<<c.channel_separator();
     }
     return o;
 }

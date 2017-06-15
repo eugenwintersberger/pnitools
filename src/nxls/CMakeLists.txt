@@ -1,10 +1,10 @@
-set(NXLS_SOURCE nxls.cpp 
-                config.cpp 
+set(NXLS_SOURCE nxls.cpp
+                config.cpp
                 utils.cpp
-                output_config.cpp 
+                output_config.cpp
                 output.cpp
                 )
 
 add_executable(nxls ${NXLS_SOURCE})
-target_link_libraries(nxls common_objects ${PNIIO_PKG_LIBRARIES})
+target_link_libraries(nxls common_objects pniio)
 install(TARGETS nxls DESTINATION ${CMAKE_INSTALL_BINDIR})

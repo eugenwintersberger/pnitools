@@ -9,7 +9,6 @@ add_subdirectory(functors)
 add_library(datgen_objects OBJECT ${SOURCE} )
 add_executable(datgen datgen.cpp $<TARGET_OBJECTS:datgen_objects>
                                  $<TARGET_OBJECTS:datgen_functor_objects>)
-target_link_libraries(datgen common_objects ${PNIIO_PKG_LIBRARIES})
+target_link_libraries(datgen common_objects pniio)
 
 install(TARGETS datgen DESTINATION ${CMAKE_INSTALL_BINDIR})
-

@@ -49,8 +49,6 @@ typedef std::list<array> column_storage_t;
 typedef column<column_storage_t> column_t;
 typedef table<column_t> table_t;
 
-typedef pni::io::formatter<array> formatter_type;
-
 /*!
 \ingroup nxcat_devel
 \brief create CLI configuration
@@ -67,7 +65,7 @@ configuration create_configuration();
 
 Read a single column from a source determined by an nxpath instance.
 \param nxpath location of the data
-\return column instance 
+\return column instance
 */
 column_t read_column(const nxpath &source_path);
 
@@ -76,7 +74,7 @@ column_t read_column(const nxpath &source_path);
 \ingroup nxcat_devel
 \brief read full table
 
-Read all data from a set of nxpath instances and store the result in a table. 
+Read all data from a set of nxpath instances and store the result in a table.
 \param sources list of path object
 \return table instance
 */
@@ -87,7 +85,7 @@ table_t  read_table(const sources_list &sources);
 \ingroup nxcat_devel
 \brief column from nexus object
 
-Create a column from a Nexus object (either a field or an attribute). 
+Create a column from a Nexus object (either a field or an attribute).
 This Nexus object is stored in a variant types as defined by nxvariant_types.
 As attributes do not provide a unit one can use the unit argument to this
 function. By default the unit will be taken from the field. However, if this
@@ -98,7 +96,7 @@ fails the unit will be taken from the argument.
 \param unit string with unit values
 \return instance of column_t
 */
-template<typename NXVAR> 
+template<typename NXVAR>
 column_t column_from_nexus_object(const NXVAR &o,const string &unit="")
 {
     column_t column;
@@ -116,11 +114,11 @@ column_t column_from_nexus_object(const NXVAR &o,const string &unit="")
 \ingroup nxcat_devel
 \brief create an array from a Nexus object
 
-Create an instance of array from a Nexus object stored in a Nexus variant type. 
+Create an instance of array from a Nexus object stored in a Nexus variant type.
 An nxgroup_error exception is thrown in cases where the stored object is a group
 but not an attribute or a field.
 In the case of a multidimensional with n dimensions the output array will have
-n-1 dimensions with the first dimension of the original object stripped of. 
+n-1 dimensions with the first dimension of the original object stripped of.
 
 
 \throws nxgroup_error if object is not an attribute or a field
@@ -128,17 +126,17 @@ n-1 dimensions with the first dimension of the original object stripped of.
 \param o reference to NXOT instance
 \return instance of array
 */
-template<typename NXVAR> 
+template<typename NXVAR>
 array array_from_nexus_object(const NXVAR &o)
 {
     //get the shape of the object in the file
     auto file_shape = get_shape<shape_t>(o);
-    shape_t array_shape{1}; //in the worst case we have a scalar object 
+    shape_t array_shape{1}; //in the worst case we have a scalar object
                             //than we can use this
 
     if(is_field(o))
     {
-        //when the object is a field where we can do partial IO we simply 
+        //when the object is a field where we can do partial IO we simply
         if(file_shape.size() > 1)
         {
             //create a new shape with n-1 dimensions

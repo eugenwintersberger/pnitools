@@ -21,6 +21,7 @@
 //
 
 #include "max.hpp"
+#include <pni/io/formatters.hpp>
 
 //----------------------------------------------------------------------------
 max::max(): operation(),_value(0)
@@ -30,7 +31,7 @@ max::max(): operation(),_value(0)
 max::~max(){}
 
 //----------------------------------------------------------------------------
-operation::args_vector max::configure(const args_vector &args) 
+operation::args_vector max::configure(const args_vector &args)
 {
     return args;
 }
@@ -47,6 +48,6 @@ void max::operator()(const argument_type &data)
 //----------------------------------------------------------------------------
 std::ostream &max::stream_result(std::ostream &o) const
 {
-    o<<float64_fmt_type()(_value);
+    o<<pni::io::format(_value);
     return o;
 }

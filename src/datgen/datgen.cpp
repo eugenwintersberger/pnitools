@@ -42,7 +42,7 @@ int main(int argc,char **argv)
     //------------------------------------------------------------------------
     options_splitter splitter(args_vector{"uniform","gauss","linear"});
     args_map m=splitter(cliargs2vector(argc,argv));
-    
+
     if(check_no_arguments(m)) return 1;
 
     //------------------------------------------------------------------------
@@ -65,27 +65,25 @@ int main(int argc,char **argv)
     //------------------------------------------------------------------------
     // these are the main loops of the program
     //------------------------------------------------------------------------
-    formatter<float64> float_formatter;
-    formatter<int64>   int_formatter;
 
     for(size_t grid_index=0;
         grid_index < global_config.value<size_t>("steps");
         grid_index++)
     {
         float64 x = g();
-        
+
         //compute the result
         float64 result = exe(x);
 
         if(global_config.value<bool>("show-grid"))
-            std::cout<<float_formatter(x)<<"\t";
- 
+            std::cout<<pni::io::format(x)<<"\t";
+
         switch(global_config.value<type_id_t>("type"))
         {
             case type_id_t::INT64:
-                std::cout<<int_formatter(int64(result));break;
+                std::cout<<pni::io::format(int64(result));break;
             case type_id_t::FLOAT64:
-                std::cout<<float_formatter(result); break;
+                std::cout<<pni::io::format(result); break;
             default:
                 throw type_error(EXCEPTION_RECORD,
                         "Unknown data type requested by user!");
