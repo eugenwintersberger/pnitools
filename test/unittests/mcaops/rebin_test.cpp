@@ -38,8 +38,8 @@ struct rebin_fixture
         mca(array_type::create(shape,
                     storage_type{45, 13, 52, 51, 51, 62, 69, 83, 41, 41,
                                      49, 58, 84, 36, 42,  0, 50, 25, 71, 68,
-                                      0,  8, 49, 34, 25, 56, 85, 80, 33, 56, 
-                                      3, 56, 95, 63, 33, 42, 24, 32, 92, 35, 
+                                      0,  8, 49, 34, 25, 56, 85, 80, 33, 56,
+                                      3, 56, 95, 63, 33, 42, 24, 32, 92, 35,
                                      57, 38, 30, 90, 31, 75, 17, 63})),
         channels(array_type::create(shape)),
         stream()
@@ -62,11 +62,11 @@ BOOST_FIXTURE_TEST_SUITE(rebin_test,rebin_fixture)
         BOOST_CHECK_NO_THROW(op(arg));
         op.stream_result(stream);
 
-        string result= "0.0e00 5.08e02\n"
-                       "1.0e00 4.83e02\n"
-                       "2.0e00 4.26e02\n"
-                       "3.0e00 4.75e02\n"
-                       "4.0e00 4.01e02\n";
+        string result= "+0.000000e+00 +5.080000e+02\n"
+                       "+1.000000e+00 +4.830000e+02\n"
+                       "+2.000000e+00 +4.260000e+02\n"
+                       "+3.000000e+00 +4.750000e+02\n"
+                       "+4.000000e+00 +4.010000e+02\n";
 
         BOOST_CHECK(stream.is_equal(result));
     }
@@ -82,11 +82,11 @@ BOOST_FIXTURE_TEST_SUITE(rebin_test,rebin_fixture)
         BOOST_CHECK_NO_THROW(op(arg));
         op.stream_result(stream);
 
-        string result= "0.0e00 5.08e01\n"
-                       "1.0e00 4.83e01\n"
-                       "2.0e00 4.26e01\n"
-                       "3.0e00 4.75e01\n"
-                       "4.0e00 5.0125e01\n";
+        string result= "+0.000000e+00 +5.080000e+01\n"
+                       "+1.000000e+00 +4.830000e+01\n"
+                       "+2.000000e+00 +4.260000e+01\n"
+                       "+3.000000e+00 +4.750000e+01\n"
+                       "+4.000000e+00 +5.012500e+01\n";
 
         BOOST_CHECK(stream.is_equal(result));
     }
@@ -101,17 +101,14 @@ BOOST_FIXTURE_TEST_SUITE(rebin_test,rebin_fixture)
                           {mca.begin(),mca.end()}};
         BOOST_CHECK_NO_THROW(op(arg));
         op.stream_result(stream);
-        
-        string result= "4.5e00 5.08e01\n"
-                       "1.45e01 4.83e01\n"
-                       "2.45e01 4.26e01\n"
-                       "3.45e01 4.75e01\n"
-                       "4.35e01 5.0125e01\n";
-        
+
+        string result= "+4.500000e+00 +5.080000e+01\n"
+                       "+1.450000e+01 +4.830000e+01\n"
+                       "+2.450000e+01 +4.260000e+01\n"
+                       "+3.450000e+01 +4.750000e+01\n"
+                       "+4.350000e+01 +5.012500e+01\n";
+
         BOOST_CHECK(stream.is_equal(result));
     }
 
 BOOST_AUTO_TEST_SUITE_END()
-
-
-

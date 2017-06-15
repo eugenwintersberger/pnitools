@@ -2,19 +2,12 @@
 configure_file(readme.txt readme.txt COPYONLY)
 configure_file(download.sh download.sh COPYONLY)
 
-add_custom_command(OUTPUT pnitools-test-data.tar.gz
-                   COMMAND ./download.sh
-                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                   COMMENT "Download test data ...")
-add_custom_target(download_data ALL DEPENDS pnitools-test-data.tar.gz)
+if((NOT EXISTS ${PROJECT_BINARY_DIR}/test/data/cbf) OR
+   (NOT EXISTS ${PROJECT_BINARY_DIR}/test/data/fio) OR
+   (NOT EXISTS ${PROJECT_BINARY_DIR}/test/data/nexus) OR
+   (NOT EXISTS ${PROJECT_BINARY_DIR}/test/data/tif))
 
-add_custom_command(OUTPUT fio
-                   COMMAND tar -xzf pnitools-test-data.tar.gz
-                   DEPENDS download_data
-                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                   COMMENT "Unpack test data ...")
+   exec_program(tar ${PROJECT_BINARY_DIR}/test/data
+   ARGS -xzf ${PROJECT_SOURCE_DIR}/test/data/test_data.tar.gz)
 
-add_custom_target(gather_test_data ALL
-                  DEPENDS fio)
-                   
-
+endif()
