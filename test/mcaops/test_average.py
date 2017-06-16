@@ -32,7 +32,6 @@ from subprocess import check_output
 import numpy
 import unittest
 import os
-import pni.io.nx.h5 as nx
 import common
 
 digit_places = 7

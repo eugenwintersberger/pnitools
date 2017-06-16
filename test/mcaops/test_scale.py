@@ -32,7 +32,6 @@ from subprocess import check_output
 import numpy
 import unittest
 import os
-import pni.io.nx.h5 as nx
 import common
 
 class mcaops_scale_test(unittest.TestCase):
@@ -47,7 +46,7 @@ class mcaops_scale_test(unittest.TestCase):
 
     #-------------------------------------------------------------------------
     def get_channels(self,channels):
-        
+
         channels = channels.replace("\n"," ")
         channels = numpy.fromstring(channels,sep=" ",dtype="float64")
         channels = channels.reshape((channels.size/2,2))
@@ -62,7 +61,7 @@ class mcaops_scale_test(unittest.TestCase):
 
         for index in range(len(common.input_files)):
             tail = Popen(["tail","-n2048",common.input_files[index]],stdout=PIPE)
-            channels = check_output(self.command + self.scale_opts, 
+            channels = check_output(self.command + self.scale_opts,
                                   stdin=tail.stdout)
             channels = self.get_channels(channels)
 
@@ -73,11 +72,11 @@ class mcaops_scale_test(unittest.TestCase):
 
 
     def test_manual_center(self):
-        
+
         expected = self.compute_reference(numpy.arange(0,2048),1500)
         for index in range(len(common.input_files)):
             tail = Popen(["tail","-n2048",common.input_files[index]],stdout=PIPE)
-            channels = check_output(self.command + self.scale_opts + 
+            channels = check_output(self.command + self.scale_opts +
                                     ["--center=1500"],stdin=tail.stdout)
             channels = self.get_channels(channels)
 

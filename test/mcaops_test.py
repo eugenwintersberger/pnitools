@@ -31,7 +31,6 @@ from subprocess import STDOUT
 from subprocess import call
 import unittest
 import os
-import pni.io.nx.h5 as nx
 import numpy
 import re
 
@@ -113,8 +112,8 @@ class mcaops_test(unittest.TestCase):
     def test_return(self):
 
         #should give a useage message and return 1
-        cmd = ['mcaops'] 
-        self.assertEqual(int(call(cmd)),1) 
+        cmd = ['mcaops']
+        self.assertEqual(int(call(cmd)),1)
 
         #data file will be interpreted as command which is wrong
         cmd = ['mcaops','mcaops_test.py']
@@ -157,7 +156,7 @@ class mcaops_test(unittest.TestCase):
             pos,value = result.split("\t")
             pos = int(pos.strip())
             value = float(value.strip())
-            
+
             data = numpy.loadtxt(fname,skiprows=115)
             ref_pos = numpy.argmax(data)
             ref_value = max(data)
@@ -170,7 +169,7 @@ class mcaops_test(unittest.TestCase):
             self.assertAlmostEqual(value,ref_value,8)
 
 
-        
+
     def test_rebin_no_x_no_norm(self):
         """
         Test without rebinning and normalization
@@ -178,7 +177,7 @@ class mcaops_test(unittest.TestCase):
         def test(fname):
             cmd = ['mcaops','rebin','--noxrebin','-b10',fname]
             c,d = exec_two_column_command(cmd)
-            
+
             #read reference data
             data = numpy.loadtxt(fname,skiprows=115)
             l = []
@@ -190,21 +189,21 @@ class mcaops_test(unittest.TestCase):
 
             return (c,d,ref_c,ref_d)
 
-       
+
         for fname in input_file_list:
             channels,data,ref_channels,ref_data = test(fname)
             for c,d,ref_c,ref_d in zip(channels,data,ref_channels,ref_data):
                 self.assertEqual(c,ref_c)
                 self.assertAlmostEqual(d,ref_d,8)
-        
-    def test_rebin_no_x_norm(self): 
+
+    def test_rebin_no_x_norm(self):
         """
         test with normalization
         """
         def test(fname):
             cmd = ['mcaops','rebin','--noxrebin','--normalize','-b10',fname]
             c,d = exec_two_column_command(cmd)
-            
+
             #read reference data
             data = numpy.loadtxt(fname,skiprows=115)
             l = []
@@ -220,7 +219,7 @@ class mcaops_test(unittest.TestCase):
 
             return (c,d,ref_c,ref_d)
 
-       
+
         for fname in input_file_list:
             channels,data,ref_channels,ref_data = test(fname)
             for c,d,ref_c,ref_d in zip(channels,data,ref_channels,ref_data):
@@ -235,7 +234,7 @@ class mcaops_test(unittest.TestCase):
         def test(fname):
             cmd = ['mcaops','rebin','--normalize','-b10',fname]
             c,d = exec_two_column_command(cmd)
-            
+
             #read reference data
             data = numpy.loadtxt(fname,skiprows=115)
             channels = numpy.arange(0,data.size,dtype=numpy.float64)
@@ -266,11 +265,11 @@ class mcaops_test(unittest.TestCase):
         def test(fname):
             cmd = ['mcaops','scale','-d0.5','-x3.2',fname]
             c,d = exec_two_column_command(cmd)
-            
+
             #read reference data
             ref_d = numpy.loadtxt(fname,skiprows=115)
             channels = numpy.arange(0,ref_d.size,dtype=numpy.float64)
-            
+
             ref_c = 3.2+0.5*(channels - numpy.argmax(ref_d))
 
             return (c,d,ref_c,ref_d)
@@ -285,11 +284,11 @@ class mcaops_test(unittest.TestCase):
         def test(fname):
             cmd = ['mcaops','scale','-d0.5','-x3.2','-c512',fname]
             c,d = exec_two_column_command(cmd)
-            
+
             #read reference data
             ref_d = numpy.loadtxt(fname,skiprows=115)
             channels = numpy.arange(0,ref_d.size,dtype=numpy.float64)
-            
+
             ref_c = 3.2+0.5*(channels - 512)
 
             return (c,d,ref_c,ref_d)

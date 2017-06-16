@@ -28,7 +28,6 @@ from subprocess import STDOUT
 from subprocess import call
 import unittest
 import os
-import pni.io.nx.h5 as nx
 import numpy
 
 here = os.path.dirname(os.path.abspath(__file__))

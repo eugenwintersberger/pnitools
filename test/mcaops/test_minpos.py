@@ -32,7 +32,6 @@ from subprocess import check_output
 import numpy
 import unittest
 import os
-import pni.io.nx.h5 as nx
 import common
 
 class mcaops_minpos_test(unittest.TestCase):
@@ -99,14 +98,14 @@ class mcaops_minpos_test_stdio(mcaops_minpos_test):
 
 
     def get_total_result(self):
-        
+
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
             result += check_output([common.command,"minpos"],stdin=tail.stdout)
 
         return result
-    
+
     def get_roi1_result(self):
         result = ""
         for input_file in common.input_files:
