@@ -22,17 +22,19 @@
 //
 #include <boost/test/unit_test.hpp>
 #include <boost/current_function.hpp>
+#include <boost/filesystem.hpp>
 
 #include <pni/core/types.hpp>
 #include <common/file.hpp>
 
 using namespace pni::core;
+namespace fs = boost::filesystem;
 
 struct file_fixture
 {
-    string _p1;
-    string _p2;
-    string _p3;
+    fs::path _p1;
+    fs::path _p2;
+    fs::path _p3;
 
     file_fixture():
         _p1("../../data/fio/scan_mca_00001.fio"),
@@ -57,21 +59,21 @@ BOOST_AUTO_TEST_CASE(test_default_construction)
 BOOST_AUTO_TEST_CASE(test_creation)
 {
     //should be ok - the file exists
-    BOOST_CHECK_NO_THROW(file f(_p1));
+    BOOST_CHECK_NO_THROW(file f(_p1.string()));
     //not ok - we try to open a directory
-    BOOST_CHECK_THROW(file f(_p2),file_error);;
+    BOOST_CHECK_THROW(file f(_p2.string()),file_error);;
     //not ok - the file does not exist
-    BOOST_CHECK_THROW(file f(_p3),file_error);
+    BOOST_CHECK_THROW(file f(_p3.string()),file_error);
 }
 
 //-----------------------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(test_inquery)
 {
-    file f(_p1);
+    file f(_p1.string());
     BOOST_CHECK_EQUAL(f.name() , "scan_mca_00001.fio");
     BOOST_CHECK_EQUAL(f.extension() , ".fio");
-    BOOST_CHECK_EQUAL(f.path() , "../../data/fio/scan_mca_00001.fio");
-    BOOST_CHECK_EQUAL(f.base() , "../../data/fio");
+    BOOST_CHECK_EQUAL(f.path() , _p1.string());
+    BOOST_CHECK_EQUAL(f.base() , _p1.parent_path().string());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

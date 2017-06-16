@@ -24,29 +24,32 @@
 #include <boost/current_function.hpp>
 #include <boost/iterator/zip_iterator.hpp>
 #include <common/file_queue.hpp>
+#include <boost/filesystem.hpp>
+
+namespace fs = boost::filesystem;
 
 struct file_queue_fixture
 {
-    typedef std::vector<string> list_type; 
+    typedef std::vector<string> list_type;
 
     list_type name_list;
     list_type range_list;
-    list_type mixed_list; 
+    list_type mixed_list;
 
     file_queue_fixture():
-        name_list(list_type{"../../data/fio/scan_mca_00001.fio",
-                            "../../data/fio/scan_mca_00002.fio",
-                            "../../data/fio/scan_mca_00003.fio",
-                            "../../data/fio/scan_mca_00004.fio",
-                            "../../data/fio/scan_mca_00005.fio",
-                            "../../data/fio/scan_mca_00006.fio",
-                            "../../data/fio/scan_mca_00007.fio",
-                            "../../data/fio/scan_mca_00008.fio"}),
-        range_list(list_type{"../../data/fio/scan_mca_%05i.fio:1:9"}),
-        mixed_list(list_type{"../../data/fio/scan_mca_00001.fio",
-                             "../../data/fio/scan_mca_00002.fio",
-                             "../../data/fio/scan_mca_%05i.fio:3:8",
-                             "../../data/fio/scan_mca_00008.fio"})
+        name_list(list_type{fs::path("../../data/fio/scan_mca_00001.fio").string(),
+                            fs::path("../../data/fio/scan_mca_00002.fio").string(),
+                            fs::path("../../data/fio/scan_mca_00003.fio").string(),
+                            fs::path("../../data/fio/scan_mca_00004.fio").string(),
+                            fs::path("../../data/fio/scan_mca_00005.fio").string(),
+                            fs::path("../../data/fio/scan_mca_00006.fio").string(),
+                            fs::path("../../data/fio/scan_mca_00007.fio").string(),
+                            fs::path("../../data/fio/scan_mca_00008.fio").string()}),
+        range_list(list_type{fs::path("../../data/fio/scan_mca_%05i.fio:1:9").string()}),
+        mixed_list(list_type{fs::path("../../data/fio/scan_mca_00001.fio").string(),
+                             fs::path("../../data/fio/scan_mca_00002.fio").string(),
+                             fs::path("../../data/fio/scan_mca_%05i.fio:3:8").string(),
+                             fs::path("../../data/fio/scan_mca_00008.fio").string()})
     {}
 
 };
@@ -57,7 +60,7 @@ BOOST_FIXTURE_TEST_SUITE(file_queue_tests,file_queue_fixture)
 //-----------------------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(test_name_list)
 {
-    file_queue q; 
+    file_queue q;
     BOOST_REQUIRE_NO_THROW(q = fill_file_queue(name_list));
     BOOST_CHECK_EQUAL(q.size(),name_list.size());
 

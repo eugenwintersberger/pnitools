@@ -22,6 +22,9 @@
 //
 
 #include <boost/test/unit_test.hpp>
+#include <boost/filesystem.hpp>
+
+namespace fs = boost::filesystem;
 
 #include <common/file_type.hpp>
 
@@ -30,16 +33,16 @@ BOOST_AUTO_TEST_SUITE(file_type_test)
 
 BOOST_AUTO_TEST_CASE(tif_test)
 {
-    string s = "../../data/tif/detector_013.tif";
-    BOOST_CHECK(get_file_type(s) == file_type::TIFF_FILE);
-    BOOST_CHECK(get_file_type(file(s)) == file_type::TIFF_FILE);
+    fs::path s = "../../data/tif/detector_013.tif";
+    BOOST_CHECK(get_file_type(s.string()) == file_type::TIFF_FILE);
+    BOOST_CHECK(get_file_type(file(s.string())) == file_type::TIFF_FILE);
 }
 
 BOOST_AUTO_TEST_CASE(cbf_test)
 {
-    string s = "../../data/cbf/LAOS3_05461.cbf";
-    BOOST_CHECK(get_file_type(s) == file_type::CBF_FILE);
-    BOOST_CHECK(get_file_type(file(s)) == file_type::CBF_FILE);
+    fs::path s = "../../data/cbf/LAOS3_05461.cbf";
+    BOOST_CHECK(get_file_type(s.string()) == file_type::CBF_FILE);
+    BOOST_CHECK(get_file_type(file(s.string())) == file_type::CBF_FILE);
 }
 
 BOOST_AUTO_TEST_CASE(nexus_test)
