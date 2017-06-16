@@ -57,7 +57,7 @@ BOOST_FIXTURE_TEST_SUITE(scale_test,scale_test_fixture)
 
     float64 compute_axis(float64 cv,size_t i,float64 d,size_t cb)
     {
-        cv + d*(float64(i)-float64(cb));
+        return cv + d*(float64(i)-float64(cb));
     }
 
     //-------------------------------------------------------------------------
