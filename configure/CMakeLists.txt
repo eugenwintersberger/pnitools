@@ -1,7 +1,10 @@
 include(CheckTypeSize)
 include(CheckCXXSourceCompiles)
 
-
+find_package(PythonInterp)
+if(NOT PYTHONINTERP_FOUND)
+    message(FATAL_ERROR "Could not find Python executable")
+endif()
 
 
 find_package(hdf5 REQUIRED)

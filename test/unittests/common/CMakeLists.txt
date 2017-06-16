@@ -26,5 +26,5 @@ set_source_files_properties(sum_test.cpp PROPERTIES
 add_executable(algorithms_test ${ALGOSRC})
 target_link_libraries(algorithms_test common_objects
                       pniio
-                      ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+                      Boost::unit_test_framework)
 add_test(NAME "Common-algorithms-test" COMMAND algorithms_test)
