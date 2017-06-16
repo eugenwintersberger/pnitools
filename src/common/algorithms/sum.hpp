@@ -22,6 +22,7 @@
 #pragma once
 
 #include <algorithm>
+#include <numeric>
 #include <pni/core/error.hpp>
 
 namespace algorithms

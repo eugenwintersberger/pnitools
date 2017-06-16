@@ -13,8 +13,8 @@ add_executable(mcaops_operations_test ${OPS_SOURCES}
                $<TARGET_OBJECTS:mcaops_ops_objects>)
 target_link_libraries(mcaops_operations_test 
                       common_objects 
-                      ${PNIIO_PKG_LIBRARIES}
-                      ${Boost_LIBRARIES} 
+                      pniio
+                      Boost::unit_test_framework
                       )
 
 add_test(NAME "mcaops:operations_test" 

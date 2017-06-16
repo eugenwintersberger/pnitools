@@ -51,7 +51,8 @@ endif()
 
 check_type_size("long double" FLOAT128_SIZE)
 if((NOT ${FLOAT128_SIZE} EQUAL 16) AND
-   (NOT ${FLOAT128_SIZE} EQUAL 12))
+   (NOT ${FLOAT128_SIZE} EQUAL 12) AND
+   (NOT ${FLOAT128_SIZE} EQUAL 8))
     message(FATAL_ERROR "long double size is neither 16 or 12Byte!")
 endif()
 

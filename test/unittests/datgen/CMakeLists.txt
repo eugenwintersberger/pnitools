@@ -12,8 +12,8 @@ add_executable(datgen_test ${SOURCES} $<TARGET_OBJECTS:datgen_functor_objects>
                                       $<TARGET_OBJECTS:datgen_objects>
     )
 target_link_libraries(datgen_test common_objects 
-                      ${PNIIO_PKG_LIBRARIES}
-                      ${Boost_LIBRARIES} 
+                      pniio
+                      Boost::unit_test_framework
                       )
 
 add_test(NAME "datgen-components-test" COMMAND datgen_test)

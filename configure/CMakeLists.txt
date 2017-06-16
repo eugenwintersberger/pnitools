@@ -3,6 +3,18 @@ include(CheckCXXSourceCompiles)
 
 
 
+
+find_package(hdf5 REQUIRED)
+
+find_package(pnicore REQUIRED)
+
+find_package(pniio REQUIRED)
+
+find_package(Boost 1.55 REQUIRED COMPONENTS unit_test_framework)
+
+link_directories(${Boost_LIBRARY_DIRS})
+add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
+
 #setup for GNU CXX compiler
 if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
     message("found GNU compiler ...")
@@ -14,15 +26,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
         add_definitions(-O0 -g)
     endif()
 elseif(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
-
+    add_definitions(-DBOOST_ALL_DYN_LINK)
 endif()
-
-find_package(pnicore REQUIRED)
-
-find_package(pniio REQUIRED)
-
-find_package(Boost 1.55 COMPONENTS unit_test_framework)
-
 
 #===================================check the size of data types===============
 include(configure/CheckTypeSize.txt)
