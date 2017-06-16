@@ -7,7 +7,7 @@ if(NOT PYTHONINTERP_FOUND)
 endif()
 
 
-find_package(hdf5 REQUIRED)
+find_package(HDF5 REQUIRED)
 
 find_package(pnicore REQUIRED)
 
