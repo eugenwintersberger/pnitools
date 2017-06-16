@@ -8,10 +8,11 @@ set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/test/data)
 if(NOT EXISTS ${WORKING_DIR}/cbf)
     message(STATUS "Extracting CBF test data ...")
     execute_process(
-        COMMAND ${CMAKE_COMMMAND} -E tar xzf ${SOURCE_DIR}/cbf.tar.gz
+        COMMAND ${CMAKE_COMMAND} -E tar xzf ${SOURCE_DIR}/cbf.tar.gz
         WORKING_DIRECTORY ${WORKING_DIR}
         OUTPUT_FILE cbf_extract.log
-        ERROR_FILE cbf_extract.log)
+        ERROR_FILE cbf_extract.log
+    )
 endif()
 
 if(NOT EXISTS ${WORKING_DIR}/nexus)
