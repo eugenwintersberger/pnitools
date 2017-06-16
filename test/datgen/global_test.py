@@ -31,9 +31,12 @@ import os
 import pni.io.nx.h5 as nx
 import numpy
 
+here = os.path.dirname(os.path.abspath(__file__))
+bin_path = os.path.join(here,"..","..","bin")
+
 class datgen_global_test(unittest.TestCase):
-    
-    datgen = "../../src/datgen/datgen"
+
+    datgen = os.path.join(bin_path,"datgen")
 
     def setUp(self):
         pass
@@ -56,11 +59,11 @@ class datgen_global_test(unittest.TestCase):
     def test_wrong_functor(self):
         cmd = [self.datgen,'-b100','-e200','-s2','uni']
         self.assertEqual(int(call(cmd)),1);
-    
+
     def test_missing_grid_endpoint(self):
         result = int(call([self.datgen,'-b100','-s2','uniform']))
         self.assertEqual(result,1)
-    
+
     def test_missing_grid_startpoint(self):
         result = int(call([self.datgen,'-e100','-s2','uniform']))
         self.assertEqual(result,1)
