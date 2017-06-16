@@ -29,10 +29,14 @@ from subprocess import call
 import unittest
 import os
 import pni.io.nx.h5 as nx
+import os.path
+
+here = os.path.dirname(os.path.abspath(__file__))
+bin_path = os.path.join(here,"..","..","bin")
 
 class datgen_uniform_test(unittest.TestCase):
 
-    cmd = ['../../src/datgen/datgen','-b100','-e200','-s2','uniform']
+    cmd = [os.path.join(bin_path,'datgen'),'-b100','-e200','-s2','uniform']
 
     def setUp(self):
         #need to delete the file before we can start a new run
@@ -51,7 +55,7 @@ class datgen_uniform_test(unittest.TestCase):
     def test_lower_wrong(self):
         result = int(call(self.cmd+['-l1.2x','-u4.5']))
         self.assertEqual(result,1)
-    
+
     def test_upper_wrong(self):
         result = int(call(self.cmd+['-l1.2','-u4.5x']))
         self.assertEqual(result,1)

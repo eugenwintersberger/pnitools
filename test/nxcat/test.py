@@ -33,9 +33,10 @@ import numpy
 
 here = os.path.dirname(os.path.abspath(__file__))
 bin_path = os.path.join(here,"..","..","bin")
+data_path = os.path.join(here,"..","data","nexus")
 
 class nxcat_test(unittest.TestCase):
-    input_file = "../data/nexus/nxls_test.nxs"
+    input_file = os.path.join(data_path,"nxls_test.nxs")
     nxcat = os.path.join(bin_path,"nxcat")
 
     def setUp(self):
@@ -57,7 +58,7 @@ class nxcat_test(unittest.TestCase):
         self.assertEqual(int(call(cmd)),1)
 
         #shoule return 1 as the file is not a Nexus file
-        cmd = [self.nxcat,'nxcat_test.py']
+        cmd = [self.nxcat,'test.py']
         self.assertEqual(int(call(cmd)),1)
 
         #should return 1 as the target object is not a field or attribute
@@ -91,7 +92,7 @@ class nxcat_test(unittest.TestCase):
         cmd = [self.nxcat,path]
         result = check_output(cmd)
         print "Print the result ", result
-        self.assertAlmostEqual(float(result),12.45,1.e-4)
+        self.assertAlmostEqual(float(result),12.45,2)
 
     #read scalar field data array
     def test_read_float_array_field(self):

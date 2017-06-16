@@ -30,10 +30,15 @@ import unittest
 import os
 import pni.io.nx.h5 as nx
 import numpy
+import os.path
+
+here = os.path.dirname(os.path.abspath(__file__))
+bin_path = os.path.join(here,"..","..","bin")
+
 
 class datgen_linear_test(unittest.TestCase):
 
-    cmd = ['../../src/datgen/datgen','-b100','-e200','--show-grid','-s4','linear']
+    cmd = [os.path.join(bin_path,'datgen'),'-b100','-e200','--show-grid','-s4','linear']
 
     def setUp(self):
         #need to delete the file before we can start a new run

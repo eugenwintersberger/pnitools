@@ -30,6 +30,10 @@ import unittest
 import os
 import pni.io.nx.h5 as nx
 import numpy
+import os.path
+
+here = os.path.dirname(os.path.abspath(__file__))
+bin_path = os.path.join(here,"..","..","bin")
 
 class gauss(object):
     def __init__(self,a,s,m):
@@ -45,7 +49,7 @@ class gauss(object):
 
 class gauss_test(unittest.TestCase):
 
-    cmd = ['../../src/datgen/datgen','-b100','-e200','--show-grid','-s4','gauss']
+    cmd = [os.path.join(bin_path,'datgen'),'-b100','-e200','--show-grid','-s4','gauss']
 
     def setUp(self):
         #need to delete the file before we can start a new run
@@ -64,7 +68,7 @@ class gauss_test(unittest.TestCase):
     def test_mu_fail(self):
         result = int(call(self.cmd+['-m1x']))
         self.assertEqual(result,1)
-    
+
     def test_amplitude_fail(self):
         result = int(call(self.cmd+['-a1u']))
         self.assertEqual(result,1)
