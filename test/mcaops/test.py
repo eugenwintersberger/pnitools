@@ -30,7 +30,6 @@ from subprocess import PIPE
 from subprocess import Popen
 import unittest
 import os
-import pni.io.nx.h5 as nx
 
 append_data = "1 2 3 4 5\n 6 7 8 9 10\n 11 12 13 14 15"
 replace_data = "10 20 30 40 50\n 60 70 80 90 100\n 110 120 130 140 150"
@@ -85,7 +84,7 @@ class mcaops_test(unittest.TestCase):
         result = call(["nxtee",self.instrument+"/mca/data"],
                       stdin=echo.stdout)
 
-        #readback data 
+        #readback data
         f = nx.open_file(self.filename)
         d = f.root()["entry"]["instrument"]["mca"]["data"]
         data = d[...]
@@ -98,7 +97,7 @@ class mcaops_test(unittest.TestCase):
         result = call(["nxtee",'-r',self.instrument+"/mca2/data"],
                       stdin=echo.stdout)
 
-        #readback data 
+        #readback data
         f = nx.open_file(self.filename)
         d = f.root()["entry"]["instrument"]["mca2"]["data"]
         data = d[...]
@@ -115,7 +114,7 @@ class mcaops_test(unittest.TestCase):
         d = f.root()["entry"]["instrument"]["mca2"]["data"]
         self.assertEqual(d.attributes['units'].value,"counts")
         f.close()
-        
+
 
 #---------------------------run the program if necessary----------------------
 if __name__ == "__main__":

@@ -32,7 +32,6 @@ from subprocess import check_output
 import numpy
 import unittest
 import os
-import pni.io.nx.h5 as nx
 import common
 
 class mcaops_rebin_with_channels(unittest.TestCase):
@@ -43,11 +42,11 @@ class mcaops_rebin_with_channels(unittest.TestCase):
 
     #-------------------------------------------------------------------------
     def get_total_result(self):
-        
+
         tail = Popen(["tail","-n2048",common.input_files[0]],stdout=PIPE)
-        result = check_output(self.command + ["--auto-index-offset=5"]+ 
+        result = check_output(self.command + ["--auto-index-offset=5"]+
                               self.rebin_opt, stdin=tail.stdout)
-        
+
         result = result.replace("\n"," ")
         result = numpy.fromstring(result,sep=" ",dtype="float64")
         result = result.reshape((result.size/2,2))
