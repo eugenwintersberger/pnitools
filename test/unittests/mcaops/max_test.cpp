@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(test_1)
                       {data_1.begin(),data_1.end()}};
     op(arg);
     op.stream_result(stream);
-    BOOST_CHECK(stream.is_equal("+1.039480e+01"));
+    BOOST_CHECK(stream.is_equal("+1.03948000000000000e+01"));
 }
 
 BOOST_AUTO_TEST_CASE(test_2)
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(test_2)
                       {data_2.begin(),data_2.end()}};
     op(arg);
     op.stream_result(stream);
-    BOOST_CHECK(stream.is_equal("+1.000023e+03"));
+    BOOST_CHECK(stream.is_equal("+1.00002300000000002e+03"));
 }
 
 BOOST_AUTO_TEST_CASE(test_3)
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(test_3)
                       {data_3.begin(),data_3.end()}};
     op(arg);
     op.stream_result(stream);
-    BOOST_CHECK(stream.is_equal("+1.000000e+06"));
+    BOOST_CHECK(stream.is_equal("+1.00000000000000000e+06"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

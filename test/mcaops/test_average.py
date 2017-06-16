@@ -35,6 +35,8 @@ import os
 import pni.io.nx.h5 as nx
 import common
 
+digit_places = 7
+
 class mcaops_average_test(unittest.TestCase):
     total_sum_ref = numpy.loadtxt("total_average.dat",dtype="float64")
     roi1_sum_ref = numpy.loadtxt("roi1_average.dat",dtype="float64")
@@ -59,14 +61,14 @@ class mcaops_average_test(unittest.TestCase):
         result = common.result_to_ndarray(self.get_total_result(),
                                           self.size,dtype="float64")
         for (ref,res) in zip(self.total_sum_ref.flat,result.flat):
-            self.assertAlmostEqual(ref,res)
+            self.assertAlmostEqual(ref,res,places=digit_places)
 
     def test_roi1_sum(self):
         result = common.result_to_ndarray(self.get_roi1_result(),
                                           self.size,dtype="float64")
 
         for (ref,res) in zip(self.roi1_sum_ref.flat,result.flat):
-            self.assertAlmostEqual(ref,res)
+            self.assertAlmostEqual(ref,res,places=digit_places)
 
 
     def test_roi2_sum(self):
@@ -74,10 +76,10 @@ class mcaops_average_test(unittest.TestCase):
                                           self.size,dtype="float64")
 
         for (ref,res) in zip(self.roi2_sum_ref.flat,result.flat):
-            self.assertAlmostEqual(ref,res)
+            self.assertAlmostEqual(ref,res,places=digit_places)
 
 class mcaops_average_test_fio(mcaops_average_test):
-    
+
     def get_total_result(self):
         result =  check_output([common.command,"average",
                                 common.files1,common.files2,
@@ -96,14 +98,14 @@ class mcaops_average_test_fio(mcaops_average_test):
 class mcaops_average_test_stdio(mcaops_average_test):
 
     def get_total_result(self):
-        
+
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
             result += check_output([common.command,"average"],stdin=tail.stdout)
 
         return result
-    
+
     def get_roi1_result(self):
         result = ""
         for input_file in common.input_files:

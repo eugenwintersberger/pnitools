@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(test_sum_1)
     output_test_stream stream;
     o.stream_result(stream);
 
-    BOOST_CHECK( stream.is_equal("+1.574380e+01"));
+    BOOST_CHECK( stream.is_equal("+1.57438000000000002e+01"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

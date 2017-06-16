@@ -23,6 +23,7 @@
 #include "average.hpp"
 #include "../../common/algorithms/average.hpp"
 #include <pni/io/formatters.hpp>
+#include <iomanip>
 
 using namespace pni::core;
 
@@ -50,6 +51,6 @@ void average::operator()(const argument_type &data)
 //----------------------------------------------------------------------------
  std::ostream &average::stream_result(std::ostream &o) const
 {
-    o<<pni::io::format(_average);
+    o<<std::scientific<<std::setprecision(limits_t::digits10+1)<<_average;
     return o;
 }

@@ -35,6 +35,8 @@ import os
 import pni.io.nx.h5 as nx
 import common
 
+digit_places = 7
+
 class mcaops_rebin_test(unittest.TestCase):
     total_ref = numpy.loadtxt("total_rebin.dat",dtype="float64")
     roi1_ref = numpy.loadtxt("roi1_rebin.dat",dtype="float64")
@@ -52,13 +54,13 @@ class mcaops_rebin_test(unittest.TestCase):
         self.assertEqual(result.size,expected.size)
 
         for (ref,res) in zip(expected.flat,result.flat):
-            self.assertAlmostEqual(ref,res)
+            self.assertAlmostEqual(ref,res,places=digit_places)
 
     #-------------------------------------------------------------------------
     def trim_output(self,data):
         data = data.replace("'","")
         data = data.replace("\n"," ")
-        
+
         return data.replace("  "," ")
 
     #-------------------------------------------------------------------------
@@ -70,14 +72,14 @@ class mcaops_rebin_test(unittest.TestCase):
 
     #-------------------------------------------------------------------------
     def get_total_result_norm(self):
-        result =  check_output(self.command + self.nxopts + self.rebin_opt +  
+        result =  check_output(self.command + self.nxopts + self.rebin_opt +
                                ["--normalize","fiodata.nxs"])
         result = self.trim_output(result)
         return result
 
     #-------------------------------------------------------------------------
     def get_roi1_result(self):
-        result =  check_output(self.command + [common.roi1_opt] + self.nxopts 
+        result =  check_output(self.command + [common.roi1_opt] + self.nxopts
                                + self.rebin_opt + ["fiodata.nxs"])
 
         result = self.trim_output(result)
@@ -85,7 +87,7 @@ class mcaops_rebin_test(unittest.TestCase):
 
     #-------------------------------------------------------------------------
     def get_roi1_result_norm(self):
-        result =  check_output(self.command + [common.roi1_opt] + self.nxopts 
+        result =  check_output(self.command + [common.roi1_opt] + self.nxopts
                                + self.rebin_opt + ["--normalize", "fiodata.nxs"])
 
         result = self.trim_output(result)
@@ -93,12 +95,12 @@ class mcaops_rebin_test(unittest.TestCase):
 
     #-------------------------------------------------------------------------
     def get_roi2_result(self):
-        result =  check_output(self.command + [common.roi2_opt] + self.nxopts 
+        result =  check_output(self.command + [common.roi2_opt] + self.nxopts
                                + self.rebin_opt + ["fiodata.nxs"])
 
         result = self.trim_output(result)
         return result
-    
+
     #-------------------------------------------------------------------------
     def get_roi2_result_norm(self):
         result =  check_output( self.command + [common.roi2_opt] + self.nxopts
@@ -146,7 +148,7 @@ class mcaops_rebin_test(unittest.TestCase):
                                           dtype="float64",sep=" ")
 
         self.check_result(result,self.roi2_ref)
-    
+
     #-------------------------------------------------------------------------
     def test_roi2_norm(self):
         result = common.result_to_ndarray(self.get_roi2_result_norm(),
@@ -157,7 +159,7 @@ class mcaops_rebin_test(unittest.TestCase):
 
 #=============================================================================
 class mcaops_rebin_test_fio(mcaops_rebin_test):
-    
+
     #-------------------------------------------------------------------------
     def get_total_result(self):
         result =  check_output(self.command + self.rebin_opt +
@@ -167,37 +169,37 @@ class mcaops_rebin_test_fio(mcaops_rebin_test):
 
     #-------------------------------------------------------------------------
     def get_total_result_norm(self):
-        result =  check_output(self.command + self.rebin_opt + 
+        result =  check_output(self.command + self.rebin_opt +
                                ["--normalize",common.files1,common.files2])
         result = self.trim_output(result)
         return result
 
     #-------------------------------------------------------------------------
     def get_roi1_result(self):
-        result =  check_output(self.command + [common.roi1_opt] 
+        result =  check_output(self.command + [common.roi1_opt]
                                + self.rebin_opt + [common.files1,common.files2])
         result = self.trim_output(result)
         return result
 
     #-------------------------------------------------------------------------
     def get_roi1_result_norm(self):
-        result =  check_output(self.command + [common.roi1_opt] 
-                               + self.rebin_opt + 
+        result =  check_output(self.command + [common.roi1_opt]
+                               + self.rebin_opt +
                                ["--normalize", common.files1,common.files2])
         result = self.trim_output(result)
         return result
     #-------------------------------------------------------------------------
     def get_roi2_result(self):
         result = check_output(self.command + [common.roi2_opt]
-                              + self.rebin_opt + 
+                              + self.rebin_opt +
                               [common.files1,common.files2])
         result = self.trim_output(result)
         return result
-    
+
     #-------------------------------------------------------------------------
     def get_roi2_result_norm(self):
         result = check_output(self.command + [common.roi2_opt]
-                              + self.rebin_opt + 
+                              + self.rebin_opt +
                               ["--normalize",common.files1,common.files2])
         result = self.trim_output(result)
         return result
@@ -208,7 +210,7 @@ class mcaops_rebin_test_stdio(mcaops_rebin_test):
 
     #-------------------------------------------------------------------------
     def get_total_result(self):
-        
+
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
@@ -217,31 +219,31 @@ class mcaops_rebin_test_stdio(mcaops_rebin_test):
 
         result = self.trim_output(result)
         return result
-    
+
     #-------------------------------------------------------------------------
     def get_total_result_norm(self):
-        
+
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output(self.command + self.rebin_opt + 
+            result += check_output(self.command + self.rebin_opt +
                                    ["--normalize"],
                                     stdin=tail.stdout)
 
         result = self.trim_output(result)
         return result
-    
+
     #-------------------------------------------------------------------------
     def get_roi1_result(self):
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output(self.command + [common.roi1_opt] + 
+            result += check_output(self.command + [common.roi1_opt] +
                                    self.rebin_opt,stdin=tail.stdout)
-        
+
         result = self.trim_output(result)
         return result
-    
+
     #-------------------------------------------------------------------------
     def get_roi1_result_norm(self):
         result = ""
@@ -250,7 +252,7 @@ class mcaops_rebin_test_stdio(mcaops_rebin_test):
             result += check_output(self.command + [common.roi1_opt] +
                                     self.rebin_opt + ["--normalize"],
                                     stdin=tail.stdout)
-        
+
         result = self.trim_output(result)
         return result
 
@@ -259,7 +261,7 @@ class mcaops_rebin_test_stdio(mcaops_rebin_test):
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output(self.command + [common.roi2_opt] + 
+            result += check_output(self.command + [common.roi2_opt] +
                                     self.rebin_opt,
                                     stdin=tail.stdout)
 
@@ -271,7 +273,7 @@ class mcaops_rebin_test_stdio(mcaops_rebin_test):
         result = ""
         for input_file in common.input_files:
             tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output(self.command + [common.roi2_opt] + 
+            result += check_output(self.command + [common.roi2_opt] +
                                     self.rebin_opt+ ["--normalize"],
                                     stdin=tail.stdout)
 
