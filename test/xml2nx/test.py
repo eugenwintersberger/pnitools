@@ -31,12 +31,17 @@ import unittest
 import os
 import pni.io.nx.h5 as nx
 import sys
+import os.path
+
+here = os.path.dirname(os.path.abspath(__file__))
+bin_dir = os.path.join(here,"..","..","bin")
+
 
 
 class xml2nx_test(unittest.TestCase):
 
     out_file = "xml2nx_test.nxs"
-    xml2nx = "../../src/xml2nx/xml2nx"
+    xml2nx = os.path.join(bin_dir,"xml2nx")
 
     def tearDown(self):
         try:
@@ -82,7 +87,7 @@ class xml2nx_test(unittest.TestCase):
 
     def __check_detector(self):
         rpath = 'entry/instrument/detector/'
-        
+
         f = nx.open_file(self.out_file)
         r = f.root()
         d = r['entry']['instrument']['detector']
@@ -97,7 +102,7 @@ class xml2nx_test(unittest.TestCase):
         self.assertEqual(data.shape[0],0)
         self.assertEqual(data.shape[1],2048)
         self.assertEqual(data.dtype,'uint32')
-        
+
         self.assertEqual(d['layout'].read().strip(),'linear')
         self.assertEqual(d['description'].read().strip(),'PSD')
         self.assertAlmostEqual(d['distance'].read(),0.8,places=5)
@@ -137,7 +142,7 @@ class xml2nx_test(unittest.TestCase):
         result = int(call(cmd))
         self.assertEqual(result,0)
 
-        self.__check_basic() 
+        self.__check_basic()
 
     def test_create_stdin(self):
         pass
