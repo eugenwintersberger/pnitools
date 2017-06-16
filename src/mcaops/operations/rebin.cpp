@@ -21,6 +21,9 @@
 //
 
 #include <iterator>
+#include <ios>
+#include <iomanip>
+#include <limits>
 #include <pni/core/configuration.hpp>
 #include "../../common/algorithms/rebin.hpp"
 #include "rebin.hpp"
@@ -144,14 +147,14 @@ void rebin::operator()(const argument_type &data)
 //-----------------------------------------------------------------------------
 std::ostream &rebin::stream_result(std::ostream &o) const
 {
-    const output_config &c = this->output_configuration();    
+    const output_config &c = this->output_configuration();
 
     for(size_t i=0;i<_new_channels.size();i++)
     {
         if(c.channel_output())
             o<<pni::io::format(_new_channels[i])<<" ";
 
-        o<<pni::io::format(_new_mca[i])<<c.channel_separator();
+        o<<std::scientific<<std::setprecision(limits_t::digits10 + 1)<<_new_mca[i]<<c.channel_separator();
     }
     return o;
 }

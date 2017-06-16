@@ -28,18 +28,24 @@ from subprocess import STDOUT
 from subprocess import call
 import unittest
 import pni.io.nx.h5 as nexus
+import os.path
+
+here = os.path.dirname(os.path.abspath(__file__))
+bin_dir = os.path.join(here,"..","..","bin")
+data_dir = os.path.join("..","data")
+
 
 nexus_simple_output ="""
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data  type = point  pixel type = UINT64  frames = 2001 
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
 """
 
 nexus_kv_output="""
@@ -47,75 +53,65 @@ source           = ../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXi
 type             = point
 pixel type       = UINT64
 number of frames = 2001
-frame shape      = 
 
 source           = ../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data
 type             = point
 pixel type       = UINT64
 number of frames = 2001
-frame shape      = 
 
 source           = ../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data
 type             = point
 pixel type       = UINT64
 number of frames = 2001
-frame shape      = 
 
 source           = ../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data
 type             = point
 pixel type       = UINT64
 number of frames = 2001
-frame shape      = 
 
 source           = ../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data
 type             = point
 pixel type       = UINT64
 number of frames = 2001
-frame shape      = 
 
 source           = ../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data
 type             = point
 pixel type       = UINT64
 number of frames = 2001
-frame shape      = 
 
 source           = ../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data
 type             = point
 pixel type       = UINT64
 number of frames = 2001
-frame shape      = 
 
 source           = ../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data
 type             = point
 pixel type       = UINT64
 number of frames = 2001
-frame shape      = 
 
 source           = ../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data
 type             = point
 pixel type       = UINT64
 number of frames = 2001
-frame shape      = 
 
 source           = ../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data
 type             = point
 pixel type       = UINT64
 number of frames = 2001
-frame shape      = 
 """
 
 nexus_csv_output="""
 source ; type ; pixel type ; number of frames ; frame shape
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data ; point ; UINT64 ; 2001 ; 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data ; point ; UINT64 ; 2001 ; 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data ; point ; UINT64 ; 2001 ; 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data ; point ; UINT64 ; 2001 ; 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data ; point ; UINT64 ; 2001 ; 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data ; point ; UINT64 ; 2001 ; 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data ; point ; UINT64 ; 2001 ; 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data ; point ; UINT64 ; 2001 ; 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data ; point ; UINT64 ; 2001 ; 
-../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data ; point ; UINT64 ; 2001 ;
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data ; point ; UINT64 ; 2001 ; ()
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data ; point ; UINT64 ; 2001 ; ()
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data ; point ; UINT64 ; 2001 ; ()
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data ; point ; UINT64 ; 2001 ; ()
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data ; point ; UINT64 ; 2001 ; ()
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data ; point ; UINT64 ; 2001 ; ()
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data ; point ; UINT64 ; 2001 ; ()
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data ; point ; UINT64 ; 2001 ; ()
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data ; point ; UINT64 ; 2001 ; ()
+../data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data ; point ; UINT64 ; 2001 ; ()
 """
 
 nexus_xml_output="""
@@ -357,15 +353,15 @@ dead_link_file ="""
 
 class detinfo_test(unittest.TestCase):
 
-    tif_file = '../data/tif/detector_009.tif'
-    cbf_file = '../data/cbf/LAOS3_05461.cbf'
-    program = '../../src/detinfo/detinfo'
+    tif_file = os.path.join(data_dir,'tif','detector_009.tif')
+    cbf_file = os.path.join(data_dir,"cbf","LAOS3_05461.cbf")
+    program = os.path.join(bin_dir,'detinfo')
 
     def _get_cmd(self,options=[],args=[]):
         cmd = [self.program]
         cmd.extend(options)
         cmd.extend(args)
-        
+
         return cmd
 
     def _call(self,options=[],args=[]):
@@ -384,7 +380,7 @@ class detinfo_test(unittest.TestCase):
         self.assertEqual(result,1)
 
         #file does not exist
-        result = int(self._call(args=['bla.txt'])); 
+        result = int(self._call(args=['bla.txt']));
         self.assertEqual(result,1)
 
         #should be ok
@@ -398,7 +394,7 @@ class detinfo_test(unittest.TestCase):
         #check for single nexus file
         result = int(self._call(args=["../data/nexus/tstfile_00012.h5"]))
         self.assertEqual(result,0)
-      
+
     #-------------------------------------------------------------------------
     def test_simple(self):
         print("test simple output ...")
@@ -406,13 +402,13 @@ class detinfo_test(unittest.TestCase):
                                     args = [self.cbf_file])
 
         self.assertEqual(result.strip(),cbf_simple_output.strip())
-        
+
         result = self._check_output(options=["-fsimple"],
                                     args = ["../data/nexus/tstfile_00012.h5"])
         print(result)
         print(nexus_simple_output)
-        self.assertEqual(result.strip(),nexus_simple_output.strip())        
-        
+        self.assertEqual(result.strip(),nexus_simple_output.strip())
+
         result = self._check_output(options=["-fsimple"],
                                     args = ["../data/tif/detector_%03i.tif:9:16"])
         self.assertEqual(result.strip(),tif_simple_output.strip())
@@ -423,10 +419,10 @@ class detinfo_test(unittest.TestCase):
                                     args = [self.cbf_file])
 
         self.assertEqual(result.strip(),cbf_kv_output.strip())
-        
+
         result = self._check_output(options=["-fkeyvalue"],
                                     args = ["../data/nexus/tstfile_00012.h5"])
-        self.assertEqual(result.strip(),nexus_kv_output.strip())        
+        self.assertEqual(result.strip(),nexus_kv_output.strip())
 
         result = self._check_output(options=["-fkeyvalue"],
                                     args = ["../data/tif/detector_%03i.tif:9:16"])
@@ -436,12 +432,12 @@ class detinfo_test(unittest.TestCase):
     def test_csv(self):
         result = self._check_output(options=["-fcsv"],
                                     args = ["../data/nexus/tstfile_00012.h5"])
-        self.assertEqual(result.strip(),nexus_csv_output.strip())        
+        self.assertEqual(result.strip(),nexus_csv_output.strip())
 
         result = self._check_output(options=["-fcsv"],
                                     args = ["../data/tif/detector_%03i.tif:9:16"])
         self.assertEqual(result.strip(),tif_csv_output.strip())
-        
+
         result = self._check_output(options=["-fcsv"],
                                     args = [self.cbf_file])
 
@@ -452,13 +448,13 @@ class detinfo_test(unittest.TestCase):
         replace = "        ";
         result = self._check_output(options=["-fxml"],
                                     args = [self.cbf_file])
-    
+
         result = result.strip().replace("\t",replace)
         self.assertEqual(result,cbf_xml_output.strip())
-        
+
         result = self._check_output(options=["-fxml"],
                                     args = ["../data/nexus/tstfile_00012.h5"])
-        self.assertEqual(result.strip(),nexus_xml_output.strip())        
+        self.assertEqual(result.strip(),nexus_xml_output.strip())
 
         result = self._check_output(options=["-fxml"],
                                     args = ["../data/tif/detector_%03i.tif:9:16"])
@@ -478,6 +474,6 @@ class detinfo_test(unittest.TestCase):
 
 
 
-         
+
 if __name__ == "__main__":
     unittest.main()

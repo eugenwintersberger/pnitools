@@ -30,7 +30,7 @@ struct fixture_min
 {
     shape_t shape;
     array_type channels;
-    array_type data_1; 
+    array_type data_1;
     array_type data_2;
     array_type data_3;
     min op;
@@ -51,7 +51,7 @@ struct fixture_min
 };
 
 BOOST_FIXTURE_TEST_SUITE(min_test,fixture_min)
-   
+
 //----------------------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(test_1)
 {
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(test_1)
                       {data_1.begin(),data_1.end()}};
     op(arg);
     op.stream_result(stream);
-    BOOST_CHECK(stream.is_equal("-5.39e00"));
+    BOOST_CHECK(stream.is_equal("-5.38999999999999968e+00"));
 }
 
 //----------------------------------------------------------------------------
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(test_2)
                       {data_2.begin(),data_2.end()}};
     op(arg);
     op.stream_result(stream);
-    BOOST_CHECK(stream.is_equal("-2.34e02"));
+    BOOST_CHECK(stream.is_equal("-2.34000000000000000e+02"));
 }
 
 //----------------------------------------------------------------------------
@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(test_3)
                       {data_3.begin(),data_3.end()}};
     op(arg);
     op.stream_result(stream);
-    BOOST_CHECK(stream.is_equal("-2.3e-01"));
+    BOOST_CHECK(stream.is_equal("-2.30000000000000010e-01"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -105,7 +105,7 @@ void max_operation_test::test_max_static()
     get_result(op,pos,value);
     CPPUNIT_ASSERT(pos == 0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(value,1000.023,1.e-8);
-    
+
     op(channel_3,data_3);
     get_result(op,pos,value);
     CPPUNIT_ASSERT(pos == 3);

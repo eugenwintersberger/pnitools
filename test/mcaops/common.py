@@ -22,6 +22,7 @@
 #
 
 import numpy
+import os.path
 
 
 roi1_opt = "--roi=5:501"
@@ -29,12 +30,16 @@ roi2_opt = "--roi=1024:2013"
 base_opt = "--base=/:NXentry/:NXinstrument/:NXdetector"
 mca_opt  = "-mdata"
 
-command = "../../src/mcaops/mcaops"
-    
-file_format = "../data/fio/scan_mca_%05i.fio"
+here = os.path.dirname(os.path.abspath(__file__))
+bin_path = os.path.join(here,"..","..","bin")
+data_path = os.path.join(here,"..","data")
+fio_path = os.path.join(data_path,"fio")
+command = os.path.join(bin_path,"mcaops")
+
+file_format = os.path.join(fio_path,"scan_mca_%05i.fio")
 files1 = file_format+":1:11"
 files2 = file_format+":42:96"
-    
+
 input_files = (
     "../data/fio/scan_mca_00001.fio","../data/fio/scan_mca_00002.fio",
     "../data/fio/scan_mca_00003.fio","../data/fio/scan_mca_00004.fio",

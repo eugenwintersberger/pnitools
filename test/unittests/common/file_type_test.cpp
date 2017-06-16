@@ -62,9 +62,8 @@ BOOST_AUTO_TEST_CASE(fio_test)
 
 BOOST_AUTO_TEST_CASE(unkown_test)
 {
-    BOOST_CHECK(get_file_type("common_test") == file_type::UNKNOWN);
-    BOOST_CHECK(get_file_type(file("common_test")) == file_type::UNKNOWN);
+    BOOST_CHECK(get_file_type("cmake_install.cmake") == file_type::UNKNOWN);
+    BOOST_CHECK(get_file_type(file("cmake_install.cmake")) == file_type::UNKNOWN);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-

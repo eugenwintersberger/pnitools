@@ -61,6 +61,8 @@ class operation
         using data_iterator =  array_type::const_iterator;
         //! argument vector
         using args_vector = std::vector<pni::core::string>;
+        //! limits type
+        using limits_t = std::numeric_limits<array_type::value_type>;
 
         //--------------------------------------------------------------------
         //!
