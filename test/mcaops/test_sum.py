@@ -33,6 +33,12 @@ import numpy
 import unittest
 import os
 import common
+import sys
+
+if sys.platform == "win32":
+    stdout_command = ["type",]
+else:
+    stdout_command = ["tail","-n2048"]
 
 class mcaops_test_sum(unittest.TestCase):
     total_sum_ref = numpy.loadtxt("total_sum.dat",dtype="int32")
@@ -95,26 +101,29 @@ class mcaops_test_sum_stdio(mcaops_test_sum):
 
         result = ""
         for input_file in common.input_files:
-            tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([common.command,"sum"],stdin=tail.stdout)
+            with Popen(stdout_command+[input_file],stdout=PIPE) as tail:
+                ret_value = check_output([common.command,"sum"],stdin=tail.stdout)
+                result += str(ret_value,'utf-8')
 
         return result
 
     def get_roi1_result(self):
         result = ""
         for input_file in common.input_files:
-            tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([common.command,common.roi1_opt,"sum"],
-                                    stdin=tail.stdout)
+            with Popen(stdout_command+[input_file],stdout=PIPE) as tail:
+                ret_value = check_output([common.command,common.roi1_opt,"sum"],
+                                          stdin=tail.stdout)
+                result += str(ret_value,'utf-8')
 
         return result
 
     def get_roi2_result(self):
         result = ""
         for input_file in common.input_files:
-            tail = Popen(["tail","-n2048",input_file],stdout=PIPE)
-            result += check_output([common.command,common.roi2_opt,"sum"],
-                                    stdin=tail.stdout)
+            with Popen(stdout_command+[input_file],stdout=PIPE) as tail:
+                ret_value = check_output([common.command,common.roi2_opt,"sum"],
+                                         stdin=tail.stdout)
+                result += str(ret_value,'utf-8')
 
         return result
 

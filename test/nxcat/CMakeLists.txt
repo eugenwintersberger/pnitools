@@ -6,4 +6,4 @@ endforeach()
 
 add_test(NAME "nxcat:acceptance:test"
          WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/nxcat
-         COMMAND test.py)
+         COMMAND ${PYTHON_EXECUTABLE} test.py)

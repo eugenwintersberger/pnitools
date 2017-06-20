@@ -6,4 +6,4 @@ endforeach()
 
 add_test(NAME "xml2nx:acceptance:test"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMAND test.py)
+    COMMAND ${PYTHON_EXECUTABLE} test.py)

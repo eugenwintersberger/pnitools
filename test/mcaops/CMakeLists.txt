@@ -45,36 +45,36 @@ set(WORK_DIR ${PROJECT_BINARY_DIR}/test/mcaops)
 
 add_test(NAME "mcaops_sum_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND python test_sum.py)
+         COMMAND ${PYTHON_EXECUTABLE} test_sum.py)
 
 add_test(NAME "mcaops_min_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND python test_min.py)
+         COMMAND ${PYTHON_EXECUTABLE} test_min.py)
 
 add_test(NAME "mcaops_max_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND python test_max.py)
+         COMMAND ${PYTHON_EXECUTABLE} test_max.py)
 
 add_test(NAME "mcaops_maxpos_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND python test_maxpos.py)
+         COMMAND ${PYTHON_EXECUTABLE} test_maxpos.py)
 
 add_test(NAME "mcaops_minpos_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND python test_minpos.py)
+         COMMAND ${PYTHON_EXECUTABLE} test_minpos.py)
 
 add_test(NAME "mcaops_average_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND python test_average.py)
+         COMMAND ${PYTHON_EXECUTABLE} test_average.py)
 
 add_test(NAME "mcaops_rebin_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND python test_rebin.py)
+         COMMAND ${PYTHON_EXECUTABLE} test_rebin.py)
 
 add_test(NAME "mcaops_rebin_channels_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND python test_rebin_with_channels.py)
+         COMMAND ${PYTHON_EXECUTABLE} test_rebin_with_channels.py)
 
 add_test(NAME "mcaops_scale_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND python test_scale.py)
+         COMMAND ${PYTHON_EXECUTABLE} test_scale.py)

@@ -6,4 +6,4 @@ endforeach()
 
 add_test(NAME "nxls::acceptance::test"
          WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/nxls
-         COMMAND test.py)
+         COMMAND ${PYTHON_EXECUTABLE} test.py)

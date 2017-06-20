@@ -22,7 +22,7 @@
 #  Created on: Sep 17, 2013
 #      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 #
-
+from __future__ import print_function
 from subprocess import check_output
 
 from subprocess import STDOUT
@@ -96,8 +96,8 @@ class xml2nx_test(unittest.TestCase):
         self.assertAlmostEqual(d['y_pixel_size'].read(),13.45,places=5)
 
         data = d['data']
-        print data.shape
-        print data.dtype
+        print(data.shape)
+        print(data.dtype)
         self.assertEqual(len(data.shape),2)
         self.assertEqual(data.shape[0],0)
         self.assertEqual(data.shape[1],2048)
@@ -157,7 +157,7 @@ class xml2nx_test(unittest.TestCase):
                'detector.xml']
         result = int(call(cmd))
         self.assertEqual(result,0)
-        print check_output(['h5ls','-v','-r',self.out_file])
+        print(check_output(['h5ls','-v','-r',self.out_file]))
 
         self.__check_basic()
         self.__check_detector()

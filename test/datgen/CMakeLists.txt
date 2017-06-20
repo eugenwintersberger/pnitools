@@ -9,16 +9,16 @@ endforeach()
 
 add_test(NAME "datgen:acceptance:global_test"
          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-         COMMAND global_test.py)
+         COMMAND ${PYTHON_EXECUTABLE} global_test.py)
 
 add_test(NAME "datgen:accpentance:uniform_test"
          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-         COMMAND uniform_test.py)
+         COMMAND ${PYTHON_EXECUTABLE} uniform_test.py)
 
 add_test(NAME "datgen:acceptance:linear_test"
          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-         COMMAND linear_test.py)
+         COMMAND ${PYTHON_EXECUTABLE} linear_test.py)
 
 add_test(NAME "datgen:acceptance:gauss_test"
          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-         COMMAND gauss_test.py)
+         COMMAND ${PYTHON_EXECUTABLE} gauss_test.py)

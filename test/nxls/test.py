@@ -22,6 +22,7 @@
 #  Created on: Oct 02, 2013
 #      Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 #
+from __future__ import print_function
 from subprocess import check_output
 
 from subprocess import STDOUT
@@ -172,7 +173,7 @@ class nxls_test(unittest.TestCase):
         result = check_output([self.nxls,'-ra',self.input_file+"://"])
         result = result.split('\n')
         result.remove('')
-        for x in result: print x
+        for x in result: print(x)
         self.assertEqual(len(result),len(output))
 
         for r in result:
