@@ -1,23 +1,10 @@
-set(TEST_SOURCES pnitoolstest.cpp 
-                 common/file_list_parser_test.cpp 
-                 common/file_test.cpp
-                 common/column_test.cpp
-                 common/string_utils_test.cpp
-                 mcaops/sum_operation_test.cpp
-                 mcaops/max_operation_test.cpp
-                 mcaops/scale_operation_test.cpp
-                 mcaops/rebin_operation_test.cpp
-                 compare.cpp
-                 ../src/mcaops/operation.cpp
-                 ../src/mcaops/scale_operation.cpp
-                 ../src/mcaops/rebin_operation.cpp
-                 )
 
 set(CLI_TEST_PY_FILES check_output.py 
                       mcaops_test.py 
                       detops_test.py)
 
 
+include(${PROJECT_SOURCE_DIR}/cmake/common/BoostTestConfig.cmake)
 
 foreach(PYFILE ${CLI_TEST_PY_FILES})
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PYFILE}"
@@ -26,7 +13,6 @@ endforeach()
 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
-#add_definitions(-DBOOST_TEST_DYN_LINK -DBOOST_TEST_MAIN)
 add_subdirectory(data)
 add_subdirectory(unittests)
 add_subdirectory(detinfo)
@@ -37,10 +23,3 @@ add_subdirectory(xml2nx)
 add_subdirectory(nxls)
 add_subdirectory(nxcat)
 
-
-#===================extract the data an prepear for testing=================
-
-
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
-#add_executable(pnitoolstest ${TEST_SOURCES})
-#target_link_libraries(pnitoolstest common_objects ${CPPUNIT_PKG_LIBRARIES} ${PNIIO_PKG_LIBRARIES})

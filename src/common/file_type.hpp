@@ -21,6 +21,7 @@
 //
 #pragma once
 
+#include <iostream>
 #include <pni/core/types.hpp>
 #include "file.hpp"
 
@@ -37,6 +38,8 @@ enum class file_type { UNKNOWN,    //!< unknown file type
                        TIFF_FILE,  //!< a TIFF image file
                        CBF_FILE    //!< a CBF file
                      };
+
+std::ostream &operator<<(std::ostream &stream,const file_type &type);
 
 //----------------------------------------------------------------------------
 //!

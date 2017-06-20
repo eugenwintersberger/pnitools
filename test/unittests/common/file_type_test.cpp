@@ -34,39 +34,39 @@ BOOST_AUTO_TEST_SUITE(file_type_test)
 BOOST_AUTO_TEST_CASE(tif_test)
 {
     fs::path s = "../../data/tif/detector_013.tif";
-    BOOST_CHECK(get_file_type(s.string()) == file_type::TIFF_FILE);
-    BOOST_CHECK(get_file_type(file(s.string())) == file_type::TIFF_FILE);
+    BOOST_CHECK_EQUAL(get_file_type(s.string()),file_type::TIFF_FILE);
+    BOOST_CHECK_EQUAL(get_file_type(file(s.string())),file_type::TIFF_FILE);
 }
 
 BOOST_AUTO_TEST_CASE(cbf_test)
 {
     fs::path s = "../../data/cbf/LAOS3_05461.cbf";
-    BOOST_CHECK(get_file_type(s.string()) == file_type::CBF_FILE);
-    BOOST_CHECK(get_file_type(file(s.string())) == file_type::CBF_FILE);
+    BOOST_CHECK_EQUAL(get_file_type(s.string()),file_type::CBF_FILE);
+    BOOST_CHECK_EQUAL(get_file_type(file(s.string())),file_type::CBF_FILE);
 }
 
 BOOST_AUTO_TEST_CASE(nexus_test)
 {
-    string s1 = "../../data/nexus/CSP93065.nxs";
-    BOOST_CHECK(get_file_type(s1) == file_type::NEXUS_FILE);
-    BOOST_CHECK(get_file_type(file(s1)) == file_type::NEXUS_FILE);
+    fs::path s1 = "../../data/nexus/CSP93065.nxs";
+    BOOST_CHECK_EQUAL(get_file_type(s1.string()),file_type::NEXUS_FILE);
+    BOOST_CHECK_EQUAL(get_file_type(file(s1.string())),file_type::NEXUS_FILE);
 
-    string s2 = "../../data/nexus/tstfile_00012.h5";
-    BOOST_CHECK(get_file_type(s2) == file_type::NEXUS_FILE);
-    BOOST_CHECK(get_file_type(file(s2)) == file_type::NEXUS_FILE);
+    fs::path s2 = "../../data/nexus/tstfile_00012.h5";
+    BOOST_CHECK_EQUAL(get_file_type(s2.string()),file_type::NEXUS_FILE);
+    BOOST_CHECK_EQUAL(get_file_type(file(s2.string())),file_type::NEXUS_FILE);
 }
 
 BOOST_AUTO_TEST_CASE(fio_test)
 {
-    string s = "../../data/fio/scan_mca_00007.fio";
-    BOOST_CHECK(get_file_type(s) == file_type::FIO_FILE);
-    BOOST_CHECK(get_file_type(file(s)) == file_type::FIO_FILE);
+    fs::path s = "../../data/fio/scan_mca_00007.fio";
+    BOOST_CHECK_EQUAL(get_file_type(s.string()),file_type::FIO_FILE);
+    BOOST_CHECK_EQUAL(get_file_type(file(s.string())),file_type::FIO_FILE);
 }
 
 BOOST_AUTO_TEST_CASE(unkown_test)
 {
-    BOOST_CHECK(get_file_type("cmake_install.cmake") == file_type::UNKNOWN);
-    BOOST_CHECK(get_file_type(file("cmake_install.cmake")) == file_type::UNKNOWN);
+    BOOST_CHECK_EQUAL(get_file_type("cmake_install.cmake"),file_type::UNKNOWN);
+    BOOST_CHECK_EQUAL(get_file_type(file("cmake_install.cmake")),file_type::UNKNOWN);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

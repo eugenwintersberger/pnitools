@@ -9,7 +9,7 @@ endif()
 
 find_package(HDF5 REQUIRED)
 
-find_package(pnicore REQUIRED)
+find_package(pnicore REQUIRED C)
 
 find_package(pniio REQUIRED)
 
@@ -30,6 +30,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
     endif()
 elseif(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
     add_definitions(-DBOOST_ALL_DYN_LINK)
+    add_definitions(-DBOOST_ALL_NO_LIB)
 endif()
 
 #===================================check the size of data types===============

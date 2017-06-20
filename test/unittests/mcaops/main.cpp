@@ -21,6 +21,6 @@
 //
 
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN
+#define BOOST_TEST_MODULE Testing mcaops operatins
 
 #include <boost/test/unit_test.hpp>

@@ -35,6 +35,26 @@ static const char HDF5[]    = {0x89,0x48,0x44,0x46,
 
 static const size_t read_buf_size = 8;
 
+std::ostream &operator<<(std::ostream &stream,const file_type &type)
+{
+    switch(type)
+    {
+        case file_type::UNKNOWN:
+            return stream<<"UNKNOWN";
+        case file_type::NEXUS_FILE:
+            return stream<<"NEXUS";
+        case file_type::TIFF_FILE:
+            return stream<<"TIFF";
+        case file_type::CBF_FILE:
+            return stream<<"CBF";
+        case file_type::SPEC_FILE:
+            return stream<<"SPEC";
+        case file_type::FIO_FILE:
+            return stream<<"FIO";
+    }
+}
+
+
 //----------------------------------------------------------------------------
 bool is_tiff(char *buffer)
 {
