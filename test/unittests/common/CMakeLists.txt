@@ -14,7 +14,10 @@ target_link_libraries(common_test common_objects
                       Boost::unit_test_framework
                       )
 
-add_test(NAME "Common-components-test" COMMAND common_test)
+add_test(NAME "Common-components-test" 
+    COMMAND common_test
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/unittests/common
+    )
 
 set(ALGOSRC sum_test.cpp
             average_test.cpp
@@ -27,4 +30,6 @@ add_executable(algorithms_test ${ALGOSRC})
 target_link_libraries(algorithms_test common_objects
                       pniio
                       Boost::unit_test_framework)
-add_test(NAME "Common-algorithms-test" COMMAND algorithms_test)
+add_test(NAME "Common-algorithms-test" 
+         COMMAND algorithms_test
+         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/unittests/common)

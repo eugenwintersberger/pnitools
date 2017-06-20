@@ -4,15 +4,15 @@ set(OPS_SOURCES sum_test.cpp
                 maxpos_test.cpp
                 minpos_test.cpp
                 rebin_test.cpp
-                scale_test.cpp
+                #scale_test.cpp
                 )
 
 
 set_boost_test_definitions(OPS_SOURCES "Testing mcaops operation")
-add_executable(mcaops_operations_test ${OPS_SOURCES}
-               $<TARGET_OBJECTS:mcaops_ops_objects>)
+add_executable(mcaops_operations_test ${OPS_SOURCES})
 target_link_libraries(mcaops_operations_test 
                       common_objects 
+                      mcaops_ops
                       pniio
                       Boost::unit_test_framework
                       )

@@ -20,7 +20,6 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include <sstream>
 #include <iterator>
 #include <pni/core/configuration.hpp>
 #include <pni/io/formatters.hpp>

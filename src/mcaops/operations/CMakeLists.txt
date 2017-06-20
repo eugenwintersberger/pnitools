@@ -12,4 +12,4 @@ set(SOURCE operation.cpp
            scale.cpp
            )
 
-add_library(mcaops_ops_objects OBJECT ${SOURCE})
+       add_library(mcaops_ops STATIC  ${SOURCE})

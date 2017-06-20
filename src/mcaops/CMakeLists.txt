@@ -9,8 +9,8 @@ set(MCAOPS_SOURCE #io.cpp
 
 add_subdirectory(io)
 add_subdirectory(operations)
-add_executable(mcaops ${MCAOPS_SOURCE} $<TARGET_OBJECTS:mcaops_io>
-                      $<TARGET_OBJECTS:mcaops_ops_objects>
+add_executable(mcaops ${MCAOPS_SOURCE} 
                       )
-target_link_libraries(mcaops common_objects pniio)
+target_link_libraries(mcaops common_objects mcaops_io mcaops_ops pniio)
+
 install(TARGETS mcaops DESTINATION ${CMAKE_INSTALL_BINDIR})

@@ -5,6 +5,7 @@ configure_file(download.sh download.sh COPYONLY)
 set(WORKING_DIR ${PROJECT_BINARY_DIR}/test/data)
 set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/test/data)
 
+message(STATUS "Checking for CBF test data ...")
 if(NOT EXISTS ${WORKING_DIR}/cbf)
     message(STATUS "Extracting CBF test data ...")
     execute_process(
@@ -15,6 +16,7 @@ if(NOT EXISTS ${WORKING_DIR}/cbf)
     )
 endif()
 
+message(STATUS "Checking for NeXus test data ...")
 if(NOT EXISTS ${WORKING_DIR}/nexus)
     message(STATUS "Extracting NeXus test data ...")
     execute_process(
@@ -25,6 +27,7 @@ if(NOT EXISTS ${WORKING_DIR}/nexus)
         )
 endif()
 
+message(STATUS "Checking for FIO test data ...")
 if(NOT EXISTS ${WORKING_DIR}/fio)
     message(STATUS "Extracting FIO test data ...")
     execute_process(
@@ -36,6 +39,7 @@ if(NOT EXISTS ${WORKING_DIR}/fio)
 
 endif()
 
+message(STATUS "Checking for TIF test data ...")
 if(NOT EXISTS ${WORKING_DIR}/tif)
     message(STATUS "Extracting TIF test data ...")
     execute_process(

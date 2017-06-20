@@ -65,7 +65,7 @@ bool is_tiff(char *buffer)
 //----------------------------------------------------------------------------
 bool is_hdf5(char *buffer)
 {
-    return std::equal(HDF5,HDF5+8,buffer);
+    return std::equal(HDF5,HDF5+4,buffer);
 }
 
 //----------------------------------------------------------------------------
