@@ -4,7 +4,7 @@ set(OPS_SOURCES sum_test.cpp
                 maxpos_test.cpp
                 minpos_test.cpp
                 rebin_test.cpp
-                #scale_test.cpp
+                scale_test.cpp
                 )
 
 

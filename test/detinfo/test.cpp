@@ -34,6 +34,21 @@ using namespace pni::io::nx;
 
 namespace fs = boost::filesystem;
 
+#ifdef _MSC_VER
+#define SUCCESS_RETURN 1
+#else
+#define SUCCESS_RETURN 0
+#endif
+
+int get_return_value(int return_value)
+{
+#ifdef _MSC_VER
+    return return_value;
+#else
+    return WEXITSTATUS(return_value);
+#endif
+}
+
 struct detinfo_fixture
 {
     fs::path command_path;
@@ -80,47 +95,47 @@ BOOST_FIXTURE_TEST_SUITE(detinfo_acceptance_test,detinfo_fixture)
     {
         BOOST_TEST_MESSAGE("Execute:"+command_path.string());
         return_value = std::system(command_path.string().c_str());
-        BOOST_CHECK_EQUAL(WEXITSTATUS(return_value),1);
+        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
 
         return_value = std::system(get_command({command_path.string(),"bla.txt"}).c_str());
-        BOOST_CHECK_EQUAL(WEXITSTATUS(return_value),1);
+        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
 
         return_value = std::system(get_command({command_path.string(),"cmake_install.cmake"}).c_str());
-        BOOST_CHECK_EQUAL(WEXITSTATUS(return_value),1);
+        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
 
         fs::path p(tif_path);
         p/="detector_%03i.tif:9:16";
         command = get_command({command_path.string(),p.string()});
         BOOST_TEST_MESSAGE("Execute: "+command);
         return_value = std::system(command.c_str());
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(get_return_value(return_value),SUCCESS_RETURN);
 
         p = tif_path;
         p/= "detector_%03i.fio:1:5";
         command = get_command({command_path.string(),p.string()});
         BOOST_TEST_MESSAGE("Execute: "+command);
         return_value = std::system(command.c_str());
-        BOOST_CHECK_EQUAL(WEXITSTATUS(return_value),1);
+        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
 
         p = nexus_path;
         p /= "tstfile_00012.h5";
         command = get_command({command_path.string(),p.string()});
         BOOST_TEST_MESSAGE("Execute: "+command);
         return_value = std::system(command.c_str());
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(get_return_value(return_value),SUCCESS_RETURN);
     }
 
     BOOST_AUTO_TEST_CASE(test_simple_cbf)
     {
         run_test("-fsimple",cbf_file_path);
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,cbf_simple_output);
     }
     
     BOOST_AUTO_TEST_CASE(test_simple_tif)
     {
         run_test("-fsimple",tif_file_path);
-        BOOST_CHECK_EQUAL(WEXITSTATUS(return_value),0);
+        BOOST_CHECK_EQUAL(get_return_value(return_value),SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,tif_simple_output);
     }
 
@@ -128,70 +143,70 @@ BOOST_FIXTURE_TEST_SUITE(detinfo_acceptance_test,detinfo_fixture)
     BOOST_AUTO_TEST_CASE(test_simple_nexus)
     {
         run_test("-fsimple",nx_file_path);
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,nexus_simple_output);
     }
 
     BOOST_AUTO_TEST_CASE(test_kv_cbf)
     {
         run_test("-fkeyvalue",cbf_file_path);
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,cbf_kv_output);
     }
 
     BOOST_AUTO_TEST_CASE(test_kv_nexus)
     {
         run_test("-fkeyvalue",nx_file_path);
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,nexus_kv_output);
     }
 
     BOOST_AUTO_TEST_CASE(test_kv_tif)
     {
         run_test("-fkeyvalue",tif_file_path);
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,tif_kv_output);
     }
     
     BOOST_AUTO_TEST_CASE(test_csv_cbf)
     {
         run_test("-fcsv",cbf_file_path);
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,cbf_csv_output);
     }
 
     BOOST_AUTO_TEST_CASE(test_csv_nexus)
     {
         run_test("-fcsv",nx_file_path);
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,nexus_csv_output);
     }
 
     BOOST_AUTO_TEST_CASE(test_csv_tif)
     {
         run_test("-fcsv",tif_file_path);
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,tif_csv_output);
     }
     
     BOOST_AUTO_TEST_CASE(test_xml_cbf)
     {
         run_test("-fxml",cbf_file_path,fs::path("cbf_xml.tmp"));
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,cbf_xml_output);
     }
 
     BOOST_AUTO_TEST_CASE(test_xml_nexus)
     {
         run_test("-fxml",nx_file_path);
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,nexus_xml_output);
     }
 
     BOOST_AUTO_TEST_CASE(test_xml_tif)
     {
         run_test("-fxml",tif_file_path);
-        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
         BOOST_CHECK_EQUAL(output,tif_xml_output);
     }
 
