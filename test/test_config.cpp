@@ -22,6 +22,7 @@
 
 #include <test/config.hpp>
 #include <iterator>
+#include <sstream>
 
 namespace fs = boost::filesystem;
 
@@ -51,4 +52,24 @@ std::string read_data(const fs::path &filename)
     }
 
     return data;
+}
+
+
+std::string string_diff(const std::string &a,const std::string &b)
+{
+    std::stringstream ss;
+    auto a_iter = a.begin();
+    auto b_iter = b.begin();
+    
+    size_t position=0;
+    for(;a_iter!=a.end() && b_iter!=b.end();a_iter++,b_iter++,position++)
+    {
+        if(*a_iter != *b_iter)
+        {
+            ss<<position<<"\t"<<*a_iter<<"\t"<<*b_iter<<std::endl;
+        }
+
+    }
+
+    return ss.str();
 }

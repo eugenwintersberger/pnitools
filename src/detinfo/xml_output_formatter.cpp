@@ -22,8 +22,8 @@
 
 #include "xml_output_formatter.hpp"
 
-const string xml_output_formatter::detector_indent = "\t";
-const string xml_output_formatter::data_indent = "\t\t";
+const string xml_output_formatter::detector_indent = "  ";
+const string xml_output_formatter::data_indent = "    ";
 
 
 void xml_output_formatter::header(std::ostream &stream)
@@ -65,7 +65,7 @@ void xml_output_formatter::write(std::ostream &stream,
     if(info)
     {
         stream<<data_indent<<"<pixeltype>"<<info.type_id()
-               <<"</pixel>"<<std::endl;
+               <<"</pixeltype>"<<std::endl;
 
         stream<<data_indent<<"<frames>"<<info.nframes()
               <<"</frames>"<<std::endl;

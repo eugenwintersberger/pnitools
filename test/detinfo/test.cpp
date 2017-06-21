@@ -27,6 +27,10 @@
 #include <cstdlib>
 #include <test/config.hpp>
 #include <test/detinfo/ref_data.hpp>
+#include <iostream>
+#include <pni/io/nx/nx.hpp>
+
+using namespace pni::io::nx;
 
 namespace fs = boost::filesystem;
 
@@ -35,6 +39,7 @@ struct detinfo_fixture
     fs::path command_path;
     fs::path tif_file_path;
     fs::path cbf_file_path;
+    fs::path nx_file_path;
     std::string command;
     std::string output;
     int         return_value;
@@ -43,24 +48,27 @@ struct detinfo_fixture
         command_path(bin_path),
         tif_file_path(tif_path),
         cbf_file_path(cbf_path),
+        nx_file_path(nexus_path),
         command(),
         output(),
         return_value()
     {
         command_path /= "detinfo";
-        tif_file_path /= "detector_%03.tif::16";
+        tif_file_path /= "detector_%03i.tif:9:16";
         cbf_file_path /= "LAOS3_05461.cbf";
+        nx_file_path /= "tstfile_00012.h5";
     }
     
     void run_test(const std::string &fmt_option,
-                  const fs::path &file_path)
+                  const fs::path &file_path,
+                  const fs::path &tmpfile = fs::path("detinfo_test.tmp"))
     {
         command = get_command({command_path.string(),fmt_option,
-                               file_path.string(),">detinfo_test.tmp"});
+                               file_path.string(),">"+tmpfile.string()});
         BOOST_TEST_MESSAGE("Execute: "+command);
         return_value = std::system(command.c_str());
 
-        output = read_data(fs::path("detinfo_test.tmp"));
+        output = read_data(tmpfile);
         boost::trim(output);
 
     }
@@ -104,49 +112,87 @@ BOOST_FIXTURE_TEST_SUITE(detinfo_acceptance_test,detinfo_fixture)
 
     BOOST_AUTO_TEST_CASE(test_simple_cbf)
     {
-        command = get_command({command_path.string(),"-fsimple",
-                               cbf_file_path.string(),">test_simple.tmp"});
-        BOOST_TEST_MESSAGE("Execute: "+command);
-        return_value = std::system(command.c_str());
+        run_test("-fsimple",cbf_file_path);
         BOOST_CHECK_EQUAL(return_value,0);
-
-        output = read_data(fs::path("test_simple.tmp"));
-        boost::trim(output);
         BOOST_CHECK_EQUAL(output,cbf_simple_output);
     }
     
     BOOST_AUTO_TEST_CASE(test_simple_tif)
     {
-        command = get_command({command_path.string(),"-fsimple",
-                               tif_file_path.string(),">test_simple.tmp"});
-        BOOST_TEST_MESSAGE("Execute: "+command);
-        return_value = std::system(command.c_str());
-        BOOST_CHECK_EQUAL(return_value,0);
-
-        output = read_data(fs::path("test_simple.tmp"));
-        boost::trim(output);
+        run_test("-fsimple",tif_file_path);
+        BOOST_CHECK_EQUAL(WEXITSTATUS(return_value),0);
         BOOST_CHECK_EQUAL(output,tif_simple_output);
     }
 
 
     BOOST_AUTO_TEST_CASE(test_simple_nexus)
     {
-        fs::path p = nexus_path;
-        p /= "tstfile_00012.h5";
-        command = get_command({command_path.string(),"-fsimple", p.string(),
-                               ">test_simple.tmp"});
-        BOOST_TEST_MESSAGE("Execute: "+command);
-        return_value = std::system(command.c_str());
+        run_test("-fsimple",nx_file_path);
         BOOST_CHECK_EQUAL(return_value,0);
-
-        output = read_data(fs::path("test_simple.tmp"));
-        boost::trim(output);
         BOOST_CHECK_EQUAL(output,nexus_simple_output);
     }
 
     BOOST_AUTO_TEST_CASE(test_kv_cbf)
     {
+        run_test("-fkeyvalue",cbf_file_path);
+        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(output,cbf_kv_output);
+    }
 
+    BOOST_AUTO_TEST_CASE(test_kv_nexus)
+    {
+        run_test("-fkeyvalue",nx_file_path);
+        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(output,nexus_kv_output);
+    }
+
+    BOOST_AUTO_TEST_CASE(test_kv_tif)
+    {
+        run_test("-fkeyvalue",tif_file_path);
+        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(output,tif_kv_output);
+    }
+    
+    BOOST_AUTO_TEST_CASE(test_csv_cbf)
+    {
+        run_test("-fcsv",cbf_file_path);
+        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(output,cbf_csv_output);
+    }
+
+    BOOST_AUTO_TEST_CASE(test_csv_nexus)
+    {
+        run_test("-fcsv",nx_file_path);
+        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(output,nexus_csv_output);
+    }
+
+    BOOST_AUTO_TEST_CASE(test_csv_tif)
+    {
+        run_test("-fcsv",tif_file_path);
+        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(output,tif_csv_output);
+    }
+    
+    BOOST_AUTO_TEST_CASE(test_xml_cbf)
+    {
+        run_test("-fxml",cbf_file_path,fs::path("cbf_xml.tmp"));
+        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(output,cbf_xml_output);
+    }
+
+    BOOST_AUTO_TEST_CASE(test_xml_nexus)
+    {
+        run_test("-fxml",nx_file_path);
+        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(output,nexus_xml_output);
+    }
+
+    BOOST_AUTO_TEST_CASE(test_xml_tif)
+    {
+        run_test("-fxml",tif_file_path);
+        BOOST_CHECK_EQUAL(return_value,0);
+        BOOST_CHECK_EQUAL(output,tif_xml_output);
     }
 
 BOOST_AUTO_TEST_SUITE_END()
