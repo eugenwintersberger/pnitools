@@ -34,20 +34,6 @@ using namespace pni::io::nx;
 
 namespace fs = boost::filesystem;
 
-#ifdef _MSC_VER
-#define SUCCESS_RETURN 1
-#else
-#define SUCCESS_RETURN 0
-#endif
-
-int get_return_value(int return_value)
-{
-#ifdef _MSC_VER
-    return return_value;
-#else
-    return WEXITSTATUS(return_value);
-#endif
-}
 
 struct detinfo_fixture
 {

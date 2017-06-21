@@ -1,9 +1,8 @@
-set(FILES test.py)
 
-foreach(F ${FILES})
-    configure_file(${F} ${F} COPYONLY)
-endforeach()
+add_executable(nxcat_acceptance_test test.cpp $<TARGET_OBJECTS:test_config>)
+target_link_libraries(nxcat_acceptance_test
+    pniio Boost::unit_test_framework Boost::filesystem)
 
-add_test(NAME "nxcat:acceptance:test"
-         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/nxcat
-         COMMAND ${PYTHON_EXECUTABLE} test.py)
+add_boost_logging_test("nxcat:acceptance:test"
+                       nxcat_acceptance_test
+                       ${PROJECT_BINARY_DIR}/test/nxcat)

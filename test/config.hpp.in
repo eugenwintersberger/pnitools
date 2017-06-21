@@ -4,6 +4,16 @@
 #include <string>
 #include <vector>
 
+//
+// definition of return values no success for std::system
+//
+#ifdef _MSC_VER
+#define SUCCESS_RETURN 1   // for windows
+#else
+#define SUCCESS_RETURN 0   // for all others
+#endif
+
+
 
 static const boost::filesystem::path bin_path("@PROJECT_BINARY_DIR@/bin");
 static const boost::filesystem::path data_path("@PROJECT_BINARY_DIR@/test/data");
@@ -17,3 +27,5 @@ std::string get_command(const std::vector<std::string> &l);
 std::string read_data(const boost::filesystem::path &filename);
 
 std::string string_diff(const std::string &a,const std::string &b);
+
+int get_return_value(int return_value);

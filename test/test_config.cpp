@@ -73,3 +73,12 @@ std::string string_diff(const std::string &a,const std::string &b)
 
     return ss.str();
 }
+
+int get_return_value(int return_value)
+{
+#ifdef _MSC_VER
+    return return_value;
+#else
+    return WEXITSTATUS(return_value);
+#endif
+}
