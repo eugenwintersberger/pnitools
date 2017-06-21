@@ -1,0 +1,17 @@
+#pragma once
+
+#include <boost/filesystem.hpp>
+#include <string>
+#include <vector>
+
+
+static const boost::filesystem::path bin_path("@PROJECT_BINARY_DIR@/bin");
+static const boost::filesystem::path data_path("@PROJECT_BINARY_DIR@/test/data");
+static const boost::filesystem::path nexus_path("@PROJECT_BINARY_DIR@/test/data/nexus");
+static const boost::filesystem::path cbf_path("@PROJECT_BINARY_DIR@/test/data/cbf");
+static const boost::filesystem::path tif_path("@PROJECT_BINARY_DIR@/test/data/tif");
+
+
+std::string get_command(const std::vector<std::string> &l);
+
+std::string read_data(const boost::filesystem::path &filename);

@@ -9,10 +9,10 @@ set(OPS_SOURCES sum_test.cpp
 
 
 set_boost_test_definitions(OPS_SOURCES "Testing mcaops operation")
-add_executable(mcaops_operations_test ${OPS_SOURCES})
-target_link_libraries(mcaops_operations_test 
+add_executable(mcaops_operations_test ${OPS_SOURCES}
+$<TARGET_OBJECTS:mcaops_ops> $<TARGET_OBJECTS:mcaops_io>)
+target_link_libraries(mcaops_operations_test
                       common_objects 
-                      mcaops_ops
                       pniio
                       Boost::unit_test_framework
                       )

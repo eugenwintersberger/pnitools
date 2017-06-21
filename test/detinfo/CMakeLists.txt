@@ -1,9 +1,12 @@
-set(FILES test.py)
+set(SOURCES test.cpp)
 
-foreach(F ${FILES})
-    configure_file(${F} ${F} COPYONLY)
-endforeach()
+configure_file(ref_data.hpp.in ref_data.hpp @ONLY)
 
-add_test(NAME detinfo:acceptance:test
-         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/detinfo
-         COMMAND ${PYTHON_EXECUTABLE} test.py)
+add_executable(detinfo_acceptance_test test.cpp $<TARGET_OBJECTS:test_config>)
+target_link_libraries(detinfo_acceptance_test PRIVATE
+Boost::unit_test_framework Boost::filesystem)
+
+
+add_boost_logging_test("detinfo:acceptance:test"
+                       detinfo_acceptance_test
+                       ${PROJECT_BINARY_DIR}/test/detinfo)

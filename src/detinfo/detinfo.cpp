@@ -35,7 +35,8 @@ int main(int argc,char **argv)
 {
 
     //get programm configuration - abort if this fails
-    configuration config = parse_configuration(argc,argv);
+    configuration config = create_configuration();
+    if(!parse_configuration(argc,argv,config)) return 1;
 
     //get output format - abort if this fails
 
@@ -59,7 +60,7 @@ int main(int argc,char **argv)
             detector_info_list infos = get_info(file);
             if(infos.empty()) continue;
 
-            for(auto info: infos) 
+            for(auto info: infos)
             {
                 formatter->detector_header(output_stream);
                 formatter->write(output_stream,info);
@@ -82,5 +83,3 @@ int main(int argc,char **argv)
     }
     return 0;
 }
-
-

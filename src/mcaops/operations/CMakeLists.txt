@@ -1,7 +1,7 @@
 set(SOURCE operation.cpp
            operation_factory.cpp
            sum.cpp
-           dump.cpp 
+           dump.cpp
            max.cpp
            maxpos.cpp
            min.cpp
@@ -12,4 +12,4 @@ set(SOURCE operation.cpp
            scale.cpp
            )
 
-       add_library(mcaops_ops STATIC  ${SOURCE})
+       add_library(mcaops_ops OBJECT  ${SOURCE})

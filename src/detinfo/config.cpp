@@ -42,36 +42,35 @@ configuration create_configuration()
 }
 
 //----------------------------------------------------------------------------
-configuration parse_configuration(int argc,char **argv)
+bool parse_configuration(int argc,char **argv,configuration &config)
 {
-    configuration config = create_configuration();
     if(argc <= 1)
     {
         std::cerr<<"Insufficient number of command line arguments!";
         std::cerr<<std::endl;
         std::cerr<<"Use detinfo -h for help  ..."<<std::endl;
-        std::exit(1);
+        return false;
     }
 
     try
     {
         //------------------managing command line parsing---------------------
-        if(parse_cli_opts(argc,argv,prog_name,config)) std::exit(1);
+        if(parse_cli_opts(argc,argv,prog_name,config)) return false;
 
         //check for help request by the user
-        if(check_help_request(config,help_header)) std::exit(1);
+        if(check_help_request(config,help_header)) return false;
     }
     catch(cli_option_error &error)
     {
         std::cerr<<error<<std::endl;
-        std::exit(1);
+        return false;
     }
     catch(...)
     {
         std::cerr<<"Unknown exception occured during command line parsing!";
         std::cerr<<std::endl<<"Program is aborting!"<<std::endl;
-        std::exit(1);
+        return false;
     }
 
-    return config;
+    return true;
 }

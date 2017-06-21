@@ -6,4 +6,4 @@ set(SOURCE data_provider.cpp
            nexus_provider.cpp
            )
 
-       add_library(mcaops_io STATIC ${SOURCE})
+       add_library(mcaops_io OBJECT ${SOURCE})

@@ -1,6 +1,6 @@
 
-set(CLI_TEST_PY_FILES check_output.py 
-                      mcaops_test.py 
+set(CLI_TEST_PY_FILES check_output.py
+                      mcaops_test.py
                       detops_test.py)
 
 
@@ -11,8 +11,13 @@ foreach(PYFILE ${CLI_TEST_PY_FILES})
         ${CMAKE_CURRENT_BINARY_DIR}/${PYFILE} COPYONLY)
 endforeach()
 
+configure_file(config.hpp.in config.hpp @ONLY)
+
+add_library(test_config OBJECT test_config.cpp)
+
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
+include_directories(${PROJECT_BINARY_DIR})
 add_subdirectory(data)
 add_subdirectory(unittests)
 add_subdirectory(detinfo)
@@ -22,4 +27,4 @@ add_subdirectory(datgen)
 add_subdirectory(xml2nx)
 add_subdirectory(nxls)
 add_subdirectory(nxcat)
-
+add_subdirectory(logs)
