@@ -23,6 +23,8 @@
 #include <test/config.hpp>
 #include <iterator>
 #include <sstream>
+#include <pni/io/nx/nx.hpp>
+#include <pni/io/nx/xml.hpp>
 
 namespace fs = boost::filesystem;
 
@@ -81,4 +83,13 @@ int get_return_value(int return_value)
 #else
     return WEXITSTATUS(return_value);
 #endif
+}
+
+void create_file_from_xml(const fs::path &filename,const fs::path &xmlfile)
+{
+    using namespace pni::io::nx;
+    xml::node n = xml::create_from_file(xmlfile.string());
+    h5::nxfile f =h5::nxfile::create_file(filename.string(),true);
+    h5::nxgroup r = f.root();
+    xml::xml_to_nexus(n,r);
 }

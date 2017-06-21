@@ -144,13 +144,9 @@ struct nxls_test_fixture
         std::sort(simple_output.begin(),simple_output.end());
         std::sort(recursive_output.begin(),recursive_output.end());
         std::sort(attribute_output.begin(),attribute_output.end());
-
-        xml::node n = xml::create_from_file("nxls_test.xml");
-        h5::nxfile f =h5::nxfile::create_file("nxls_test.nxs",true);
-        h5::nxgroup r = f.root();
-        xml::xml_to_nexus(n,r);
-        r.close();
-        f.close();
+        
+        create_file_from_xml(fs::path("nxls_test.nxs"),
+                             fs::path("nxls_test.xml"));
     }
 
     void run_command(const std::vector<std::string> &options,

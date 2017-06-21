@@ -30,3 +30,6 @@ std::string string_diff(const std::string &a,const std::string &b);
 
 int get_return_value(int return_value);
 
+void create_file_from_xml(const boost::filesystem::path &filename,
+                          const boost::filesystem::path &xmlfile);
+
