@@ -1,4 +1,4 @@
-set(FILES test.py basic.xml detector.xml)
+set(FILES basic.xml detector.xml)
 
 foreach(F ${FILES})
     configure_file(${F} ${F} COPYONLY)

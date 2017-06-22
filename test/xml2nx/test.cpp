@@ -127,6 +127,7 @@ BOOST_FIXTURE_TEST_SUITE(xml2nx_test,xml2nx_test_fixture)
         
         option_list options{"-p"+out_file.string()+"://","basic.xml"};
         run_command(options);
+        BOOST_TEST_MESSAGE("Executed: "+command);
         BOOST_CHECK_EQUAL(get_return_value(return_value),0);
 
         //repeat the last command - should not work as the file exists

@@ -49,3 +49,14 @@ if(NOT EXISTS ${WORKING_DIR}/tif)
         ERROR_FILE tif_extract.log
         )
 endif()
+
+message(STATUS "Checking for STDIN test data ...")
+if(NOT EXISTS ${WORKING_DIR}/stdin)
+    message(STATUS "Extracting STDIN test data ...")
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E tar xzf ${SOURCE_DIR}/stdin.tar.gz
+        WORKING_DIRECTORY ${WORKING_DIR}
+        OUTPUT_FILE stdin_extract.log
+        ERROR_FILE stdin_extract.log
+        )
+endif()

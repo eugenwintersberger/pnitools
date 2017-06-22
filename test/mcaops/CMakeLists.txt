@@ -43,9 +43,15 @@ endforeach()
 
 set(WORK_DIR ${PROJECT_BINARY_DIR}/test/mcaops)
 
-add_test(NAME "mcaops_sum_operation:acceptance:test"
-         WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND ${PYTHON_EXECUTABLE} test_sum.py)
+add_executable(mcaops_sum_test mcaops_sum_operation.cpp 
+                               $<TARGET_OBJECTS:test_config>)
+target_link_libraries(mcaops_sum_test 
+    pniio Boost::filesystem Boost::unit_test_framework)
+
+add_boost_logging_test("mcaops_sum_operation:acceptance:test"
+                       mcaops_sum_test
+                       ${WORK_DIR})
+
 
 add_test(NAME "mcaops_min_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}

@@ -20,6 +20,8 @@ static const boost::filesystem::path data_path("@PROJECT_BINARY_DIR@/test/data")
 static const boost::filesystem::path nexus_path("@PROJECT_BINARY_DIR@/test/data/nexus");
 static const boost::filesystem::path cbf_path("@PROJECT_BINARY_DIR@/test/data/cbf");
 static const boost::filesystem::path tif_path("@PROJECT_BINARY_DIR@/test/data/tif");
+static const boost::filesystem::path fio_path("@PROJECT_BINARY_DIR@/test/data/fio");
+static const boost::filesystem::path stdin_path("@PROJECT_BINARY_DIR@/test/data/stdin");
 
 
 std::string get_command(const std::vector<std::string> &l);
