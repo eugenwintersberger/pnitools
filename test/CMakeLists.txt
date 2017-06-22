@@ -13,11 +13,12 @@ endforeach()
 
 configure_file(config.hpp.in config.hpp @ONLY)
 
-add_library(test_config OBJECT test_config.cpp)
+add_library(test_config OBJECT test_config.cpp command_fixture.cpp)
 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 include_directories(${PROJECT_BINARY_DIR})
+include_directories(${PROJECT_SOURCE_DIR})
 add_subdirectory(data)
 add_subdirectory(unittests)
 add_subdirectory(detinfo)
