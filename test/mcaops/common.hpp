@@ -39,6 +39,15 @@ static const boost::filesystem::path total_sum_file("total_sum.dat");
 static const boost::filesystem::path roi1_sum_file("roi1_sum.dat");
 static const boost::filesystem::path roi2_sum_file("roi2_sum.dat");
 
+static const boost::filesystem::path total_min_file("total_min.dat");
+static const boost::filesystem::path roi1_min_file("roi1_min.dat");
+static const boost::filesystem::path roi2_min_file("roi2_min.dat");
+
+static const boost::filesystem::path total_max_file("total_max.dat");
+static const boost::filesystem::path roi1_max_file("roi1_max.dat");
+static const boost::filesystem::path roi2_max_file("roi2_max.dat");
+
+
 static const std::vector<boost::filesystem::path> stdin_files = {
     boost::filesystem::path("scan_mca_00001.txt"),
     boost::filesystem::path("scan_mca_00002.txt"),

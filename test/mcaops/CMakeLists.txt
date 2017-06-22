@@ -1,7 +1,4 @@
 set(DATFILES common.py
-             test_sum.py
-             test_min.py
-             test_max.py
              test_maxpos.py
              test_minpos.py
              test_average.py
@@ -52,14 +49,22 @@ add_boost_logging_test("mcaops_sum_operation:acceptance:test"
                        mcaops_sum_test
                        ${WORK_DIR})
 
+add_executable(mcaops_min_test mcaops_min_test.cpp 
+                               $<TARGET_OBJECTS:test_config>)
+target_link_libraries(mcaops_min_test
+    pniio Boost::filesystem Boost::unit_test_framework)
+add_boost_logging_test("mcaops_min_operation:acceptance:test"
+                       mcaops_min_test
+                       ${WORK_DIR})
 
-add_test(NAME "mcaops_min_operation:acceptance:test"
-         WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND ${PYTHON_EXECUTABLE} test_min.py)
+add_executable(mcaops_max_test mcaops_max_test.cpp 
+                               $<TARGET_OBJECTS:test_config>)
+target_link_libraries(mcaops_max_test
+    pniio Boost::filesystem Boost::unit_test_framework)
+add_boost_logging_test("mcaops_max_operation:acceptance:test"
+                       mcaops_max_test
+                       ${WORK_DIR})
 
-add_test(NAME "mcaops_max_operation:acceptance:test"
-         WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND ${PYTHON_EXECUTABLE} test_max.py)
 
 add_test(NAME "mcaops_maxpos_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
