@@ -7,9 +7,18 @@ foreach(F ${FILES})
     configure_file(${F} ${F} COPYONLY)
 endforeach()
 
-add_test(NAME "datgen:acceptance:global_test"
-         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-         COMMAND ${PYTHON_EXECUTABLE} global_test.py)
+add_library(datgen_common OBJECT datgen_fixture.cpp)
+
+add_executable(global_test global_test.cpp 
+                           $<TARGET_OBJECTS:test_config>
+                           $<TARGET_OBJECTS:datgen_common>)
+target_link_libraries(global_test 
+    pniio Boost::unit_test_framework Boost::filesystem)
+
+add_boost_logging_test("datgen:acceptance:global_test"
+                       global_test
+                       ${PROJECT_BINARY_DIR}/test/datgen)
+
 
 add_test(NAME "datgen:accpentance:uniform_test"
          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
