@@ -47,6 +47,17 @@ static const boost::filesystem::path total_max_file("total_max.dat");
 static const boost::filesystem::path roi1_max_file("roi1_max.dat");
 static const boost::filesystem::path roi2_max_file("roi2_max.dat");
 
+static const boost::filesystem::path total_argmin_file("total_argmin.dat");
+static const boost::filesystem::path roi1_argmin_file("roi1_argmin.dat");
+static const boost::filesystem::path roi2_argmin_file("roi2_argmin.dat");
+
+static const boost::filesystem::path total_argmax_file("total_argmax.dat");
+static const boost::filesystem::path roi1_argmax_file("roi1_argmax.dat");
+static const boost::filesystem::path roi2_argmax_file("roi2_argmax.dat");
+
+static const boost::filesystem::path total_average_file("total_average.dat");
+static const boost::filesystem::path roi1_average_file("roi1_average.dat");
+static const boost::filesystem::path roi2_average_file("roi2_average.dat");
 
 static const std::vector<boost::filesystem::path> stdin_files = {
     boost::filesystem::path("scan_mca_00001.txt"),

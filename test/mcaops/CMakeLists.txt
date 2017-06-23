@@ -1,7 +1,4 @@
 set(DATFILES common.py
-             test_maxpos.py
-             test_minpos.py
-             test_average.py
              test_rebin.py
              test_rebin_with_channels.py
              test_scale.py
@@ -65,18 +62,30 @@ add_boost_logging_test("mcaops_max_operation:acceptance:test"
                        mcaops_max_test
                        ${WORK_DIR})
 
+add_executable(mcaops_minpos_test mcaops_minpos_test.cpp 
+                               $<TARGET_OBJECTS:test_config>)
+target_link_libraries(mcaops_minpos_test
+    pniio Boost::filesystem Boost::unit_test_framework)
+add_boost_logging_test("mcaops_minpos_operation:acceptance:test"
+                       mcaops_minpos_test
+                       ${WORK_DIR})
 
-add_test(NAME "mcaops_maxpos_operation:acceptance:test"
-         WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND ${PYTHON_EXECUTABLE} test_maxpos.py)
+add_executable(mcaops_maxpos_test mcaops_maxpos_test.cpp 
+                               $<TARGET_OBJECTS:test_config>)
+target_link_libraries(mcaops_maxpos_test
+    pniio Boost::filesystem Boost::unit_test_framework)
+add_boost_logging_test("mcaops_maxpos_operation:acceptance:test"
+                       mcaops_maxpos_test
+                       ${WORK_DIR})
 
-add_test(NAME "mcaops_minpos_operation:acceptance:test"
-         WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND ${PYTHON_EXECUTABLE} test_minpos.py)
+add_executable(mcaops_average_test mcaops_average_test.cpp 
+                               $<TARGET_OBJECTS:test_config>)
+target_link_libraries(mcaops_average_test
+    pniio Boost::filesystem Boost::unit_test_framework)
+add_boost_logging_test("mcaops_average_operation:acceptance:test"
+                       mcaops_average_test
+                       ${WORK_DIR})
 
-add_test(NAME "mcaops_average_operation:acceptance:test"
-         WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND ${PYTHON_EXECUTABLE} test_average.py)
 
 add_test(NAME "mcaops_rebin_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
