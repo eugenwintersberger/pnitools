@@ -1,6 +1,5 @@
-set(FILES global_test.py
-          uniform_test.py
-          linear_test.py
+set(FILES 
+                    linear_test.py
           gauss_test.py)
 
 foreach(F ${FILES})
@@ -20,9 +19,15 @@ add_boost_logging_test("datgen:acceptance:global_test"
                        ${PROJECT_BINARY_DIR}/test/datgen)
 
 
-add_test(NAME "datgen:accpentance:uniform_test"
-         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-         COMMAND ${PYTHON_EXECUTABLE} uniform_test.py)
+add_executable(uniform_test uniform_test.cpp
+                            $<TARGET_OBJECTS:test_config>
+                            $<TARGET_OBJECTS:datgen_common>)
+target_link_libraries(uniform_test
+    pniio Boost::unit_test_framework Boost::filesystem)
+add_boost_logging_test("datgen:acceptance:uniform_test"
+                       uniform_test
+                       ${PROJECT_BINARY_DIR}/test/datgen)
+
 
 add_test(NAME "datgen:acceptance:linear_test"
          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
