@@ -28,10 +28,15 @@ add_boost_logging_test("datgen:acceptance:uniform_test"
                        uniform_test
                        ${PROJECT_BINARY_DIR}/test/datgen)
 
+add_executable(linear_test linear_test.cpp
+                           $<TARGET_OBJECTS:test_config>
+                           $<TARGET_OBJECTS:datgen_common>)
+target_link_libraries(linear_test
+    pniio Boost::unit_test_framework Boost::filesystem)
+add_boost_logging_test("datgen:acceptance:linear_test"
+                       linear_test
+                       ${PROJECT_BINARY_DIR}/test/datgen)
 
-add_test(NAME "datgen:acceptance:linear_test"
-         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-         COMMAND ${PYTHON_EXECUTABLE} linear_test.py)
 
 add_test(NAME "datgen:acceptance:gauss_test"
          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
