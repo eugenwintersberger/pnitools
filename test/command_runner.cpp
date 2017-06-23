@@ -76,6 +76,8 @@ int command_runner::operator()(const cmd_opts_t& user_options,
     
     _return = std::system(_assemble_command(total_opts).c_str());
     _output = _read_output(tmpfile);
+
+    return return_value();
 }
 
 //============================================================================
