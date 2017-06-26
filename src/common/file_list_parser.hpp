@@ -22,10 +22,13 @@
 #pragma once
 
 #include <pni/core/types.hpp>
+#include <pni/core/arrays/slice.hpp>
+#include <pni/io/parsers/slice_parser.hpp>
 #include <list>
 #include "file.hpp"
-#include <boost/tokenizer.hpp>
 #include <boost/format.hpp>
+
+using namespace pni::core;
 
 
 //!
@@ -46,10 +49,6 @@ auto files = file_list_parser::parse<file_list>(fnames);
 class file_list_parser
 {
     private:
-        //! separator type for numeric ranges
-        typedef boost::char_separator<char> nrseparator;
-        //! tokenizer type for numeric ranges
-        typedef boost::tokenizer<nrseparator> nrtokenizer;
 
         //!
         //!\brief add files from range
@@ -98,8 +97,7 @@ class file_list_parser
             OTYPE flist;
             for(auto po: pl)
             {
-                if(!_fill_from_num_range(po,flist)) 
-                    flist.push_back(po);
+                _fill_from_num_range(po,flist);
             }
 
             return flist;
@@ -111,39 +109,40 @@ template<typename CTYPE>
 bool file_list_parser::_fill_from_num_range(const pni::core::string &p,
                                             CTYPE &flist)
 {
+    using parser_t = pni::io::parser<slice>;
+    auto slice_first = std::find(p.begin(),p.end(),':');
 
-    nrseparator sep(":");
-    nrtokenizer token(p,sep);
-    size_t start = 0;
-    size_t stop = 0;
-    size_t stride = 1;
-    string p_template;
-
-    size_t index = 0;
-    for(auto iter = token.begin(); iter!= token.end();++iter)
-    {
-        std::stringstream ss(*iter);
-        switch(index)
-        {
-            case 0: ss>>p_template; break;
-            case 1: ss>>start; break;
-            case 2: ss>>stop; break;
-            case 3: ss>>stride; break;
-        }
-        index++;
+    if(slice_first==p.end()) 
+    {   //no slice section found - we can assume that the string is a single 
+        //file and just add it to the list of files.
+        flist.push_back(p);
+        return true;
     }
 
-    if(index<2) return false;
-
-    index = start;
-    do
+    string filename_format(p.begin(),slice_first);
+    std::advance(slice_first,1);
+    string file_slice_str(slice_first,p.end());
+    pni::core::slice file_slice;
+    
+    try
+    {   
+        parser_t pslice; 
+        file_slice = pslice(file_slice_str);
+    }
+    catch(const pni::io::parser_error &error)
     {
         std::stringstream ss;
-        ss<<boost::format(p_template)%index;
-        flist.push_back(ss.str());
-        index += stride;
+        ss<<"["<<p<<"] is not a valid file range!"<<std::endl;
+        throw pni::io::parser_error(EXCEPTION_RECORD,ss.str());
+    }
 
-    }while(index<stop);
+    for(size_t index = file_slice.first();index<file_slice.last();
+               index += file_slice.stride())
+    {
+        std::stringstream ss;
+        ss<<boost::format(filename_format)%index;
+        flist.push_back(ss.str());
+    }
     
     return true;
 }
