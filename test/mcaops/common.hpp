@@ -59,6 +59,14 @@ static const boost::filesystem::path total_average_file("total_average.dat");
 static const boost::filesystem::path roi1_average_file("roi1_average.dat");
 static const boost::filesystem::path roi2_average_file("roi2_average.dat");
 
+static const boost::filesystem::path total_rebin_file("total_rebin.dat");
+static const boost::filesystem::path roi1_rebin_file("roi1_rebin.dat");
+static const boost::filesystem::path roi2_rebin_file("roi2_rebin.dat");
+static const boost::filesystem::path total_rebin_norm_file("total_rebin_norm.dat");
+static const boost::filesystem::path roi1_rebin_norm_file("roi1_rebin_norm.dat");
+static const boost::filesystem::path roi2_rebin_norm_file("roi2_rebin_norm.dat");
+
+
 static const std::vector<boost::filesystem::path> stdin_files = {
     boost::filesystem::path("scan_mca_00001.txt"),
     boost::filesystem::path("scan_mca_00002.txt"),
