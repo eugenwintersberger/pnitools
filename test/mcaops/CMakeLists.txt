@@ -1,5 +1,4 @@
 set(DATFILES common.py
-             test_rebin.py
              test_rebin_with_channels.py
              test_scale.py
              fiodata.nxs
@@ -86,10 +85,14 @@ add_boost_logging_test("mcaops_average_operation:acceptance:test"
                        mcaops_average_test
                        ${WORK_DIR})
 
+add_executable(mcaops_rebin_test mcaops_rebin_test.cpp
+                                 $<TARGET_OBJECTS:test_config>)
+target_link_libraries(mcaops_rebin_test
+    pniio Boost::filesystem Boost::unit_test_framework)
+add_boost_logging_test("mcaops_rebin_operation:acceptance:test"
+                       mcaops_rebin_test
+                       ${WORK_DIR})
 
-add_test(NAME "mcaops_rebin_operation:acceptance:test"
-         WORKING_DIRECTORY ${WORK_DIR}
-         COMMAND ${PYTHON_EXECUTABLE} test_rebin.py)
 
 add_test(NAME "mcaops_rebin_channels_operation:acceptance:test"
          WORKING_DIRECTORY ${WORK_DIR}
