@@ -92,10 +92,6 @@ bool get_input_files(const configuration &config,file_list &files)
     try
     {
         auto name_list = config.value<string_list>("input-files");
-        for(auto name: name_list)
-        {
-            std::cout<<name<<std::endl;
-        }
         files = file_list_parser::parse<file_list>(name_list);
     }
     catch(cli_option_error &error)

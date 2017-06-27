@@ -1,5 +1,12 @@
 set(SOURCES test.cpp)
 
+if(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+    set(LASTSEP "\\")
+else()
+    set(LASTSEP "/")
+endif()
+
+
 configure_file(cbf_simple_output.pattern.in cbf_simple_output.pattern @ONLY)
 configure_file(nexus_simple_output.pattern.in nexus_simple_output.pattern @ONLY)
 configure_file(tif_simple_output.pattern.in tif_simple_output.pattern @ONLY)

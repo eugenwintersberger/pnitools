@@ -1,70 +1,70 @@
 <?xml version="1.0"?>
 <detinfo>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/nexus@LASTSEP@tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data</source>
     <type>point</type>
     <pixeltype>UINT64</pixeltype>
     <frames>2001</frames>
     <frameshape></frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/nexus@LASTSEP@tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data</source>
     <type>point</type>
     <pixeltype>UINT64</pixeltype>
     <frames>2001</frames>
     <frameshape></frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/nexus@LASTSEP@tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data</source>
     <type>point</type>
     <pixeltype>UINT64</pixeltype>
     <frames>2001</frames>
     <frameshape></frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/nexus@LASTSEP@tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data</source>
     <type>point</type>
     <pixeltype>UINT64</pixeltype>
     <frames>2001</frames>
     <frameshape></frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/nexus@LASTSEP@tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data</source>
     <type>point</type>
     <pixeltype>UINT64</pixeltype>
     <frames>2001</frames>
     <frameshape></frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/nexus@LASTSEP@tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data</source>
     <type>point</type>
     <pixeltype>UINT64</pixeltype>
     <frames>2001</frames>
     <frameshape></frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/nexus@LASTSEP@tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data</source>
     <type>point</type>
     <pixeltype>UINT64</pixeltype>
     <frames>2001</frames>
     <frameshape></frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/nexus@LASTSEP@tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data</source>
     <type>point</type>
     <pixeltype>UINT64</pixeltype>
     <frames>2001</frames>
     <frameshape></frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/nexus@LASTSEP@tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data</source>
     <type>point</type>
     <pixeltype>UINT64</pixeltype>
     <frames>2001</frames>
     <frameshape></frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/nexus@LASTSEP@tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data</source>
     <type>point</type>
     <pixeltype>UINT64</pixeltype>
     <frames>2001</frames>

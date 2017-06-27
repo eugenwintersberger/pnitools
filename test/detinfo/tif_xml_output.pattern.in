@@ -1,49 +1,49 @@
 <?xml version="1.0"?>
 <detinfo>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/tif/detector_009.tif</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/tif@LASTSEP@detector_009.tif</source>
     <type>area</type>
     <pixeltype>UINT32</pixeltype>
     <frames>1</frames>
     <frameshape>(2300,2300)</frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/tif/detector_010.tif</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/tif@LASTSEP@detector_010.tif</source>
     <type>area</type>
     <pixeltype>UINT32</pixeltype>
     <frames>1</frames>
     <frameshape>(2300,2300)</frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/tif/detector_011.tif</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/tif@LASTSEP@detector_011.tif</source>
     <type>area</type>
     <pixeltype>UINT32</pixeltype>
     <frames>1</frames>
     <frameshape>(2300,2300)</frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/tif/detector_012.tif</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/tif@LASTSEP@detector_012.tif</source>
     <type>area</type>
     <pixeltype>UINT32</pixeltype>
     <frames>1</frames>
     <frameshape>(2300,2300)</frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/tif/detector_013.tif</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/tif@LASTSEP@detector_013.tif</source>
     <type>area</type>
     <pixeltype>UINT32</pixeltype>
     <frames>1</frames>
     <frameshape>(2300,2300)</frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/tif/detector_014.tif</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/tif@LASTSEP@detector_014.tif</source>
     <type>area</type>
     <pixeltype>UINT32</pixeltype>
     <frames>1</frames>
     <frameshape>(2300,2300)</frameshape>
   </detector>
   <detector>
-    <source>@PROJECT_BINARY_DIR@/test/data/tif/detector_015.tif</source>
+    <source>@PROJECT_BINARY_DIR@/test/data/tif@LASTSEP@detector_015.tif</source>
     <type>area</type>
     <pixeltype>UINT32</pixeltype>
     <frames>1</frames>
