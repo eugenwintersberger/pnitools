@@ -150,7 +150,6 @@ bool file_list_parser::_fill_from_num_range(const pni::core::string &p,
     {
         std::stringstream ss;
         ss<<boost::format(filename_format)%index;
-        std::cout<<"Added file: "<<ss.str()<<std::endl;
         flist.push_back(ss.str());
     }
     

@@ -291,15 +291,15 @@ static const std::string cbf_csv_output=
 ;
 
 static const std::string cbf_xml_output=
-"<?xml version=\"1.0\"?>\n"
-"<detinfo>\n"
-"  <detector>\n"
-"    <source>@PROJECT_BINARY_DIR@/test/data/cbf/LAOS3_05461.cbf</source>\n"
-"    <type>area</type>\n"
-"    <pixeltype>INT32</pixeltype>\n"
-"    <frames>1</frames>\n"
-"    <frameshape>(195,487)</frameshape>\n"
-"  </detector>\n"
+"<?xml version=\"1.0\"?>@NEWLINE_SYMBOL@"
+"<detinfo>@NEWLINE_SYMBOL@"
+"  <detector>@NEWLINE_SYMBOL@"
+"    <source>@PROJECT_BINARY_DIR@/test/data/cbf/LAOS3_05461.cbf</source>@NEWLINE_SYMBOL@"
+"    <type>area</type>@NEWLINE_SYMBOL@"
+"    <pixeltype>INT32</pixeltype>@NEWLINE_SYMBOL@"
+"    <frames>1</frames>@NEWLINE_SYMBOL@"
+"    <frameshape>(195,487)</frameshape>@NEWLINE_SYMBOL@"
+"  </detector>@NEWLINE_SYMBOL@"
 "</detinfo>";
 
 
