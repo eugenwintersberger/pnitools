@@ -22,15 +22,16 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE Acceptance test for detinfo
 #include <boost/test/unit_test.hpp>
+#include <boost/test/output_test_stream.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <cstdlib>
 #include <test/config.hpp>
-#include <test/detinfo/ref_data.hpp>
 #include <iostream>
 #include <pni/io/nx/nx.hpp>
 
 using namespace pni::io::nx;
+using boost::test_tools::output_test_stream;
 
 namespace fs = boost::filesystem;
 
@@ -115,86 +116,111 @@ BOOST_FIXTURE_TEST_SUITE(detinfo_acceptance_test,detinfo_fixture)
     BOOST_AUTO_TEST_CASE(test_simple_cbf)
     {
         run_test("-fsimple",cbf_file_path);
+        output_test_stream stream("cbf_simple_output.pattern");
         BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,cbf_simple_output);
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
+
     }
     
     BOOST_AUTO_TEST_CASE(test_simple_tif)
     {
         run_test("-fsimple",tif_file_path);
+        output_test_stream stream("tif_simple_output.pattern");
         BOOST_CHECK_EQUAL(get_return_value(return_value),SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,tif_simple_output);
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
     }
 
 
     BOOST_AUTO_TEST_CASE(test_simple_nexus)
     {
         run_test("-fsimple",nx_file_path);
+        output_test_stream stream("nexus_simple_output.pattern");
         BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,nexus_simple_output);
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_kv_cbf)
     {
         run_test("-fkeyvalue",cbf_file_path);
+        output_test_stream stream("cbf_kv_output.pattern");
         BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,cbf_kv_output);
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_kv_nexus)
     {
         run_test("-fkeyvalue",nx_file_path);
+        output_test_stream stream("nexus_kv_output.pattern");
         BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,nexus_kv_output);
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_kv_tif)
     {
         run_test("-fkeyvalue",tif_file_path);
+        output_test_stream stream("tif_kv_output.pattern");
         BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,tif_kv_output);
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
     }
     
     BOOST_AUTO_TEST_CASE(test_csv_cbf)
     {
         run_test("-fcsv",cbf_file_path);
+        output_test_stream stream("cbf_csv_output.pattern");
         BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,cbf_csv_output);
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_csv_nexus)
     {
         run_test("-fcsv",nx_file_path);
+        output_test_stream stream("nexus_csv_output.pattern");
         BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,nexus_csv_output);
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_csv_tif)
     {
         run_test("-fcsv",tif_file_path);
+        output_test_stream stream("tif_csv_output.pattern");
         BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,tif_csv_output);
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
     }
     
     BOOST_AUTO_TEST_CASE(test_xml_cbf)
     {
         run_test("-fxml",cbf_file_path,fs::path("cbf_xml.tmp"));
+        output_test_stream stream("cbf_xml_output.pattern");
         BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,cbf_xml_output);
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_xml_nexus)
     {
         run_test("-fxml",nx_file_path);
         BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,nexus_xml_output);
+        output_test_stream stream("nexus_xml_output.pattern");
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_xml_tif)
     {
         run_test("-fxml",tif_file_path);
         BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
-        BOOST_CHECK_EQUAL(output,tif_xml_output);
+        output_test_stream stream("tif_xml_output.pattern");
+        stream<<output;
+        BOOST_CHECK(stream.match_pattern());
     }
 
 BOOST_AUTO_TEST_SUITE_END()

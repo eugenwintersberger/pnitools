@@ -1,0 +1,41 @@
+source           = @PROJECT_BINARY_DIR@/test/data/tif/detector_009.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = @PROJECT_BINARY_DIR@/test/data/tif/detector_010.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = @PROJECT_BINARY_DIR@/test/data/tif/detector_011.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = @PROJECT_BINARY_DIR@/test/data/tif/detector_012.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = @PROJECT_BINARY_DIR@/test/data/tif/detector_013.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = @PROJECT_BINARY_DIR@/test/data/tif/detector_014.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)
+
+source           = @PROJECT_BINARY_DIR@/test/data/tif/detector_015.tif
+type             = area
+pixel type       = UINT32
+number of frames = 1
+frame shape      = (2300,2300)

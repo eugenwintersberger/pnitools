@@ -1,0 +1,10 @@
+@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_1:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_10:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_2:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_3:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_4:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_5:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_6:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_7:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_8:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
+@PROJECT_BINARY_DIR@/test/data/nexus/tstfile_00012.h5://entry:NXentry/instrument:NXinstrument/channel_9:NXdetector/data  type = point  pixel type = UINT64  frames = 2001
