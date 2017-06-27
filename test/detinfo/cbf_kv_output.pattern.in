@@ -1,0 +1,5 @@
+source           = @PROJECT_BINARY_DIR@/test/data/cbf/LAOS3_05461.cbf
+type             = area
+pixel type       = INT32
+number of frames = 1
+frame shape      = (195,487)

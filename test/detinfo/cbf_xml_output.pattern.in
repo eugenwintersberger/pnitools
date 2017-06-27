@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<detinfo>
+  <detector>
+    <source>@PROJECT_BINARY_DIR@/test/data/cbf/LAOS3_05461.cbf</source>
+    <type>area</type>
+    <pixeltype>INT32</pixeltype>
+    <frames>1</frames>
+    <frameshape>(195,487)</frameshape>
+  </detector>
+</detinfo>
