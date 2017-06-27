@@ -66,6 +66,7 @@ struct detinfo_fixture
     {
         command = get_command({command_path.string(),fmt_option,
                                file_path.string(),">"+tmpfile.string()});
+        std::cout<<"Execute: "<<command<<std::endl;
         BOOST_TEST_MESSAGE("Execute: "+command);
         return_value = std::system(command.c_str());
 

@@ -20,6 +20,7 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
+#include <iostream>
 
 #include "tiff_info_reader.hpp"
 #include <pni/io/tiff/tiff_reader.hpp>
@@ -31,8 +32,9 @@ detector_info_list tiff_info_reader::operator()(const file &f) const
     detector_info_list list; 
     
     tiff_reader reader(f.path());
-
+    std::cout<<"Createing TIFF reader instance"<<std::endl;
     image_info info = reader.info(0);
+    std::cout<<"Read info for: "<<f.path()<<std::endl;
     list.push_back(detector_info(shape_t{info.nx(),info.ny()},
                                 info.get_channel(0).type_id(),
                                 f.path(),

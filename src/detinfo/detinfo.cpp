@@ -75,6 +75,11 @@ int main(int argc,char **argv)
         std::cerr<<error.description()<<std::endl;
         return 1;
     }
+    catch(type_error &error)
+    {
+        std::cerr<<error.description()<<std::endl;
+        return 1;
+    }
     catch(...)
     {
         std::cerr<<"An unknown exception occured during file processing!";

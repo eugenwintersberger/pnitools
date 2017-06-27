@@ -27,6 +27,8 @@
 #include <list>
 #include "file.hpp"
 #include <boost/format.hpp>
+#include <iostream>
+
 
 using namespace pni::core;
 
@@ -123,6 +125,8 @@ bool file_list_parser::_fill_from_num_range(const pni::core::string &p,
     std::advance(slice_first,1);
     string file_slice_str(slice_first,p.end());
     pni::core::slice file_slice;
+    std::cout<<"Filename format: "<<filename_format<<std::endl;
+    std::cout<<"Slice string: "<<file_slice_str<<std::endl;
     
     try
     {   
@@ -141,6 +145,7 @@ bool file_list_parser::_fill_from_num_range(const pni::core::string &p,
     {
         std::stringstream ss;
         ss<<boost::format(filename_format)%index;
+        std::cout<<"Added file: "<<ss.str()<<std::endl;
         flist.push_back(ss.str());
     }
     
