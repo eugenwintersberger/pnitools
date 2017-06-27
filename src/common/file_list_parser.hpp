@@ -27,9 +27,13 @@
 #include <list>
 #include "file.hpp"
 #include <boost/format.hpp>
+#include <boost/regex.hpp>
+#include <boost/lexical_cast.hpp>
 
 using namespace pni::core;
 
+static const boost::regex
+file_range("^(?<FORMAT>([A-Za-z]:(\\\\|/))?[^:]+)(:(?<START>\\d+):(?<STOP>\\d+)(:(?<STRIDE>\\d+))?)?$");
 
 //!
 //! \ingroup common_devel
@@ -109,35 +113,40 @@ template<typename CTYPE>
 bool file_list_parser::_fill_from_num_range(const pni::core::string &p,
                                             CTYPE &flist)
 {
-    using parser_t = pni::io::parser<slice>;
-    auto slice_first = std::find(p.begin(),p.end(),':');
-
-    if(slice_first==p.end()) 
-    {   //no slice section found - we can assume that the string is a single 
-        //file and just add it to the list of files.
-        flist.push_back(p);
-        return true;
-    }
-
-    string filename_format(p.begin(),slice_first);
-    std::advance(slice_first,1);
-    string file_slice_str(slice_first,p.end());
-    pni::core::slice file_slice;
+    size_t first_index=0,last_index=0,stride=1;
+    std::string filename_format;
+    bool is_range=false;
     
-    try
-    {   
-        parser_t pslice; 
-        file_slice = pslice(file_slice_str);
+    boost::smatch result;
+    if(boost::regex_match(p,result,file_range))
+    {
+        filename_format = result.str("FORMAT");
+
+        if(!result.str("START").empty())
+            first_index = boost::lexical_cast<size_t>(result.str("START"));
+
+        if(!result.str("STOP").empty())
+        {
+            last_index = boost::lexical_cast<size_t>(result.str("STOP"));
+            //if we are here the user has passed a range
+            is_range = true;
+        }
+
+        if(!result.str("STRIDE").empty())
+            stride = boost::lexical_cast<size_t>(result.str("STRIDE"));
     }
-    catch(const pni::io::parser_error &error)
+    else
     {
         std::stringstream ss;
-        ss<<"["<<p<<"] is not a valid file range!"<<std::endl;
+        ss<<"["<<p<<"] is not a valid file path or file range specifier!";
         throw pni::io::parser_error(EXCEPTION_RECORD,ss.str());
     }
 
-    for(size_t index = file_slice.first();index<file_slice.last();
-               index += file_slice.stride())
+    if(!is_range)
+        flist.push_back(filename_format);
+
+
+    for(size_t index = first_index;index<last_index; index += stride)
     {
         std::stringstream ss;
         ss<<boost::format(filename_format)%index;
