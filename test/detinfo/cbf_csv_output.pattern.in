@@ -1,2 +1,2 @@
 source ; type ; pixel type ; number of frames ; frame shape
-@PROJECT_BINARY_DIR@/test/data/cbf/LAOS3_05461.cbf ; area ; INT32 ; 1 ; (195,487)
+@PROJECT_BINARY_DIR@/test/data/cbf@LASTSEP@LAOS3_05461.cbf ; area ; INT32 ; 1 ; (195,487)

@@ -27,6 +27,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <cstdlib>
 #include <test/config.hpp>
+#include <test/command_runner.hpp>
 #include <iostream>
 #include <pni/io/nx/nx.hpp>
 
@@ -38,7 +39,7 @@ namespace fs = boost::filesystem;
 
 struct detinfo_fixture
 {
-    fs::path command_path;
+    command_runner runner;
     fs::path tif_file_path;
     fs::path cbf_file_path;
     fs::path nx_file_path;
@@ -47,76 +48,49 @@ struct detinfo_fixture
     int         return_value;
 
     detinfo_fixture():
-        command_path(bin_path),
-        tif_file_path(tif_path),
-        cbf_file_path(cbf_path),
-        nx_file_path(nexus_path),
-        command(),
+        runner(fs::path(bin_path).append("detinfo")),
+        tif_file_path(fs::path(tif_path).append("detector_%03i.tif:9:16")),
+        cbf_file_path(fs::path(cbf_path).append("LAOS3_05461.cbf")),
+        nx_file_path(fs::path(nexus_path).append("tstfile_00012.h5")),
         output(),
         return_value()
     {
-        command_path /= "detinfo";
-        tif_file_path /= "detector_%03i.tif:9:16";
-        cbf_file_path /= "LAOS3_05461.cbf";
-        nx_file_path /= "tstfile_00012.h5";
     }
     
-    void run_test(const std::string &fmt_option,
-                  const fs::path &file_path,
-                  const fs::path &tmpfile = fs::path("detinfo_test.tmp"))
-    {
-        command = get_command({command_path.string(),fmt_option,
-                               file_path.string(),">"+tmpfile.string()});
-        BOOST_TEST_MESSAGE("Execute: "+command);
-        return_value = std::system(command.c_str());
-
-        output = read_data(tmpfile);
-        boost::trim(output);
-
-    }
 };
 
 BOOST_FIXTURE_TEST_SUITE(detinfo_acceptance_test,detinfo_fixture)
 
     BOOST_AUTO_TEST_CASE(test_return_values)
     {
-        BOOST_TEST_MESSAGE("Execute:"+command_path.string());
-        return_value = std::system(command_path.string().c_str());
-        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
+        runner({});
+        BOOST_CHECK_EQUAL(runner.return_value(),1);
+        
+        runner({"bla.txt"});
+        BOOST_CHECK_EQUAL(runner.return_value(),1);
 
-        return_value = std::system(get_command({command_path.string(),"bla.txt"}).c_str());
-        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
-
-        return_value = std::system(get_command({command_path.string(),"cmake_install.cmake"}).c_str());
-        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
+        runner({"cmake_install.cmake"});
+        BOOST_CHECK_EQUAL(runner.return_value(),1);
+        
+        runner({tif_file_path.string()});
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
 
         fs::path p(tif_path);
-        p/="detector_%03i.tif:9:16";
-        command = get_command({command_path.string(),p.string()});
-        BOOST_TEST_MESSAGE("Execute: "+command);
-        return_value = std::system(command.c_str());
-        BOOST_CHECK_EQUAL(get_return_value(return_value),SUCCESS_RETURN);
-
-        p = tif_path;
         p/= "detector_%03i.fio:1:5";
-        command = get_command({command_path.string(),p.string()});
-        BOOST_TEST_MESSAGE("Execute: "+command);
-        return_value = std::system(command.c_str());
-        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
+        runner({p.string()});
+        BOOST_CHECK_EQUAL(runner.return_value(),1);
 
-        p = nexus_path;
-        p /= "tstfile_00012.h5";
-        command = get_command({command_path.string(),p.string()});
-        BOOST_TEST_MESSAGE("Execute: "+command);
-        return_value = std::system(command.c_str());
-        BOOST_CHECK_EQUAL(get_return_value(return_value),SUCCESS_RETURN);
+        runner({nx_file_path.string()});
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
     }
 
     BOOST_AUTO_TEST_CASE(test_simple_cbf)
     {
-        run_test("-fsimple",cbf_file_path);
+        runner({"-fsimple",cbf_file_path.string()});
         output_test_stream stream("cbf_simple_output.pattern");
-        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
+        output=runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
 
@@ -124,9 +98,11 @@ BOOST_FIXTURE_TEST_SUITE(detinfo_acceptance_test,detinfo_fixture)
     
     BOOST_AUTO_TEST_CASE(test_simple_tif)
     {
-        run_test("-fsimple",tif_file_path);
+        runner({"-fsimple",tif_file_path.string()});
         output_test_stream stream("tif_simple_output.pattern");
-        BOOST_CHECK_EQUAL(get_return_value(return_value),SUCCESS_RETURN);
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
+        output = runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
     }
@@ -134,90 +110,110 @@ BOOST_FIXTURE_TEST_SUITE(detinfo_acceptance_test,detinfo_fixture)
 
     BOOST_AUTO_TEST_CASE(test_simple_nexus)
     {
-        run_test("-fsimple",nx_file_path);
+        runner({"-fsimple",nx_file_path.string()});
         output_test_stream stream("nexus_simple_output.pattern");
-        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
+        output = runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_kv_cbf)
     {
-        run_test("-fkeyvalue",cbf_file_path);
+        runner({"-fkeyvalue",cbf_file_path.string()});
         output_test_stream stream("cbf_kv_output.pattern");
-        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
+        output = runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_kv_nexus)
     {
-        run_test("-fkeyvalue",nx_file_path);
+        runner({"-fkeyvalue",nx_file_path.string()});
         output_test_stream stream("nexus_kv_output.pattern");
-        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
+        output = runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_kv_tif)
     {
-        run_test("-fkeyvalue",tif_file_path);
+        runner({"-fkeyvalue",tif_file_path.string()});
         output_test_stream stream("tif_kv_output.pattern");
-        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
+        output = runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
     }
     
     BOOST_AUTO_TEST_CASE(test_csv_cbf)
     {
-        run_test("-fcsv",cbf_file_path);
+        runner({"-fcsv",cbf_file_path.string()});
         output_test_stream stream("cbf_csv_output.pattern");
-        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
+        output = runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_csv_nexus)
     {
-        run_test("-fcsv",nx_file_path);
+        runner({"-fcsv",nx_file_path.string()});
         output_test_stream stream("nexus_csv_output.pattern");
-        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
+        output = runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_csv_tif)
     {
-        run_test("-fcsv",tif_file_path);
+        runner({"-fcsv",tif_file_path.string()});
         output_test_stream stream("tif_csv_output.pattern");
-        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
+        output = runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
     }
     
     BOOST_AUTO_TEST_CASE(test_xml_cbf)
     {
-        run_test("-fxml",cbf_file_path,fs::path("cbf_xml.tmp"));
+        runner({"-fxml",cbf_file_path.string()});
         output_test_stream stream("cbf_xml_output.pattern");
-        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
+        output = runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_xml_nexus)
     {
-        run_test("-fxml",nx_file_path);
-        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
+        runner({"-fxml",nx_file_path.string()});
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
         output_test_stream stream("nexus_xml_output.pattern");
+        output = runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
     }
 
     BOOST_AUTO_TEST_CASE(test_xml_tif)
     {
-        run_test("-fxml",tif_file_path);
-        BOOST_CHECK_EQUAL(return_value,SUCCESS_RETURN);
+        runner({"-fxml",tif_file_path.string()});
+        BOOST_CHECK_EQUAL(runner.return_value(),SUCCESS_RETURN);
         output_test_stream stream("tif_xml_output.pattern");
+        output = runner.output();
+        boost::trim(output);
         stream<<output;
         BOOST_CHECK(stream.match_pattern());
     }

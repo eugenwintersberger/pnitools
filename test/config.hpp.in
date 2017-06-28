@@ -8,7 +8,7 @@
 // definition of return values no success for std::system
 //
 #ifdef _MSC_VER
-#define SUCCESS_RETURN 1   // for windows
+#define SUCCESS_RETURN 0   // for windows
 #else
 #define SUCCESS_RETURN 0   // for all others
 #endif
