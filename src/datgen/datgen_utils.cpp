@@ -135,6 +135,12 @@ bool build_executor(const args_map &args,executor &exe)
             std::cerr<<error.description()<<std::endl;
             return false;
         }
+        catch(...)
+        {
+            std::cerr<<"Unkown error during functor creation!"<<std::endl;
+            return false;
+        }
+
     }
 
     exe = executor(std::move(funcs));

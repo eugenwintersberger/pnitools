@@ -68,10 +68,12 @@ BOOST_FIXTURE_TEST_SUITE(datgen_uniform_test,uniform_test_fixture)
         BOOST_CHECK_EQUAL(run_test({"-l1.2","-u4.5x"}),1);
     }
 
+#ifndef _MSC_VER
     BOOST_AUTO_TEST_CASE(test_upper_larger_lower)
     {
         BOOST_CHECK_EQUAL(run_test({"-l1.2","-u0.2"}),1);
     }
 
+#endif
 
 BOOST_AUTO_TEST_SUITE_END()
