@@ -16,3 +16,4 @@ pniio:with_system_hdf5=False
 
 [imports]
 bin, *.dll -> ./bin
+bin, *.dll -> ./desy.fsec.pnitools

@@ -43,3 +43,26 @@ add_subdirectory("src/xml2nx")
 add_subdirectory("src/datgen")
 
 add_subdirectory("test")
+
+#=============================================================================
+# generate package here
+#=============================================================================
+if(CMAKE_HOST_SYSTEM MATCHES Windows)
+    MESSAGE(STATUS "================setting up packaging====================")
+
+    set(ASSEMBLY_DIR "desy.fsec.pnitools")
+    set(ASSEMBLY_MANIFEST "desy.fsec.pnitools.manifest")
+
+    #first we need to locate all the library files
+    install(DIRECTORY ${PROJECT_BINARY_DIR}/${ASSEMBLY_DIR}
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+            PATTERN "*.exe" EXCLUDE
+            PATTERN "*"
+            )
+        configure_file(desy.fsec.pnitools.manifest.in ${ASSEMBLY_MANIFEST}
+            @ONLY)
+        install(FILES ${PROJECT_BINARY_DIR}/${ASSEMBLY_MANIFEST}
+            DESTINATION ${CMAKE_INSTALL_BINDIR}/${ASSEMBLY_DIR}
+            )
+
+endif()
