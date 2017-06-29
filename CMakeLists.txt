@@ -5,6 +5,8 @@ project(pnitools
 include(CTest)
 set(CMAKE_CXX_STANDARD 11)
 
+include(CPackComponent)
+
 #==============================================================================
 # load some default configuration
 #==============================================================================
@@ -43,6 +45,7 @@ add_subdirectory("src/xml2nx")
 add_subdirectory("src/datgen")
 
 add_subdirectory("test")
+add_subdirectory("resources")
 
 #=============================================================================
 # generate package here
@@ -57,12 +60,33 @@ if(CMAKE_HOST_SYSTEM MATCHES Windows)
     install(DIRECTORY ${PROJECT_BINARY_DIR}/bin/${ASSEMBLY_DIR}
         DESTINATION ${CMAKE_INSTALL_BINDIR}
             PATTERN "*.exe" EXCLUDE
+            PATTERN "*.manifest" EXCLUDE
             PATTERN "*"
             )
-        configure_file(desy.fsec.pnitools.manifest.in bin/${ASSEMBLY_DIR}/${ASSEMBLY_MANIFEST}
-            @ONLY)
-        install(FILES ${PROJECT_BINARY_DIR}/bin/${ASSEMBLY_DIR}/${ASSEMBLY_MANIFEST}
-            DESTINATION ${CMAKE_INSTALL_BINDIR}/${ASSEMBLY_DIR}
-            )
+    configure_file(desy.fsec.pnitools.manifest.in bin/${ASSEMBLY_DIR}/${ASSEMBLY_MANIFEST}
+        @ONLY)
+    install(FILES ${PROJECT_BINARY_DIR}/bin/${ASSEMBLY_DIR}/${ASSEMBLY_MANIFEST}
+        DESTINATION ${CMAKE_INSTALL_BINDIR}/${ASSEMBLY_DIR}
+        )
+
+
+    set(CPACK_GENERATOR WIX)
+    set(CPACK_PACKAGE_VENDOR "DESY")
+    set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
+    set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+    set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+
+    set(CPACK_WIX_PRODUCT_ICON "resources/icon.ico")
+    set(CPACK_WIX_UI_BANNER "resources/banner.bmp")
+    set(CPACK_WIX_UI_DIALOG "resources/ui_dialog.bmp")
+    set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
+
+#    cpack_add_component(Runtime
+#        DISPLAY_NAME "Runtime files"
+#        DESCRIPTION "Binaries"
+#        GROUP "Runtime")
+    
+    include(CPack)
+    include(CPackWIX)
 
 endif()
