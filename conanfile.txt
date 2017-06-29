@@ -15,5 +15,5 @@ pniio:with_system_boost=False
 pniio:with_system_hdf5=False
 
 [imports]
+bin, *.dll -> ./bin/desy.fsec.pnitools
 bin, *.dll -> ./bin
-bin, *.dll -> ./desy.fsec.pnitools

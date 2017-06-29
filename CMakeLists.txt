@@ -54,14 +54,14 @@ if(CMAKE_HOST_SYSTEM MATCHES Windows)
     set(ASSEMBLY_MANIFEST "desy.fsec.pnitools.manifest")
 
     #first we need to locate all the library files
-    install(DIRECTORY ${PROJECT_BINARY_DIR}/${ASSEMBLY_DIR}
+    install(DIRECTORY ${PROJECT_BINARY_DIR}/bin/${ASSEMBLY_DIR}
         DESTINATION ${CMAKE_INSTALL_BINDIR}
             PATTERN "*.exe" EXCLUDE
             PATTERN "*"
             )
-        configure_file(desy.fsec.pnitools.manifest.in ${ASSEMBLY_MANIFEST}
+        configure_file(desy.fsec.pnitools.manifest.in bin/${ASSEMBLY_DIR}/${ASSEMBLY_MANIFEST}
             @ONLY)
-        install(FILES ${PROJECT_BINARY_DIR}/${ASSEMBLY_MANIFEST}
+        install(FILES ${PROJECT_BINARY_DIR}/bin/${ASSEMBLY_DIR}/${ASSEMBLY_MANIFEST}
             DESTINATION ${CMAKE_INSTALL_BINDIR}/${ASSEMBLY_DIR}
             )
 

@@ -13,6 +13,11 @@ set(DETINFO_SOURCE detinfo.cpp
                    csv_output_formatter.cpp
                    formatter_factory.cpp )
 
+if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
+    configure_file(detinfo.exe.manifest.in detinfo.exe.manifest @ONLY)
+    list(APPEND DETINFO_SOURCE ${PROJECT_BINARY_DIR}/src/detinfo/detinfo.exe.manifest)
+endif()
+
 add_executable(detinfo ${DETINFO_SOURCE})
 target_link_libraries(detinfo common_objects pniio)
 install(TARGETS detinfo DESTINATION ${CMAKE_INSTALL_BINDIR})
