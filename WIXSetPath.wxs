@@ -1,0 +1,6 @@
+﻿<CPackWiXPatch>
+  <CPackWiXFragment Id="CM_CP_bin.datgen.exe">      
+        <Environment Id="PathSetup" Permanent="no" Action="set" 
+        Name="PATH" Part="last" System="no" Value="[INSTALL_ROOT]\bin"/>        
+  </CPackWiXFragment>
+</CPackWiXPatch>
