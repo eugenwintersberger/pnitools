@@ -81,6 +81,8 @@ if(CMAKE_HOST_SYSTEM MATCHES Windows)
     set(CPACK_WIX_UI_DIALOG "resources/ui_dialog.bmp")
     set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
 
+    set(CPACK_WIX_PATCH_FILE ${PROJECT_SOURCE_DIR}/WIXSetPath.wxs)
+
 #    cpack_add_component(Runtime
 #        DISPLAY_NAME "Runtime files"
 #        DESCRIPTION "Binaries"

@@ -1,8 +1,8 @@
 [requires]
 Boost/1.62.0@lasote/stable
-hdf5/1.10.1@wintersb/stable
-pnicore/1.1.0@wintersb/devel
-pniio/1.X.X@wintersb/devel
+hdf5/1.10.1@eugenwintersberger/testing
+pnicore/1.1.0@eugenwintersberger/testing
+pniio/1.X.X@eugenwintersberger/devel
 
 [generators]
 cmake
