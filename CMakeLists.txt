@@ -21,9 +21,11 @@ if(CMAKE_HOST_SYSTEM_NAME MATCHES Windows)
 endif()
 
 if(WITH_CONAN)
-
-    include(${PROJECT_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
+    include(cmake/common/ConanSetup.cmake)
+    
+    conan_cmake_run(CONANFILE conanfile.txt
+    	            BASIC_SETUP
+    	            BUILD missing)
 endif()
 
 #======================do here some setup work=================================

@@ -68,11 +68,32 @@ result_t read_mca_from_file(const fs::path &mca_file)
         string line_buffer;
         std::getline(stream,line_buffer);
 
-        mcas.push_back(mca_parser(line_buffer)); 
+        if(!line_buffer.empty())
+        	mcas.push_back(mca_parser(line_buffer));
         
     }
     
     return mcas;
+}
+
+result_t read_mca_from_string(const std::string &mca_data)
+{
+	mca_parser_t mca_parser(' ');
+	std::stringstream stream(mca_data);
+
+	result_t mcas;
+
+	while(!stream.eof())
+	{
+		string line_buffer;
+		std::getline(stream,line_buffer);
+
+
+		if(!line_buffer.empty())
+			mcas.push_back(mca_parser(line_buffer));
+	}
+
+	return mcas;
 }
 
 struct mcaops_global_fixture 
@@ -80,12 +101,12 @@ struct mcaops_global_fixture
     mcaops_global_fixture()
     {
         total_result = read_mca_from_file(total_rebin_file);
-        roi1_result = read_mca_from_file(roi1_rebin_file); 
+        roi1_result = read_mca_from_file(roi1_rebin_file);
         roi2_result = read_mca_from_file(roi2_rebin_file);
         total_result_norm = read_mca_from_file(total_rebin_norm_file);
-        roi1_result_norm = read_mca_from_file(roi1_rebin_norm_file); 
+        roi1_result_norm = read_mca_from_file(roi1_rebin_norm_file);
         roi2_result_norm = read_mca_from_file(roi2_rebin_norm_file);
-    
+
         //set up the first range FIO files
         fio_range_1 = fs::path(fio_path);
         fio_range_1 /= filename_format;
@@ -121,7 +142,7 @@ struct mcaops_suite_fixture
         runner(opts);
         std::string output = runner.output();
         boost::trim(output);
-        result = read_mca_from_file(output);
+        result = read_mca_from_string(output);
     }
 };
 
@@ -143,121 +164,198 @@ BOOST_FIXTURE_TEST_SUITE(mcaops_minpos,mcaops_suite_fixture)
             for(;mca_iter != result.end();++mca_iter,++mca_ref_iter)
             {
                 BOOST_CHECK_EQUAL(mca_iter->size(),mca_ref_iter->size());
+
+                auto result_mca_iter = mca_iter->begin();
+                auto reference_mca_iter = mca_ref_iter->begin();
+
+            	for(;result_mca_iter != mca_iter->end();++result_mca_iter,++reference_mca_iter)
+            		BOOST_CHECK_CLOSE(*result_mca_iter,*reference_mca_iter,0.0001);
             }
 
         }
 
-//        BOOST_AUTO_TEST_CASE(test_roi1_result)
-//        {
-//            run_test({roi1_opt,base_opt,mca_opt,"--no-channel-output",
-//                                       "--channel-sep=' '",
-//                                       "rebin","-b125","fiodata.nxs"});
-//            BOOST_CHECK_EQUAL(runner.return_value(),0);
-//
-//            auto result_iter = result.begin();
-//            auto reference_iter = roi1_result.begin();
-//            for(;result_iter!=result.end();++result_iter,++reference_iter)
-//                BOOST_CHECK_CLOSE(*result_iter,*reference_iter,0.0001);
-//        }
-//
-//        BOOST_AUTO_TEST_CASE(test_roi2_result)
-//        {
-//            run_test({roi2_opt,base_opt,mca_opt,"--no-channel-output",
-//                                       "--channel-sep=' '",
-//                                       "rebin","-b125","fiodata.nxs"});
-//            BOOST_CHECK_EQUAL(runner.return_value(),0);
-//            
-//            auto result_iter = result.begin();
-//            auto reference_iter = roi2_result.begin();
-//            for(;result_iter!=result.end();++result_iter,++reference_iter)
-//                BOOST_CHECK_CLOSE(*result_iter,*reference_iter,0.0001);
-//        }
+        BOOST_AUTO_TEST_CASE(test_roi1_result)
+        {
+            run_test({roi1_opt,base_opt,mca_opt,"--no-channel-output",
+                                       "--channel-sep=' '",
+                                       "rebin","-b125","fiodata.nxs"});
+            BOOST_CHECK_EQUAL(runner.return_value(),0);
+            BOOST_CHECK_EQUAL(result.size(),roi1_result.size());
+
+            auto result_iter = result.begin();
+            auto reference_iter = roi1_result.begin();
+            for(;result_iter!=result.end();++result_iter,++reference_iter)
+            {
+            	BOOST_CHECK_EQUAL(result_iter->size(),reference_iter->size());
+
+            	auto result_mca_iter = result_iter->begin();
+            	auto reference_mca_iter = reference_iter->begin();
+
+            	for(;result_mca_iter != result_iter->end();++result_mca_iter,++reference_mca_iter)
+            		BOOST_CHECK_CLOSE(*result_mca_iter,*reference_mca_iter,0.0001);
+            }
+        }
+
+        BOOST_AUTO_TEST_CASE(test_roi2_result)
+        {
+            run_test({roi2_opt,base_opt,mca_opt,"--no-channel-output",
+                                       "--channel-sep=' '",
+                                       "rebin","-b125","fiodata.nxs"});
+            BOOST_CHECK_EQUAL(runner.return_value(),0);
+            BOOST_CHECK_EQUAL(result.size(),roi2_result.size());
+
+            auto result_iter = result.begin();
+            auto reference_iter = roi2_result.begin();
+
+            for(;result_iter!=result.end();++result_iter,++reference_iter)
+            {
+            	BOOST_CHECK_EQUAL(result_iter->size(),reference_iter->size());
+            	auto result_mca_iter = result_iter->begin();
+            	auto reference_mca_iter = reference_iter->begin();
+
+            	for(;result_mca_iter != result_iter->end();++result_mca_iter,++reference_mca_iter)
+            		BOOST_CHECK_CLOSE(*result_mca_iter,*reference_mca_iter,0.0001);
+            }
+        }
     BOOST_AUTO_TEST_SUITE_END()
 
     //================testing with input from fio files======================
-//    BOOST_AUTO_TEST_SUITE(fio_input)
-//        BOOST_AUTO_TEST_CASE(test_total_result)
-//        {
-//            run_test({"average",fio_range_1.string(),fio_range_2.string()});
-//            BOOST_CHECK_EQUAL(runner.return_value(),0);
-//            
-//            auto result_iter = result.begin();
-//            auto reference_iter = total_result.begin();
-//            for(;result_iter!=result.end();++result_iter,++reference_iter)
-//                BOOST_CHECK_CLOSE(*result_iter,*reference_iter,0.0001);
-//        }
-//
-//        BOOST_AUTO_TEST_CASE(test_roi1_result)
-//        {
-//            run_test({roi1_opt,"average",fio_range_1.string(),
-//                                     fio_range_2.string()});
-//            BOOST_CHECK_EQUAL(runner.return_value(),0);
-//            
-//            auto result_iter = result.begin();
-//            auto reference_iter = roi1_result.begin();
-//            for(;result_iter!=result.end();++result_iter,++reference_iter)
-//                BOOST_CHECK_CLOSE(*result_iter,*reference_iter,0.0001);
-//        }
-//
-//        BOOST_AUTO_TEST_CASE(test_roi2_result)
-//        {
-//            run_test({roi2_opt,"average",fio_range_1.string(),
-//                                      fio_range_2.string()});
-//            BOOST_CHECK_EQUAL(runner.return_value(),0);
-//            
-//            auto result_iter = result.begin();
-//            auto reference_iter = roi2_result.begin();
-//            for(;result_iter!=result.end();++result_iter,++reference_iter)
-//                BOOST_CHECK_CLOSE(*result_iter,*reference_iter,0.0001);
-//        }
-//    BOOST_AUTO_TEST_SUITE_END()
+    BOOST_AUTO_TEST_SUITE(fio_input)
+        BOOST_AUTO_TEST_CASE(test_total_result)
+        {
+            run_test({"--no-channel-output","--channel-sep=' '","rebin","-b125",
+            	     fio_range_1.string(),fio_range_2.string()});
+            BOOST_CHECK_EQUAL(runner.return_value(),0);
+            BOOST_CHECK_EQUAL(result.size(),total_result.size());
+
+            auto result_iter = result.begin();
+            auto reference_iter = total_result.begin();
+            for(;result_iter!=result.end();++result_iter,++reference_iter)
+            {
+            	BOOST_CHECK_EQUAL(result_iter->size(),reference_iter->size());
+            	auto result_mca_iter = result_iter->begin();
+            	auto reference_mca_iter = reference_iter->begin();
+
+            	for(;result_mca_iter != result_iter->end();++result_mca_iter,++reference_mca_iter)
+            		BOOST_CHECK_CLOSE(*result_mca_iter,*reference_mca_iter,0.0001);
+            }
+        }
+
+        BOOST_AUTO_TEST_CASE(test_roi1_result)
+        {
+            run_test({roi1_opt,"--no-channel-output","--channel-sep=' '",
+            	      "rebin","-b125",fio_range_1.string(),fio_range_2.string()});
+            BOOST_CHECK_EQUAL(runner.return_value(),0);
+            BOOST_CHECK_EQUAL(result.size(),roi1_result.size());
+
+            auto result_iter = result.begin();
+            auto reference_iter = roi1_result.begin();
+            for(;result_iter!=result.end();++result_iter,++reference_iter)
+            {
+            	BOOST_CHECK_EQUAL(result_iter->size(),reference_iter->size());
+            	auto result_mca_iter = result_iter->begin();
+            	auto reference_mca_iter = reference_iter->begin();
+
+            	for(;result_mca_iter != result_iter->end();++result_mca_iter,++reference_mca_iter)
+            		BOOST_CHECK_CLOSE(*result_mca_iter,*reference_mca_iter,0.0001);
+            }
+        }
+
+        BOOST_AUTO_TEST_CASE(test_roi2_result)
+        {
+            run_test({roi2_opt,"--no-channel-output","--channel-sep=' '",
+            	      "rebin","-b125",fio_range_1.string(),fio_range_2.string()});
+            BOOST_CHECK_EQUAL(runner.return_value(),0);
+            BOOST_CHECK_EQUAL(result.size(),roi2_result.size());
+
+            auto result_iter = result.begin();
+            auto reference_iter = roi2_result.begin();
+            for(;result_iter!=result.end();++result_iter,++reference_iter)
+            {
+            	BOOST_CHECK_EQUAL(result_iter->size(),reference_iter->size());
+            	auto result_mca_iter = result_iter->begin();
+            	auto reference_mca_iter = reference_iter->begin();
+
+            	for(;result_mca_iter != result_iter->end();++result_mca_iter,++reference_mca_iter)
+            		BOOST_CHECK_CLOSE(*result_mca_iter,*reference_mca_iter,0.0001);
+            }
+        }
+    BOOST_AUTO_TEST_SUITE_END()
 //
     //================testing by reading from standard input ==================
-//    BOOST_AUTO_TEST_SUITE(stdin_input)
-//
-//        BOOST_AUTO_TEST_CASE(test_total_result)
-//        {
-//            auto iter = total_result.begin();
-//            for(auto p: stdin_files)
-//            {
-//                fs::path ifile(stdin_path);
-//                ifile /= p;
-//                run_test({"average","<"+ifile.string()});
-//                BOOST_CHECK_EQUAL(runner.return_value(),0);
-//                BOOST_CHECK_EQUAL(result.size(),1);
-//                BOOST_CHECK_CLOSE(result[0],*iter,0.001);
-//                iter++;
-//            }
-//        }
-//
-//        BOOST_AUTO_TEST_CASE(test_roi1_result)
-//        {
-//            auto iter = roi1_result.begin();
-//            for(auto p: stdin_files)
-//            {
-//                fs::path ifile(stdin_path);
-//                ifile /= p;
-//                run_test({roi1_opt,"average","<"+ifile.string()});
-//                BOOST_CHECK_EQUAL(runner.return_value(),0);
-//                BOOST_CHECK_EQUAL(result.size(),1);
-//                BOOST_CHECK_CLOSE(result[0],*iter,0.001);
-//                iter++;
-//            }
-//        }
-//        
-//        BOOST_AUTO_TEST_CASE(test_roi2_result)
-//        {
-//            auto iter = roi2_result.begin();
-//            for(auto p: stdin_files)
-//            {
-//                fs::path ifile(stdin_path);
-//                ifile /= p;
-//                run_test({roi2_opt,"average","<"+ifile.string()});
-//                BOOST_CHECK_EQUAL(runner.return_value(),0);
-//                BOOST_CHECK_EQUAL(result.size(),1);
-//                BOOST_CHECK_CLOSE(result[0],*iter,0.001);
-//                iter++;
-//            }
-//        }
-//    BOOST_AUTO_TEST_SUITE_END()
+    BOOST_AUTO_TEST_SUITE(stdin_input)
+
+        BOOST_AUTO_TEST_CASE(test_total_result)
+        {
+            auto reference_mca = total_result.begin();
+            for(auto p: stdin_files)
+            {
+                fs::path ifile(stdin_path);
+                ifile /= p;
+                run_test({"--no-channel-output","--channel-sep=' '",
+                	      "rebin","-b125","<"+ifile.string()});
+                BOOST_CHECK_EQUAL(runner.return_value(),0);
+                BOOST_CHECK_EQUAL(result.size(),1);
+
+                auto result_mca = result.begin();
+
+                BOOST_CHECK_EQUAL(result_mca->size(),reference_mca->size());
+
+                auto result_channels = result_mca->begin();
+                auto reference_channels = reference_mca->begin();
+                for(;result_channels!=result_mca->end();++result_channels,++reference_channels)
+                	BOOST_CHECK_CLOSE(*result_channels,*reference_channels,0.0001);
+
+                reference_mca++;
+            }
+        }
+
+        BOOST_AUTO_TEST_CASE(test_roi1_result)
+        {
+            auto reference_mca = roi1_result.begin();
+            for(auto p: stdin_files)
+            {
+                fs::path ifile(stdin_path);
+                ifile /= p;
+                run_test({roi1_opt,"--no-channel-output","--channel-sep=' '",
+                	      "rebin","-b125","<"+ifile.string()});
+                BOOST_CHECK_EQUAL(runner.return_value(),0);
+                BOOST_CHECK_EQUAL(result.size(),1);
+
+                auto result_mca = result.begin();
+                BOOST_CHECK_EQUAL(result_mca->size(),reference_mca->size());
+
+                auto result_channels = result_mca->begin();
+                auto reference_channels = reference_mca->begin();
+                for(;result_channels!=result_mca->end();++result_channels,++reference_channels)
+                	BOOST_CHECK_CLOSE(*result_channels,*reference_channels,0.0001);
+
+                reference_mca++;
+            }
+        }
+
+        BOOST_AUTO_TEST_CASE(test_roi2_result)
+        {
+            auto reference_mca = roi2_result.begin();
+            for(auto p: stdin_files)
+            {
+                fs::path ifile(stdin_path);
+                ifile /= p;
+                run_test({roi2_opt,"--no-channel-output","--channel-sep=' '",
+                	      "rebin","-b125","<"+ifile.string()});
+                BOOST_CHECK_EQUAL(runner.return_value(),0);
+                BOOST_CHECK_EQUAL(result.size(),1);
+
+                auto result_mca = result.begin();
+                BOOST_CHECK_EQUAL(result_mca->size(),reference_mca->size());
+
+                auto result_channels = result_mca->begin();
+                auto reference_channels = reference_mca->begin();
+                for(;result_channels!=result_mca->end();++result_channels,++reference_channels)
+                	BOOST_CHECK_CLOSE(*result_channels,*reference_channels,0.0001);
+
+                reference_mca++;
+            }
+        }
+    BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE_END()

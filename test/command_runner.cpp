@@ -26,6 +26,7 @@
 #include <fstream>
 #include <iterator>
 #include <cstdlib>
+#include <iostream>
 
 namespace fs = boost::filesystem;
 
@@ -51,15 +52,13 @@ std::string command_runner::_assemble_command(const cmd_opts_t &opts)
 std::string command_runner::_read_output(const fs::path &tmpfile)
 {
     std::ifstream stream(tmpfile.string());
-
-
     std::string data;
 
     while(!stream.eof())
     {
         std::string linebuffer;
         std::getline(stream,linebuffer);
-        data += linebuffer+"\n"; 
+        data += linebuffer+"\n";
     }
 
     return data;
@@ -73,7 +72,7 @@ int command_runner::operator()(const cmd_opts_t& user_options,
     std::copy(user_options.begin(),user_options.end(),
               std::back_inserter(total_opts));
     total_opts.push_back(">"+tmpfile.string());
-    
+
     _return = std::system(_assemble_command(total_opts).c_str());
     _output = _read_output(tmpfile);
 
