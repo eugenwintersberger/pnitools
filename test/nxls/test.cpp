@@ -28,8 +28,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <pni/core/types.hpp>
-#include <pni/io/nx/xml.hpp>
-#include <pni/io/nx/nx.hpp>
+#include <pni/io/nexus.hpp>
 #include <pni/io/parsers.hpp>
 #include <test/config.hpp>
 #include <cstdlib>
@@ -37,7 +36,7 @@
 namespace fs = boost::filesystem;
 
 using namespace pni::core;
-using namespace pni::io::nx;
+using namespace pni::io;
 
 static std::vector<std::string> simple_output = { 
 "instrument:NXinstrument",

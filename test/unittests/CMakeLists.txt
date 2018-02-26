@@ -1,5 +1,5 @@
 add_subdirectory(common)
 if(NOT (CMAKE_HOST_SYSTEM_NAME MATCHES "Windows"))
-    add_subdirectory(mcaops)
+    #add_subdirectory(mcaops)
 endif()
-add_subdirectory(datgen)
+#add_subdirectory(datgen)

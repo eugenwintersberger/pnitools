@@ -1,18 +1,21 @@
 [requires]
 Boost/1.62.0@lasote/stable
 hdf5/1.10.1@eugenwintersberger/testing
-pnicore/1.1.0@eugenwintersberger/testing
-pniio/1.X.X@eugenwintersberger/devel
+pnicore/master@eugenwintersberger/devel
+pniio/master@eugenwintersberger/devel
+h5cpp/master@eugenwintersberger/devel
+zlib/1.2.8@conan/stable
+bzip2/1.0.6@conan/stable
 
 [generators]
 cmake
 
 [options]
 Boost:shared=True
-pnicore:with_system_boost=False
-pniio:with_system_pnicore=False
-pniio:with_system_boost=False
-pniio:with_system_hdf5=False
+Boost:python=False
+zlib:shared=True
+hdf5:shared=True
+
 
 [imports]
 bin, *.dll -> ./bin/desy.fsec.pnitools

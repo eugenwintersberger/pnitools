@@ -22,6 +22,7 @@ endif()
 
 if(WITH_CONAN)
     include(cmake/common/ConanSetup.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/conan.cmake)
     
     conan_cmake_run(CONANFILE conanfile.txt
     	            BASIC_SETUP
@@ -34,17 +35,17 @@ include(configure/CMakeLists.txt)
 
 #add_subdirectory("doc")
 add_subdirectory("src/common")
-add_subdirectory("src/detinfo")
-add_subdirectory("src/detops")
+#add_subdirectory("src/detinfo")
+#add_subdirectory("src/detops")
 if(NOT CMAKE_HOST_SYSTEM_NAME MATCHES Windows)
-    add_subdirectory("src/mcaops")
+    #add_subdirectory("src/mcaops")
 endif()
 #add_subdirectory("src/nx2xml")
-add_subdirectory("src/nxcat")
-add_subdirectory("src/nxls")
-add_subdirectory("src/nxtee")
-add_subdirectory("src/xml2nx")
-add_subdirectory("src/datgen")
+#add_subdirectory("src/nxcat")
+#add_subdirectory("src/nxls")
+#add_subdirectory("src/nxtee")
+#add_subdirectory("src/xml2nx")
+#add_subdirectory("src/datgen")
 
 add_subdirectory("test")
 add_subdirectory("resources")

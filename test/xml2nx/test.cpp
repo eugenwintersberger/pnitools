@@ -27,14 +27,13 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/filesystem.hpp>
 #include <pni/core/types.hpp>
-#include <pni/io/nx/nx.hpp>
-#include <pni/io/nx/xml.hpp>
+#include <pni/io/nexus.hpp>
 
 #include <test/config.hpp>
 #include <test/command_fixture.hpp>
 
 using namespace pni::core;
-using namespace pni::io::nx;
+using namespace pni::io;
 
 namespace fs = boost::filesystem;
 
@@ -53,120 +52,142 @@ struct xml2nx_test_fixture : public command_fixture
 
 };
 
-template<typename T>
-std::vector<T> read(const h5::nxobject &object)
+template<
+         typename T,
+         typename H5TYPE>
+std::vector<T> read(const H5TYPE &object)
 {
-    std::vector<T> buffer(get_size(object));
-    read(object,buffer);
+    std::vector<T> buffer(object.dataspace().size());
+    object.read(buffer);
     return buffer;
 }
 
 
 BOOST_FIXTURE_TEST_SUITE(xml2nx_test,xml2nx_test_fixture)
 
-    void check_basic_setup(const string &filename)
-    {
-        h5::nxfile f = h5::nxfile::open_file(filename);
-        h5::nxgroup cg = f.root()["entry"];
-        BOOST_CHECK_EQUAL(read<string>(cg.attributes["NX_class"])[0],"NXentry");
-        BOOST_CHECK_EQUAL(read<string>(cg["title"])[0],"Default entry");
-        BOOST_CHECK_EQUAL(read<string>(cg["experiment_description"])[0],
-                    "This is a plain template which contains the standard field and groups");
-        BOOST_CHECK_EQUAL(read<string>(cg["start_time"])[0],"123");
-        BOOST_CHECK_EQUAL(read<string>(cg["end_time"])[0],"124");
-        BOOST_CHECK_EQUAL(read<string>(cg["program_name"])[0],"xml2nx");
-        BOOST_CHECK_EQUAL(read<string>(
-                    get_attribute(cg["program_name"],"version"))[0],"0.1.0");
-        BOOST_CHECK_EQUAL(read<string>(
-                    get_attribute(cg["program_name"],"configuration"))[0],"none");
-        cg = get_object(f.root(),"/:NXentry/:NXinstrument");
-        BOOST_CHECK_EQUAL(read<string>(cg["name"])[0],"High resolution beamline");
-        BOOST_CHECK_EQUAL(read<string>(
-                    get_attribute(cg["name"],"short_name"))[0],"P08");
-        cg = get_object(f.root(),"/:NXentry/:NXinstrument/source");
-        BOOST_CHECK_EQUAL(read<string>(cg["name"])[0],"Positron-Elektron Tandem Ring Anlage III");
-        BOOST_CHECK_EQUAL(read<string>(
-                    get_attribute(cg["name"],"short_name"))[0],"PETRA III");
-        BOOST_CHECK_EQUAL(read<string>(cg["type"])[0],"Synchrotron X-ray Source");
-        BOOST_CHECK_EQUAL(read<string>(cg["probe"])[0],"x-ray");
+void check_basic_setup(const string &filename)
+{
+  hdf5::file::File f = nexus::open_file(filename,hdf5::file::AccessFlags::READWRITE);
+  hdf5::node::Group cg = f.root()["entry"];
 
-        cg = get_object(f.root(),"/:NXentry");
-        BOOST_CHECK_EQUAL(read<string>(
-                    get_attribute(cg["sample"],"NX_class"))[0],"NXsample");
-        BOOST_CHECK_EQUAL(read<string>(
-                    get_attribute(cg["control"],"NX_class"))[0],"NXmonitor");
-        BOOST_CHECK_EQUAL(read<string>(
-                    get_attribute(cg["data"],"NX_class"))[0],"NXdata");
+  BOOST_CHECK_EQUAL(read<string>(cg.attributes["NX_class"])[0],"NXentry");
 
-    }
+  hdf5::node::Dataset field = cg.nodes["title"];
+  BOOST_CHECK_EQUAL(read<string>(field)[0],"Default entry");
 
-    void check_detector_setup(const string &filename)
-    {
-        h5::nxfile f = h5::nxfile::open_file(filename);
-        h5::nxgroup det = get_object(f.root(),"/:NXentry/:NXinstrument/:NXdetector");
+  field = cg.nodes["experiment_description"];
+  BOOST_CHECK_EQUAL(read<string>(field)[0],"This is a plain template which contains the standard field and groups");
 
-        BOOST_CHECK_CLOSE(read<double>(det["x_pixel_size"])[0],12.45,0.001);
-        BOOST_CHECK_CLOSE(read<double>(det["y_pixel_size"])[0],13.45,0.001);
+  field = cg.nodes["start_time"];
+  BOOST_CHECK_EQUAL(read<string>(field)[0],"123");
 
-        h5::nxfield data = det["data"];
-        auto s = data.shape<shape_t>();
-        BOOST_CHECK_EQUAL(data.rank(),2);
-        BOOST_CHECK_EQUAL(s[0],0);
-        BOOST_CHECK_EQUAL(s[1],2048);
+  field = cg.nodes["end_time"];
+  BOOST_CHECK_EQUAL(read<string>(field)[0],"124");
 
-        BOOST_CHECK_EQUAL(read<string>(det["layout"])[0],"linear");
-        BOOST_CHECK_EQUAL(read<string>(det["description"])[0],"PSD");
-        BOOST_CHECK_CLOSE(read<double>(det["distance"])[0],0.8,0.001);
-        
-    }
+  field = cg.nodes["program_name"];
+  BOOST_CHECK_EQUAL(read<string>(field)[0],"xml2nx");
+  BOOST_CHECK_EQUAL(read<string>(field.attributes["version"])[0],"0.1.0");
+  BOOST_CHECK_EQUAL(read<string>(field.attributes["configuration"])[0],"none");
+
+  nexus::GroupList groups = nexus::get_objects(f.root(),nexus::Path("/:NXentry/:NXinstrument"));
+  cg = groups.front();
+  field = cg.nodes["name"];
+  BOOST_CHECK_EQUAL(read<string>(field)[0],"High resolution beamline");
+  BOOST_CHECK_EQUAL(read<string>(field.attributes["short_name"])[0],"P08");
+
+  groups = nexus::get_objects(f.root(),nexus::Path("/:NXentry/:NXinstrument/source"));
+  cg = groups.front();
+  field = cg.nodes["name"];
+  BOOST_CHECK_EQUAL(read<string>(field)[0],"Positron-Elektron Tandem Ring Anlage III");
+  BOOST_CHECK_EQUAL(read<string>(field.attributes["short_name"])[0],"PETRA III");
+  field = cg.nodes["type"];
+  BOOST_CHECK_EQUAL(read<string>(field)[0],"Synchrotron X-ray Source");
+  field = cg.nodes["probe"];
+  BOOST_CHECK_EQUAL(read<string>(field)[0],"x-ray");
+
+  groups = nexus::get_objects(f.root(),nexus::Path("/:NXentry"));
+  cg = groups.front();
+  BOOST_CHECK_EQUAL(read<string>(cg.nodes["sample"].attributes["NX_class"])[0],"NXsample");
+  BOOST_CHECK_EQUAL(read<string>(cg.nodes["control"].attributes["NX_class"])[0],"NXmonitor");
+  BOOST_CHECK_EQUAL(read<string>(cg.nodes["data"].attributes["NX_class"])[0],"NXdata");
+
+}
+
+void check_detector_setup(const string &filename)
+{
+  hdf5::file::File f = nexus::open_file(filename,hdf5::file::AccessFlags::READWRITE);
+  nexus::Path detector_paths("/:NXentry/:NXinstrument/:NXdetector");
+  nexus::GroupList detectors = nexus::get_objects(f.root(),detector_paths);
+  hdf5::node::Group detector = detectors.front();
+
+  hdf5::node::Dataset field = detector.nodes["x_pixel_size"];
+  BOOST_CHECK_CLOSE(read<double>(field)[0],12.45,0.001);
+  field = detector.nodes["y_pixel_size"];
+  BOOST_CHECK_CLOSE(read<double>(field)[0],13.45,0.001);
+
+  hdf5::node::Dataset data = detector.nodes["data"];
+  hdf5::dataspace::Simple dataspace = data.dataspace();
+  hdf5::Dimensions current_dimensions = dataspace.current_dimensions();
+  BOOST_CHECK_EQUAL(dataspace.rank(),2);
+  BOOST_CHECK_EQUAL(current_dimensions[0],0);
+  BOOST_CHECK_EQUAL(current_dimensions[1],2048);
+
+  field = detector.nodes["layout"];
+  BOOST_CHECK_EQUAL(read<string>(field)[0],"linear");
+  field = detector.nodes["description"];
+  BOOST_CHECK_EQUAL(read<string>(field)[0],"PSD");
+  field = detector.nodes["distance"];
+  BOOST_CHECK_CLOSE(read<double>(field)[0],0.8,0.001);
+
+}
    
-    BOOST_AUTO_TEST_CASE(test_return)
-    {
-        run_command(option_list{});
-        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
-        
-        option_list options{"-p"+out_file.string()+"://","basic.xml"};
-        run_command(options);
-        BOOST_TEST_MESSAGE("Executed: "+command);
-        BOOST_CHECK_EQUAL(get_return_value(return_value),0);
+BOOST_AUTO_TEST_CASE(test_return)
+{
+  run_command(option_list{});
+  BOOST_CHECK_EQUAL(get_return_value(return_value),1);
 
-        //repeat the last command - should not work as the file exists
-        run_command(options);
-        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
+  option_list options{"-p"+out_file.string()+"://","basic.xml"};
+  run_command(options);
+  BOOST_TEST_MESSAGE("Executed: "+command);
+  BOOST_CHECK_EQUAL(get_return_value(return_value),0);
 
-        options.insert(options.begin(),"-o"); //this should work now
-        BOOST_TEST_MESSAGE("Executing: "+command);
-        run_command(options);
-        BOOST_CHECK_EQUAL(get_return_value(return_value),0);
+  //repeat the last command - should not work as the file exists
+  run_command(options);
+  BOOST_CHECK_EQUAL(get_return_value(return_value),1);
 
-        //no result file should cause an error
-        run_command({"basic.xml"});
-        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
-    }
+  options.insert(options.begin(),"-o"); //this should work now
+  BOOST_TEST_MESSAGE("Executing: "+command);
+  run_command(options);
+  BOOST_CHECK_EQUAL(get_return_value(return_value),0);
 
-    BOOST_AUTO_TEST_CASE(test_create_basic)
-    {
-        run_command({"-o","-p"+out_file.string()+"://","basic.xml"});
-        BOOST_CHECK_EQUAL(get_return_value(return_value),0);
+  //no result file should cause an error
+  run_command({"basic.xml"});
+  BOOST_CHECK_EQUAL(get_return_value(return_value),1);
+}
 
-        check_basic_setup(out_file.string());
+BOOST_AUTO_TEST_CASE(test_create_basic)
+{
+  run_command({"-o","-p"+out_file.string()+"://","basic.xml"});
+  BOOST_CHECK_EQUAL(get_return_value(return_value),0);
 
-    }
+  check_basic_setup(out_file.string());
 
-    BOOST_AUTO_TEST_CASE(test_append_detector)
-    {
-        run_command({"-o",
-                     "-p" + out_file.string()+"://",
-                     "basic.xml"});
-        BOOST_CHECK_EQUAL(get_return_value(return_value),0);
+}
 
-        run_command({"-p"+out_file.string()+"://:NXentry/:NXinstrument",
-                     "detector.xml"});
-        BOOST_CHECK_EQUAL(get_return_value(return_value),0);
+BOOST_AUTO_TEST_CASE(test_append_detector)
+{
+  run_command({"-o",
+    "-p" + out_file.string()+"://",
+    "basic.xml"});
+  BOOST_CHECK_EQUAL(get_return_value(return_value),0);
 
-        check_basic_setup(out_file.string());
-        check_detector_setup(out_file.string());
-    }
+  run_command({"-p"+out_file.string()+"://:NXentry/:NXinstrument",
+    "detector.xml"});
+  BOOST_CHECK_EQUAL(get_return_value(return_value),0);
+
+  check_basic_setup(out_file.string());
+  check_detector_setup(out_file.string());
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

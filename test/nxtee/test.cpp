@@ -26,7 +26,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <pni/core/types.hpp>
-#include <pni/io/nx/nx.hpp>
+#include <pni/io/nexus.hpp>
 
 #include <test/config.hpp>
 
@@ -39,7 +39,7 @@ static const std::vector<int> replace_data{10, 20, 30, 40, 50, 60, 70, 80, 90,
 
 namespace fs = boost::filesystem;
 using namespace pni::core;
-using namespace pni::io::nx;
+using namespace pni::io;
 
 struct nxtee_test_fixture
 {
@@ -48,93 +48,97 @@ struct nxtee_test_fixture
     std::string command;
     std::string output;
     int return_value;
-    
+
     nxtee_test_fixture():
-        command_path(bin_path),
-        command(),
-        output(),
-        return_value()
+      command_path(bin_path),
+      command(),
+      output(),
+      return_value()
     {
-        command_path /= "nxtee";
-        create_file_from_xml(fs::path("nxtee_test.nxs"),fs::path("mca.xml"));
+      command_path /= "nxtee";
+      create_file_from_xml(fs::path("nxtee_test.nxs"),fs::path("mca.xml"));
     }
-    
+
     void run_command(const std::vector<std::string> &options,
                      const fs::path &tempfile = fs::path("nxtee_test.tmp"))
     {
-        std::vector<std::string> l{command_path.string()};
-        std::copy(options.begin(),options.end(),std::back_inserter(l));
-        l.push_back(">"+tempfile.string());
-        
-        command = get_command(l);
-        return_value = std::system(command.c_str());
-        output = read_data(tempfile);
+      std::vector<std::string> l{command_path.string()};
+      std::copy(options.begin(),options.end(),std::back_inserter(l));
+      l.push_back(">"+tempfile.string());
+
+      command = get_command(l);
+      return_value = std::system(command.c_str());
+      output = read_data(tempfile);
     }
 };
 
 
 BOOST_FIXTURE_TEST_SUITE(nxtee_test,nxtee_test_fixture)
     
-    BOOST_AUTO_TEST_CASE(test_return)
-    {
-        fs::path p;
-        p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca2/data@units";
-        run_command({p.string(),"< append.dat"});
-        BOOST_CHECK_EQUAL(get_return_value(return_value),1);
-    }
+BOOST_AUTO_TEST_CASE(test_return)
+{
+  fs::path p;
+  p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca2/data@units";
+  run_command({p.string(),"< append.dat"});
+  BOOST_CHECK_EQUAL(get_return_value(return_value),1);
+}
 
-    BOOST_AUTO_TEST_CASE(test_append_field)
-    {
-        fs::path p;
-        p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca/data";
-        run_command({p.string(),"< append.dat"});
-        BOOST_CHECK_EQUAL(get_return_value(return_value),0);
+BOOST_AUTO_TEST_CASE(test_append_field)
+{
+  fs::path p;
+  p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca/data";
+  run_command({p.string(),"< append.dat"});
+  BOOST_CHECK_EQUAL(get_return_value(return_value),0);
 
-        h5::nxfile f = h5::nxfile::open_file("nxtee_test.nxs");
-        h5::nxgroup r = f.root();
-        h5::nxfield field = get_object(r,":NXentry/:NXinstrument/mca/data");
+  hdf5::file::File f = nexus::open_file("nxtee_test.nxs",
+                                        hdf5::file::AccessFlags::READWRITE);
+  hdf5::node::Group r = f.root();
+  nexus::DatasetList fields = nexus::get_objects(r,nexus::Path::from_string(":NXentry/:NXinstrument/mca/data"));
+  hdf5::node::Dataset field(fields.front());
 
-        std::vector<int> data(field.size());
-        field.read(data);
-        BOOST_CHECK_EQUAL_COLLECTIONS(data.begin(),data.end(),
-                                      append_data.begin(),append_data.end());
-    }
+  std::vector<int> data(field.dataspace().size());
+  field.read(data);
+  BOOST_CHECK_EQUAL_COLLECTIONS(data.begin(),data.end(),
+                                append_data.begin(),append_data.end());
+}
 
-    BOOST_AUTO_TEST_CASE(test_replace_field)
-    {
-        fs::path p;
-        p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca2/data";
-        run_command({"-r",p.string(),"<replace.dat"});
-        BOOST_CHECK_EQUAL(get_return_value(return_value),0);
+BOOST_AUTO_TEST_CASE(test_replace_field)
+{
+  fs::path p;
+  p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca2/data";
+  run_command({"-r",p.string(),"<replace.dat"});
+  BOOST_CHECK_EQUAL(get_return_value(return_value),0);
 
-        h5::nxfile f = h5::nxfile::open_file("nxtee_test.nxs");
-        h5::nxgroup r = f.root();
-        h5::nxfield field = get_object(r,":NXentry/:NXinstrument/mca2/data");
+  hdf5::file::File f = nexus::open_file("nxtee_test.nxs",hdf5::file::AccessFlags::READWRITE);
+  hdf5::node::Group r = f.root();
+  nexus::DatasetList fields = nexus::get_objects(r,nexus::Path(":NXentry/:NXinstrument/mca2/data"));
+  hdf5::node::Dataset field = fields.front();
 
-        std::vector<int> data(field.size());
-        field.read(data);
-        BOOST_CHECK_EQUAL_COLLECTIONS(data.begin(),data.end(),
-                                      replace_data.begin(),replace_data.end());
+  std::vector<int> data(field.dataspace().size());
+  field.read(data);
+  BOOST_CHECK_EQUAL_COLLECTIONS(data.begin(),data.end(),
+                                replace_data.begin(),replace_data.end());
 
-    }
+}
 
-    BOOST_AUTO_TEST_CASE(test_replace_attribute)
-    {
-        fs::path p;
-        p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca2/data@units";
-        run_command({"-r",p.string(),"<counts.dat"});
-        BOOST_CHECK_EQUAL(get_return_value(return_value),0);
+BOOST_AUTO_TEST_CASE(test_replace_attribute)
+{
+  fs::path p;
+  p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca2/data@units";
+  run_command({"-r",p.string(),"<counts.dat"});
+  BOOST_CHECK_EQUAL(get_return_value(return_value),0);
 
-        h5::nxfile f = h5::nxfile::open_file("nxtee_test.nxs");
-        h5::nxgroup r = f.root();
-        h5::nxattribute attr = get_object(r,":NXentry/:NXinstrument/mca2/data@units");
+  hdf5::file::File f = nexus::open_file("nxtee_test.nxs",hdf5::file::AccessFlags::READWRITE);
+  hdf5::node::Group r = f.root();
+  nexus::AttributeList attrs = nexus::get_objects(r,nexus::Path(":NXentry/:NXinstrument/mca2/data@units"));
+  hdf5::attribute::Attribute attr = attrs.front();
 
-        std::string buffer;
-        attr.read(buffer);
-        BOOST_CHECK_EQUAL(buffer,"counts");
+  std::string buffer;
+  attr.read(buffer);
+  BOOST_CHECK_EQUAL(buffer,"counts");
 
 
-    }
+}
 
     
 BOOST_AUTO_TEST_SUITE_END()
