@@ -45,7 +45,7 @@ endif()
 #add_subdirectory("src/nxls")
 #add_subdirectory("src/nxtee")
 #add_subdirectory("src/xml2nx")
-#add_subdirectory("src/datgen")
+add_subdirectory("src/datgen")
 
 add_subdirectory("test")
 add_subdirectory("resources")
