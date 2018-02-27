@@ -35,7 +35,7 @@ include(configure/CMakeLists.txt)
 
 #add_subdirectory("doc")
 add_subdirectory("src/common")
-#add_subdirectory("src/detinfo")
+add_subdirectory("src/detinfo")
 #add_subdirectory("src/detops")
 if(NOT CMAKE_HOST_SYSTEM_NAME MATCHES Windows)
     #add_subdirectory("src/mcaops")
