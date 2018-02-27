@@ -21,8 +21,7 @@
 //
 #pragma once
 
-#include <pni/io/nx/nx.hpp>
-#include <pni/io/nx/nxpath.hpp>
+#include <pni/io/nexus.hpp>
 #include <pni/core/configuration.hpp>
 
 //!
@@ -73,8 +72,14 @@ bool no_target_path(const pni::core::configuration &config);
 //! 
 //! \return true if successful, false otherwise
 //!
-bool get_target_file(const pni::io::nx::nxpath &path,
-                     pni::io::nx::h5::nxfile &file);
+bool get_target_file(const pni::io::nexus::Path &path,
+                     hdf5::file::File &file);
+
+pni::core::shape_t get_shape(const pni::io::nexus::PathObject &object);
+
+pni::core::type_id_t get_type_id(const pni::io::nexus::PathObject &object);
+
+hdf5::Dimensions get_dimensions(const pni::io::nexus::PathObject &object);
 
 //----------------------------------------------------------------------------
 //!
@@ -90,6 +95,6 @@ bool get_target_file(const pni::io::nx::nxpath &path,
 //! \param target non-const reference to the target object
 //! \return true if successful, false otherwise
 //!
-bool get_target_object(const pni::io::nx::nxpath &path,
-                       const pni::io::nx::h5::nxfile &file,
-                       pni::io::nx::h5::nxobject &target);
+bool get_target_object(const pni::io::nexus::Path &path,
+                       const hdf5::file::File &file,
+                       pni::io::nexus::PathObject &target);

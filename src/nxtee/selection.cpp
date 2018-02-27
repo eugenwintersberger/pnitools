@@ -19,30 +19,22 @@
 // Created on: Jun 3, 2015
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
-#pragma once
 
-#include <pni/io/nexus.hpp>
+#include "selection.hpp"
+#include "utils.hpp"
 
+ hdf5::dataspace::Hyperslab Selection::create(const pni::io::nexus::PathObject &object)
+ {
+   hdf5::Dimensions dims = get_dimensions(object);
 
-//!
-//! \ingroup nxtee_devel
-//! \brief append data to target
-//! 
-//! Appends data to the target object
-//! 
-//! \param target the object to which to append data
-//! 
-void append(pni::io::nexus::PathObject &target);
+   hdf5::Dimensions offset(dims.size()),block(dims);
+   block.front() = 1;
+   std::fill(offset.begin(),offset.end(),0);
 
-//!
-//! @ingroup nxtee_devel
-//! @brief replace data
-//! 
-//! Replaces data with content from standard input.
-//! 
-//! @param target the object into which data should be replaced
-//! @param offset index offset where to start with replacement
-//!
-void replace(pni::io::nexus::PathObject &target,size_t index_offset);
+   offset.front() = dims.front();
+   if(offset.front()!=0)
+     offset.front() = offset.front()-1;
 
+   return hdf5::dataspace::Hyperslab(offset,block);
+ }
 

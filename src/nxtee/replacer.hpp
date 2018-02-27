@@ -24,11 +24,6 @@
 #include "stdin_reader.hpp"
 #include "selection.hpp"
 
-#include <pni/io/nx/algorithms/get_shape.hpp>
-#include <pni/io/nx/algorithms/write.hpp>
-#include <pni/io/nx/algorithms/is_attribute.hpp>
-#include <pni/io/nx/algorithms/get_size.hpp>
-
 
 //!
 //! \ingroup nxtee_devel
@@ -40,58 +35,54 @@
 //! 
 //! \tparam T data type to process
 //! 
-template<typename T> class replacer
+template<typename T> class Replacer
 {
-    private:
-        //! reader type
-        typedef stdin_reader<T> reader_type;
-        //! local data buffer instance
-        typename reader_type::buffer_type _buffer;
-        //! local reader instance
-        reader_type _reader;
+  private:
+    //! reader type
+    using ReaderType = StandardInputReader<T>;
+    //! local data buffer instance
+    typename ReaderType::BufferType _buffer;
+    //! local reader instance
+    ReaderType _reader;
 
-        //! starting insert for replacement
-        size_t _index;
-    public:
+    //! starting insert for replacement
+    size_t _index;
+  public:
 
-        replacer(size_t index_offset):
-            _index(index_offset)
-        {}
+    Replacer(size_t index_offset):
+      _index(index_offset)
+    {}
 
-        //!
-        //! \brief append data to target
-        //! 
-        //! Append data to the target object.
-        //!
-        //! \throw invalid_object_error if the target is not a valid object
-        //! \throw object_error in case of any object related error
-        //! \throw io_error in case of an error during IO 
-        //! \throw type_error if the datatype cannot be handled 
-        //! \throw memory_not_allocated_error problems with memory allocation
-        //! \throw size_mismatch_error buffer and object size do not match
-        //! 
-        //! \param target the object to which to append data
-        //! 
-        void operator()(pni::io::nx::h5::nxobject &target)
-        {
-            using namespace pni::core;
-            using namespace pni::io::nx;
+    //!
+    //! \brief append data to target
+    //!
+    //! Append data to the target object.
+    //!
+    //! \throw invalid_object_error if the target is not a valid object
+    //! \throw object_error in case of any object related error
+    //! \throw io_error in case of an error during IO
+    //! \throw type_error if the datatype cannot be handled
+    //! \throw memory_not_allocated_error problems with memory allocation
+    //! \throw size_mismatch_error buffer and object size do not match
+    //!
+    //! \param target the object to which to append data
+    //!
+    void operator()(pni::io::nexus::PathObject &target)
+    {
+      using namespace pni::core;
+      using namespace pni::io;
 
-            shape_t target_shape;
-            if(is_attribute(target) && get_size(target)==1)
-                target_shape=shape_t{1};
-            else
-                target_shape = get_shape<shape_t>(target);
 
-            selection::type target_selection = selection::from_shape(target_shape);
+      hdf5::dataspace::Hyperslab selection = Selection::create(target);
+      selection.offset(0,_index);
 
-            while(_reader.next(_buffer))
-            {
-                target_selection.front() = slice(_index,_index+1);
-                write(target,_buffer,target_selection);
-                _index++;
-            }
-        }
+      hdf5::node::Dataset dataset = target;
+      while(_reader.next(_buffer))
+      {
+        dataset.read(_buffer,selection);
+        selection.offset(0,selection.offset()[0]+1);
+      }
+    }
 
 };
 

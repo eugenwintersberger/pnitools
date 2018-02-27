@@ -23,11 +23,10 @@
 #pragma once
 #include <iostream>
 #include <pni/core/types.hpp>
-#include <pni/io/nx/nxvariant_traits.hpp>
-#include <pni/io/nx/nxvariant.hpp>
+#include <pni/io/nexus.hpp>
 
 using namespace pni::core;
-using namespace pni::io::nx;
+using namespace pni::io;
     
 /*!
 \brief stream writer visitor

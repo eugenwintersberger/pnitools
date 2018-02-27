@@ -20,11 +20,11 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include <pni/io/nx/algorithms.hpp>
+#include <pni/io/nexus.hpp>
 #include "utils.hpp"
 
 using namespace pni::core;
-using namespace pni::io::nx;
+using namespace pni::io;
 
 //----------------------------------------------------------------------------
 configuration create_global_config()
@@ -43,7 +43,7 @@ configuration create_global_config()
                 "replace data instead of append",false));
     config.add_option(config_option<size_t>("start-index","",
                 "start index for replace operation",size_t(0)));
-    config.add_argument(config_argument<nxpath>("target",1));
+    config.add_argument(config_argument<nexus::Path>("target",1));
 
     return config;
 }
@@ -72,11 +72,11 @@ bool no_target_path(const configuration &config)
 }
 
 //----------------------------------------------------------------------------
-bool get_target_file(const nxpath &path,h5::nxfile &file)
+bool get_target_file(const nexus::Path &path,hdf5::file::File &file)
 {
     try
     {
-        file = h5::nxfile::open_file(path.filename(),false);
+        file = nexus::open_file(path.filename(),false);
     }
     catch(...)
     {
@@ -88,13 +88,15 @@ bool get_target_file(const nxpath &path,h5::nxfile &file)
 }
 
 //----------------------------------------------------------------------------
-bool get_target_object(const nxpath &path,const h5::nxfile &file,
-                       h5::nxobject &target)
+bool get_target_object(const nexus::Path &path,const hdf5::file::File &file,
+                       nexus::PathObject &target)
 {
     //get the object
     try
     {
-        target = get_object(file.root(),path);
+    	nexus::PathObjectList targets = nexus::get_objects(file.root(),path);
+
+        target = targets.front();
     }
     catch(...)
     {
@@ -114,4 +116,39 @@ bool get_target_object(const nxpath &path,const h5::nxfile &file,
 
 
     return true;
+}
+
+pni::core::shape_t get_shape(const pni::io::nexus::PathObject &object)
+{
+  hdf5::Dimensions dims = get_dimensions(object);
+
+  pni::core::shape_t(dims.begin(),dims.end());
+}
+
+hdf5::Dimensions get_dimensions(const pni::io::nexus::PathObject &object)
+{
+  if(nexus::is_dataset(object))
+  {
+    hdf5::node::Dataset dataset = object;
+    return nexus::get_dimensions(dataset);
+  }
+  else if(nexus::is_attribute(object))
+  {
+    hdf5::attribute::Attribute attribute = object;
+    return nexus::get_dimensions(attribute);
+  }
+}
+
+pni::core::type_id_t get_type_id(const pni::io::nexus::PathObject &object)
+{
+  if(nexus::is_dataset(object))
+  {
+    hdf5::node::Dataset dataset = object;
+    return nexus::get_type_id(dataset);
+  }
+  else if(nexus::is_attribute(object))
+  {
+    hdf5::attribute::Attribute attribute = object;
+    return nexus::get_type_id(attribute);
+  }
 }

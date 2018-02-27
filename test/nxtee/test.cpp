@@ -136,8 +136,6 @@ BOOST_AUTO_TEST_CASE(test_replace_attribute)
   std::string buffer;
   attr.read(buffer);
   BOOST_CHECK_EQUAL(buffer,"counts");
-
-
 }
 
     

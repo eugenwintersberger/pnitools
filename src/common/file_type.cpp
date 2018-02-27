@@ -28,8 +28,8 @@
 using namespace pni::core;
 namespace fs = boost::filesystem;
 
-static const char TIFF_LE[] = {0x49,0x49,0x2A,0x00};
-static const char TIFF_BE[] = {0x4D,0x4D,0x00,0x2A};
+static const unsigned char TIFF_LE[] = {0x49,0x49,0x2A,0x00};
+static const unsigned char TIFF_BE[] = {0x4D,0x4D,0x00,0x2A};
 static const unsigned char HDF5[] = {0x89,0x48,0x44,0x46,
                                0x0d,0x0a,0x1a,0x0a};
 
@@ -56,14 +56,14 @@ std::ostream &operator<<(std::ostream &stream,const file_type &type)
 
 
 //----------------------------------------------------------------------------
-bool is_tiff(char *buffer)
+bool is_tiff(unsigned char *buffer)
 {
     return std::equal(TIFF_LE,TIFF_LE+4,buffer) ||
            std::equal(TIFF_BE,TIFF_BE+4,buffer);
 }
 
 //----------------------------------------------------------------------------
-bool is_hdf5(char *buffer)
+bool is_hdf5(unsigned char *buffer)
 {
     return std::equal(HDF5,HDF5+4,buffer);
 }
@@ -71,10 +71,10 @@ bool is_hdf5(char *buffer)
 //----------------------------------------------------------------------------
 file_type get_file_type(const pni::core::string &fname)
 {
-    char buffer[read_buf_size];
+    unsigned char buffer[read_buf_size];
 
     std::ifstream file_stream(fname);
-    file_stream.read(buffer,8);
+    file_stream.read(reinterpret_cast<char*>(buffer),8);
 
     if(is_tiff(buffer))     
         return file_type::TIFF_FILE;

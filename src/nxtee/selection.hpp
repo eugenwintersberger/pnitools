@@ -23,6 +23,8 @@
 
 #include <vector>
 #include <pni/core/arrays/slice.hpp>
+#include <h5cpp/hdf5.hpp>
+#include <pni/io/nexus.hpp>
 
 //!
 //! \ingroup nxtee_devel 
@@ -30,36 +32,10 @@
 //! 
 //! A type used to store selections. 
 //! 
-struct selection
+struct Selection
 {
-    typedef std::vector<pni::core::slice> type;
 
-    //!
-    //! \brief create selection from shape
-    //!
-    //! Creates a selection from a shape which whouls span the entire
-    //! multidimensional data described by the particular shape.
-    //!
-    //! \tparam CTYPE container type used to store shape information
-    //! \param shape reference to the actual shape container
-    //! \return selection type.
-    //!
-    template<typename CTYPE>
-    static type from_shape(const CTYPE &shape)
-    {
-        using namespace pni::core;
-        type sel;
-
-        for(auto s: shape)
-        {
-            if(s)
-                sel.push_back(slice(0,s));
-            else
-                sel.push_back(slice(0,1));
-        }
-
-        return sel;
-    }
+    static hdf5::dataspace::Hyperslab create(const pni::io::nexus::PathObject &object);
 
 };
 

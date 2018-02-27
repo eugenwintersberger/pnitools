@@ -43,7 +43,7 @@ endif()
 #add_subdirectory("src/nx2xml")
 #add_subdirectory("src/nxcat")
 #add_subdirectory("src/nxls")
-#add_subdirectory("src/nxtee")
+add_subdirectory("src/nxtee")
 #add_subdirectory("src/xml2nx")
 add_subdirectory("src/datgen")
 
