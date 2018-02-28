@@ -48,22 +48,27 @@ template<typename T> class Appender
     //! local reader instance
     ReaderType _reader;
 
-    void write(const hdf5::node::Dataset &dataset,
-               hdf5::dataspace::Hyperslab &selection)
+    void write(const hdf5::node::Dataset &dataset)
     {
+      hdf5::dataspace::Hyperslab selection = Selection::create(dataset);
+
       while(_reader.next(_buffer))
       {
         dataset.extent(0,1);
+        dataset.write(_buffer,selection);
         selection.offset(0,selection.offset()[0]+1);
-        dataset.read(_buffer,selection);
       }
     }
 
     void write(const hdf5::attribute::Attribute &attribute)
     {
-      _reader.next(_buffer);
-      attribute.read(_buffer);
+      while(_reader.next(_buffer))
+      {
+        _reader.next(_buffer);
+        attribute.write(_buffer);
+      }
     }
+
   public:
 
     //!
@@ -87,9 +92,9 @@ template<typename T> class Appender
 
       if(nexus::is_dataset(target))
       {
-        hdf5::dataspace::Hyperslab selection = Selection::create(target);
+
         hdf5::node::Dataset dataset = target;
-        write(dataset,selection);
+        write(dataset);
       }
       else if(nexus::is_attribute(target))
       {

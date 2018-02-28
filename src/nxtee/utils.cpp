@@ -33,6 +33,8 @@ configuration create_global_config()
 
     config.add_option(config_option<bool>("help","h",
                 "show help",false));
+    config.add_option(config_option<bool>("verbose","v",
+                                          "print verbse output",false));
     config.add_option(config_option<char>("begin","b",
                 "character indicating start of data"));
     config.add_option(config_option<char>("end","e",
@@ -76,7 +78,7 @@ bool get_target_file(const nexus::Path &path,hdf5::file::File &file)
 {
     try
     {
-        file = nexus::open_file(path.filename(),false);
+        file = nexus::open_file(path.filename(),hdf5::file::AccessFlags::READWRITE);
     }
     catch(...)
     {
@@ -96,7 +98,12 @@ bool get_target_object(const nexus::Path &path,const hdf5::file::File &file,
     {
     	nexus::PathObjectList targets = nexus::get_objects(file.root(),path);
 
-        target = targets.front();
+    	if(targets.size()==0)
+    	{
+    	  std::cerr<<"Could not find an object matching the path: "<<path<<std::endl;
+    	  return false;
+    	}
+      target = targets.front();
     }
     catch(...)
     {

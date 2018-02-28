@@ -86,14 +86,14 @@ BOOST_AUTO_TEST_CASE(test_return)
 BOOST_AUTO_TEST_CASE(test_append_field)
 {
   fs::path p;
-  p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca/data";
+  p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca:NXdetector/data";
   run_command({p.string(),"< append.dat"});
   BOOST_CHECK_EQUAL(get_return_value(return_value),0);
 
   hdf5::file::File f = nexus::open_file("nxtee_test.nxs",
                                         hdf5::file::AccessFlags::READWRITE);
   hdf5::node::Group r = f.root();
-  nexus::DatasetList fields = nexus::get_objects(r,nexus::Path::from_string(":NXentry/:NXinstrument/mca/data"));
+  nexus::DatasetList fields = nexus::get_objects(r,nexus::Path::from_string(":NXentry/:NXinstrument/mca:NXdetector/data"));
   hdf5::node::Dataset field(fields.front());
 
   std::vector<int> data(field.dataspace().size());
@@ -105,13 +105,13 @@ BOOST_AUTO_TEST_CASE(test_append_field)
 BOOST_AUTO_TEST_CASE(test_replace_field)
 {
   fs::path p;
-  p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca2/data";
+  p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca2:NXdetector/data";
   run_command({"-r",p.string(),"<replace.dat"});
   BOOST_CHECK_EQUAL(get_return_value(return_value),0);
 
   hdf5::file::File f = nexus::open_file("nxtee_test.nxs",hdf5::file::AccessFlags::READWRITE);
   hdf5::node::Group r = f.root();
-  nexus::DatasetList fields = nexus::get_objects(r,nexus::Path(":NXentry/:NXinstrument/mca2/data"));
+  nexus::DatasetList fields = nexus::get_objects(r,nexus::Path(":NXentry/:NXinstrument/mca2:NXdetector/data"));
   hdf5::node::Dataset field = fields.front();
 
   std::vector<int> data(field.dataspace().size());
@@ -124,13 +124,13 @@ BOOST_AUTO_TEST_CASE(test_replace_field)
 BOOST_AUTO_TEST_CASE(test_replace_attribute)
 {
   fs::path p;
-  p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca2/data@units";
+  p += "nxtee_test.nxs://:NXentry/:NXinstrument/mca2:NXdetector/data@units";
   run_command({"-r",p.string(),"<counts.dat"});
   BOOST_CHECK_EQUAL(get_return_value(return_value),0);
 
   hdf5::file::File f = nexus::open_file("nxtee_test.nxs",hdf5::file::AccessFlags::READWRITE);
   hdf5::node::Group r = f.root();
-  nexus::AttributeList attrs = nexus::get_objects(r,nexus::Path(":NXentry/:NXinstrument/mca2/data@units"));
+  nexus::AttributeList attrs = nexus::get_objects(r,nexus::Path(":NXentry/:NXinstrument/mca2:NXdetector/data@units"));
   hdf5::attribute::Attribute attr = attrs.front();
 
   std::string buffer;

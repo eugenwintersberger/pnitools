@@ -25,15 +25,26 @@
 
  hdf5::dataspace::Hyperslab Selection::create(const pni::io::nexus::PathObject &object)
  {
+   //
+   // obtain the current dimensions of the target object
+   //
    hdf5::Dimensions dims = get_dimensions(object);
 
-   hdf5::Dimensions offset(dims.size()),block(dims);
+   //
+   // create the block container
+   //
+   hdf5::Dimensions block(dims);
    block.front() = 1;
+
+   //
+   // create the offset container
+   //
+   hdf5::Dimensions offset(dims.size());
    std::fill(offset.begin(),offset.end(),0);
 
-   offset.front() = dims.front();
-   if(offset.front()!=0)
-     offset.front() = offset.front()-1;
+   offset.front() = dims.front(); // set the offset
+   //if(offset.front()!=0)
+   //  offset.front() = offset.front()-1;
 
    return hdf5::dataspace::Hyperslab(offset,block);
  }

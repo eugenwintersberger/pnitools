@@ -47,6 +47,25 @@ template<typename T> class Replacer
 
     //! starting insert for replacement
     size_t _index;
+
+    void replace(hdf5::node::Dataset &dataset)
+    {
+      hdf5::dataspace::Hyperslab selection = Selection::create(dataset);
+      selection.offset(0,_index);
+      while(_reader.next(_buffer))
+      {
+        dataset.write(_buffer,selection);
+        selection.offset(0,selection.offset()[0]+1);
+      }
+    }
+
+    void replace(hdf5::attribute::Attribute &attribute)
+    {
+      while(_reader.next(_buffer))
+      {
+        attribute.write(_buffer);
+      }
+    }
   public:
 
     Replacer(size_t index_offset):
@@ -72,15 +91,15 @@ template<typename T> class Replacer
       using namespace pni::core;
       using namespace pni::io;
 
-
-      hdf5::dataspace::Hyperslab selection = Selection::create(target);
-      selection.offset(0,_index);
-
-      hdf5::node::Dataset dataset = target;
-      while(_reader.next(_buffer))
+      if(target.type() == nexus::PathObject::Type::DATASET)
       {
-        dataset.read(_buffer,selection);
-        selection.offset(0,selection.offset()[0]+1);
+        hdf5::node::Dataset dataset = target;
+        replace(dataset);
+      }
+      else if(target.type() == nexus::PathObject::Type::ATTRIBUTE)
+      {
+        hdf5::attribute::Attribute attribute = target;
+        replace(attribute);
       }
     }
 

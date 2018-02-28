@@ -71,8 +71,31 @@ int main(int argc,char **argv)
   if(!get_target_file(target_path,file)) return 1;
 
   //get the object in the file
+  if(config.value<bool>("verbose"))
+  {
+    std::cout<<"Looking for target: "<<target_path<<std::endl;
+  }
   nexus::PathObject target;
   if(!get_target_object(target_path,file,target)) return 1;
+
+  if(config.value<bool>("verbose"))
+  {
+    std::cout<<"Got target: ";
+    switch(target.type())
+    {
+      case nexus::PathObject::Type::ATTRIBUTE:
+      {
+        hdf5::attribute::Attribute attribute = target;
+        std::cout<<nexus::get_path(attribute);
+      }
+      break;
+      case nexus::PathObject::Type::DATASET:
+      {
+        hdf5::node::Dataset dataset = target;
+        std::cout<<nexus::get_path(dataset);
+      }
+    }
+  }
 
 
   //------------------------------------------------------------------------
