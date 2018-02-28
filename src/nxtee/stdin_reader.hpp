@@ -31,39 +31,38 @@
 //! 
 //! Reads data items and returns every newly parsed input line with next().
 //! 
-template<typename T> class stdin_reader
+template<typename T> class StandardInputReader
 {
-    public:
-        //! value type
-        typedef T value_type;
-        //! buffer type used to keep results
-        typedef std::vector<value_type> buffer_type;
-        //! parser type
-        typedef pni::io::parser<buffer_type> parser_type;
-    private:
-        //! local line storage
-        pni::core::string _line_buffer;
-        //! local parser instance
-        parser_type _parser;
-    public:
+  public:
+    //! value type
+    using ValueType = T;
+    //! buffer type used to keep results
+    using BufferType = std::vector<ValueType>;
+    //! parser type
+    using ParserType = pni::io::parser<BufferType>;
+  private:
+    //! local line storage
+    std::string _line_buffer;
+    //! local parser instance
+    ParserType _parser;
+  public:
 
-        //!
-        //! \brief read next line
-        //! 
-        //! Reads the next line from standard input. If no line could be
-        //! this function returns false. In case of success true is returned.
-        //! The parser result is stored in the buffer provided by the user. 
-        //! 
-        //! \param buffer reference to the users data buffer
-        //! \return true on success, false otherwise
-        //!
-        bool next(buffer_type &buffer)
-        {
-            if(!std::getline(std::cin,_line_buffer,'\n'))
-                return false;
-    
-            buffer = _parser(_line_buffer);
-            return true;
-        }
-        
+    //!
+    //! \brief read next line
+    //!
+    //! Reads the next line from standard input. If no line could be
+    //! this function returns false. In case of success true is returned.
+    //! The parser result is stored in the buffer provided by the user.
+    //!
+    //! \param buffer reference to the users data buffer
+    //! \return true on success, false otherwise
+    //!
+    bool next(BufferType &buffer)
+    {
+      if(!std::getline(std::cin,_line_buffer,'\n'))
+        return false;
+
+      buffer = _parser(_line_buffer);
+      return true;
+    }
 };

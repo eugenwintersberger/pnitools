@@ -1,4 +1,4 @@
-set(SOURCE nxtee.cpp utils.cpp operation.cpp)
+set(SOURCE nxtee.cpp utils.cpp operation.cpp selection.cpp)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
     configure_file(nxtee.exe.manifest.in nxtee.exe.manifest @ONLY)

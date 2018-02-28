@@ -32,15 +32,15 @@ namespace fs = boost::filesystem;
 
 struct file_fixture
 {
-    fs::path _p1;
-    fs::path _p2;
-    fs::path _p3;
+	fs::path _p1;
+	fs::path _p2;
+	fs::path _p3;
 
-    file_fixture():
-        _p1("../../data/fio/scan_mca_00001.fio"),
-        _p2("."),
-        _p3("./nothing.txt")
-    {}
+	file_fixture():
+		_p1("../../data/fio/scan_mca_00001.fio"),
+		_p2("."),
+		_p3("./nothing.txt")
+	{}
 };
 
 BOOST_FIXTURE_TEST_SUITE(file_tests,file_fixture)

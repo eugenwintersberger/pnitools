@@ -23,10 +23,9 @@
 
 #include "stdin_reader.hpp"
 #include "selection.hpp"
+#include "utils.hpp"
 
-#include <pni/io/nx/algorithms/get_shape.hpp>
-#include <pni/io/nx/algorithms/grow.hpp>
-#include <pni/io/nx/algorithms/write.hpp>
+#include <pni/io/nexus.hpp>
 
 
 //!
@@ -39,49 +38,69 @@
 //! 
 //! \tparam T data type to process
 //! 
-template<typename T> class appender
+template<typename T> class Appender
 {
-    private:
-        //! reader type
-        typedef stdin_reader<T> reader_type;
-        //! local data buffer instance
-        typename reader_type::buffer_type _buffer;
-        //! local reader instance
-        reader_type _reader;
-    public:
+  private:
+    //! reader type
+    using ReaderType =  StandardInputReader<T>;
+    //! local data buffer instance
+    typename ReaderType::BufferType _buffer;
+    //! local reader instance
+    ReaderType _reader;
 
-        //!
-        //! \brief append data to target
-        //! 
-        //! Append data to the target object.
-        //!
-        //! \throw invalid_object_error if the target is not a valid object
-        //! \throw object_error in case of any object related error
-        //! \throw io_error in case of an error during IO 
-        //! \throw type_error if the datatype cannot be handled 
-        //! \throw memory_not_allocated_error problems with memory allocation
-        //! \throw size_mismatch_error buffer and object size do not match
-        //! 
-        //! \param target the object to which to append data
-        //! 
-        void operator()(pni::io::nx::h5::nxobject &target)
-        {
-            using namespace pni::core;
-            using namespace pni::io::nx;
+    void write(const hdf5::node::Dataset &dataset)
+    {
+      hdf5::dataspace::Hyperslab selection = Selection::create(dataset);
 
-            auto target_shape = get_shape<shape_t>(target);
-            size_t index = target_shape.front();
+      while(_reader.next(_buffer))
+      {
+        dataset.extent(0,1);
+        dataset.write(_buffer,selection);
+        selection.offset(0,selection.offset()[0]+1);
+      }
+    }
 
-            selection::type target_selection = selection::from_shape(target_shape);
+    void write(const hdf5::attribute::Attribute &attribute)
+    {
+      while(_reader.next(_buffer))
+      {
+        _reader.next(_buffer);
+        attribute.write(_buffer);
+      }
+    }
 
-            while(_reader.next(_buffer))
-            {
-                grow(target); //grow the target along the first dimension
-                target_selection.front() = slice(index,index+1);
-                write(target,_buffer,target_selection);
-                index++;
-            }
-        }
+  public:
 
+    //!
+    //! @brief append data to target
+    //!
+    //! Append data to the target object.
+    //!
+    //! @throw invalid_object_error if the target is not a valid object
+    //! @throw object_error in case of any object related error
+    //! @throw io_error in case of an error during IO
+    //! @throw type_error if the datatype cannot be handled
+    //! @throw memory_not_allocated_error problems with memory allocation
+    //! @throw size_mismatch_error buffer and object size do not match
+    //!
+    //! @param target the object to which to append data
+    //!
+    void operator()(pni::io::nexus::PathObject &target)
+    {
+      using namespace pni::core;
+      using namespace pni::io;
+
+      if(nexus::is_dataset(target))
+      {
+
+        hdf5::node::Dataset dataset = target;
+        write(dataset);
+      }
+      else if(nexus::is_attribute(target))
+      {
+        hdf5::attribute::Attribute attribute = target;
+        write(attribute);
+      }
+    }
 };
 

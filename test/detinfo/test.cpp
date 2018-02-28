@@ -29,9 +29,9 @@
 #include <test/config.hpp>
 #include <test/command_runner.hpp>
 #include <iostream>
-#include <pni/io/nx/nx.hpp>
+#include <pni/io/nexus.hpp>
 
-using namespace pni::io::nx;
+using namespace pni::io;
 using boost::test_tools::output_test_stream;
 
 namespace fs = boost::filesystem;
