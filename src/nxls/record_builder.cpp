@@ -20,30 +20,34 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "output_configuration.hpp"
+#include "record_builder.hpp"
+#include <pni/io/nexus.hpp>
 
-
-OutputConfiguration::OutputConfiguration(bool long_output,bool full_path,
-                                 const pni::io::nexus::Path &base_path):
-  long_output_(long_output),
-  full_path_(full_path),
-  base_path_(base_path)
+RecordBuilder::RecordBuilder(const OutputConfiguration &output_config):
+  output_config_(output_config)
 {}
 
-bool OutputConfiguration::show_full_path() const noexcept
+const OutputConfiguration &RecordBuilder::output_configuration() const noexcept
 {
-  return full_path_;
+  return output_config_;
 }
 
-bool OutputConfiguration::show_long_output() const noexcept
+size_t RecordBuilder::number_of_columns() const noexcept
 {
-  return long_output_;
+  if(output_config_.show_long_output())
+    return 4;
+  else
+    return 1;
 }
 
-const pni::io::nexus::Path &OutputConfiguration::base_path() const noexcept
+OutputRecord RecordBuilder::operator()(const Metadata::UniquePointer &metadata)
 {
-  return base_path_;
+  OutputRecord record(number_of_columns());
+
+  record[0] = pni::io::nexus::Path::to_string(metadata->path());
+  return record;
 }
+
 
 
 

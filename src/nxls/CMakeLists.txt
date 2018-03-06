@@ -4,15 +4,16 @@ set(NXLS_LIB_SOURCES metadata.cpp
 	                 attribute_metadata.cpp
 	                 dataset_metadata.cpp
 	                 group_metadata.cpp
-	                 metadata_extractor.cpp)
+	                 metadata_extractor.cpp	                 
+	                 output_configuration.cpp
+	                 output_record.cpp
+	                 record_builder.cpp
+	                 utils.cpp
+	                 )
 	                
 add_library(nxls_static STATIC ${NXLS_LIB_SOURCES})	     
 	
-set(NXLS_SOURCE nxls.cpp
-                config.cpp
-                utils.cpp
-                output_configuration.cpp
-                )
+set(NXLS_SOURCE nxls.cpp config.cpp)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
     configure_file(nxls.exe.manifest.in nxls.exe.manifest @ONLY)

@@ -21,7 +21,6 @@
 //
 #pragma once
 
-#include "output_configuration.hpp"
 #include <pni/io/nexus.hpp>
 #include <pni/core/configuration.hpp>
 
@@ -67,16 +66,3 @@ hdf5::file::File get_file(const pni::io::nexus::Path &path);
 //!
 pni::io::nexus::PathObject get_base(const hdf5::file::File &file,
                                     const pni::io::nexus::Path &base_path);
-
-//----------------------------------------------------------------------------
-//!
-//! @ingroup nxls_devel
-//! @brief OutputConfiguration factory function
-//! 
-//! This factory function constructs an OuputConfiguration instance from the
-//! program configuration.
-//! 
-//! @param path path to the root object
-//! @return instance of OutputConfiguration
-//!
-OutputConfiguration make_output_config(const pni::core::configuration &config);

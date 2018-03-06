@@ -27,12 +27,11 @@
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
 #include <pni/io/nexus.hpp>
-#include "output_configuration.hpp"
 #include "metadata.hpp"
 #include "metadata_extractor.hpp"
-#include "dataset_metadata.hpp"
-#include "attribute_metadata.hpp"
-#include "link_list.hpp"
+#include "output_configuration.hpp"
+#include "output_records.hpp"
+#include "record_builder.hpp"
 
 
 
@@ -53,9 +52,6 @@ int main(int argc,char **argv)
 
   //create configuration
   configuration config = get_config(argc,argv);
-
-  //generate output configuration
-  OutputConfiguration out_config = make_output_config(config);
 
   // obtain the path from the program configuration
   nexus::Path base_path = get_base_path(config);
@@ -89,8 +85,7 @@ int main(int argc,char **argv)
   }
   else if(nexus::is_attribute(base))
   {
-    hdf5::attribute::Attribute attribute = base;
-    extractor(attribute);
+    extractor(hdf5::attribute::Attribute(base));
   }
   else if(nexus::is_group(base))
   {
@@ -110,11 +105,18 @@ int main(int argc,char **argv)
     }
   }
 
-  std::cout<<"Print metadata "<<metadata.size()<<std::endl;
-  for(auto data: metadata)
-  {
-    std::cout<<data->path()<<std::endl;
-  }
+  OutputConfiguration output_config(config.value<bool>("long"),
+                                       config.value<bool>("full-path"),
+                                       base_path);
+
+  RecordBuilder record_builder(output_config);
+  OutputRecords records;
+  std::transform(metadata.begin(),metadata.end(),
+                 std::back_inserter(records),record_builder);
+
+  std::for_each(records.begin(),records.end(),
+                [](const OutputRecord &record)
+                { std::cout<<record[0]<<std::endl;});
 
 
 //  //in the case that the root object is a single field or attribute

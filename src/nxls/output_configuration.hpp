@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2014 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2018 DESY
 //
 // This file is part of pnitools.
 //
@@ -16,74 +16,30 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Oct 13,2014
+// Created on: Mar 6, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 #pragma once
 
-#include <cstdlib>
+#include <iostream>
+#include <pni/io/nexus.hpp>
 
-//!
-//! \ingroup nxls_devel
-//! \brief output configuration
-//! 
-//! Output configuration for nxls. This assembled from the configuation 
-//! provided by the user via the command line. 
-//! 
+#include "metadata.hpp"
+
+
 class OutputConfiguration
 {
-    //! give long output
-    bool _long;
-    //! output includes attributes
-    bool _with_attributes;
-    //! trim level - the number of elements to chop of from the path
-    //! of an object
-    size_t _trim_level;
+  private:
+    bool long_output_;
+    bool full_path_;
+
+    pni::io::nexus::Path base_path_;
 
   public:
-    //!
-    //! \brief constructor
-    //!
-    //! \param l long output
-    //! \param a output with attributes
-    //! \param t trim level
-    //!
-    explicit OutputConfiguration(bool l,bool a,size_t t);
+    OutputConfiguration(bool long_output,bool full_path,
+                    const pni::io::nexus::Path &base_path);
 
-    //--------------------------------------------------------------------
-    //!
-    //! \brief get long output flag
-    //!
-    //! \return true if long output is set
-    //!
-    bool long_output() const;
-
-    //--------------------------------------------------------------------
-    //!
-    //! \brief attribute output
-    //!
-    //! \return true if attributes should be included
-    //!
-    bool with_attributes() const;
-
-    //--------------------------------------------------------------------
-    //!
-    //! \brief trim level for path
-    //!
-    //! Returns the number of elements to remove from an objects path.
-    //! If this value is 0 to trimming will be done.
-    //!
-    //! \return number of path elements to remove
-    //!
-    size_t trim_level() const;
-
-    //--------------------------------------------------------------------
-    //!
-    //! \brief set trim level
-    //!
-    //! Set the trim level for the output path.
-    //!
-    //! \param l the new trim level
-    //!
-    void trim_level(size_t l);
+    bool show_long_output() const noexcept;
+    bool show_full_path() const noexcept;
+    const pni::io::nexus::Path &base_path() const noexcept;
 };

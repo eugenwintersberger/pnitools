@@ -20,6 +20,7 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
+#include "../common/config_utils.hpp"
 #include <pni/io/exceptions.hpp>
 #include "utils.hpp"
 
@@ -122,19 +123,4 @@ nexus::PathObject get_base(const hdf5::file::File &file,
   }
 
   return objects.front();
-}
-
-//----------------------------------------------------------------------------
-OutputConfiguration make_output_config(const configuration &config)
-{
-    size_t trim_level= 0;
-    if(!config.value<bool>("full-path"))
-    {
-        nexus::Path path= get_base_path(config);
-        trim_level = path.size();
-    }
-
-    return OutputConfiguration(config.value<bool>("long"),
-                         config.value<bool>("show-attributes"),
-                         trim_level);
 }

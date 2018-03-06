@@ -20,30 +20,17 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "output_configuration.hpp"
+#include "metadata_writer.hpp"
 
-
-OutputConfiguration::OutputConfiguration(bool long_output,bool full_path,
-                                 const pni::io::nexus::Path &base_path):
-  long_output_(long_output),
-  full_path_(full_path),
-  base_path_(base_path)
+MetadataWriter::MetadataWriter(std::ostream &output_stream):
+  output_stream_(output_stream)
 {}
 
-bool OutputConfiguration::show_full_path() const noexcept
+void MetadataWriter::operator()(const Metadata::UniquePointer &metadata)
 {
-  return full_path_;
+  output_stream_<<metadata->path()<<std::endl;
 }
 
-bool OutputConfiguration::show_long_output() const noexcept
-{
-  return long_output_;
-}
-
-const pni::io::nexus::Path &OutputConfiguration::base_path() const noexcept
-{
-  return base_path_;
-}
 
 
 

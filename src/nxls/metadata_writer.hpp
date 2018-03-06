@@ -19,31 +19,23 @@
 // Created on: Mar 6, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#pragma once
 
-#include "output_configuration.hpp"
+#include <nxls/output_configuration.hpp>
+#include <iostream>
+#include "metadata.hpp"
 
 
-OutputConfiguration::OutputConfiguration(bool long_output,bool full_path,
-                                 const pni::io::nexus::Path &base_path):
-  long_output_(long_output),
-  full_path_(full_path),
-  base_path_(base_path)
-{}
-
-bool OutputConfiguration::show_full_path() const noexcept
+class MetadataWriter
 {
-  return full_path_;
-}
+  private:
+    std::ostream &output_stream_;
 
-bool OutputConfiguration::show_long_output() const noexcept
-{
-  return long_output_;
-}
-
-const pni::io::nexus::Path &OutputConfiguration::base_path() const noexcept
-{
-  return base_path_;
-}
+  public:
+    MetadataWriter(std::ostream &output_stream);
 
 
+    void operator()(const Metadata::UniquePointer &metadata);
 
+
+};
