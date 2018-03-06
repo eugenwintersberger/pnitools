@@ -25,10 +25,13 @@
 #include "output_record.hpp"
 #include "metadata.hpp"
 #include "record_builder.hpp"
-
+#include "dataset_metadata.hpp"
 
 class DatasetRecordBuilder : public RecordBuilder
 {
+  private:
+    OutputRecord build_long(const DatasetMetadata &metadata) const;
+    OutputRecord build_short(const DatasetMetadata &metadata) const;
   public:
     DatasetRecordBuilder(const OutputConfiguration &output_config);
     virtual ~DatasetRecordBuilder();
