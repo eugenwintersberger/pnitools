@@ -1,8 +1,17 @@
+set(NXLS_LIB_SOURCES metadata.cpp
+	                 link_metadata.cpp
+	                 data_metadata.cpp
+	                 attribute_metadata.cpp
+	                 dataset_metadata.cpp
+	                 group_metadata.cpp
+	                 metadata_extractor.cpp)
+	                
+add_library(nxls_static STATIC ${NXLS_LIB_SOURCES})	     
+	
 set(NXLS_SOURCE nxls.cpp
                 config.cpp
                 utils.cpp
-                output_config.cpp
-                output.cpp
+                output_configuration.cpp
                 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
@@ -11,5 +20,5 @@ if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 endif()
 
 add_executable(nxls ${NXLS_SOURCE})
-target_link_libraries(nxls common_objects pniio)
+target_link_libraries(nxls common_objects nxls_static pniio)
 install(TARGETS nxls DESTINATION ${CMAKE_INSTALL_BINDIR})

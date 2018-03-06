@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2018 DESY
 //
 // This file is part of pnitools.
 //
@@ -16,16 +16,35 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Jul 18,2013
+// Created on: Feb 28, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
-#pragma once
 
-//include header files
-#include <iostream>
-#include <pni/core/types.hpp>
-#include <pni/core/configuration.hpp>
-#include <pni/io/nexus.hpp>
+#include "attribute_metadata.hpp"
+
+using namespace pni::io;
+using namespace pni::core;
+
+namespace {
+
+shape_t dimensions_to_shape(const hdf5::Dimensions &dims)
+{
+  return shape_t(dims.begin(),dims.end());
+}
+
+}
+
+AttributeMetadata::AttributeMetadata(const hdf5::attribute::Attribute &attribute):
+  DataMetadata(nexus::get_path(attribute),
+               nexus::get_type_id(attribute),
+               dimensions_to_shape(nexus::get_dimensions(attribute)))
+{}
+
+Metadata::Type AttributeMetadata::type() const
+{
+  return Metadata::Type::ATTRIBUTE;
+}
+
 
 
 

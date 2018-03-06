@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2018 DESY
 //
 // This file is part of pnitools.
 //
@@ -16,16 +16,51 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Jul 18,2013
+// Created on: Feb 28, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
-#pragma once
 
-//include header files
-#include <iostream>
-#include <pni/core/types.hpp>
-#include <pni/core/configuration.hpp>
-#include <pni/io/nexus.hpp>
+#include "link_metadata.hpp"
+
+using namespace pni::io;
+
+nexus::Path get_path_from_link(const hdf5::node::Link &link)
+{
+  hdf5::node::Group parent = link.parent();
+  nexus::Path path = nexus::get_path(parent);
+  path.push_back({link.path().name(),""});
+
+  return path;
+}
+
+LinkMetadata::LinkMetadata(const hdf5::node::Link &link):
+  Metadata(get_path_from_link(link)),
+  type_(link.type()),
+  status_(link.is_resolvable())
+{}
+
+hdf5::node::LinkType LinkMetadata::link_type() const noexcept
+{
+  return type_;
+}
+
+hdf5::node::LinkTarget LinkMetadata::link_target() const noexcept
+{
+  return target_;
+}
+
+bool LinkMetadata::status() const noexcept
+{
+  return status_;
+}
+
+Metadata::Type LinkMetadata::type() const
+{
+  return Metadata::Type::LINK;
+}
+
+
+
 
 
 

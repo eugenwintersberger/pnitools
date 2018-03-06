@@ -20,35 +20,35 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "output_config.hpp"
+#include "output_configuration.hpp"
 
 //----------------------------------------------------------------------------
-output_config::output_config(bool l,bool a,size_t t):
+OutputConfiguration::OutputConfiguration(bool l,bool a,size_t t):
     _long(l),
     _with_attributes(a),
     _trim_level(t)
 {}
 
 //----------------------------------------------------------------------------
-bool output_config::long_output() const
+bool OutputConfiguration::long_output() const
 {
     return _long;
 }
 
 //----------------------------------------------------------------------------
-bool output_config::with_attributes() const
+bool OutputConfiguration::with_attributes() const
 {
     return _with_attributes;
 }
 
 //----------------------------------------------------------------------------
-size_t output_config::trim_level() const
+size_t OutputConfiguration::trim_level() const
 {
     return _trim_level;
 }
 
 //---------------------------------------------------------------------------
-void output_config::trim_level(size_t l)
+void OutputConfiguration::trim_level(size_t l)
 {
     _trim_level = l;
 }

@@ -22,21 +22,23 @@
 
 #include "config.hpp"
 #include "utils.hpp"
-#include "output_config.hpp"
-#include "output.hpp"
 #include <iostream>
 #include <sstream>
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
-#include <pni/io/nx/nx.hpp>
-#include <pni/io/nx/nxpath.hpp>
-#include <pni/io/nx/flat_group.hpp>
-#include <pni/io/nx/algorithms/is_field.hpp>
-#include <pni/io/nx/algorithms/is_attribute.hpp>
+#include <pni/io/nexus.hpp>
+#include "output_configuration.hpp"
+#include "metadata.hpp"
+#include "metadata_extractor.hpp"
+#include "dataset_metadata.hpp"
+#include "attribute_metadata.hpp"
+#include "link_list.hpp"
 
 
+
+//setting namespaces
+using namespace pni::io;
 using namespace pni::core;
-using namespace pni::io::nx;
 
 
 //!
@@ -47,63 +49,119 @@ using namespace pni::io::nx;
 //!
 int main(int argc,char **argv)
 {
-    //create configuration
-    configuration config = get_config(argc,argv);
+  hdf5::error::Singleton::instance().auto_print(false);
 
-    nxpath path = get_path(config);
+  //create configuration
+  configuration config = get_config(argc,argv);
 
-    h5::nxfile file = get_file(path);
+  //generate output configuration
+  OutputConfiguration out_config = make_output_config(config);
 
-    h5::nxobject root = get_root(file,path);
+  // obtain the path from the program configuration
+  nexus::Path base_path = get_base_path(config);
 
-    //generate output configuraiton
-    output_config out_config = make_output_config(config);
+  // get the file
+  hdf5::file::File file = get_file(base_path);
 
-    //in the case that the root object is a single field or attribute
-    //we have to adjust the trim level - but only if it is not 0.
-    if(is_field(root) || is_attribute(root))
+  // get the base object
+  nexus::PathObject base;
+  try
+  {
+    base = get_base(file,base_path);
+  }
+  catch(const std::runtime_error &error)
+  {
+    std::cerr<<error.what()<<std::endl;
+    return 1;
+  }
+
+  //
+  // we need some special treatment if the base object is a dataset or an
+  // attribute. These objects do not have children und are thus simply
+  // displayed.
+  //
+  MetadataList metadata;
+  MetadataExtractor extractor(metadata,config.value<bool>("show-attributes"));
+  if(nexus::is_dataset(base))
+  {
+    hdf5::node::Dataset dataset = base;
+    extractor(dataset);
+  }
+  else if(nexus::is_attribute(base))
+  {
+    hdf5::attribute::Attribute attribute = base;
+    extractor(attribute);
+  }
+  else if(nexus::is_group(base))
+  {
+    hdf5::node::Group base_group = base;
+    std::cout<<"Reading from: "<<nexus::get_path(base_group)<<std::endl;
+
+    if(config.value<bool>("recursive"))
     {
-        if(out_config.trim_level()) 
-            out_config.trim_level(out_config.trim_level()-1);
+      auto begin = hdf5::node::RecursiveLinkIterator::begin(base_group);
+      auto end   = hdf5::node::RecursiveLinkIterator::end(base_group);
+      std::for_each(begin,end,extractor);
     }
+    else
+    {
+      std::for_each(base_group.links.begin(),base_group.links.end(),
+                     extractor);
+    }
+  }
 
-    //generat output class
-    output o(std::cout,out_config);
-
-    try
-    {
-        if(is_field(root) || is_attribute(root))
-            o.write_object(root);
-        else
-        {
-            if(config.value<bool>("recursive"))
-                o(make_flat(root));
-            else
-                o(h5::nxgroup(root));
-        }
-
-    }
-    catch(pni::core::type_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-    catch(pni::io::parser_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-    catch(pni::core::size_mismatch_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
-    catch(pni::io::object_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        return 1;
-    }
+  std::cout<<"Print metadata "<<metadata.size()<<std::endl;
+  for(auto data: metadata)
+  {
+    std::cout<<data->path()<<std::endl;
+  }
 
 
-	return 0;
+//  //in the case that the root object is a single field or attribute
+//  //we have to adjust the trim level - but only if it is not 0.
+//  if(nexus::is_dataset(root) || nexus::is_attribute(root))
+//  {
+//    if(out_config.trim_level())
+//      out_config.trim_level(out_config.trim_level()-1);
+//  }
+//
+//  //generat output class
+//  output o(std::cout,out_config);
+//
+//  try
+//  {
+//    if(nexus::is_dataset(root) || nexus::is_attribute(root))
+//      o.write_object(root);
+//    else
+//    {
+//      if(config.value<bool>("recursive"))
+//        o(make_flat(root));
+//      else
+//        o(h5::nxgroup(root));
+//    }
+//
+//  }
+//  catch(pni::core::type_error &error)
+//  {
+//    std::cerr<<error<<std::endl;
+//    return 1;
+//  }
+//  catch(pni::io::parser_error &error)
+//  {
+//    std::cerr<<error<<std::endl;
+//    return 1;
+//  }
+//  catch(pni::core::size_mismatch_error &error)
+//  {
+//    std::cerr<<error<<std::endl;
+//    return 1;
+//  }
+//  catch(pni::io::object_error &error)
+//  {
+//    std::cerr<<error<<std::endl;
+//    return 1;
+//  }
+
+
+  return 0;
 }

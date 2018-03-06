@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2018 DESY
 //
 // This file is part of pnitools.
 //
@@ -16,16 +16,33 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Jul 18,2013
+// Created on: Feb 28, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 #pragma once
 
-//include header files
-#include <iostream>
-#include <pni/core/types.hpp>
-#include <pni/core/configuration.hpp>
-#include <pni/io/nexus.hpp>
+#include <list>
+#include <h5cpp/hdf5.hpp>
 
+
+//!
+//! @ingroup nxls_devel
+//! @brief list of links obtained from the tree
+//!
+class LinkList : public std::list<hdf5::node::Link>
+{
+  public:
+    using std::list<hdf5::node::Link>::list;
+
+    template<typename IterT> static LinkList create(IterT begin,IterT end);
+};
+
+template<typename IterT>
+LinkList LinkList::create(IterT begin,IterT end)
+{
+  LinkList list;
+  std::copy(begin,end,std::back_inserter(list));
+  return list;
+}
 
 

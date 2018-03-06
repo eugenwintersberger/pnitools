@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2018 DESY
 //
 // This file is part of pnitools.
 //
@@ -16,16 +16,27 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Jul 18,2013
+// Created on: Feb 28, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 #pragma once
 
-//include header files
-#include <iostream>
-#include <pni/core/types.hpp>
-#include <pni/core/configuration.hpp>
-#include <pni/io/nexus.hpp>
+#include "metadata.hpp"
 
 
+class LinkMetadata : public Metadata
+{
+  private:
+    hdf5::node::LinkType type_;
+    hdf5::node::LinkTarget target_;
+    bool status_;
+  public:
+    explicit LinkMetadata(const hdf5::node::Link &link);
 
+    hdf5::node::LinkType link_type() const noexcept;
+    hdf5::node::LinkTarget link_target() const noexcept;
+
+    bool status() const noexcept;
+
+    virtual Metadata::Type type() const;
+};

@@ -21,13 +21,14 @@
 //
 #pragma once
 
+#include "output_configuration.hpp"
 #include <iostream>
 #include <pni/core/types.hpp>
-#include <pni/io/nx/nx.hpp>
-#include "output_config.hpp"
+#include <pni/io/nexus.hpp>
 
-using namespace pni::core;
-using namespace pni::io::nx;
+#define OTYPE_FIELD_WIDTH 8
+#define DTYPE_FIELD_WIDTH 10
+#define STATUS_FIELD_WIDTH 20
 
 //!
 //! \ingroup nxls_devel
@@ -38,7 +39,7 @@ using namespace pni::io::nx;
 //! \param o reference to the object
 //! \return string with metadata
 //! 
-string get_metadata(const h5::nxobject &o);
+std::string get_metadata(const pni::io::nexus::PathObject &object);
 
 //----------------------------------------------------------------------------
 //! 
@@ -50,7 +51,7 @@ string get_metadata(const h5::nxobject &o);
 //! \param o field instance
 //! \return string with metadata
 //!
-string get_field_metadata(const h5::nxobject &o);
+std::string get_field_metadata(const hdf5::node::Dataset &dataset);
 
 //----------------------------------------------------------------------------
 //!
@@ -62,7 +63,7 @@ string get_field_metadata(const h5::nxobject &o);
 //! \param o group instance
 //! \return string with metadata
 //!
-string get_group_metadata(const h5::nxobject &o);
+std::string get_group_metadata(const hdf5::node::Group &group);
 
 //----------------------------------------------------------------------------
 //!
@@ -74,7 +75,7 @@ string get_group_metadata(const h5::nxobject &o);
 //! \param o attribute instance
 //! \return string with metadata
 //!
-string get_attribute_metadata(const h5::nxobject &o);
+std::string get_attribute_metadata(const hdf5::attribute::Attribute &attribute);
 
 //----------------------------------------------------------------------------
 //!
@@ -89,7 +90,7 @@ string get_attribute_metadata(const h5::nxobject &o);
 //! \param o attribute or field instance
 //! \return string with metadata
 //!
-string get_data_metadata(const h5::nxobject &o);
+std::string get_data_metadata(const pni::io::nexus::PathObject &object);
 
 //----------------------------------------------------------------------------
 //!

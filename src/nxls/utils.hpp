@@ -21,60 +21,62 @@
 //
 #pragma once
 
-#include <pni/io/nx/nx.hpp>
-#include <pni/io/nx/nxpath.hpp>
+#include "output_configuration.hpp"
+#include <pni/io/nexus.hpp>
 #include <pni/core/configuration.hpp>
-using namespace pni::io::nx;
-using namespace pni::core;
 
-#include "output_config.hpp"
 
 //!
-//! \ingroup nxls_devel
-//! \brief get object path
+//! @ingroup nxls_devel
+//! @brief get object path
 //!
 //! Return the path to the root object for nxls. If retrieving the path fails 
 //! this function will abort the program.
 //!
-//! \param config configuration object
+//! @param config configuration object
 //!
-nxpath get_path(const configuration &config);
+pni::io::nexus::Path get_base_path(const pni::core::configuration &config);
 
 //-----------------------------------------------------------------------------
 //!
-//! \ingroup nxls_devel
-//! \brief get file
+//! @ingroup nxls_devel
+//! @brief get file
 //!
 //! Return the requested file. If anything goes wrong during opening the 
 //! file the program is aborted.
 //! 
-//! \param path Nexus path with file portion
-//! \return instance of h5::nxfile
+//! @param path Nexus path with file portion
+//! @return instance of h5::nxfile
 //!
-h5::nxfile get_file(const nxpath &path);
+hdf5::file::File get_file(const pni::io::nexus::Path &path);
 
 //----------------------------------------------------------------------------
 //!
-//! \ingroup nxls_devel
-//! \brief get root object
+//! @ingroup nxls_devel
+//! @brief get root object
 //!
 //! Returns the root object requested by the user from which the output 
 //! should start. If this object cannot be found the program is aborted.
-//! 
-//! \param file the input file 
-//! \param path the path refering to the root object
-//! \return root object form which to start the interation
 //!
-h5::nxobject get_root(const h5::nxfile &file,const nxpath &path);
+//! There is currently one limitation: the base object must not be a
+//! link. This might be fixed in a future version of the program.
+//! 
+//! @param file the input file
+//! @param path the path refering to the root object
+//! @return root object form which to start the interation
+//!
+pni::io::nexus::PathObject get_base(const hdf5::file::File &file,
+                                    const pni::io::nexus::Path &base_path);
 
 //----------------------------------------------------------------------------
 //!
-//! \ingroup nxls_devel
-//! \brief construct output configuration
+//! @ingroup nxls_devel
+//! @brief OutputConfiguration factory function
 //! 
-//! Construct the output configuration from command line options. 
+//! This factory function constructs an OuputConfiguration instance from the
+//! program configuration.
 //! 
-//! \param path path to the root object
-//! \return instance of output_config
+//! @param path path to the root object
+//! @return instance of OutputConfiguration
 //!
-output_config make_output_config(const configuration &config);
+OutputConfiguration make_output_config(const pni::core::configuration &config);
