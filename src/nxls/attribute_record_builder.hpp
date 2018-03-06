@@ -25,10 +25,14 @@
 #include "output_record.hpp"
 #include "metadata.hpp"
 #include "record_builder.hpp"
+#include "attribute_metadata.hpp"
 
 
 class AttributeRecordBuilder : public RecordBuilder
 {
+  private:
+    OutputRecord build_long(const AttributeMetadata &metadata) const;
+    OutputRecord build_short(const AttributeMetadata &metadata) const;
   public:
     AttributeRecordBuilder(const OutputConfiguration &output_config);
     virtual ~AttributeRecordBuilder();

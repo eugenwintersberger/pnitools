@@ -66,3 +66,5 @@ hdf5::file::File get_file(const pni::io::nexus::Path &path);
 //!
 pni::io::nexus::PathObject get_base(const hdf5::file::File &file,
                                     const pni::io::nexus::Path &base_path);
+
+std::string shape_to_string(const pni::core::shape_t &shape);

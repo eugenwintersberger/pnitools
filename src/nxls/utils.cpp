@@ -124,3 +124,21 @@ nexus::PathObject get_base(const hdf5::file::File &file,
 
   return objects.front();
 }
+
+std::string shape_to_string(const pni::core::shape_t &shape)
+{
+    std::stringstream ss;
+
+    if(shape.empty()) return std::string();
+
+    ss<<"(";
+    for(auto iter = shape.begin();iter!=shape.end();++iter)
+    {
+        ss<<*iter;
+        if(iter!=shape.end()-1) ss<<",";
+    }
+
+    ss<<")";
+    return ss.str();
+
+}

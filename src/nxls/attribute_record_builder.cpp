@@ -22,6 +22,9 @@
 
 
 #include "attribute_record_builder.hpp"
+#include "utils.hpp"
+
+using namespace pni::io;
 
 AttributeRecordBuilder::AttributeRecordBuilder(const OutputConfiguration &output_config):
   RecordBuilder(output_config)
@@ -30,9 +33,34 @@ AttributeRecordBuilder::AttributeRecordBuilder(const OutputConfiguration &output
 AttributeRecordBuilder::~AttributeRecordBuilder()
 {}
 
+OutputRecord AttributeRecordBuilder::build_long(const AttributeMetadata &metadata) const
+{
+  OutputRecord record(number_of_columns());
+
+  record[0] = "ATTR";
+
+  std::stringstream ss;
+  ss<<metadata.type_id();
+  record[1] = ss.str();
+
+  record[2] = shape_to_string(metadata.shape());
+
+  record[3] = nexus::Path::to_string(adjust_path(metadata.path()));
+  return record;
+}
+
+OutputRecord AttributeRecordBuilder::build_short(const AttributeMetadata &metadata) const
+{
+  return OutputRecord{nexus::Path::to_string(adjust_path(metadata.path()))};
+}
+
 OutputRecord AttributeRecordBuilder::build(const Metadata::UniquePointer &metadata) const
 {
-   return RecordBuilder::build(metadata);
+  auto attribute_metadata = dynamic_cast<const AttributeMetadata*>(metadata.get());
+  if(output_configuration().show_long_output())
+    return build_long(*attribute_metadata);
+  else
+    return build_short(*attribute_metadata);
 }
 
 
