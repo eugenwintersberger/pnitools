@@ -1,9 +1,24 @@
-set(NXLS_SOURCE nxls.cpp
-                config.cpp
-                utils.cpp
-                output_config.cpp
-                output.cpp
-                )
+set(NXLS_LIB_SOURCES metadata.cpp
+	                 link_metadata.cpp
+	                 data_metadata.cpp
+	                 attribute_metadata.cpp
+	                 dataset_metadata.cpp
+	                 group_metadata.cpp
+	                 metadata_extractor.cpp	                 
+	                 output_configuration.cpp
+	                 output_record.cpp
+	                 record_builder.cpp
+	                 utils.cpp
+	                 record_builder_factory.cpp
+	                 attribute_record_builder.cpp
+	                 dataset_record_builder.cpp
+	                 link_record_builder.cpp
+	                 group_record_builder.cpp
+	                 )
+	                
+add_library(nxls_static STATIC ${NXLS_LIB_SOURCES})	     
+	
+set(NXLS_SOURCE nxls.cpp config.cpp)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
     configure_file(nxls.exe.manifest.in nxls.exe.manifest @ONLY)
@@ -11,5 +26,5 @@ if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 endif()
 
 add_executable(nxls ${NXLS_SOURCE})
-target_link_libraries(nxls common_objects pniio)
+target_link_libraries(nxls common_objects nxls_static pniio)
 install(TARGETS nxls DESTINATION ${CMAKE_INSTALL_BINDIR})

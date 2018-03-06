@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2018 DESY
 //
 // This file is part of pnitools.
 //
@@ -16,16 +16,25 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Jul 18,2013
+// Created on: Mar 6, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 #pragma once
 
-//include header files
-#include <iostream>
-#include <pni/core/types.hpp>
-#include <pni/core/configuration.hpp>
-#include <pni/io/nexus.hpp>
+#include "output_configuration.hpp"
+#include "output_record.hpp"
+#include "metadata.hpp"
+#include "record_builder.hpp"
+#include "link_metadata.hpp"
 
+class LinkRecordBuilder : public RecordBuilder
+{
+  private:
+    OutputRecord build_short(const LinkMetadata &metadata) const;
+    OutputRecord build_long(const LinkMetadata &metadata) const;
+  public:
+    LinkRecordBuilder(const OutputConfiguration &output_config);
+    virtual ~LinkRecordBuilder();
 
-
+    virtual OutputRecord build(const Metadata::UniquePointer &metadata) const;
+};

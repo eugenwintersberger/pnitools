@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2018 DESY
 //
 // This file is part of pnitools.
 //
@@ -16,16 +16,36 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Jul 18,2013
+// Created on: Mar 6, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 #pragma once
 
-//include header files
-#include <iostream>
-#include <pni/core/types.hpp>
-#include <pni/core/configuration.hpp>
-#include <pni/io/nexus.hpp>
+#include "metadata.hpp"
+#include "output_record.hpp"
+#include "output_configuration.hpp"
+
+//!
+//! @brief base class for all record builders
+//!
+class RecordBuilder
+{
+  private:
+    OutputConfiguration output_config_;
+  protected:
+    pni::io::nexus::Path adjust_path(const pni::io::nexus::Path &orig_path) const;
+  public:
+    using Pointer = std::shared_ptr<RecordBuilder>;
+    RecordBuilder(const OutputConfiguration &output_config);
+    virtual ~RecordBuilder() {}
+
+    const OutputConfiguration &output_configuration() const noexcept;
+    size_t number_of_columns() const noexcept;
+
+    virtual OutputRecord build(const Metadata::UniquePointer &metadata) const;
 
 
+    OutputRecord operator()(const Metadata::UniquePointer &metadata) const;
+
+};
 

@@ -20,25 +20,21 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include <pni/io/nx/algorithms/get_type.hpp>
-#include <pni/io/nx/algorithms/get_shape.hpp>
-#include <pni/io/nx/algorithms/is_field.hpp>
-#include <pni/io/nx/algorithms/is_group.hpp>
-#include <pni/io/nx/algorithms/is_attribute.hpp>
-#include <pni/io/nx/algorithms/as_link.hpp>
-#include <pni/io/nx/algorithms/is_link.hpp>
-#include <pni/io/nx/nxlink.hpp>
+#include <pni/io/nexus.hpp>
 #include "output.hpp"
+
+using namespace pni::core;
+using namespace pni::io;
 
 #define OTYPE_FIELD_WIDTH 8 
 #define DTYPE_FIELD_WIDTH 10
 #define STATUS_FIELD_WIDTH 20
 
-string shape_to_string(const shape_t &shape)
+std::string shape_to_string(const pni::core::shape_t &shape)
 {
     std::stringstream ss;
 
-    if(shape.empty()) return string();
+    if(shape.empty()) return std::string();
 
     ss<<"(";
     for(auto iter = shape.begin();iter!=shape.end();++iter)
@@ -55,9 +51,9 @@ string shape_to_string(const shape_t &shape)
 //----------------------------------------------------------------------------
 //     Implementation of independent functions used in the output class
 //----------------------------------------------------------------------------
-nxpath trim_path(const nxpath &path,size_t trim_level)
+nexus::Path trim_path(const nexus::Path &path,size_t trim_level)
 {
-    nxpath opath(path);
+    nexus::Path opath(path);
 
     for(size_t i=0;i<trim_level;++i) opath.pop_front();
 
@@ -66,15 +62,30 @@ nxpath trim_path(const nxpath &path,size_t trim_level)
 
 
 //----------------------------------------------------------------------------
-string get_data_metadata(const h5::nxobject &o)
+std::string get_data_metadata(const nexus::PathObject &object)
 {
     std::stringstream ss;
+    hdf5::Dimensions dims;
+    type_id_t type_id;
 
-    auto shape = get_shape<shape_t>(o);
+    if(object.type()==nexus::PathObject::Type::ATTRIBUTE)
+    {
+      hdf5::attribute::Attribute attribute = object;
+      dims = nexus::get_dimensions(attribute);
+      type_id = nexus::get_type_id(attribute);
+    }
+    else if(object.type() == nexus::PathObject::Type::DATASET)
+    {
+      hdf5::node::Dataset dataset = object;
+      dims = nexus::get_dimensions(dataset);
+      type_id = nexus::get_type_id(dataset);
+    }
+
+    shape_t shape(dims.begin(),dims.end());
     if(shape.empty())
         shape = shape_t{{1}};
 
-    ss<<std::left<<std::setw(DTYPE_FIELD_WIDTH)<<get_type(o)
+    ss<<std::left<<std::setw(DTYPE_FIELD_WIDTH)<<type_id
       <<std::left<<std::setw(STATUS_FIELD_WIDTH)<<shape_to_string(shape);
     return ss.str();
 }

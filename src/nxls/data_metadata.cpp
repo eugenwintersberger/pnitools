@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2018 DESY
 //
 // This file is part of pnitools.
 //
@@ -16,16 +16,33 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Jul 18,2013
+// Created on: Feb 28, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
-#pragma once
 
-//include header files
-#include <iostream>
-#include <pni/core/types.hpp>
-#include <pni/core/configuration.hpp>
-#include <pni/io/nexus.hpp>
+#include "data_metadata.hpp"
+
+using namespace pni::io;
+using namespace pni::core;
+
+DataMetadata::DataMetadata(const nexus::Path &path,
+                           type_id_t tid,
+                           shape_t shape):
+  Metadata(path),
+  type_id_(tid),
+  shape_(shape)
+{}
+
+type_id_t DataMetadata::type_id() const noexcept
+{
+  return type_id_;
+}
+
+shape_t DataMetadata::shape() const noexcept
+{
+  return shape_;
+}
+
 
 
 

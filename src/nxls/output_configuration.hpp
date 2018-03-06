@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2018 DESY
 //
 // This file is part of pnitools.
 //
@@ -16,16 +16,30 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Jul 18,2013
+// Created on: Mar 6, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 #pragma once
 
-//include header files
 #include <iostream>
-#include <pni/core/types.hpp>
-#include <pni/core/configuration.hpp>
 #include <pni/io/nexus.hpp>
 
+#include "metadata.hpp"
 
 
+class OutputConfiguration
+{
+  private:
+    bool long_output_;
+    bool full_path_;
+
+    pni::io::nexus::Path base_path_;
+
+  public:
+    OutputConfiguration(bool long_output,bool full_path,
+                    const pni::io::nexus::Path &base_path);
+
+    bool show_long_output() const noexcept;
+    bool show_full_path() const noexcept;
+    const pni::io::nexus::Path &base_path() const noexcept;
+};

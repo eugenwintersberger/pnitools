@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2018 DESY
 //
 // This file is part of pnitools.
 //
@@ -16,16 +16,45 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Jul 18,2013
+// Created on: Feb 28, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 #pragma once
 
-//include header files
 #include <iostream>
-#include <pni/core/types.hpp>
-#include <pni/core/configuration.hpp>
+#include <memory>
+#include <list>
 #include <pni/io/nexus.hpp>
 
+//!
+//! @ingroup nxls_devel
+//! @brief abstract metadata interface
+//!
+//! This class is the base for all metadata classes.
+class Metadata
+{
+  private:
+    pni::io::nexus::Path nexus_path_;
+  public:
+    enum class Type
+    {
+      ATTRIBUTE,DATASET,LINK,GROUP
+    };
 
+    using UniquePointer = std::shared_ptr<Metadata>;
+    explicit Metadata(const pni::io::nexus::Path &path);
+    virtual ~Metadata();
 
+    pni::io::nexus::Path path() const;
+    virtual Type type() const = 0;
+};
+
+//!
+//! @ingroup nxls_devel
+//! @brief list with metadata pointers
+//!
+class MetadataList : public std::list<Metadata::UniquePointer>
+{
+  public:
+    using std::list<Metadata::UniquePointer>::list;
+};

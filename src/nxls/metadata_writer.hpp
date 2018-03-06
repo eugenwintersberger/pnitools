@@ -1,5 +1,5 @@
 //
-// (c) Copyright 2013 DESY, Eugen Wintersberger <eugen.wintersberger@desy.de>
+// (c) Copyright 2018 DESY
 //
 // This file is part of pnitools.
 //
@@ -16,16 +16,26 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Jul 18,2013
+// Created on: Mar 6, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 #pragma once
 
-//include header files
+#include <nxls/output_configuration.hpp>
 #include <iostream>
-#include <pni/core/types.hpp>
-#include <pni/core/configuration.hpp>
-#include <pni/io/nexus.hpp>
+#include "metadata.hpp"
 
 
+class MetadataWriter
+{
+  private:
+    std::ostream &output_stream_;
 
+  public:
+    MetadataWriter(std::ostream &output_stream);
+
+
+    void operator()(const Metadata::UniquePointer &metadata);
+
+
+};

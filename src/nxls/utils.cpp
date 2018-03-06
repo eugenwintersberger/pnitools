@@ -20,83 +20,122 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
+#include "../common/config_utils.hpp"
 #include <pni/io/exceptions.hpp>
-#include <pni/io/nx/algorithms/get_object.hpp>
 #include "utils.hpp"
 
-nxpath get_path(const configuration &config)
+using namespace pni::io;
+using namespace pni::core;
+
+nexus::Path get_base_path(const configuration &config)
 {
-    try
-    {
-        return nxpath::from_string(config.value<string>("nxpath"));
-    }
-    catch(pni::io::parser_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        std::cerr<<std::endl;
-        std::cerr<<"Check if the :// is appended to the filename if you want"
-                 <<" to show the content from the root group!"<<std::endl;
-        std::exit(1);
-    }
-    catch(...)
-    {
-        std::cerr<<"Unknown error during path parsing - aborting program!";
-        std::cerr<<std::endl;
-        std::exit(1);
-    }
+  try
+  {
+    return nexus::Path::from_string(config.value<string>("nxpath"));
+  }
+  catch(pni::io::parser_error &error)
+  {
+    std::cerr<<error<<std::endl;
+    std::cerr<<std::endl;
+    std::cerr<<"Check if the :// is appended to the filename if you want"
+        <<" to show the content from the root group!"<<std::endl;
+    std::exit(1);
+  }
+  catch(...)
+  {
+    std::cerr<<"Unknown error during path parsing - aborting program!";
+    std::cerr<<std::endl;
+    std::exit(1);
+  }
 }
 
 //----------------------------------------------------------------------------
-h5::nxfile get_file(const nxpath &path)
+hdf5::file::File get_file(const nexus::Path &path)
 {
-    if(path.filename().empty())
-    {
-        std::cerr<<"Please provide a filename!"<<std::endl;
-        std::exit(1);
-    }
+  if(path.filename().empty())
+  {
+    std::cerr<<"Please provide a filename!"<<std::endl;
+    std::exit(1);
+  }
 
-    try
-    {
-        return h5::nxfile::open_file(path.filename(),true);
-    }
-    catch(...)
-    {
-        std::cerr<<"Error opening Nexus file!"<<std::endl;
-        std::exit(1);
-    }
+  hdf5::file::File file;
+  try
+  {
+    file = hdf5::file::open(path.filename(),hdf5::file::AccessFlags::READONLY);
+  }
+  catch(...)
+  {
+    std::cerr<<"Error opening Nexus file!"<<std::endl;
+    std::exit(1);
+  }
+
+  return file;
 }
 
 //----------------------------------------------------------------------------
-h5::nxobject get_root(const h5::nxfile &file,const nxpath &path)
+nexus::PathObject get_base(const hdf5::file::File &file,
+                           const nexus::Path &path)
 {
-    try
-    {
-        return get_object(file.root(),path);
-    }
-    catch(pni::core::key_error &error)
-    {
-        std::cerr<<error<<std::endl;
-        std::cerr<<"The path entered does not exist!"<<std::endl;
-        std::exit(1);
-    }
-    catch(...)
-    {
-        std::cerr<<"Unkonwn error when retrieving the root object!"<<std::endl;
-        std::exit(1);
-    }
+  nexus::PathObjectList objects;
+
+  // check if the path references the root group
+  if(path.size()==1 &&  !nexus::has_attribute_section(path))
+  {
+    return file.root();
+  }
+
+  try
+  {
+    nexus::Path file_root;
+    file_root.filename(path.filename());
+    file_root.push_back({"/","NXroot"});
+    nexus::Path search_path = nexus::make_relative(file_root,path);
+    search_path.attribute(path.attribute());
+
+    objects = nexus::get_objects(file.root(),search_path);
+
+  }
+  catch(pni::core::key_error &error)
+  {
+    std::cerr<<error<<std::endl;
+    std::cerr<<"The path entered does not exist!"<<std::endl;
+    std::exit(1);
+  }
+  catch(std::runtime_error &error)
+  {
+    std::cerr<<error.what()<<std::endl;
+    std::exit(1);
+  }
+
+  if(objects.size()!=1)
+  {
+    std::stringstream ss;
+
+    if(objects.size()>1)
+      ss<<"The path ["<<path<<"] is not unique - cannot identify base object!";
+    else if(objects.size()==0)
+      ss<<"Could not find base with ["<<path<<"]!";
+
+    throw std::runtime_error(ss.str());
+  }
+
+  return objects.front();
 }
 
-//----------------------------------------------------------------------------
-output_config make_output_config(const configuration &config)
+std::string shape_to_string(const pni::core::shape_t &shape)
 {
-    size_t trim_level= 0;
-    if(!config.value<bool>("full-path"))
+    std::stringstream ss;
+
+    if(shape.empty()) return std::string();
+
+    ss<<"(";
+    for(auto iter = shape.begin();iter!=shape.end();++iter)
     {
-        nxpath path = get_path(config); 
-        trim_level = path.size();
+        ss<<*iter;
+        if(iter!=shape.end()-1) ss<<",";
     }
 
-    return output_config(config.value<bool>("long"),
-                         config.value<bool>("show-attributes"),
-                         trim_level);
+    ss<<")";
+    return ss.str();
+
 }
