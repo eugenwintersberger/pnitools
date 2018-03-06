@@ -32,13 +32,20 @@ class RecordBuilder
 {
   private:
     OutputConfiguration output_config_;
+  protected:
+    pni::io::nexus::Path adjust_path(const pni::io::nexus::Path &orig_path) const;
   public:
+    using Pointer = std::shared_ptr<RecordBuilder>;
     RecordBuilder(const OutputConfiguration &output_config);
+    virtual ~RecordBuilder() {}
 
     const OutputConfiguration &output_configuration() const noexcept;
     size_t number_of_columns() const noexcept;
 
+    virtual OutputRecord build(const Metadata::UniquePointer &metadata) const;
 
-    OutputRecord operator()(const Metadata::UniquePointer &metadata);
+
+    OutputRecord operator()(const Metadata::UniquePointer &metadata) const;
 
 };
+

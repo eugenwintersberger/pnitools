@@ -16,51 +16,24 @@
 // You should have received a copy of the GNU General Public License
 // along with pnitools.  If not, see <http://www.gnu.org/licenses/>.
 // ===========================================================================
-// Created on: Feb 28, 2018
+// Created on: Mar 6, 2018
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include "link_metadata.hpp"
 
-using namespace pni::io;
+#include "attribute_record_builder.hpp"
 
-nexus::Path get_path_from_link(const hdf5::node::Link &link)
-{
-  hdf5::node::Group parent = link.parent();
-  nexus::Path path = nexus::get_path(parent);
-  path.push_back({link.path().name(),""});
-
-  return path;
-}
-
-LinkMetadata::LinkMetadata(const hdf5::node::Link &link):
-  Metadata(get_path_from_link(link)),
-  type_(link.type()),
-  target_(link.target()),
-  status_(link.is_resolvable())
+AttributeRecordBuilder::AttributeRecordBuilder(const OutputConfiguration &output_config):
+  RecordBuilder(output_config)
 {}
 
-hdf5::node::LinkType LinkMetadata::link_type() const noexcept
+AttributeRecordBuilder::~AttributeRecordBuilder()
+{}
+
+OutputRecord AttributeRecordBuilder::build(const Metadata::UniquePointer &metadata) const
 {
-  return type_;
+   return RecordBuilder::build(metadata);
 }
-
-hdf5::node::LinkTarget LinkMetadata::link_target() const noexcept
-{
-  return target_;
-}
-
-bool LinkMetadata::status() const noexcept
-{
-  return status_;
-}
-
-Metadata::Type LinkMetadata::type() const
-{
-  return Metadata::Type::LINK;
-}
-
-
 
 
 

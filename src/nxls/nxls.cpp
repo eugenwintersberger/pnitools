@@ -114,9 +114,13 @@ int main(int argc,char **argv)
   std::transform(metadata.begin(),metadata.end(),
                  std::back_inserter(records),record_builder);
 
-  std::for_each(records.begin(),records.end(),
-                [](const OutputRecord &record)
-                { std::cout<<record[0]<<std::endl;});
+  for(auto record: records)
+  {
+    std::for_each(record.begin(),record.end(),
+                    [](const std::string &column)
+                    { std::cout<<column<<"\t";});
+    std::cout<<std::endl;
+  }
 
 
 //  //in the case that the root object is a single field or attribute

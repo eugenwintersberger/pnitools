@@ -9,6 +9,11 @@ set(NXLS_LIB_SOURCES metadata.cpp
 	                 output_record.cpp
 	                 record_builder.cpp
 	                 utils.cpp
+	                 record_builder_factory.cpp
+	                 attribute_record_builder.cpp
+	                 dataset_record_builder.cpp
+	                 link_record_builder.cpp
+	                 group_record_builder.cpp
 	                 )
 	                
 add_library(nxls_static STATIC ${NXLS_LIB_SOURCES})	     

@@ -21,7 +21,10 @@
 //
 
 #include "record_builder.hpp"
+#include "record_builder_factory.hpp"
 #include <pni/io/nexus.hpp>
+
+using namespace pni::io;
 
 RecordBuilder::RecordBuilder(const OutputConfiguration &output_config):
   output_config_(output_config)
@@ -40,12 +43,32 @@ size_t RecordBuilder::number_of_columns() const noexcept
     return 1;
 }
 
-OutputRecord RecordBuilder::operator()(const Metadata::UniquePointer &metadata)
+nexus::Path RecordBuilder::adjust_path(const nexus::Path &orig_path) const
+{
+  if(!output_configuration().show_full_path())
+  {
+    return nexus::make_relative(output_configuration().base_path(),orig_path);
+  }
+  else
+  {
+    return orig_path;
+  }
+}
+
+OutputRecord RecordBuilder::build(const Metadata::UniquePointer &metadata) const
 {
   OutputRecord record(number_of_columns());
 
-  record[0] = pni::io::nexus::Path::to_string(metadata->path());
+  record[0] = nexus::Path::to_string(adjust_path(metadata->path()));
   return record;
+}
+
+OutputRecord RecordBuilder::operator()(const Metadata::UniquePointer &metadata) const
+{
+  RecordBuilderFactory builder_factory(output_config_);
+
+  RecordBuilder::Pointer builder = builder_factory.create(metadata);
+  return builder->build(metadata);
 }
 
 
