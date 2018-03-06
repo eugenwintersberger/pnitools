@@ -25,9 +25,13 @@
 #include "output_record.hpp"
 #include "metadata.hpp"
 #include "record_builder.hpp"
+#include "group_metadata.hpp"
 
 class GroupRecordBuilder : public RecordBuilder
 {
+  private:
+    OutputRecord build_long(const GroupMetadata &metadata) const;
+    OutputRecord build_short(const GroupMetadata &metadata) const;
   public:
     GroupRecordBuilder(const OutputConfiguration &output_config);
     virtual ~GroupRecordBuilder();

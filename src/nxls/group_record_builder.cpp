@@ -21,6 +21,7 @@
 //
 
 #include "group_record_builder.hpp"
+using namespace pni::io;
 
 GroupRecordBuilder::GroupRecordBuilder(const OutputConfiguration &output_config):
 RecordBuilder(output_config)
@@ -29,9 +30,26 @@ RecordBuilder(output_config)
 GroupRecordBuilder::~GroupRecordBuilder()
 {}
 
+OutputRecord GroupRecordBuilder::build_long(const GroupMetadata &metadata) const
+{
+  OutputRecord record(number_of_columns());
+  record[0] = "GROUP";
+  record[3] = nexus::Path::to_string(adjust_path(metadata.path()));
+  return record;
+}
+
+OutputRecord GroupRecordBuilder::build_short(const GroupMetadata &metadata) const
+{
+  return OutputRecord{nexus::Path::to_string(adjust_path(metadata.path()))};
+}
+
 OutputRecord GroupRecordBuilder::build(const Metadata::UniquePointer &metadata) const
 {
-  return RecordBuilder::build(metadata);
+  auto group_metadata = dynamic_cast<const GroupMetadata*>(metadata.get());
+  if(output_configuration().show_long_output())
+    return build_long(*group_metadata);
+  else
+    return build_short(*group_metadata);
 }
 
 
