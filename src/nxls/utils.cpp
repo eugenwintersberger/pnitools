@@ -91,10 +91,7 @@ nexus::PathObject get_base(const hdf5::file::File &file,
     file_root.push_back({"/","NXroot"});
     nexus::Path search_path = nexus::make_relative(file_root,path);
     search_path.attribute(path.attribute());
-//    if(search_path.size()==1 && search_path.front().first==".")
-//      search_path.pop_front();
 
-    std::cout<<"Searching for: "<<search_path<<std::endl;
     objects = nexus::get_objects(file.root(),search_path);
 
   }

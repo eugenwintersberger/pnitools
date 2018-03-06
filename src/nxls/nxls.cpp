@@ -32,6 +32,7 @@
 #include "output_configuration.hpp"
 #include "output_records.hpp"
 #include "record_builder.hpp"
+#include "column_widths.hpp"
 
 
 
@@ -90,7 +91,6 @@ int main(int argc,char **argv)
   else if(nexus::is_group(base))
   {
     hdf5::node::Group base_group = base;
-    std::cout<<"Reading from: "<<nexus::get_path(base_group)<<std::endl;
 
     if(config.value<bool>("recursive"))
     {
@@ -106,67 +106,34 @@ int main(int argc,char **argv)
   }
 
   OutputConfiguration output_config(config.value<bool>("long"),
-                                       config.value<bool>("full-path"),
-                                       base_path);
+                                    config.value<bool>("full-path"),
+                                    base_path);
 
   RecordBuilder record_builder(output_config);
   OutputRecords records;
   std::transform(metadata.begin(),metadata.end(),
                  std::back_inserter(records),record_builder);
 
+  ColumnWidths max_col_widths(records.front().column_widths());
   for(auto record: records)
   {
-    std::for_each(record.begin(),record.end(),
-                    [](const std::string &column)
-                    { std::cout<<column<<"\t";});
-    std::cout<<std::endl;
+    ColumnWidths widths = record.column_widths();
+    std::transform(widths.begin(),widths.end(),max_col_widths.begin(),max_col_widths.begin(),
+                   [](size_t w,size_t max_w)
+                   {
+                    return w>max_w ? w : max_w;
+                   });
   }
 
+  for(auto record: records)
+  {
+    auto witer = max_col_widths.begin();
+    std::for_each(record.begin(),record.end(),
+                    [&witer](const std::string &column)
+                    { std::cout<<std::left<<std::setw((*witer++)+3)<<column;});
 
-//  //in the case that the root object is a single field or attribute
-//  //we have to adjust the trim level - but only if it is not 0.
-//  if(nexus::is_dataset(root) || nexus::is_attribute(root))
-//  {
-//    if(out_config.trim_level())
-//      out_config.trim_level(out_config.trim_level()-1);
-//  }
-//
-//  //generat output class
-//  output o(std::cout,out_config);
-//
-//  try
-//  {
-//    if(nexus::is_dataset(root) || nexus::is_attribute(root))
-//      o.write_object(root);
-//    else
-//    {
-//      if(config.value<bool>("recursive"))
-//        o(make_flat(root));
-//      else
-//        o(h5::nxgroup(root));
-//    }
-//
-//  }
-//  catch(pni::core::type_error &error)
-//  {
-//    std::cerr<<error<<std::endl;
-//    return 1;
-//  }
-//  catch(pni::io::parser_error &error)
-//  {
-//    std::cerr<<error<<std::endl;
-//    return 1;
-//  }
-//  catch(pni::core::size_mismatch_error &error)
-//  {
-//    std::cerr<<error<<std::endl;
-//    return 1;
-//  }
-//  catch(pni::io::object_error &error)
-//  {
-//    std::cerr<<error<<std::endl;
-//    return 1;
-//  }
+    std::cout<<std::endl;
+  }
 
 
   return 0;
