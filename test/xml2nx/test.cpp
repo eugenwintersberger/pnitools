@@ -95,7 +95,7 @@ void check_basic_setup(const string &filename)
   BOOST_CHECK_EQUAL(read<string>(field)[0],"High resolution beamline");
   BOOST_CHECK_EQUAL(read<string>(field.attributes["short_name"])[0],"P08");
 
-  groups = nexus::get_objects(f.root(),nexus::Path("/:NXentry/:NXinstrument/source"));
+  groups = nexus::get_objects(f.root(),nexus::Path("/:NXentry/:NXinstrument/source:NXsource"));
   cg = groups.front();
   field = cg.nodes["name"];
   BOOST_CHECK_EQUAL(read<string>(field)[0],"Positron-Elektron Tandem Ring Anlage III");
