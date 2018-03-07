@@ -19,18 +19,13 @@
 // Created on: Jun 10, 2013
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
+#pragma once
 
 #include<iostream>
 
 #include <pni/core/types.hpp>
 #include <pni/core/configuration.hpp>
-#include <pni/io/nx/nx.hpp>
-#include <pni/io/nx/nxpath.hpp>
-#include <pni/io/nx/xml.hpp>
-
-
-using namespace pni::core;
-using namespace pni::io::nx;
+#include <pni/io/nexus.hpp>
 
 //-----------------------------------------------------------------------------
 /*!
@@ -40,7 +35,7 @@ using namespace pni::io::nx;
 Create the configuration object for xml2nx. 
 \return configuration instance
 */
-configuration create_config();
+pni::core::configuration create_config();
 
 //-----------------------------------------------------------------------------
 /*!
@@ -51,4 +46,4 @@ configuration create_config();
 \param overwrite true if the file should be rewritten
 \return instance of nxfile
 */
-h5::nxfile open_nexus_file(const nxpath &path,bool overwrite);
+hdf5::file::File open_nexus_file(const pni::io::nexus::Path &path,bool overwrite);

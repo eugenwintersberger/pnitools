@@ -23,6 +23,9 @@
 #include "xml2nx.hpp"
 #include "../common/file.hpp"
 
+using namespace pni::core;
+using namespace pni::io;
+
 //-------------------------------------------------------------------------
 configuration create_config()
 {
@@ -40,13 +43,13 @@ configuration create_config()
 
 
 //------------------------------------------------------------------------
-h5::nxfile open_nexus_file(const nxpath &path,bool overwrite)
+hdf5::file::File open_nexus_file(const nexus::Path &path,bool overwrite)
 {
     //have to check if the file existsa
     bool exists = false;
     try
     {
-        file f(path.filename());
+        file f(path.filename().string());
         exists = true;
     }
     catch(file_error &error)
@@ -55,8 +58,8 @@ h5::nxfile open_nexus_file(const nxpath &path,bool overwrite)
     if(overwrite || (!exists))
         //when the overwrite flag is set or the file does not exist we 
         //we simply recreate or create it 
-        return h5::nxfile::create_file(path.filename(),true);
+        return nexus::create_file(path.filename(),hdf5::file::AccessFlags::TRUNCATE);
     else
         //without overwrite the file is opened in append mode
-        return h5::nxfile::open_file(path.filename(),false);
+        return nexus::open_file(path.filename(),hdf5::file::AccessFlags::READWRITE);
 }
