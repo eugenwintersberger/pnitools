@@ -27,9 +27,7 @@
 #include <vector>
 
 #include <pni/core/types.hpp>
-#include <pni/io/nx/nx.hpp>
-#include <pni/io/nx/nxpath.hpp>
-#include <pni/io/nx/algorithms/get_shape.hpp>
+#include <pni/io/nexus.hpp>
 #include <pni/io/formatters.hpp>
 
 #include <pni/core/configuration.hpp>
@@ -38,16 +36,13 @@
 #include "../common/table.hpp"
 
 
-using namespace pni::core;
-using namespace pni::io::nx;
-
-typedef std::vector<string> string_list;
-typedef std::list<nxpath> sources_list;
+using StringList  = std::vector<std::string>;
+using SourcesList = std::list<pni::io::nexus::Path>;
 
 //storage type for columns
-typedef std::list<array> column_storage_t;
-typedef column<column_storage_t> column_t;
-typedef table<column_t> table_t;
+using ColumnStorage = std::list<pni::core::array>;
+using Column        = column<ColumnStorage>;
+using Table         = table<Column>;
 
 /*!
 \ingroup nxcat_devel
@@ -56,7 +51,7 @@ typedef table<column_t> table_t;
 Function to create the CLI configuration.
 \return configuration object
 */
-configuration create_configuration();
+pni::core::configuration create_configuration();
 
 //-----------------------------------------------------------------------------
 /*!
@@ -67,7 +62,7 @@ Read a single column from a source determined by an nxpath instance.
 \param nxpath location of the data
 \return column instance
 */
-column_t read_column(const nxpath &source_path);
+Column read_column(const pni::io::nexus::Path &source_path);
 
 //------------------------------------------------------------------------------
 /*!
@@ -78,7 +73,7 @@ Read all data from a set of nxpath instances and store the result in a table.
 \param sources list of path object
 \return table instance
 */
-table_t  read_table(const sources_list &sources);
+Table  read_table(const SourcesList &sources);
 
 //-----------------------------------------------------------------------------
 /*!
@@ -96,10 +91,11 @@ fails the unit will be taken from the argument.
 \param unit string with unit values
 \return instance of column_t
 */
+Column create_column(const pni::io::nexus::PathObject &object,const std::string &unit="");
 template<typename NXVAR>
-column_t column_from_nexus_object(const NXVAR &o,const string &unit="")
+Column column_from_nexus_object(const NXVAR &o,const string &unit="")
 {
-    column_t column;
+    Column column;
     column.name(get_name(o));
     if(is_attribute(o))
         column.unit(unit);
@@ -108,6 +104,28 @@ column_t column_from_nexus_object(const NXVAR &o,const string &unit="")
 
     return column;
 }
+
+//!
+//! @brief get source object for table column
+//!
+//! Retrieve the source object from which to read data for a column. The object
+//! must be either a
+//!
+//! \li HDF5 attribute
+//! \li or an HDF5 dataset
+//!
+//! if the reference object is none of the above an exception will be thrown.
+//! The object is referenced by Nexus path which must be precise enough to
+//! select a single object below the parent object otherwise an exception
+//! will be thrown.
+//!
+//! \throws std::runtime_error in case of any error
+//! \param parent the parent object from which to read the data
+//! \param source_path Nexus path determining the object
+//! \return a NeXus path object storing a dataset or an attribute
+//!
+pni::io::nexus::PathObject get_source(const hdf5::node::Group &parent,
+                                      const pni::io::nexus::Path &source_path);
 
 //-----------------------------------------------------------------------------
 /*!
@@ -127,7 +145,7 @@ n-1 dimensions with the first dimension of the original object stripped of.
 \return instance of array
 */
 template<typename NXVAR>
-array array_from_nexus_object(const NXVAR &o)
+pni::core::array array_from_nexus_object(const NXVAR &o)
 {
     //get the shape of the object in the file
     auto file_shape = get_shape<shape_t>(o);

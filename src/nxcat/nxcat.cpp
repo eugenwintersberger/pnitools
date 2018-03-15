@@ -51,14 +51,14 @@ int main(int argc,char **argv)
     {
         //----------------------parse the input data----------------------------
         //get the source string
-        for(auto source_path: conf.value<string_list>("source"))
+        for(auto source_path: conf.value<StringList>("source"))
             sources.push_back(nxpath::from_string(source_path));
 
         //table with data
         table_t data_tab = read_table(sources);
 
         //obtain the list of column names
-        auto keys = data_tab.keys<string_list>();
+        auto keys = data_tab.keys<StringList>();
 
         //print the colunm names (the table headers) if requested by the
         //user

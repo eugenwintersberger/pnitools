@@ -20,20 +20,16 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include <pni/io/nx/algorithms/get_object.hpp>
-#include <pni/io/nx/algorithms/get_unit.hpp>
-#include <pni/io/nx/algorithms/is_attribute.hpp>
-#include <pni/io/nx/algorithms/get_type.hpp>
-#include <pni/io/nx/algorithms/read.hpp>
-#include <pni/io/nx/algorithms/get_size.hpp>
-
 #include "nxcat.hpp"
+
+using namespace pni::core;
+using namespace pni::io;
 
 configuration create_configuration()
 {
     configuration config;
     config.add_option(config_option<bool>("help","h","show help",false));
-    config.add_argument(config_argument<string_list>("source",-1));
+    config.add_argument(config_argument<StringList>("source",-1));
     config.add_option(config_option<bool>("header","",
                       "show header with units",false));
     config.add_option(config_option<size_t>("start","s",
@@ -43,34 +39,65 @@ configuration create_configuration()
     return config;
 }
 
+Column create_column(const nexus::PathObject &object,const std::string &unit)
+{
+  Column column;
+  column.unit(unit);
+  if(nexus::is_attribute(object))
+  {
+    hdf5::attribute::Attribute attribute = object;
+    column.name(attribute.name());
+  }
+  else if(nexus::is_dataset(object))
+  {
+    hdf5::node::Dataset dataset = object;
+    column.name(dataset.link().path().name());
+    if(dataset.attributes.exists("units"))
+    {
+      std::string units;
+      dataset.attributes["units"].read(units);
+      column.unit(units);
+    }
+  }
+  else
+  {
+    throw std::runtime_error("Failure to create column!");
+  }
+  return column;
+}
 
 //-----------------------------------------------------------------------------
-column_t read_column(const nxpath &source_path)
+Column read_column(const nexus::Path &source_path)
 {
-    //open file in read only mode - the file must obviously exist
-    h5::nxfile file = h5::nxfile::open_file(source_path.filename(),true);
-    h5::nxobject root = file.root();
+  //open file in read only mode - the file must obviously exist
+  hdf5::file::File file = nexus::open_file(source_path.filename(),
+                                           hdf5::file::AccessFlags::READONLY);
+  hdf5::node::Group root = file.root();
 
-    //have to retrieve the object from the file
-    auto object = get_object(root,source_path);
-    //check if the object is empty - throw an exception in this case
-    if(!get_size(object))
-        throw size_mismatch_error(EXCEPTION_RECORD,
-                "Object ["+nxpath::to_string(source_path)+"! doest not "
-                "contain any data - aborting!");
+  //have to retrieve the object from the file
+  nexus::PathObjectList objects = nexus::get_objects(root,source_path);
 
-    //============need to take care here about a particular bug ===============
-    //it seems that get_object does not return attributes attached to the root
-    //group. Need to take care about this
-    if((get_name(object) == "/")&&(!source_path.attribute().empty()))
-    {
-        object = get_attribute(object,source_path.attribute());
-    }
+  //check if the object is empty - throw an exception in this case
+  if(objects.size()!=1)
+  {
+    throw size_mismatch_error(EXCEPTION_RECORD,
+                              "Object ["+nxpath::to_string(source_path)+"! doest not "
+                              "contain any data - aborting!");
+  }
+  nexus::PathObject object = objects.front();
 
-    //==================end of workaround======================================
-        
-    //try to get a column type from the Nexus object
-    column_t column = column_from_nexus_object(object);
+  //try to get a column type from the Nexus object
+  Column column;
+  try
+  {
+    Column column = create_column(object);
+  }
+  catch(const std::runtime_error &error)
+  {
+    std::stringstream ss;
+    ss<<error.what()<<std::endl<<"From object: "<<source_path;
+    throw std::runtime_error(ss.str());
+  }
 
     //get the shape fo the data on the file
     auto file_shape = get_shape<shape_t>(object);
