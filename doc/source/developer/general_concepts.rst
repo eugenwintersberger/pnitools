@@ -149,3 +149,62 @@ path only in terms of base classes
    
 In this case the different types must be unique. In case of ambiguities the
 program will abort with an error message.
+
+Input and output of multidimensional data
+=========================================
+
+In many cases multidimensional data is either written to a standard out 
+or read from standard input (the canonical examples would be 
+:program:`nxcat` and :program:`nxtee`). As NeXus can also handle 
+multidimensional data we need a way to represent this on a console. 
+
+Reading from standard input
+---------------------------
+
+On a console there are virtually only two dimensions. So whenever we have to 
+deal with multidimensional data for reading it is considered 
+
+.. math::
+
+   s = \prod_{i=0}^{r-1} n_i
+   
+where :math:`n_i` is the number of elements along the :math:`i`-th dimension.
+In order to indicate the start of a next data item we use a `\n`. 
+In practive this means 
+
+The data for a simple :math:`2\times 2` matrix would be a single stream 4 values 
+
+.. text::
+
+   1 21 32 23
+   
+For attributes this is all you can do. For datasets, however, we often have the 
+situation that we want to write a time series of data values. In such a case 
+the first dimension typically denotes time where the remaining dimensions 
+are the actual dimension of the data element (except for scalar values
+where there is no additional dimension). Consider we want to store a series
+of the above  :math:`4\times 4` matrix. The dataset would have a a shape of
+:math:`n\times 4 \times 4` where the first dimension is the time. If we  want
+to store 3 entries in such a dataset the output on standard out should look like 
+this 
+
+.. text:: 
+
+   1 21 33 243
+   3 45 223  42
+   38 -2 43 23
+   
+Each `\n` indicates a step forward along the first dimesion of the dataset. 
+     
+
+Wirting to standard output
+--------------------------
+
+Writing the data to standard output has a similar problem: we have only 
+two dimensions available but may have to write data with more than two 
+dimensions. 
+Like for reading data a `\n` indicates a step along the first dimension 
+of a dataset. The remaining dimensions (if there are any) are flattened into
+a single dimension and the output . 
+
+
