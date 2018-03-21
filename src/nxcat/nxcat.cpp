@@ -23,75 +23,77 @@
 #include "nxcat.hpp"
 #include "../common/config_utils.hpp"
 
+using namespace pni::io;
 
 static const string prg_name = "nxcat";
 static const string help_hdr = "nxcat usage:\t  nxcat [OPTIONS] INPUT FILES";
 
 int main(int argc,char **argv)
 {
-    //--------------------setup program configuration--------------------------
-    configuration conf = create_configuration();
+  //--------------------setup program configuration--------------------------
+  configuration conf = create_configuration();
 
-    if(argc<2)
+  if(argc<2)
+  {
+    std::cerr<<"Insufficient number of command line arguments!"<<std::endl;
+    std::cerr<<"Use nxcat -h for help  ..."<<std::endl;
+    return 1;
+  }
+
+  if(parse_cli_opts(argc,argv,prg_name,conf))
+    return 1;
+
+  if(check_help_request(conf,help_hdr))
+    return 1;
+
+
+  SourcesList sources;
+  try
+  {
+    //----------------------parse the input data----------------------------
+    //get the source string
+    for(auto source_path: conf.value<StringList>("source"))
+      sources.push_back(nexus::Path::from_string(source_path));
+
+
+    //table with data
+    Table data_table = read_table(sources);
+
+    //obtain the list of column names
+    auto keys = data_table.keys<StringList>();
+
+    //print the colunm names (the table headers) if requested by the
+    //user
+    if(conf.value<bool>("header"))
     {
-        std::cerr<<"Insufficient number of command line arguments!"<<std::endl;
-        std::cerr<<"Use nxcat -h for help  ..."<<std::endl;
-        return 1;
+      for(auto key: keys)
+        std::cout<<"#"<<data_table[key].name()<<" ("
+        <<data_table[key].unit()<<")"<<std::endl;
     }
 
-    if(parse_cli_opts(argc,argv,prg_name,conf))
-        return 1;
+    //get start and stop indices
+    size_t start_index = conf.value<size_t>("start");
+    //if the stop index is 0 we print everything
+    size_t end_index   = conf.value<size_t>("end")==0 ? data_table.nrows() :
+        conf.value<size_t>("end");
 
-    if(check_help_request(conf,help_hdr))
-        return 1;
-
-
-    sources_list sources;
-    try
+    //loop over all rows
+    for(size_t row_index=start_index;row_index<end_index;++row_index)
     {
-        //----------------------parse the input data----------------------------
-        //get the source string
-        for(auto source_path: conf.value<string_list>("source"))
-            sources.push_back(nxpath::from_string(source_path));
+      //loop over all columns - this is currently not very nice
+      //but works and seems to be fast enough
+      for(auto key: keys)
+      {
 
-        //table with data
-        table_t data_tab = read_table(sources);
+        Column::iterator iter = data_table[key].begin();
+        std::advance(iter,row_index);
+        std::cout<<pni::io::format(*iter)<<"\t";
+      }
 
-        //obtain the list of column names
-        auto keys = data_tab.keys<string_list>();
-
-        //print the colunm names (the table headers) if requested by the
-        //user
-        if(conf.value<bool>("header"))
-        {
-            for(auto key: keys)
-                std::cout<<"#"<<data_tab[key].name()<<" ("
-                         <<data_tab[key].unit()<<")"<<std::endl;
-        }
-
-        //get start and stop indices
-        size_t start_index = conf.value<size_t>("start");
-        //if the stop index is 0 we print everything
-        size_t end_index   = conf.value<size_t>("end")==0 ? data_tab.nrows() :
-                             conf.value<size_t>("end");
-
-        //loop over all rows
-        for(size_t row_index=start_index;row_index<end_index;++row_index)
-        {
-            //loop over all columns - this is currently not very nice
-            //but works and seems to be fast enough
-            for(auto key: keys)
-            {
-
-                column_t::iterator iter = data_tab[key].begin();
-                std::advance(iter,row_index);
-                std::cout<<pni::io::format(*iter)<<"\t";
-            }
-
-            std::cout<<std::endl;
-        }
-
+      std::cout<<std::endl;
     }
+
+  }
     catch(memory_not_allocated_error &error)
     {
         std::cerr<<error<<std::endl;

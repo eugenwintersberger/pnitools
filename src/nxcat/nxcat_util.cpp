@@ -20,20 +20,15 @@
 //     Author: Eugen Wintersberger <eugen.wintersberger@desy.de>
 //
 
-#include <pni/io/nx/algorithms/get_object.hpp>
-#include <pni/io/nx/algorithms/get_unit.hpp>
-#include <pni/io/nx/algorithms/is_attribute.hpp>
-#include <pni/io/nx/algorithms/get_type.hpp>
-#include <pni/io/nx/algorithms/read.hpp>
-#include <pni/io/nx/algorithms/get_size.hpp>
-
 #include "nxcat.hpp"
+
+using namespace pni::io;
 
 configuration create_configuration()
 {
     configuration config;
     config.add_option(config_option<bool>("help","h","show help",false));
-    config.add_argument(config_argument<string_list>("source",-1));
+    config.add_argument(config_argument<StringList>("source",-1));
     config.add_option(config_option<bool>("header","",
                       "show header with units",false));
     config.add_option(config_option<size_t>("start","s",
@@ -43,72 +38,102 @@ configuration create_configuration()
     return config;
 }
 
-
 //-----------------------------------------------------------------------------
-column_t read_column(const nxpath &source_path)
+Table read_table(const SourcesList &sources)
 {
-    //open file in read only mode - the file must obviously exist
-    h5::nxfile file = h5::nxfile::open_file(source_path.filename(),true);
-    h5::nxobject root = file.root();
-
-    //have to retrieve the object from the file
-    auto object = get_object(root,source_path);
-    //check if the object is empty - throw an exception in this case
-    if(!get_size(object))
-        throw size_mismatch_error(EXCEPTION_RECORD,
-                "Object ["+nxpath::to_string(source_path)+"! doest not "
-                "contain any data - aborting!");
-
-    //============need to take care here about a particular bug ===============
-    //it seems that get_object does not return attributes attached to the root
-    //group. Need to take care about this
-    if((get_name(object) == "/")&&(!source_path.attribute().empty()))
-    {
-        object = get_attribute(object,source_path.attribute());
-    }
-
-    //==================end of workaround======================================
-        
-    //try to get a column type from the Nexus object
-    column_t column = column_from_nexus_object(object);
-
-    //get the shape fo the data on the file
-    auto file_shape = get_shape<shape_t>(object);
-    if(is_attribute(object) && file_shape.size()==0)
-    {
-        file_shape = shape_t{1}; //in case of a scalar attribute
-    }                             
-
-    //construct the shape of a single cell entry - this is typically 
-    //an array whose original rank is reduced by 1 dimension
-    auto data_shape = file_shape.size() >1 ?
-                      shape_t(++file_shape.begin(),file_shape.end()): 
-                      shape_t{1} ;
-
-    //create the data array
-    array data = make_array(get_type(object),data_shape);
-
-    //create a selection in order to read data from the file
-    std::vector<slice> selection;
-    for(auto fs: file_shape) selection.push_back(slice(0,fs));
-    selection.front() = slice(0);
-
-    for(size_t i=0;i<file_shape[0];++i)
-    {
-        selection[0] = slice(i);
-        read(object,data,selection);
-        column.push_back(data);
-    }
-
-    return column;
-}
-
-//-----------------------------------------------------------------------------
-table_t  read_table(const sources_list &sources)
-{
-    table_t t;
-    for(auto source: sources) 
+    Table t;
+    for(auto source: sources)
         t.push_back(read_column(source));
 
     return t;
 }
+
+
+
+hdf5::Dimensions get_dimensions(const hdf5::dataspace::Dataspace &dataspace)
+{
+  if(dataspace.type() == hdf5::dataspace::Type::SCALAR)
+    return hdf5::Dimensions{1};
+  else
+    return hdf5::dataspace::Simple(dataspace).current_dimensions();
+}
+
+hdf5::Dimensions get_cell_dimensions(const hdf5::Dimensions &file_dimensions)
+{
+  //construct the shape of a single cell entry - this is typically
+  //an array whose original rank is reduced by 1 dimension
+  return file_dimensions.size() >1 ?
+      hdf5::Dimensions(++file_dimensions.begin(),file_dimensions.end()):
+      hdf5::Dimensions{1} ;
+}
+
+
+//-----------------------------------------------------------------------------
+Column read_column(const nexus::Path &source_path)
+{
+  //open file in read only mode - the file must obviously exist
+  hdf5::file::File file = nexus::open_file(source_path.filename(),
+                                           hdf5::file::AccessFlags::READONLY);
+  hdf5::node::Group root = file.root();
+
+  //have to retrieve the object from the file
+  nexus::PathObjectList objects = nexus::get_objects(root,source_path);
+
+  //check if the object is empty - throw an exception in this case
+  if(objects.size()!=1)
+  {
+    std::stringstream ss;
+    if(objects.size() == 0)
+    {
+      ss<<"There is no object referenced by ["<<nexus::Path::to_string(source_path)<<"]!";
+    }
+    else
+    {
+      ss<<"The path ["<<nexus::Path::to_string(source_path)<<"] references more than one"
+        <<" object!";
+    }
+    throw std::runtime_error(ss.str());
+  }
+  nexus::PathObject object = objects.front();
+
+  if(object.type() == nexus::PathObject::Type::ATTRIBUTE)
+  {
+    hdf5::attribute::Attribute attribute = object;
+    return read_column(attribute);
+  }
+  else if(object.type() == nexus::PathObject::Type::DATASET)
+  {
+    hdf5::node::Dataset dataset = object;
+    return read_column(dataset);
+  }
+  else
+  {
+    std::stringstream ss;
+    ss<<"The object referenced by ["<<nexus::Path::to_string(source_path)+"] is neither a "
+      <<" dataset or attribute!";
+    throw std::runtime_error(ss.str());
+  }
+
+
+//  //get the shape fo the data on the file
+//  hdf5::Dimensions file_shape = get_shape(object);
+//  hdf5::Dimensions data_shape = get_data_shape(file_shape);
+//
+//  //create the data array
+//  pni::core::array data = pni::core::make_array(get_type(object),data_shape);
+//
+//
+//  //create a selection in order to read data from the file
+//  hdf5::dataspace::Hyperslab selection = create_selection(file_shape,data_shape);
+//
+//  for(size_t i=0;i<file_shape[0];++i)
+//  {
+//    selection[0] = slice(i);
+//    read(object,data,selection);
+//    column.push_back(data);
+//  }
+//
+//    return column;
+}
+
+

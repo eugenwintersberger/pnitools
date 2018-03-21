@@ -1,4 +1,4 @@
-set(NXCAT_SOURCE nxcat.cpp nxcat_util.cpp)
+set(NXCAT_SOURCE nxcat.cpp nxcat_util.cpp nxcat_dataset.cpp nxcat_attribute.cpp)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
     configure_file(nxcat.exe.manifest.in nxcat.exe.manifest @ONLY)
